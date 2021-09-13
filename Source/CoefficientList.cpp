@@ -10,6 +10,8 @@
 
 #include <JuceHeader.h>
 #include "CoefficientList.h"
+#include <iostream>
+#include <iomanip>
 
 //==============================================================================
 CoefficientList::CoefficientList (ChangeListener* addModuleWindow)
@@ -25,9 +27,6 @@ CoefficientList::CoefficientList (ChangeListener* addModuleWindow)
 
 CoefficientList::~CoefficientList()
 {
-    for (auto coefficient : coefficients)
-        removeCoefficient (coefficient);
-    
     repaintAndUpdate();
 }
 
@@ -76,7 +75,14 @@ void CoefficientList::paintListBoxItem (int rowNumber, Graphics& g, int width, i
         g.fillAll (Colours::blue);
     g.setFont (Font (16.0f));
     g.setColour (Colours::white);
-    g.drawText (parameters.getName (rowNumber).toString() + " = " + parameters.getValueAt (rowNumber).toString(),
+    std::ostringstream decimalValue;
+    double value = parameters.getValueAt (rowNumber);
+    if (value < 1)
+        decimalValue << std::setprecision (3) << value;
+    else
+        decimalValue << value;
+    
+    g.drawText (parameters.getName (rowNumber).toString() + " = " + decimalValue.str(),
                 Global::margin,
                 0,
                 width * 0.5,
@@ -85,100 +91,14 @@ void CoefficientList::paintListBoxItem (int rowNumber, Graphics& g, int width, i
 
 Component* CoefficientList::refreshComponentForRow (int rowNumber, bool isRowSelected, Component* existingComponentToUpdate)
 {
-//    if (rowNumber < coefficients.size())
-//    {
-////        for (int i = 0; i < coefficients.size(); ++i)
-////            if (existingComponentToUpdate == coefficients[i].get())
-////                return existingComponentToUpdate;
-//
-//        return coefficients[rowNumber].get();
-//    }
     return nullptr;
 }
 
-std::shared_ptr<CoefficientComponent> CoefficientList::addCoefficient (Identifier& name, double value)
+void CoefficientList::printParameterNames()
 {
-    coefficients.push_back (std::make_shared<CoefficientComponent> (name.toString(), value));
-    std::shared_ptr<CoefficientComponent> newCoeff = coefficients[coefficients.size() - 1];
-    addAndMakeVisible (newCoeff.get());
-    return newCoeff;
+    for (int i = 0; i < parameters.size(); ++i)
+        std::cout << parameters.getName(i).toString() << std::endl;
 }
-
-std::shared_ptr<CoefficientComponent> CoefficientList::addCoefficient (std::shared_ptr<CoefficientComponent> coefficient)
-{
-    coefficients.push_back (coefficient);
-    std::shared_ptr<CoefficientComponent> newCoeff = coefficients[coefficients.size() - 1];
-    addAndMakeVisible (newCoeff.get());
-    return newCoeff;
-}
-
-void CoefficientList::removeCoefficient (std::shared_ptr<CoefficientComponent> coeffToRemove, bool eraseFromVector)
-{
-    for (int i = 0; i < coefficients.size(); ++i)
-        if (coefficients[i] == coeffToRemove)
-        {
-            coefficients[i]->setVisible (false);
-            coefficients[i].reset();
-            
-            if (eraseFromVector)
-                coefficients.erase(coefficients.begin() + i);
-        }
-}
-
-void CoefficientList::emptyCoefficientList (bool update)
-{
-    for (auto coeff : coefficients)
-        removeCoefficient (coeff, false);
-    
-    for (int i = static_cast<int> (coefficients.size() - 1); i >= 0; --i)
-        coefficients.erase(coefficients.begin() + i);
-    
-    if (update)
-        repaintAndUpdate();
-}
-
-void CoefficientList::loadCoefficientsFromObject (std::vector<std::shared_ptr<CoefficientComponent>>& coefficientsFromObject)
-{
-    emptyCoefficientList (false);
-    for (auto coeff : coefficientsFromObject)
-    {
-        coeff->setVisible (true);
-        addCoefficient (coeff);
-    }
-    repaintAndUpdate();
-}
-
-NamedValueSet CoefficientList::getNamedValueSet (StringArray coefficientNames)
-{
-    NamedValueSet namedValueSet;
-    for (auto coeff : coefficients)
-        if (coefficientNames.isEmpty()) // if the coefficientNames vector is empty, return all coefficients
-            namedValueSet.set (coeff.get()->getName(), coeff.get()->getValue());
-        else if (coefficientNames.contains (coeff.get()->getName()))
-            namedValueSet.set (coeff.get()->getName(), coeff.get()->getValue());
-    
-    return namedValueSet;
-}
-
-void CoefficientList::printCoefficients()
-{
-    for (auto coeff : coefficients)
-        std::cout << coeff->getLabelName() << std::endl;
-}
-
-
-//void CoefficientList::setParameters (NamedValueSet& p)
-//{
-//    parameters = p;
-//    valueEditors.clear();
-//    for (int i = 0; i < p.size(); ++i)
-//    {
-//        valueEditors.add (new TextEditor());
-//        valueEditors[i]->addListener (this);
-//        addAndMakeVisible (valueEditors[i]);
-//        valueEditors[i]->setText (parameters.getValueAt(i).toString());
-//    }
-//}
 
 void CoefficientList::listBoxItemClicked (int row, const MouseEvent& e)
 {

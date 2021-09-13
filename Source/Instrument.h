@@ -49,6 +49,9 @@ public:
     // Returns the output of all modules
     float getOutput();
     
+    // Returns total energy of all modules
+    double getTotalEnergy();
+    
     // Checks whether modules should be excited
     void checkIfShouldExcite();
 
@@ -64,14 +67,38 @@ public:
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
     
     void setAddingConnection (bool a) { addingConnection = a; };
+    void setConnectionType (ConnectionType c) { currentConnectionType = c; };
+    
+//    void setChangeListener (ChangeListener* changeListener) { if (getChangeL) addChangelistener (changeListener); };
+    ApplicationState getApplicationState() { return applicationState; };
     
 private:
     int fs;
     
-//    int mouseX, mouseY;
-    // vector of tuples storing the resonator module index and the connection location index
-    std::vector<std::vector<int>> connectionLocations;
-
+    // Vector storing information about the connections. [0] resonator index, [1] location
+    struct ConnectionInfo
+    {
+        ConnectionInfo (ConnectionType connType,
+                        int resonatorIndex,
+                        int location,
+                        double K1 = 0,
+                        double K3 = 0,
+                        double R = 0) : connType (connType),
+                                        idx1 (resonatorIndex),
+                                        loc1 (location),
+                                        K1 (K1), K3 (K3), R (R)
+        {};
+        void setSecondResonatorParams (int i, int l) { idx2 = i; loc2 = l; connected = true; };
+        
+        ConnectionType connType;
+        int idx1, idx2;
+        int loc1, loc2;
+        double K1, K3, R;
+        bool connected = false;
+    };
+    
+    std::vector<ConnectionInfo> CI;
+    
     std::vector<std::shared_ptr<ResonatorModule>> resonators;
     
     ApplicationState applicationState = normalState;
@@ -79,5 +106,11 @@ private:
     bool painting = true;
     int resonatorModuleHeight = 0;
     bool addingConnection = false;
+    
+    ConnectionType currentConnectionType = rigid;
+    
+    double K1, K3, R, rPlus, rMinus, etaNext, eta, etaPrev;
+    
+    double prevEnergy = 0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

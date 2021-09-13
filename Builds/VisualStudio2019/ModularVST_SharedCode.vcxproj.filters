@@ -2,8 +2,8 @@
 
 <Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ModularVST\Source\Coefficients">
-      <UniqueIdentifier>{601E7C50-8D0D-977C-EF3E-0E52F366A890}</UniqueIdentifier>
+    <Filter Include="ModularVST\Source\ResonatorModules">
+      <UniqueIdentifier>{7C0BF081-2D91-4A01-B0AE-D59DF609A95A}</UniqueIdentifier>
     </Filter>
     <Filter Include="ModularVST\Source">
       <UniqueIdentifier>{DE84E0B7-B78F-22B4-FF02-52539E4A4AE0}</UniqueIdentifier>
@@ -433,11 +433,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\CoefficientComponent.cpp">
-      <Filter>ModularVST\Source\Coefficients</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\CoefficientList.cpp">
-      <Filter>ModularVST\Source\Coefficients</Filter>
+      <Filter>ModularVST\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\AddModuleWindow.cpp">
       <Filter>ModularVST\Source</Filter>
@@ -445,11 +442,14 @@
     <ClCompile Include="..\..\Source\ControlPanel.cpp">
       <Filter>ModularVST\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ResonatorModule.cpp">
-      <Filter>ModularVST\Source</Filter>
+    <ClCompile Include="..\..\Source\Bar.cpp">
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\StiffString.cpp">
-      <Filter>ModularVST\Source</Filter>
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ResonatorModule.cpp">
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Instrument.cpp">
       <Filter>ModularVST\Source</Filter>
@@ -2514,13 +2514,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\CoefficientComponent.h">
-      <Filter>ModularVST\Source\Coefficients</Filter>
+    <ClInclude Include="..\..\Source\Global.h">
+      <Filter>ModularVST\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\CoefficientList.h">
-      <Filter>ModularVST\Source\Coefficients</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Global.h">
       <Filter>ModularVST\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\AddModuleWindow.h">
@@ -2529,11 +2526,14 @@
     <ClInclude Include="..\..\Source\ControlPanel.h">
       <Filter>ModularVST\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ResonatorModule.h">
-      <Filter>ModularVST\Source</Filter>
+    <ClInclude Include="..\..\Source\Bar.h">
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\StiffString.h">
-      <Filter>ModularVST\Source</Filter>
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ResonatorModule.h">
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Instrument.h">
       <Filter>ModularVST\Source</Filter>

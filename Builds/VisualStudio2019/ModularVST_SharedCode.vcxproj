@@ -137,12 +137,12 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\CoefficientComponent.cpp"/>
     <ClCompile Include="..\..\Source\CoefficientList.cpp"/>
     <ClCompile Include="..\..\Source\AddModuleWindow.cpp"/>
     <ClCompile Include="..\..\Source\ControlPanel.cpp"/>
-    <ClCompile Include="..\..\Source\ResonatorModule.cpp"/>
+    <ClCompile Include="..\..\Source\Bar.cpp"/>
     <ClCompile Include="..\..\Source\StiffString.cpp"/>
+    <ClCompile Include="..\..\Source\ResonatorModule.cpp"/>
     <ClCompile Include="..\..\Source\Instrument.cpp"/>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp"/>
     <ClCompile Include="..\..\Source\PluginEditor.cpp"/>
@@ -2059,13 +2059,13 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\CoefficientComponent.h"/>
-    <ClInclude Include="..\..\Source\CoefficientList.h"/>
     <ClInclude Include="..\..\Source\Global.h"/>
+    <ClInclude Include="..\..\Source\CoefficientList.h"/>
     <ClInclude Include="..\..\Source\AddModuleWindow.h"/>
     <ClInclude Include="..\..\Source\ControlPanel.h"/>
-    <ClInclude Include="..\..\Source\ResonatorModule.h"/>
+    <ClInclude Include="..\..\Source\Bar.h"/>
     <ClInclude Include="..\..\Source\StiffString.h"/>
+    <ClInclude Include="..\..\Source\ResonatorModule.h"/>
     <ClInclude Include="..\..\Source\Instrument.h"/>
     <ClInclude Include="..\..\Source\PluginProcessor.h"/>
     <ClInclude Include="..\..\Source\PluginEditor.h"/>

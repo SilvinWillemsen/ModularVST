@@ -39,6 +39,8 @@ AddModuleWindow::AddModuleWindow (ChangeListener* audioProcessorEditor)
         
     valueEditor = std::make_unique<TextEditor>();
     valueEditor->addListener (this);
+    valueEditor->setInputRestrictions (0, "0123456789.eE-");
+
     addAndMakeVisible (valueEditor.get());
 
     coeffTopLabel = std::make_unique<Label>();
@@ -114,7 +116,7 @@ void AddModuleWindow::buttonClicked (Button* button)
     }
     else if (button == testButton.get())
     {
-        coefficientList->printCoefficients();
+        coefficientList->printParameterNames();
     }
 }
 

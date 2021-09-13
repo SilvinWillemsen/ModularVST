@@ -95,15 +95,10 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 {
     fs = sampleRate;
     
-//    initActions = {
-//        addInstrumentAction,
-//        addResonatorModuleAction,
-//        addResonatorModuleAction,
-//        addInstrumentAction,
-//        addResonatorModuleAction,
-//        addResonatorModuleAction,
-//        addResonatorModuleAction,
-//    };
+    initActions = {
+        addInstrumentAction,
+        addResonatorModuleAction
+    };
     
     if (instruments.size() == 0)
         instruments.reserve (8);
@@ -205,6 +200,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         {
             inst->calculate();
             inst->solveInteractions();
+            std::cout << inst->getTotalEnergy() << std::endl;
             inst->update();
 
             totOutput[i] += inst->getOutput();
@@ -217,6 +213,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         for (int channel = 0; channel < numChannels; ++channel)
             curChannel[channel][0][i] = outputLimit (totOutput[i]);
     
+//    std::cout << totOutput[15] << std::endl;
     
 }
 
@@ -277,6 +274,10 @@ void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* change
     {
         if (changeBroadcaster == inst.get())
         {
+            if (inst->getApplicationState() != normalState)
+            {
+                return;
+            }
             currentlyActiveInstrument = i;
             refreshEditor = true;
             return;
@@ -305,6 +306,7 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
                     inst->setAddingConnection (true);
                 else
                     inst->setAddingConnection (false);
+                inst->setApplicationState (addConnectionState);
             }
             break;
         }

@@ -38,6 +38,11 @@ public:
 //    void mouseMove (const MouseEvent& e) override;
     void excite() override;
     
+    double getKinEnergy() override;
+    double getPotEnergy() override;
+    double getDampEnergy() override;
+    double getInputEnergy() override;
+
     void setExcitationFlagFalse() { excitationFlag = false; }
     
 private:
@@ -51,10 +56,11 @@ private:
         - C for u^{n-1}
         - S for precalculated sigma terms
     */
-    double Adiv, B0, B1, B2, C0, C1, S0, S1;
+    double Adiv, B0, B1, B2, C0, C1, S0, S1, Bss;
 
-    float excitationLoc = 0;
-    bool clamped = true;
+    float excitationLoc = 0.5;
+    bool clamped = false;
+    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StiffString)
 };

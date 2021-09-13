@@ -40,6 +40,8 @@ StiffString::StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListe
     
     // Initialise states and connection division term of the system
     initialiseModule();
+    
+//    excite(); // start by exciting
 }
 
 StiffString::~StiffString()
@@ -51,7 +53,7 @@ void StiffString::initialise (int fs)
     k = 1.0 / fs;
     double stabilityTerm = cSq * k * k + 4.0 * sig1 * k; // just easier to write down below
     
-    h = sqrt (stabilityTerm + sqrt ((stabilityTerm * stabilityTerm) + 16.0 * kappaSq * k * k));
+    h = sqrt (0.5 * (stabilityTerm + sqrt ((stabilityTerm * stabilityTerm) + 16.0 * kappaSq * k * k)));
     N = floor (L / h);
     h = L / N; // recalculate h
     
@@ -69,12 +71,15 @@ void StiffString::initialise (int fs)
     C0 = -1.0 + S0 + 2.0 * S1;                         // u_l^{n-1}
     C1 = -S1;                                          // u_{l+-1}^{n-1}
     
+    Bss = 2.0 - 2.0 * lambdaSq - 5.0 * muSq - 2.0 * S1; // u_l^n Simply supported
+
     Adiv = 1.0 / (1.0 + S0);                           // u_l^{n+1}
     
     // Divide by u_l^{n+1} term
     B0 *= Adiv;
     B1 *= Adiv;
     B2 *= Adiv;
+    Bss *= Adiv;
     C0 *= Adiv;
     C1 *= Adiv;
     
@@ -137,6 +142,14 @@ void StiffString::calculate()
     for (int l = 2; l < N-1; ++l) // clamped boundaries
         u[0][l] = B0 * u[1][l] + B1 * (u[1][l + 1] + u[1][l - 1]) + B2 * (u[1][l + 2] + u[1][l - 2])
                 + C0 * u[2][l] + C1 * (u[2][l + 1] + u[2][l - 1]);
+    
+    // simply supported boundary conditions
+    if (!clamped)
+    {
+        u[0][1] = Bss * u[1][1] + B1 * u[1][2] + B2 * u[1][3] + C0 * u[2][1] + C1 * u[2][2];
+        u[0][N-1] = Bss * u[1][N-1] + B1 * u[1][N-2] + B2 * u[1][N-3] + C0 * u[2][N-1] + C1 * u[2][N-2];
+    }
+
 
 }
 
@@ -155,14 +168,14 @@ void StiffString::excite()
     // make sure we're not going out of bounds at the left boundary
     int start = std::max (floor((N+1) * excitationLoc) - floor(width * 0.5), 1.0);
 
-    for (int l = 0; l < width; ++l)
+    for (int l = 0; l <= width; ++l)
     {
         // make sure we're not going out of bounds at the right boundary (this does 'cut off' the raised cosine)
-        if (l+start > (clamped ? N - 2 : N - 1))
+        if (l+start >= (clamped ? N - 2 : N - 1))
             break;
         
-        u[1][l+start] += 0.5 * (1 - cos(2.0 * double_Pi * l / (width-1.0)));
-        u[2][l+start] += 0.5 * (1 - cos(2.0 * double_Pi * l / (width-1.0)));
+        u[1][l+start] += 0.5 * (1 - cos(2.0 * double_Pi * l / width));
+        u[2][l+start] += 0.5 * (1 - cos(2.0 * double_Pi * l / width));
     }
     
     // Disable the excitation flag to only excite once
@@ -173,6 +186,7 @@ void StiffString::excite()
 void StiffString::mouseDown (const MouseEvent& e)
 {
     switch (applicationState) {
+            
         // excite
         case normalState:
         {
@@ -184,7 +198,7 @@ void StiffString::mouseDown (const MouseEvent& e)
         case addConnectionState:
         {
             int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
-            setConnLoc (Global::limit (tmpConnLoc, 2, N-2));
+            setConnLoc (Global::limit (tmpConnLoc, clamped ? 2 : 1, clamped ? N-2 : N-1));
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
             sendChangeMessage();
             break;
@@ -192,7 +206,7 @@ void StiffString::mouseDown (const MouseEvent& e)
         case firstConnectionState:
         {
             int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
-            setConnLoc (Global::limit (tmpConnLoc, 2, N-2));
+            setConnLoc (Global::limit (tmpConnLoc, clamped ? 2 : 1, clamped ? N-2 : N-1));
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
             sendChangeMessage();
             break;
@@ -202,7 +216,48 @@ void StiffString::mouseDown (const MouseEvent& e)
     }
 }
 
-//void StiffString::mouseMove (const MouseEvent& e)
-//{
-//    this->findParentComponentOfClass<Component>()->mouseMove(e);
-//}
+double StiffString::getKinEnergy()
+{
+    // kinetic energy
+    kinEnergy = 0;
+    for (int l = 0; l <= N; ++l)
+        kinEnergy += 0.5 * rho * A * h / (k*k) * (u[1][l] - u[2][l]) * (u[1][l] - u[2][l]);
+    return kinEnergy;
+}
+
+double StiffString::getPotEnergy()
+{
+    
+    // potential energy
+    potEnergy = 0;
+    for (int l = 1; l < N; ++l)
+        potEnergy += 0.5 * T / h * (u[1][l+1] - u[1][l]) * (u[2][l+1] - u[2][l])
+                        + E * I / (h*h*h) * 0.5 * (u[1][l+1] - 2 * u[1][l] + u[1][l-1])
+                                                * (u[2][l+1] - 2 * u[2][l] + u[2][l-1]);
+    potEnergy += 0.5 * T / h * (u[1][1] - u[1][0]) * (u[2][1] - u[2][0]);
+    return potEnergy;
+}
+    
+double StiffString::getDampEnergy()
+{
+    dampEnergy = 0;
+    for (int l = 0; l <= N; ++l)
+        dampEnergy += 2.0 * sig0 * rho * A * h * 0.25 / (k*k) * (u[0][l] - u[2][l]) * (u[0][l] - u[2][l]);
+    
+    for (int l = 1; l < N; ++l)
+        dampEnergy -= 2.0 * sig1 * rho * A * 1.0/(2.0 * k * k * h)
+            * (u[0][l] - u[2][l])
+            * ((u[1][l+1] - 2 * u[1][l] + u[1][l-1])
+             - (u[2][l+1] - 2 * u[2][l] + u[2][l-1]));
+    if (prevDampEnergy == 0)
+        prevDampEnergy = dampEnergy;
+    dampTot += k * prevDampEnergy;
+    prevDampEnergy = dampEnergy;
+    
+    return dampTot;
+}
+
+double StiffString::getInputEnergy()
+{
+    return 0;
+}

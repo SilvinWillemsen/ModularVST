@@ -12,7 +12,6 @@
 
 #include <JuceHeader.h>
 #include "Global.h"
-#include "CoefficientComponent.h"
 
 //==============================================================================
 /*
@@ -28,9 +27,7 @@ public:
     void resized() override;
     
     void repaintAndUpdate();
-    
-    std::vector<std::shared_ptr<CoefficientComponent>>& getCoefficients() { return coefficients; };
-    
+        
     int getNumRows() override { return parameters.size(); };
 
     void paintListBoxItem (int rowNumber,
@@ -40,21 +37,9 @@ public:
     
     Component* refreshComponentForRow (int rowNumber, bool isRowSelected, Component* existingComponentToUpdate) override;
            
-    std::shared_ptr<CoefficientComponent> addCoefficient (Identifier& name, double value);
-    std::shared_ptr<CoefficientComponent> addCoefficient (std::shared_ptr<CoefficientComponent>);
-
-    // if we want to empty the entire vector, we can't erase the vector entries before resetting all shared_ptrs
-    void removeCoefficient (std::shared_ptr<CoefficientComponent> coeffToRemove, bool eraseFromVector = true);
-    void emptyCoefficientList (bool update = true);
-
-    void loadCoefficientsFromObject (std::vector<std::shared_ptr<CoefficientComponent>>& coefficientsFromObject);
-
-    NamedValueSet getNamedValueSet (StringArray coefficientNames = StringArray());
-
     void listBoxItemClicked (int row, const MouseEvent&) override;
-    void printCoefficients();
+    void printParameterNames();
     
-
     NamedValueSet& getParameters() { return parameters; };
     void setParameters (NamedValueSet& p) { parameters = p; };
     void setParameter (double p) { parameters.set (parameters.getName (getSelectedRow()), p); };
@@ -66,10 +51,8 @@ public:
     
     
 private:    
-    std::vector<std::shared_ptr<CoefficientComponent>> coefficients;
     ListBox list { {}, this };
     NamedValueSet parameters;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CoefficientList)
 };
 

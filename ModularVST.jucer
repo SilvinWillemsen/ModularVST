@@ -5,17 +5,11 @@
               pluginFormats="buildAU,buildStandalone,buildUnity">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
-      <GROUP id="{1D03B8CC-0296-84DD-BD53-AB7B497B8955}" name="Coefficients">
-        <FILE id="GBBL1C" name="CoefficientComponent.cpp" compile="1" resource="0"
-              file="Source/CoefficientComponent.cpp"/>
-        <FILE id="nxMeio" name="CoefficientComponent.h" compile="0" resource="0"
-              file="Source/CoefficientComponent.h"/>
-        <FILE id="rylflo" name="CoefficientList.cpp" compile="1" resource="0"
-              file="Source/CoefficientList.cpp"/>
-        <FILE id="KCERjg" name="CoefficientList.h" compile="0" resource="0"
-              file="Source/CoefficientList.h"/>
-      </GROUP>
       <FILE id="YPcxjC" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
+      <FILE id="rylflo" name="CoefficientList.cpp" compile="1" resource="0"
+            file="Source/CoefficientList.cpp"/>
+      <FILE id="KCERjg" name="CoefficientList.h" compile="0" resource="0"
+            file="Source/CoefficientList.h"/>
       <FILE id="qMHtOt" name="AddModuleWindow.cpp" compile="1" resource="0"
             file="Source/AddModuleWindow.cpp"/>
       <FILE id="esxtRs" name="AddModuleWindow.h" compile="0" resource="0"
@@ -23,12 +17,16 @@
       <FILE id="XV88Cm" name="ControlPanel.cpp" compile="1" resource="0"
             file="Source/ControlPanel.cpp"/>
       <FILE id="GJmQNV" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
-      <FILE id="rtg5Zy" name="ResonatorModule.cpp" compile="1" resource="0"
-            file="Source/ResonatorModule.cpp"/>
-      <FILE id="f7y4ON" name="ResonatorModule.h" compile="0" resource="0"
-            file="Source/ResonatorModule.h"/>
-      <FILE id="ilqZ28" name="StiffString.cpp" compile="1" resource="0" file="Source/StiffString.cpp"/>
-      <FILE id="Pk1nNp" name="StiffString.h" compile="0" resource="0" file="Source/StiffString.h"/>
+      <GROUP id="{007818EE-CDCF-C0BF-ED5B-F5D5EF34DC7E}" name="ResonatorModules">
+        <FILE id="KcY1th" name="Bar.cpp" compile="1" resource="0" file="Source/Bar.cpp"/>
+        <FILE id="AZDX2E" name="Bar.h" compile="0" resource="0" file="Source/Bar.h"/>
+        <FILE id="ilqZ28" name="StiffString.cpp" compile="1" resource="0" file="Source/StiffString.cpp"/>
+        <FILE id="Pk1nNp" name="StiffString.h" compile="0" resource="0" file="Source/StiffString.h"/>
+        <FILE id="rtg5Zy" name="ResonatorModule.cpp" compile="1" resource="0"
+              file="Source/ResonatorModule.cpp"/>
+        <FILE id="f7y4ON" name="ResonatorModule.h" compile="0" resource="0"
+              file="Source/ResonatorModule.h"/>
+      </GROUP>
       <FILE id="U9k5PH" name="Instrument.cpp" compile="1" resource="0" file="Source/Instrument.cpp"/>
       <FILE id="epGSvN" name="Instrument.h" compile="0" resource="0" file="Source/Instrument.h"/>
       <FILE id="oqaJMx" name="PluginProcessor.cpp" compile="1" resource="0"

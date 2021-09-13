@@ -27,7 +27,15 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     addConnectionButton = std::make_unique<TextButton> ("Add Connection");
     addConnectionButton->addListener (this);
     addAndMakeVisible(addConnectionButton.get());
-
+    
+    connectionTypeBox = std::make_unique<ComboBox> ();
+    connectionTypeBox->addListener (this);
+    addAndMakeVisible(connectionTypeBox.get());
+    connectionTypeBox->addItem ("Rigid", rigid);
+    connectionTypeBox->addItem ("Linear Spring", linearSpring);
+    connectionTypeBox->addItem ("Nonlinear spring", nonlinearSpring);
+    connectionTypeBox->setSelectedId (1);
+    
     addChangeListener (audioProcessorEditor);
     
 }
@@ -66,6 +74,8 @@ void ControlPanel::resized()
     addResonatorModuleButton->setBounds (area.removeFromLeft (100));
     area.removeFromLeft (Global::margin);
     addConnectionButton->setBounds (area.removeFromLeft (100));
+    area.removeFromLeft (Global::margin);
+    connectionTypeBox->setBounds (area.removeFromLeft (100));
 
 }
 
@@ -88,5 +98,13 @@ void ControlPanel::buttonClicked (Button* button)
             addConnectionButton->setButtonText ("Add Connection");
         }
     }
+    sendChangeMessage();
+}
+
+void ControlPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
+{
+    comboBoxChangeBool = true;
+    connectionType = static_cast<ConnectionType> (connectionTypeBox->getSelectedId());
+    
     sendChangeMessage();
 }

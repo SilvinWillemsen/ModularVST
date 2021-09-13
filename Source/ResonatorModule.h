@@ -34,10 +34,13 @@ public:
     void update();                  // Update internal system states
     
     // Connection
-    double getStateAt (int idx, int time = 1);
+    double getStateAt (int idx, int time);
     void addForce (double force, int idx);
 //    void addToStateAt (int idx);
-
+    
+    // energy
+    double getTotalEnergy() { return getKinEnergy() + getPotEnergy() + getDampEnergy() + getInputEnergy(); };
+    
     // Output
     virtual float getOutput() = 0;
         
@@ -60,6 +63,11 @@ protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
 
+    virtual double getKinEnergy() {};
+    virtual double getPotEnergy() {};
+    virtual double getDampEnergy() {};
+    virtual double getInputEnergy() {};
+    
     double k;
     
     // Number of grid points
@@ -76,7 +84,16 @@ protected:
 
     
     int visualScaling;
+    double totalEnergy;
     
+    double kinEnergy, potEnergy;
+    double dampEnergy = 0;
+    double inputEnergy = 0;
+    double prevDampEnergy = 0;
+    double prevInputEnergy = 0;
+    double dampTot = 0;
+    double inputTot = 0;
+
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised

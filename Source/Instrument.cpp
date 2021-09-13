@@ -18,7 +18,7 @@ Instrument::Instrument (ChangeListener& audioProcessor, int fs) : fs (fs)
     // initialise any special settings that your component needs.
     addChangeListener (&audioProcessor);
     resonators.reserve (8);
-    connectionLocations.reserve (8);
+    CI.reserve (8);
 }
 
 Instrument::~Instrument()
@@ -39,29 +39,39 @@ void Instrument::paint (juce::Graphics& g)
     {
         g.setColour (Colours::white);
         g.drawText("Click on \"Add Resonator Module\" to add a module to this instrument!", getLocalBounds(), Justification::centred);
+        g.drawRect (getLocalBounds().reduced(Global::margin, Global::margin), 1.0f);
     }
     g.setColour (Colours::orange);
 
     // draw connections
-    for (int i = 0; i < connectionLocations.size(); i += 2)
+    for (int i = 0; i < CI.size(); ++i)
     {
-        g.setColour (Colours::orange);
-        int resIdx1 = connectionLocations[i][0];
+        switch (CI[i].connType)
+        {
+            case rigid:
+                g.setColour (Colours::white);
+                break;
+            case linearSpring:
+                g.setColour (Colours::orange);
+                break;
+            case nonlinearSpring:
+                g.setColour (Colours::red);
+                break;
+        }
 
-        int xLoc = getWidth() * static_cast<float>(connectionLocations[i][1]) / resonators[resIdx1]->getNumIntervals();
-        int yLoc = (0.5 + resIdx1) * static_cast<float>(getHeight())/ resonators.size()
-                - resonators[resIdx1]->getStateAt (connectionLocations[i][1]) * resonators[resIdx1]->getVisualScaling();
+        int xLoc = getWidth() * static_cast<float>(CI[i].loc1) / resonators[CI[i].idx1]->getNumIntervals();
+        int yLoc = (0.5 + CI[i].idx1) * static_cast<float>(getHeight())/ resonators.size()
+                - resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) * resonators[CI[i].idx1]->getVisualScaling();
         g.drawEllipse (xLoc - Global::connRadius, yLoc - Global::connRadius,
                        2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
         
-        // If the last connection duo is not done,  break the loop here
-        if (i == connectionLocations.size()-1)
+        // If the last connection duo is not done, break the loop here
+        if (!CI[i].connected)
             break;
         
-        int resIdx2 = connectionLocations[i+1][0];
-        int xLoc2 = getWidth() * static_cast<float>(connectionLocations[i+1][1]) / resonators[resIdx2]->getNumIntervals();
-        int yLoc2 = (0.5 + resIdx2) * resonatorModuleHeight
-            - resonators[resIdx2]->getStateAt (connectionLocations[i+1][1]) * resonators[resIdx2]->getVisualScaling();
+        int xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / resonators[CI[i].idx2]->getNumIntervals();
+        int yLoc2 = (0.5 + CI[i].idx2) * resonatorModuleHeight
+            - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1) * resonators[CI[i].idx2]->getVisualScaling();
 
         g.drawEllipse (xLoc2 - Global::connRadius, yLoc2 - Global::connRadius,
                        2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
@@ -72,7 +82,10 @@ void Instrument::paint (juce::Graphics& g)
 
         Line<float> line;
         line = Line<float> (xLoc, yLoc, xLoc2, yLoc2);
-        g.drawDashedLine (line, dashPattern, 2, dashPattern[0], 0);
+        if (CI[i].connType == rigid)
+            g.drawLine (line, 1.0f);
+        else
+            g.drawDashedLine (line, dashPattern, 2, dashPattern[0], 0);
     }
     
 }
@@ -128,17 +141,41 @@ void Instrument::solveInteractions()
 {
     if (applicationState != normalState)
         return;
+
     // rigid connection
     double force = 0;
-    for (int i = 0; i < connectionLocations.size(); i += 2)
+    for (int i = 0; i < CI.size(); ++i)
     {
-        force = (resonators[connectionLocations[i][0]]->getStateAt (connectionLocations[i][1])
-            - resonators[connectionLocations[i+1][0]]->getStateAt (connectionLocations[i+1][1]))
-            / (resonators[connectionLocations[i][0]]->getConnectionDivisionTerm()
-               + resonators[connectionLocations[i+1][0]]->getConnectionDivisionTerm());
+        jassert (CI[i].connected);
         
-        resonators[connectionLocations[i][0]]->addForce (-force, connectionLocations[i][1]);
-        resonators[connectionLocations[i+1][0]]->addForce (force, connectionLocations[i+1][1]);
+        K1 = CI[i].K1;
+        K3 = CI[i].K3;
+        R = CI[i].R;
+        
+        etaNext = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 0) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 0);
+        eta = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1);
+        etaPrev = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 2) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 2);
+        
+        rPlus = 0.25 * K1 + 0.5 * K3 * eta * eta + 0.5 * fs * R;
+        rMinus = 0.25 * K1 + 0.5 * K3 * eta * eta - 0.5 * fs * R;
+        
+        switch (CI[i].connType)
+        {
+            case rigid:
+                force = etaNext
+                    / (resonators[CI[i].idx1]->getConnectionDivisionTerm()
+                       + resonators[CI[i].idx2]->getConnectionDivisionTerm());
+                break;
+            case linearSpring:
+            case nonlinearSpring:
+                force = (etaNext + K1 / (2.0 * rPlus) * eta + rMinus / rPlus * etaPrev)
+                    / (1.0 / rPlus + resonators[CI[i].idx1]->getConnectionDivisionTerm()
+                       + resonators[CI[i].idx2]->getConnectionDivisionTerm());
+                break;
+        }
+        
+        resonators[CI[i].idx1]->addForce (-force, CI[i].loc1);
+        resonators[CI[i].idx2]->addForce (force, CI[i].loc2);
     }
     
 }
@@ -158,6 +195,18 @@ float Instrument::getOutput()
     return output;
 }
 
+double Instrument::getTotalEnergy()
+{
+    double totEnergy = 0;
+    for (auto res : resonators)
+        totEnergy += res->getTotalEnergy();
+    
+    double returnEnergy = fs * (prevEnergy - totEnergy);
+    prevEnergy = totEnergy;
+//    return totEnergy;
+    return returnEnergy;
+}
+
 void Instrument::checkIfShouldExcite()
 {
     for (auto res : resonators)
@@ -167,18 +216,8 @@ void Instrument::checkIfShouldExcite()
 
 void Instrument::mouseDown (const MouseEvent& e)
 {
-    switch (applicationState) {
-        case normalState:
-            sendChangeMessage(); // set instrument to active one (for adding modules)
-            break;
-        case addConnectionState:
-            setApplicationState (firstConnectionState);
-            break;
-        case firstConnectionState:
-            break;
-        default:
-            break;
-    }
+    jassert (applicationState == normalState);
+    sendChangeMessage(); // set instrument to active one (for adding modules)
 }
 
 //void Instrument::mouseMove (const MouseEvent& e)
@@ -209,7 +248,6 @@ void Instrument::setApplicationState (ApplicationState a)
                 setAlpha (0.2);
             break;
         default:
-            setAlpha (1.0);
             break;
     }
     for (auto res : resonators)
@@ -233,20 +271,34 @@ void Instrument::setApplicationState (ApplicationState a)
 
 void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
+    // do not add connections if this is not the currently active instrument
+    if (!addingConnection)
+        return;
+    
     for (auto res : resonators)
         if (res.get() == changeBroadcaster)
         {
             switch (applicationState) {
                 case addConnectionState:
-                    connectionLocations.push_back ({res->getID(), res->getConnLoc()});
+                    if (currentConnectionType == rigid)
+                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc()));
+                    else
+                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(),
+                                                      Global::defaultLinSpringCoeff,
+                                                      (currentConnectionType == linearSpring ? 0 : Global::defaultNonLinSpringCoeff),
+                                                      Global::defaultConnDampCoeff));
+
                     setApplicationState (firstConnectionState);
+                    sendChangeMessage();
                     break;
                 case firstConnectionState:
-                    if (connectionLocations[connectionLocations.size()-1][0] == res->getID()) // clicked on the same component
-                        connectionLocations.pop_back();
+                    if (CI[CI.size()-1].idx1 == res->getID()) // clicked on the same component
+                        CI.pop_back();
                     else
-                        connectionLocations.push_back ({res->getID(), res->getConnLoc()});
+                        CI[CI.size()-1].setSecondResonatorParams (res->getID(), res->getConnLoc());
                     setApplicationState (addConnectionState);
+                    sendChangeMessage();
+
                     break;
                 default:
                     break;
