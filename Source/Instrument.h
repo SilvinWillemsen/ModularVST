@@ -49,8 +49,9 @@ public:
     // Returns the output of all modules
     float getOutput();
     
-    // Returns total energy of all modules
-    double getTotalEnergy();
+    // Calculates total energy of all modules
+    void calcTotalEnergy();
+    double getTotalEnergy() { return fs * (prevEnergy - totEnergy); };
     
     // Checks whether modules should be excited
     void checkIfShouldExcite();
@@ -94,6 +95,7 @@ private:
         int idx1, idx2;
         int loc1, loc2;
         double K1, K3, R;
+        double etaNext, eta, etaPrev;
         bool connected = false;
     };
     
@@ -109,8 +111,9 @@ private:
     
     ConnectionType currentConnectionType = rigid;
     
-    double K1, K3, R, rPlus, rMinus, etaNext, eta, etaPrev;
+    double K1, K3, R, rPlus, rMinus;
     
     double prevEnergy = 0;
+    double totEnergy = 0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

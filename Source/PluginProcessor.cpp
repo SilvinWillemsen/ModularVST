@@ -200,7 +200,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         {
             inst->calculate();
             inst->solveInteractions();
-            std::cout << inst->getTotalEnergy() << std::endl;
+            inst->calcTotalEnergy();
             inst->update();
 
             totOutput[i] += inst->getOutput();
@@ -213,7 +213,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         for (int channel = 0; channel < numChannels; ++channel)
             curChannel[channel][0][i] = outputLimit (totOutput[i]);
     
-//    std::cout << totOutput[15] << std::endl;
+    std::cout << instruments[0]->getTotalEnergy() << std::endl;
     
 }
 

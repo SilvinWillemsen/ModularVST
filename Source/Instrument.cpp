@@ -152,23 +152,23 @@ void Instrument::solveInteractions()
         K3 = CI[i].K3;
         R = CI[i].R;
         
-        etaNext = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 0) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 0);
-        eta = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1);
-        etaPrev = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 2) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 2);
+        CI[i].etaNext = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 0) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 0);
+        CI[i].eta = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1);
+        CI[i].etaPrev = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 2) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 2);
         
-        rPlus = 0.25 * K1 + 0.5 * K3 * eta * eta + 0.5 * fs * R;
-        rMinus = 0.25 * K1 + 0.5 * K3 * eta * eta - 0.5 * fs * R;
+        rPlus = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta + 0.5 * fs * R;
+        rMinus = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta - 0.5 * fs * R;
         
         switch (CI[i].connType)
         {
             case rigid:
-                force = etaNext
+                force = CI[i].etaNext
                     / (resonators[CI[i].idx1]->getConnectionDivisionTerm()
                        + resonators[CI[i].idx2]->getConnectionDivisionTerm());
                 break;
             case linearSpring:
             case nonlinearSpring:
-                force = (etaNext + K1 / (2.0 * rPlus) * eta + rMinus / rPlus * etaPrev)
+                force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMinus / rPlus * CI[i].etaPrev)
                     / (1.0 / rPlus + resonators[CI[i].idx1]->getConnectionDivisionTerm()
                        + resonators[CI[i].idx2]->getConnectionDivisionTerm());
                 break;
@@ -195,16 +195,15 @@ float Instrument::getOutput()
     return output;
 }
 
-double Instrument::getTotalEnergy()
+void Instrument::calcTotalEnergy()
 {
-    double totEnergy = 0;
+    prevEnergy = totEnergy;
+    totEnergy = 0;
     for (auto res : resonators)
         totEnergy += res->getTotalEnergy();
-    
-    double returnEnergy = fs * (prevEnergy - totEnergy);
-    prevEnergy = totEnergy;
-//    return totEnergy;
-    return returnEnergy;
+    for (int i = 0; i < CI.size(); ++i)
+        totEnergy += 0.125 * CI[i].K1 * (CI[i].eta + CI[i].etaPrev) * (CI[i].eta + CI[i].etaPrev)
+            + 0.25 * CI[i].K3 * (CI[i].eta * CI[i].etaPrev) * (CI[i].eta * CI[i].etaPrev);
 }
 
 void Instrument::checkIfShouldExcite()
