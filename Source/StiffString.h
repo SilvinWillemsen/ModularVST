@@ -19,7 +19,7 @@
 class StiffString  : public ResonatorModule
 {
 public:
-    StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument);
+    StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
     ~StiffString() override;
 
     void initialise (int fs) override;
@@ -33,6 +33,7 @@ public:
     void calculate() override;
     float getOutput() override;
     
+    int getNumPoints() override;
     // interaction
     void mouseDown (const MouseEvent& e) override;
 //    void mouseMove (const MouseEvent& e) override;
@@ -58,9 +59,7 @@ private:
     */
     double Adiv, B0, B1, B2, C0, C1, S0, S1, Bss;
 
-    float excitationLoc = 0.5;
-    bool clamped = false;
-    
+    float excitationLoc = 0.5;    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StiffString)
 };

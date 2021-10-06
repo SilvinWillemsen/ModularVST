@@ -10,6 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include "../eigen/Eigen/Eigen"
 
 enum Action
 {
@@ -44,6 +45,13 @@ enum ConnectionType
     nonlinearSpring,
 };
 
+enum BoundaryCondition
+{
+    clampedBC,
+    simplySupportedBC,
+    freeBC,
+};
+
 namespace Global
 {
     static const int margin = 20;
@@ -53,9 +61,11 @@ namespace Global
 
     static const int listBoxRowHeight = 40;
 
-    static const double defaultLinSpringCoeff = 1.0;
+    static const double defaultLinSpringCoeff = 1000.0;
     static const double defaultNonLinSpringCoeff = 1e8;
     static const double defaultConnDampCoeff = 0.0;
+    static const double eps = 1e-15;
+
     static NamedValueSet defaultStringParameters {
         {"L", 1.0},
         {"T", 300.0},
@@ -69,6 +79,7 @@ namespace Global
 
     static NamedValueSet defaultBarParameters {
         {"L", 1},
+        {"T", 0}, // just so that it can work with experimentation (can be removed eventually)
         {"rho", 7850},
         {"A", 0.0005 * 0.0005 * double_Pi},
         {"E", 2e11},

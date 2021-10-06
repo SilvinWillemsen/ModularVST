@@ -49,6 +49,7 @@
 		9C409B15AF351944DECECDCC /* PluginEditor.cpp */ = {isa = PBXBuildFile; fileRef = CDA91B382A58719C9690965F; };
 		9F9D1885590D0346ECF2AF06 /* Unity Plugin */ = {isa = PBXBuildFile; fileRef = 28BF305F6B030D5D677A3AD2; };
 		A49ED39B63C0486AF8B38220 /* include_juce_data_structures.mm */ = {isa = PBXBuildFile; fileRef = BB4FD7FC297F510508DC7B5E; };
+		AE1C0BDCB74753672AFCCA51 /* Cholesky */ = {isa = PBXBuildFile; fileRef = 98BF994E6890B84B1A9F6809; };
 		B64F88AFBDF9B808B89DFF7A /* include_juce_audio_plugin_client_AU_1.mm */ = {isa = PBXBuildFile; fileRef = 5C8A29896789083333C1F97D; };
 		BBA645605DD0C87A717EB670 /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = 93F2E024444610FE20B7E21B; };
 		BBF5DB7A678EEA9E95D76A3E /* Accelerate.framework */ = {isa = PBXBuildFile; fileRef = 04A2B0CC638EE4378DF7BBC6; };
@@ -136,6 +137,7 @@
 		85902FBBC50C2AB96DAF5614 /* juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = /Users/SilvinW/repositories/newJUCE/JUCE/modules/juce_audio_formats; sourceTree = "<absolute>"; };
 		86F8F1638D5243AEED660009 /* Bar.h */ /* Bar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bar.h; path = ../../Source/Bar.h; sourceTree = SOURCE_ROOT; };
 		93F2E024444610FE20B7E21B /* CoreAudioKit.framework */ /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		98BF994E6890B84B1A9F6809 /* Cholesky */ /* Cholesky */ = {isa = PBXFileReference; lastKnownFileType = file; name = Cholesky; path = ../../eigen/Eigen/Cholesky; sourceTree = SOURCE_ROOT; };
 		99027BA1BC08C69DBEA488C4 /* include_juce_audio_plugin_client_Unity.cpp */ /* include_juce_audio_plugin_client_Unity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_plugin_client_Unity.cpp; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_Unity.cpp; sourceTree = SOURCE_ROOT; };
 		9EE7F1A79745DC601CEFDD44 /* AddModuleWindow.h */ /* AddModuleWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AddModuleWindow.h; path = ../../Source/AddModuleWindow.h; sourceTree = SOURCE_ROOT; };
 		A4936579393B6D2E15C2E5C2 /* Cocoa.framework */ /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -239,6 +241,7 @@
 				72DF0028BE87B966EAAE883B,
 				BAFA49BAD22092ABE45D29FE,
 				2E3EA6D2208F64C14AD08CA4,
+				98BF994E6890B84B1A9F6809,
 				3E7A713EBE499C1142A73E7E,
 			);
 			name = Resources;
@@ -589,6 +592,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				10869DD631B2913CCA5B62D6,
+				AE1C0BDCB74753672AFCCA51,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,6 +601,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				10869DD631B2913CCA5B62D6,
+				AE1C0BDCB74753672AFCCA51,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,6 +610,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				10869DD631B2913CCA5B62D6,
+				AE1C0BDCB74753672AFCCA51,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

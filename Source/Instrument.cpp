@@ -18,7 +18,7 @@ Instrument::Instrument (ChangeListener& audioProcessor, int fs) : fs (fs)
     // initialise any special settings that your component needs.
     addChangeListener (&audioProcessor);
     resonators.reserve (8);
-    CI.reserve (8);
+    CI.reserve (16);
 }
 
 Instrument::~Instrument()
@@ -114,6 +114,7 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
     }
     resonators.push_back (newResonatorModule);
     addAndMakeVisible (resonators[resonators.size()-1].get(), 0);
+    resetTotalGridPoints();
 }
 
 void Instrument::initialise (int fs)
@@ -141,12 +142,22 @@ void Instrument::solveInteractions()
 {
     if (applicationState != normalState)
         return;
+    
+    if (CI.size() == 0)
+        return;
+    
+    for (int i = 0; i < CIOverlapVector.size(); ++i)
+        solveOverlappingConnections (CIOverlapVector[i]);
 
-    // rigid connection
+    // solve the rest of the connections
     double force = 0;
+    double rPlus;
+    double rMin;
     for (int i = 0; i < CI.size(); ++i)
     {
         jassert (CI[i].connected);
+        if (CI[i].connectionGroup != -1)
+            continue;
         
         K1 = CI[i].K1;
         K3 = CI[i].K3;
@@ -157,7 +168,7 @@ void Instrument::solveInteractions()
         CI[i].etaPrev = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 2) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 2);
         
         rPlus = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta + 0.5 * fs * R;
-        rMinus = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta - 0.5 * fs * R;
+        rMin = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta - 0.5 * fs * R;
         
         switch (CI[i].connType)
         {
@@ -168,7 +179,7 @@ void Instrument::solveInteractions()
                 break;
             case linearSpring:
             case nonlinearSpring:
-                force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMinus / rPlus * CI[i].etaPrev)
+                force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMin / rPlus * CI[i].etaPrev)
                     / (1.0 / rPlus + resonators[CI[i].idx1]->getConnectionDivisionTerm()
                        + resonators[CI[i].idx2]->getConnectionDivisionTerm());
                 break;
@@ -201,6 +212,8 @@ void Instrument::calcTotalEnergy()
     totEnergy = 0;
     for (auto res : resonators)
         totEnergy += res->getTotalEnergy();
+    
+    // connection energy
     for (int i = 0; i < CI.size(); ++i)
         totEnergy += 0.125 * CI[i].K1 * (CI[i].eta + CI[i].etaPrev) * (CI[i].eta + CI[i].etaPrev)
             + 0.25 * CI[i].K3 * (CI[i].eta * CI[i].etaPrev) * (CI[i].eta * CI[i].etaPrev);
@@ -279,9 +292,10 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
         {
             switch (applicationState) {
                 case addConnectionState:
-                    if (currentConnectionType == rigid)
+                    // add connection
+                    if (currentConnectionType == rigid)     // add rigid connection
                         CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc()));
-                    else
+                    else                                    // add spring-like connection
                         CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(),
                                                       Global::defaultLinSpringCoeff,
                                                       (currentConnectionType == linearSpring ? 0 : Global::defaultNonLinSpringCoeff),
@@ -292,9 +306,17 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     break;
                 case firstConnectionState:
                     if (CI[CI.size()-1].idx1 == res->getID()) // clicked on the same component
+                    {
                         CI.pop_back();
+                    }
                     else
+                    {
                         CI[CI.size()-1].setSecondResonatorParams (res->getID(), res->getConnLoc());
+
+                        // maybe the following only needs to be done when DONE is clicked
+                        resetOverlappingConnectionVectors();
+                    }
+                    
                     setApplicationState (addConnectionState);
                     sendChangeMessage();
 
@@ -303,4 +325,271 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     break;
             }
         }
+}
+
+void Instrument::checkIfLocationAlreadyHasConnection()
+{
+    
+}
+
+std::vector<std::vector<int>> Instrument::getGridPointVector (std::vector<ConnectionInfo*>& CIO)
+{
+    // stores number of gris points for all resonators in this connection group as well as the index of the resonator they belong to
+    std::vector<std::vector<int>> gridPointVector;
+    gridPointVector.reserve(8);
+    
+    std::vector<bool> gottenPointsOfResWithIdx (resonators.size(), false);
+    for (auto C : CIO)
+    {
+        // if the grid points points of the resonator are already included in the total count, continue with the next loop
+        if (!gottenPointsOfResWithIdx[C->idx1])
+        {
+            gridPointVector.push_back({resonators[C->idx1]->getNumPoints(), C->idx1});
+            gottenPointsOfResWithIdx[C->idx1] = true;
+        }
+        if (!gottenPointsOfResWithIdx[C->idx2])
+        {
+            gridPointVector.push_back({resonators[C->idx2]->getNumPoints(), C->idx2});
+            gottenPointsOfResWithIdx[C->idx2] = true;
+        }
+
+    }
+    return gridPointVector;
+}
+
+void Instrument::resetTotalGridPoints()
+{
+    totalGridPoints = 0;
+    for (auto res : resonators)
+        totalGridPoints += res->getNumPoints();
+}
+
+void Instrument::resetOverlappingConnectionVectors()
+{
+    // find the connections that are overlapping and do a linear system solve
+    // also don't include any overlapping connections in the function that this calls
+    
+    // reset what connection group the connections belong to
+    for (int i = 0; i < CI.size(); ++i)
+        CI[i].connectionGroup = -1;
+    
+    // this vector stores tuples of resonator index and location along resonator to see whether there are duplicates
+    std::vector<std::vector<int>> connLocs (CI.size() * 2, std::vector<int>(2, -1));
+    for (int i = 0; i < CI.size() * 2; i = i + 2)
+    {
+        connLocs[i][0] = CI[i/2].idx1;
+        connLocs[i][1] = CI[i/2].loc1;
+        connLocs[i+1][0] = CI[i/2].idx2;
+        connLocs[i+1][1] = CI[i/2].loc2;
+    }
+    std::vector<std::vector<int>> CIgroupIndices; // vector containing the indices of overlapping connections
+    CIgroupIndices.reserve(8);
+    
+    int curConnectionGroup = 0;
+    for (int i = 0; i < connLocs.size(); ++i)
+    {
+        for (int j = i + 1; j < connLocs.size(); ++j)
+        {
+            if (connLocs[i] == connLocs[j]) // if there is an overlapping connection, add it to a connection group
+            {
+                // check if one of the connections is already part of a connection group
+                if (CI[i/2].connectionGroup != -1 && CI[j/2].connectionGroup != -1) // merge groups if both belong to one connection group
+                {
+                    if (CI[i/2].connectionGroup == CI[j/2].connectionGroup)
+                    {
+                        std::cout << "Connection group is already merged" << std::endl;
+                        continue;
+                    }
+                    int groupToMerge = CI[i/2].connectionGroup;
+                    int groupToMergeInto = CI[j/2].connectionGroup;
+                    std::cout << "Merging connection group " << groupToMerge << " into " << groupToMergeInto << std::endl;
+                    for (int ii = 0; ii < CIgroupIndices[groupToMerge].size(); ++ii)
+                    {
+                        // change the connectiongroup from the connections in the second group to be that of the first one
+                        CI[CIgroupIndices[groupToMerge][ii]].connectionGroup = groupToMergeInto;
+                        
+                        // add all indices of the second connection group to the first one
+                        CIgroupIndices[groupToMergeInto].push_back(CIgroupIndices[groupToMerge][ii]);
+                        
+                    }
+                    // remove the second connectiongroup
+                    CIgroupIndices.erase (CIgroupIndices.begin() + groupToMerge);
+                    
+                    if (groupToMerge != CIgroupIndices.size()-1)
+                    {
+                        // reset all connectionGroup indices
+                        for (int jj = 0; jj < CIgroupIndices.size(); ++jj)
+                            for (int jjj = 0; jjj < CIgroupIndices[jj].size(); ++jjj)
+                                CI[CIgroupIndices[jj][jjj]].connectionGroup = jj;
+
+                    }
+                    --curConnectionGroup;
+
+                }
+                else if (CI[i/2].connectionGroup != -1) // check if one of the connections is already part of a connection group
+                {
+                    std::cout << "CI " << (i/2) << " already has a connectiongroup, being " << CI[i/2].connectionGroup << std::endl;
+                    CI[j/2].connectionGroup = CI[i/2].connectionGroup;
+                    CIgroupIndices[CI[i/2].connectionGroup].push_back(j/2);
+                    std::cout << "CI " << (j/2) << " is now also part of connectiongroup " << CI[j/2].connectionGroup << std::endl;
+
+                }
+                else if (CI[j/2].connectionGroup != -1) // check if one of the connections is already part of a connection group
+                {
+                    std::cout << "CI " << (j/2) << " already has a connectiongroup, being " << CI[j/2].connectionGroup << std::endl;
+                    CI[i/2].connectionGroup = CI[j/2].connectionGroup;
+                    CIgroupIndices[CI[j/2].connectionGroup].push_back(i/2);
+                    std::cout << "CI " << (i/2) << " is now also part of connectiongroup " << CI[i/2].connectionGroup << std::endl;
+
+                }
+                else
+                {
+                    std::cout << "Adding new connection group with number " << curConnectionGroup << std::endl;
+                    CI[i/2].connectionGroup = curConnectionGroup;
+                    CI[j/2].connectionGroup = curConnectionGroup;
+                    CIgroupIndices.push_back({i/2, j/2});
+                    ++curConnectionGroup;
+                }
+            }
+                
+        }
+    }
+    
+    // check whether the index of the connection groups match the index of the vector that they're stored in
+    for (int i = 0; i < CIgroupIndices.size(); ++i)
+        for (int j = 0; j < CIgroupIndices[i].size(); ++j)
+            if (CI[CIgroupIndices[i][j]].connectionGroup != i)
+                std::cout << "Connectiongroup does not match the index in the vector!!" << std::endl;
+
+    
+    std::cout << "Results: " << std::endl;
+    for (int i = 0; i < CIgroupIndices.size(); ++i)
+    {
+        std::cout << "Connection group " << i << " has CI idcs: ";
+        for (int j = 0; j < CIgroupIndices[i].size(); ++j)
+        {
+            std::cout << CIgroupIndices[i][j] <<  " ";
+        }
+        std::cout << std::endl;
+    }
+    CIOverlapVector.clear();
+    CIOverlapVector.reserve (CIgroupIndices.size());
+    for (int i = 0; i < CIgroupIndices.size(); ++i)
+    {
+        CIOverlapVector.push_back(std::vector<ConnectionInfo*> (CIgroupIndices[i].size(), nullptr));
+        for (int j = 0; j < CIgroupIndices[i].size(); ++j)
+        {
+            CIOverlapVector[i][j] = &CI[CIgroupIndices[i][j]];
+        }
+    }
+    
+    std::cout << "Checking CI ptr vector" << std::endl;
+    for (int i = 0; i < CIOverlapVector.size(); ++i)
+    {
+        std::cout << "CIOverlapVector at idx " << i << " points to connections with connection group: ";
+        for (int j = 0; j < CIOverlapVector[i].size(); ++j)
+            std::cout << CIOverlapVector[i][j]->connectionGroup;
+        
+        std::cout << std::endl;
+
+    }
+
+}
+
+void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
+{
+
+    using namespace Eigen;
+    SparseMatrix<double> IJminP (CIO.size(), CIO.size());
+//    std::vector<std::vector<int>> gridPointVector = getGridPointVector (CIO);
+//    int totalGridPoints = 0;
+//    for (int i = 0; i < gridPointVector.size(); ++i)
+//        totalGridPoints += gridPointVector[i][0];
+//    std::vector<int> startIdx (gridPointVector.size(), 0);
+//    for (int i = 1; i < resonators.size(); ++i)
+//        startIdx[i] = startIdx[i-1] + gridPointVector[i][0];
+
+    SparseMatrix<double> I (CIO.size(), totalGridPoints);
+    SparseMatrix<double> J (totalGridPoints, CIO.size());
+
+    std::vector<int> startIdx (resonators.size(), 0);
+    for (int i = 1; i < resonators.size(); ++i)
+        startIdx[i] = startIdx[i-1] + resonators[i]->getNumPoints();
+
+    for (int i = 0; i < CIO.size(); ++i)
+    {
+        I.coeffRef (i, startIdx[CIO[i]->idx1] + CIO[i]->loc1) -= 1.0;
+        I.coeffRef (i, startIdx[CIO[i]->idx2] + CIO[i]->loc2) +=  1.0;
+        J.coeffRef (startIdx[CIO[i]->idx1] + CIO[i]->loc1, i) -= resonators[CIO[i]->idx1]->getConnectionDivisionTerm();
+        J.coeffRef (startIdx[CIO[i]->idx2] + CIO[i]->loc2, i) += resonators[CIO[i]->idx2]->getConnectionDivisionTerm();
+    }
+    SparseMatrix<double> IJ = I * J;
+    SparseMatrix<double> Pmat (CIO.size(), CIO.size());
+    std::vector<double> oOrPlus (CIO.size());
+    std::vector<double> rMinus (CIO.size());
+
+    for (int i = 0; i < CIO.size(); ++i)
+    {
+        CIO[i]->etaNext = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 0)
+                        - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 0);
+        CIO[i]->eta = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 1)
+                    - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 1);
+        CIO[i]->etaPrev = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 2)
+                        - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 2);
+        if (CIO[i]->connType == rigid)
+        {
+            Pmat.coeffRef(i, i) = Global::eps;
+            oOrPlus[i] = Global::eps;
+        } else {
+            oOrPlus[i] = 1.0 / (0.25 * CIO[i]->K1 + 0.5 * CIO[i]->K3 * CIO[i]->eta * CIO[i]->eta + 0.5 * CIO[i]->R * fs);
+            rMinus[i] = (0.25 * CIO[i]->K1 + 0.5 * CIO[i]->K3 * CIO[i]->eta * CIO[i]->eta - 0.5 * CIO[i]->R * fs);
+
+            Pmat.coeffRef(i, i) = -1.0 * oOrPlus[i];
+        }
+    }
+
+    IJminP = IJ - Pmat;
+//    std::cout << IJminP << std::endl;
+    VectorXd b (CIO.size());
+
+    for (int i = 0; i < CIO.size(); ++i)
+        b[i] = CIO[i]->etaNext + 0.5 * CIO[i]->K1 * oOrPlus[i] * CIO[i]->eta + rMinus[i] * oOrPlus[i] * CIO[i]->etaPrev;
+
+    // solve
+    SimplicialLDLT<SparseMatrix<double>> solver;
+    solver.compute (IJminP);
+
+    if(solver.info() != Success) {
+        std::cout << "decomposition failed" << std::endl;
+        return;
+    }
+
+    VectorXd forces = solver.solve (b);
+    if(solver.info() != Success) {
+        std::cout << "solving failed" << std::endl;
+        return;
+    }
+
+//    std::cout << forces << std::endl;
+//    if (!forces.isZero())
+//        std::cout << "wait" << std::endl;
+    for (int i = 0; i < CIO.size(); ++i)
+    {
+        resonators[CIO[i]->idx1]->addForce (-forces[i], CIO[i]->loc1);
+        resonators[CIO[i]->idx2]->addForce (forces[i], CIO[i]->loc2);
+    }
+
+
+//    std::cout << "The Cholesky factor L is" << std::endl << L << std::endl;
+//    std::cout << "To check this, let us compute L * L.transpose()" << std::endl;
+//    std::cout << L * L.transpose() << std::endl;
+//    std::cout << "This should equal the matrix A" << std::endl;
+//
+//    std::cout << "The Cholesky factor U is" << std::endl << U << std::endl;
+//    std::cout << "To check this, let us compute U.transpose() * U" << std::endl;
+//    std::cout << U.transpose() * U << std::endl;
+//    std::cout << "This should equal the matrix A" << std::endl;
+
+    return;
+
 }

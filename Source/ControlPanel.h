@@ -59,6 +59,7 @@ private:
     ApplicationState applicationState = normalState;
     
     bool comboBoxChangeBool = false;
+//    bool init = false;
     ConnectionType connectionType = rigid;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlPanel)
 };

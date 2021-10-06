@@ -12,7 +12,7 @@
 #include "StiffString.h"
 
 //==============================================================================
-StiffString::StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument) : ResonatorModule (parameters, fs, ID, instrument)
+StiffString::StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (parameters, fs, ID, instrument, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -144,7 +144,7 @@ void StiffString::calculate()
                 + C0 * u[2][l] + C1 * (u[2][l + 1] + u[2][l - 1]);
     
     // simply supported boundary conditions
-    if (!clamped)
+    if (bc == simplySupportedBC)
     {
         u[0][1] = Bss * u[1][1] + B1 * u[1][2] + B2 * u[1][3] + C0 * u[2][1] + C1 * u[2][2];
         u[0][N-1] = Bss * u[1][N-1] + B1 * u[1][N-2] + B2 * u[1][N-3] + C0 * u[2][N-1] + C1 * u[2][N-2];
@@ -171,7 +171,7 @@ void StiffString::excite()
     for (int l = 0; l <= width; ++l)
     {
         // make sure we're not going out of bounds at the right boundary (this does 'cut off' the raised cosine)
-        if (l+start >= (clamped ? N - 2 : N - 1))
+        if (l+start >= (clampedBC ? N - 2 : N - 1))
             break;
         
         u[1][l+start] += 0.5 * (1 - cos(2.0 * double_Pi * l / width));
@@ -181,6 +181,25 @@ void StiffString::excite()
     // Disable the excitation flag to only excite once
     excitationFlag = false;
 
+}
+
+int StiffString::getNumPoints()
+{
+//    switch (bc)
+//    {
+//        case clampedBC:
+//            return N - 3;
+//            break;
+//        case simplySupportedBC:
+//            return N - 1;
+//            break;
+//        case freeBC:
+//            return N + 1;
+//            break;
+//
+//    }
+//
+    return N + 1;
 }
 
 void StiffString::mouseDown (const MouseEvent& e)
@@ -198,7 +217,7 @@ void StiffString::mouseDown (const MouseEvent& e)
         case addConnectionState:
         {
             int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
-            setConnLoc (Global::limit (tmpConnLoc, clamped ? 2 : 1, clamped ? N-2 : N-1));
+            setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
             sendChangeMessage();
             break;
@@ -206,7 +225,7 @@ void StiffString::mouseDown (const MouseEvent& e)
         case firstConnectionState:
         {
             int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
-            setConnLoc (Global::limit (tmpConnLoc, clamped ? 2 : 1, clamped ? N-2 : N-1));
+            setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
             sendChangeMessage();
             break;

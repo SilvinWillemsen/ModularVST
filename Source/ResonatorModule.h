@@ -21,7 +21,7 @@
 class ResonatorModule  : public juce::Component, public ChangeBroadcaster
 {
 public:
-    ResonatorModule (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument);
+    ResonatorModule (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc);
     ~ResonatorModule() override;
     
     virtual void initialise (int fs) = 0;
@@ -55,6 +55,8 @@ public:
     // getters
     int getID() { return ID; };
     int getNumIntervals() { return N; };
+    virtual int getNumPoints() = 0;
+
     int getVisualScaling() { return visualScaling; };
     double getConnectionDivisionTerm() { return connectionDivisionTerm; };
     void setConnectionDivisionTerm (double cDT) { connectionDivisionTerm = cDT; };
@@ -70,7 +72,7 @@ protected:
     
     double k;
     
-    // Number of grid points
+    // Number of intervals
     int N = -1;
 
     NamedValueSet parameters;
@@ -78,6 +80,8 @@ protected:
     std::vector<double*> u;                     // state pointers
     std::vector<std::vector<double>> uStates;   // state vectors
     
+    BoundaryCondition bc;
+
     bool excitationFlag = false;
     Component* parentComponent;
     ApplicationState applicationState = normalState;
@@ -93,6 +97,7 @@ protected:
     double prevInputEnergy = 0;
     double dampTot = 0;
     double inputTot = 0;
+    
 
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
@@ -101,6 +106,7 @@ private:
     int connLoc = -1;
 
     double connectionDivisionTerm = -1;
+    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };

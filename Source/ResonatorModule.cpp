@@ -12,7 +12,7 @@
 #include "ResonatorModule.h"
 
 //==============================================================================
-ResonatorModule::ResonatorModule (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument) : k (1.0 / fs), parameters (parameters), ID (ID)
+ResonatorModule::ResonatorModule (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : k (1.0 / fs), parameters (parameters), ID (ID), bc (bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.

@@ -25,6 +25,31 @@ public:
     Instrument (ChangeListener& audioProcessorEditor, int fs);
     ~Instrument() override;
 
+    // Vector storing information about the connections. [0] resonator index, [1] location
+    struct ConnectionInfo
+    {
+        ConnectionInfo (ConnectionType connType,
+                        int resonatorIndex,
+                        int location,
+                        double K1 = 0,
+                        double K3 = 0,
+                        double R = 0) : connType (connType),
+                                        idx1 (resonatorIndex),
+                                        loc1 (location),
+                                        K1 (K1), K3 (K3), R (R)
+        {};
+        void setSecondResonatorParams (int i, int l) { idx2 = i; loc2 = l; connected = true; };
+        
+        ConnectionType connType;
+        int idx1, idx2;
+        int loc1, loc2;
+        double K1, K3, R;
+        double etaNext, eta, etaPrev;
+        bool connected = false;
+        
+        int connectionGroup = -1;
+    };
+    
     void initialise (int fs);
     
     void paint (juce::Graphics&) override;
@@ -33,11 +58,15 @@ public:
     bool areModulesReady();
     
     // Get the number of resonator modules in the instrument
-    int getNumResonatorModules() { return resonators.size(); };
+    int getNumResonatorModules() { return (int)resonators.size(); };
     
+    // Add a resonator module
     void addResonatorModule(ResonatorModuleType rmt, NamedValueSet& parameters);
     
-    // Calculate the schemes of each individual resonator modul
+    // function called from within the addResonatorModule function
+    void resetTotalGridPoints();
+
+    // Calculate the schemes of each individual resonator module
     void calculate();
     
     // Solve interactions between resonator modules
@@ -73,34 +102,19 @@ public:
 //    void setChangeListener (ChangeListener* changeListener) { if (getChangeL) addChangelistener (changeListener); };
     ApplicationState getApplicationState() { return applicationState; };
     
+    void checkIfLocationAlreadyHasConnection();
+    
+    std::vector<std::vector<int>> getGridPointVector (std::vector<ConnectionInfo*>& CIO);
+
+    void resetOverlappingConnectionVectors();
+    void solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO); // Solve the connections that are overlapping
+    
 private:
     int fs;
-    
-    // Vector storing information about the connections. [0] resonator index, [1] location
-    struct ConnectionInfo
-    {
-        ConnectionInfo (ConnectionType connType,
-                        int resonatorIndex,
-                        int location,
-                        double K1 = 0,
-                        double K3 = 0,
-                        double R = 0) : connType (connType),
-                                        idx1 (resonatorIndex),
-                                        loc1 (location),
-                                        K1 (K1), K3 (K3), R (R)
-        {};
-        void setSecondResonatorParams (int i, int l) { idx2 = i; loc2 = l; connected = true; };
-        
-        ConnectionType connType;
-        int idx1, idx2;
-        int loc1, loc2;
-        double K1, K3, R;
-        double etaNext, eta, etaPrev;
-        bool connected = false;
-    };
+    int totalGridPoints;
     
     std::vector<ConnectionInfo> CI;
-    
+    std::vector<std::vector<ConnectionInfo*>> CIOverlapVector; // a vector of groups of overlapping connections
     std::vector<std::shared_ptr<ResonatorModule>> resonators;
     
     ApplicationState applicationState = normalState;

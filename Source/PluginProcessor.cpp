@@ -97,6 +97,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     initActions = {
         addInstrumentAction,
+        addResonatorModuleAction,
         addResonatorModuleAction
     };
     
@@ -117,7 +118,10 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                 addInstrument();
                 break;
             case addResonatorModuleAction:
-                addResonatorModule (stiffString, Global::defaultStringParameters);
+                if (i % 2 == 0)
+                    addResonatorModule (stiffString, Global::defaultStringParameters);
+                else
+                    addResonatorModule (stiffString, Global::defaultBarParameters);
                 break;
             default:
                 break;
@@ -212,8 +216,9 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     for (int i = 0; i < buffer.getNumSamples(); ++i)
         for (int channel = 0; channel < numChannels; ++channel)
             curChannel[channel][0][i] = outputLimit (totOutput[i]);
-    
     std::cout << instruments[0]->getTotalEnergy() << std::endl;
+
+//    std::cout << totOutput[15] << std::endl;
     
 }
 

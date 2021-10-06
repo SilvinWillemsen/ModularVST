@@ -105,6 +105,10 @@ void ControlPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 {
     comboBoxChangeBool = true;
     connectionType = static_cast<ConnectionType> (connectionTypeBox->getSelectedId());
-    
+//    if (applicationState == normalState && init)
+//        addConnectionButton->triggerClick();
+//    else
     sendChangeMessage();
+
+//    init = true;
 }
