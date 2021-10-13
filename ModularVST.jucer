@@ -22,6 +22,10 @@
             file="Source/ControlPanel.cpp"/>
       <FILE id="GJmQNV" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
       <GROUP id="{007818EE-CDCF-C0BF-ED5B-F5D5EF34DC7E}" name="ResonatorModules">
+        <FILE id="Ioj8p1" name="ThinPlate.cpp" compile="1" resource="0" file="Source/ThinPlate.cpp"/>
+        <FILE id="AZaF3N" name="ThinPlate.h" compile="0" resource="0" file="Source/ThinPlate.h"/>
+        <FILE id="RVaOtf" name="Membrane.cpp" compile="1" resource="0" file="Source/Membrane.cpp"/>
+        <FILE id="aNn8zk" name="Membrane.h" compile="0" resource="0" file="Source/Membrane.h"/>
         <FILE id="ka2YP5" name="StiffMembrane.cpp" compile="1" resource="0"
               file="Source/StiffMembrane.cpp"/>
         <FILE id="fCEHJP" name="StiffMembrane.h" compile="0" resource="0" file="Source/StiffMembrane.h"/>

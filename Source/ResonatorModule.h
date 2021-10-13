@@ -21,7 +21,7 @@
 class ResonatorModule  : public juce::Component, public ChangeBroadcaster
 {
 public:
-    ResonatorModule (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc);
+    ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc);
     ~ResonatorModule() override;
     
     virtual void initialise (int fs) = 0;
@@ -56,7 +56,25 @@ public:
     int getID() { return ID; };
     virtual int getNumIntervals() = 0;
     virtual int getNumPoints() = 0;
+    
+    virtual int getNumIntervalsX() {
+        if (is1D)
+            std::cout << "MODULE IS 1D!!" << std::endl;
+        return Nx;
+        
+    };
+    virtual int getNumIntervalsY() {
+        if (is1D)
+            std::cout << "MODULE IS 1D!!" << std::endl;
+        return Ny;
+        
+    };
 
+    ResonatorModuleType getResonatorModuleType() { return resonatorModuleType; };
+
+    bool isModule1D() { return is1D; };
+    
+    
     int getVisualScaling() { return visualScaling; };
     double getConnectionDivisionTerm() { return connectionDivisionTerm; };
     void setConnectionDivisionTerm (double cDT) { connectionDivisionTerm = cDT; };
@@ -74,6 +92,10 @@ protected:
     
     // Number of intervals
     int N = -1;
+    
+    // 2D variables
+    int Nx = -1;
+    int Ny = -1;
 
     NamedValueSet parameters;
     
@@ -102,7 +124,8 @@ protected:
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised
-    
+    ResonatorModuleType resonatorModuleType; // what type of resonator is this
+    bool is1D;
     int connLoc = -1;
 
     double connectionDivisionTerm = -1;

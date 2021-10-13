@@ -104,7 +104,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     initModuleTypes = {
         stiffString,
-        stiffMembrane
+        membrane
     };
     
     int numModules = 0;
@@ -144,6 +144,12 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                         break;
                     case bar:
                         parameters = Global::defaultBarParameters;
+                        break;
+                    case membrane:
+                        parameters = Global::defaultMembraneParameters;
+                        break;
+                    case thinPlate:
+                        parameters = Global::defaultThinPlateParameters;
                         break;
                     case stiffMembrane:
                         parameters = Global::defaultStiffMembraneParameters;

@@ -9,8 +9,8 @@
 */
 
 #pragma once
-#define USE_EIGEN // use overlapping connections (and therefore the eigen library) or not
-#define CALC_ENERGY // calculate (and print) energy or not
+//#define USE_EIGEN // use overlapping connections (and therefore the eigen library) or not
+//#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
 
 #include <JuceHeader.h>
@@ -104,9 +104,10 @@ namespace Global
         {"Ly", 0.25},
         {"rho", 7850},
         {"H", 0.005},
-        {"T", 10000}, // check whether this is good
+        {"T", 100000}, // check whether this is good
         {"sig0", 1},
-        {"sig1", 0.005}
+        {"sig1", 0.005},
+        {"maxPoints", 200}
     };
 
     static NamedValueSet defaultThinPlateParameters {
@@ -117,7 +118,8 @@ namespace Global
         {"E", 2e11},
         {"nu", 0.3},
         {"sig0", 1},
-        {"sig1", 0.005}
+        {"sig1", 0.005},
+        {"maxPoints", 200}
     };
 
     static NamedValueSet defaultStiffMembraneParameters {
@@ -125,11 +127,12 @@ namespace Global
         {"Ly", 0.25},
         {"rho", 7850},
         {"H", 0.005},
-        {"T", 10000}, // check whether this is good
+        {"T", 100000}, // check whether this is good
         {"E", 2e11},
         {"nu", 0.3},
         {"sig0", 1},
-        {"sig1", 0.005}
+        {"sig1", 0.005},
+        {"maxPoints", 200}
     };
 
 

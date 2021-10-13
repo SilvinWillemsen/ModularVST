@@ -18,6 +18,8 @@
 #include "StiffString.h"
 #include "Bar.h"
 #include "StiffMembrane.h"
+#include "Membrane.h"
+#include "ThinPlate.h"
 
 
 //==============================================================================
@@ -36,14 +38,16 @@ public:
         ConnectionInfo (ConnectionType connType,
                         int resonatorIndex,
                         int location,
+                        ResonatorModuleType resonatorModuleType,
                         double K1 = 0,
                         double K3 = 0,
                         double R = 0) : connType (connType),
                                         idx1 (resonatorIndex),
                                         loc1 (location),
+                                        rmt1 (resonatorModuleType),
                                         K1 (K1), K3 (K3), R (R)
         {};
-        void setSecondResonatorParams (int i, int l) { idx2 = i; loc2 = l; connected = true; };
+        void setSecondResonatorParams (int i, int l, ResonatorModuleType r) { idx2 = i; loc2 = l; rmt2 = r; connected = true; };
         
         ConnectionType connType;
         int idx1, idx2;
@@ -51,7 +55,7 @@ public:
         double K1, K3, R;
         double etaNext, eta, etaPrev;
         bool connected = false;
-        
+        ResonatorModuleType rmt1, rmt2;
         int connectionGroup = -1;
     };
     

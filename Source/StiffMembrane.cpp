@@ -12,10 +12,12 @@
 #include "StiffMembrane.h"
 
 //==============================================================================
-StiffMembrane::StiffMembrane(NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (parameters, fs, ID, instrument, bc)
+StiffMembrane::StiffMembrane(ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (rmt, parameters, fs, ID, instrument, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    
+    maxPoints = *parameters.getVarPointer ("maxPoints");
     
     // Initialise member variables using the parameter set
     Lx = *parameters.getVarPointer ("Lx");
@@ -56,7 +58,7 @@ StiffMembrane::StiffMembrane(NamedValueSet& parameters, int fs, int ID, ChangeLi
     // Initialise states and connection division term of the system
     initialiseModule();
     
-    excite(); // start by exciting
+//    excite(); // start by exciting
     
 #ifdef SAVE_OUTPUT
     statesSave.open ("statesSaveMembrane.csv");
@@ -78,7 +80,14 @@ void StiffMembrane::initialise (int fs)
     h = sqrt (stabilityTerm + sqrt ((stabilityTerm * stabilityTerm) + 16.0 * kappaSq * k * k));
     Nx = floor (Lx / h);
     Ny = floor (Ly / h);
-    N = (Nx + 1) * (Ny + 1) - 1; // minus 1 because the resonator module adds one 
+    N = (Nx + 1) * (Ny + 1) - 1; // minus 1 because the resonator module adds one
+    if (N > maxPoints)
+    {
+        double aspectRatio = Lx / Ly;
+        Nx = floor(sqrt(maxPoints * aspectRatio));
+        Ny = floor(sqrt(maxPoints / aspectRatio));
+        N = (Nx + 1) * (Ny + 1) - 1; // minus 1 because the resonator module adds one
+    }
     h = std::min (Lx / Nx, Ly / Ny); // recalculate h
     
     lambdaSq = cSq * k * k / (h * h);
@@ -125,26 +134,16 @@ void StiffMembrane::initialise (int fs)
 
 void StiffMembrane::paint (juce::Graphics& g)
 {
-    float stateWidth = getWidth() / static_cast<double> (Nx - 4);
-    float stateHeight = getHeight() / static_cast<double> (Ny - 4);
+    float stateWidth = getWidth() / static_cast<double> (Nx);
+    float stateHeight = getHeight() / static_cast<double> (Ny);
     
-    for (int l = 2; l < Nx - 2; ++l)
+    for (int l = 0; l <= Nx; ++l)
     {
-        for (int m = 2; m < Ny - 2; ++m)
+        for (int m = 0; m <= Ny; ++m)
         {
             int cVal = Global::limit (255 * 0.5 * (u[1][l + m*Nx] * visualScaling + 1), 0, 255);
             g.setColour(Colour::fromRGBA (cVal, cVal, cVal, 127));
-            g.fillRect((l - 2) * stateWidth, (m - 2) * stateHeight, stateWidth, stateHeight);
-//            for (int c = 0; c < cpIdx.size(); ++c)
-//            {
-//                auto [cpX, cpY] = cpIdx[c];
-//                if (x == cpX && y == cpY)
-//                {
-//                    g.setColour(Colours::orange);
-//                    g.drawRect((x - 2) * stateWidth, (y - 2) * stateHeight, stateWidth, stateHeight);
-//                }
-//            }
-                
+            g.fillRect(l * stateWidth, m * stateHeight, stateWidth, stateHeight);
         }
     }
 }
@@ -169,17 +168,11 @@ void StiffMembrane::calculate()
                 + B2 * (u[1][l+2 + m*Nx] + u[1][l-2 + m*Nx] + u[1][l + (m+2)*Nx] + u[1][l + (m-2)*Nx])
                 + C0 * u[2][l + m*Nx]
                 + C1 * (u[2][l+1 + m*Nx] + u[2][l-1 + m*Nx] + u[2][l + (m+1)*Nx] + u[2][l + (m-1)*Nx]);
+
 #ifdef SAVE_OUTPUT
             statesSave << u[1][l + m*Nx] << ",";
 #endif
-
-//            u[0][l+m * Nx] =
-//                B0 * u[1][l+m * Nx]
-//                + B1 * (u[1][l + (m+1) * Nx] + u[1][l + (m-1) * Nx] + u[1][l+1 + m * Nx] + u[1][l-1 + m * Nx] )
-//                + B11 * (u[1][l+1 + (m+1) * Nx] + u[1][l-1 + (m+1) * Nx] + u[1][l+1 + (m-1) * Nx] + u[1][l-1 + (m-1) * Nx])
-//                + B2 * (u[1][l + (m+2) * Nx] + u[1][l + (m-2) * Nx] + u[1][l+2 + m * Nx] + u[1][l-2 + m * Nx])
-//                + C0 * u[2][l + m * Nx]
-//                + C1 * (u[2][l + (m+1) * Nx] + u[2][l + (m-1) * Nx] + u[2][l+1 + m * Nx] + u[2][l-1 + m * Nx]);
+            
         }
 #ifdef SAVE_OUTPUT
         statesSave << ";\n";
@@ -190,19 +183,11 @@ void StiffMembrane::calculate()
     if (counter >= samplesToRecord)
         statesSave.close();
 #endif
-//    // simply supported boundary conditions
-//    if (bc == simplySupportedBC)
-//    {
-//        u[0][1] = Bss * u[1][1] + B1 * u[1][2] + B2 * u[1][3] + C0 * u[2][1] + C1 * u[2][2];
-//        u[0][N-1] = Bss * u[1][N-1] + B1 * u[1][N-2] + B2 * u[1][N-3] + C0 * u[2][N-1] + C1 * u[2][N-2];
-//    }
-//
-
 }
 
 float StiffMembrane::getOutput()
 {
-    return u[1][5 + (5*Nx)]; // change output location to something else
+    return u[1][5 + (5*Nx)] * 10; // change output location to something else
 }
 
 int StiffMembrane::getNumPoints()

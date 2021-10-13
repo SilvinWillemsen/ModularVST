@@ -131,6 +131,15 @@ void AddModuleWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         case bar:
             coefficientList->setParameters (Global::defaultBarParameters);
             break;
+        case membrane:
+            coefficientList->setParameters (Global::defaultMembraneParameters);
+            break;
+        case thinPlate:
+            coefficientList->setParameters (Global::defaultThinPlateParameters);
+            break;
+        case stiffMembrane:
+            coefficientList->setParameters (Global::defaultStiffMembraneParameters);
+            break;
         // add other cases as well
         default:
             break;

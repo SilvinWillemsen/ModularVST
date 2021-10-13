@@ -58,30 +58,78 @@ void Instrument::paint (juce::Graphics& g)
                 g.setColour (Colours::red);
                 break;
         }
-
-        int xLoc = getWidth() * static_cast<float>(CI[i].loc1) / resonators[CI[i].idx1]->getNumIntervals();
-        int yLoc = (0.5 + CI[i].idx1) * static_cast<float>(getHeight())/ resonators.size()
+        int moduleHeight = static_cast<float>(getHeight())/ resonators.size();
+        int xLoc1;
+        int yLoc1;
+        int stateWidth1;
+        int stateHeight1;
+        if (resonators[CI[i].idx1]->isModule1D())
+        {
+            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1) / resonators[CI[i].idx1]->getNumIntervals();
+            yLoc1 = (0.5 + CI[i].idx1) * moduleHeight
                 - resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) * resonators[CI[i].idx1]->getVisualScaling();
-        g.drawEllipse (xLoc - Global::connRadius, yLoc - Global::connRadius,
-                       2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
+            g.drawEllipse (xLoc1 - Global::connRadius, yLoc1 - Global::connRadius,
+               2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
+        }
+        else
+        {
+            int Nx = resonators[CI[i].idx1]->getNumIntervalsX();
+            int Ny = resonators[CI[i].idx1]->getNumIntervalsY();
+            stateWidth1 = getWidth() / static_cast<double> (Nx);
+            stateHeight1 = moduleHeight / static_cast<double> (Ny);
+
+            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1 % Nx) / Nx;
+            yLoc1 = CI[i].idx1 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / Ny;
+            g.fillRect(xLoc1, yLoc1, stateWidth1, stateHeight1);
+        }
+        
+        if (!resonators[CI[i].idx1]->isModule1D())
+        {
+            xLoc1 += 0.5 * stateWidth1;
+            yLoc1 += 0.5 * stateHeight1;
+        }
         
         // If the last connection duo is not done, break the loop here
         if (!CI[i].connected)
             break;
         
-        int xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / resonators[CI[i].idx2]->getNumIntervals();
-        int yLoc2 = (0.5 + CI[i].idx2) * resonatorModuleHeight
-            - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1) * resonators[CI[i].idx2]->getVisualScaling();
+        float xLoc2;
+        float yLoc2;
+        float stateWidth2;
+        float stateHeight2;
+        if (resonators[CI[i].idx2]->isModule1D())
+        {
+            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / resonators[CI[i].idx2]->getNumIntervals();
+            yLoc2 = (0.5 + CI[i].idx2) * moduleHeight
+                - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1) * resonators[CI[i].idx2]->getVisualScaling();
+            g.drawEllipse (xLoc2 - Global::connRadius, yLoc2 - Global::connRadius,
+               2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
+        }
+        else
+        {
+            int Nx = resonators[CI[i].idx2]->getNumIntervalsX();
+            int Ny = resonators[CI[i].idx2]->getNumIntervalsY();
+            stateWidth2 = getWidth() / static_cast<double> (Nx);
+            stateHeight2 = moduleHeight / static_cast<double> (Ny);
 
-        g.drawEllipse (xLoc2 - Global::connRadius, yLoc2 - Global::connRadius,
-                       2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
+            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2 % Nx) / Nx;
+            yLoc2 = CI[i].idx2 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / Ny;
+            g.fillRect(xLoc2, yLoc2, stateWidth2, stateHeight2);
+
+        }
 
         float dashPattern[2];
         dashPattern[0] = 3.0;
         dashPattern[1] = 5.0;
 
         Line<float> line;
-        line = Line<float> (xLoc, yLoc, xLoc2, yLoc2);
+        if (!resonators[CI[i].idx2]->isModule1D())
+        {
+            xLoc2 += 0.5 * stateWidth2;
+            yLoc2 += 0.5 * stateHeight2;
+        }
+
+        line = Line<float> (xLoc1, yLoc1, xLoc2, yLoc2);
         if (CI[i].connType == rigid)
             g.drawLine (line, 1.0f);
         else
@@ -108,13 +156,19 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
     switch (rmt)
     {
         case stiffString:
-            newResonatorModule = std::make_shared<StiffString> (parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<StiffString> (rmt, parameters, fs, resonators.size(), this);
             break;
         case bar:
-            newResonatorModule = std::make_shared<Bar> (parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<Bar> (rmt, parameters, fs, resonators.size(), this);
+            break;
+        case membrane:
+            newResonatorModule = std::make_shared<Membrane> (rmt, parameters, fs, resonators.size(), this);
+            break;
+        case thinPlate:
+            newResonatorModule = std::make_shared<ThinPlate> (rmt, parameters, fs, resonators.size(), this);
             break;
         case stiffMembrane:
-            newResonatorModule = std::make_shared<StiffMembrane> (parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<StiffMembrane> (rmt, parameters, fs, resonators.size(), this);
             break;
 
     }
@@ -300,9 +354,9 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                 case addConnectionState:
                     // add connection
                     if (currentConnectionType == rigid)     // add rigid connection
-                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc()));
+                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(), res->getResonatorModuleType()));
                     else                                    // add spring-like connection
-                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(),
+                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(),                                             res->getResonatorModuleType(),
                                                       Global::defaultLinSpringCoeff,
                                                       (currentConnectionType == linearSpring ? 0 : Global::defaultNonLinSpringCoeff),
                                                       Global::defaultConnDampCoeff));
@@ -317,7 +371,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     }
                     else
                     {
-                        CI[CI.size()-1].setSecondResonatorParams (res->getID(), res->getConnLoc());
+                        CI[CI.size()-1].setSecondResonatorParams (res->getID(), res->getConnLoc(), res->getResonatorModuleType());
 
                         // maybe the following only needs to be done when DONE is clicked
                         bool hasOverlap = resetOverlappingConnectionVectors();

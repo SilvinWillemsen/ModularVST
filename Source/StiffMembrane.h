@@ -24,7 +24,7 @@
 class StiffMembrane  : public ResonatorModule
 {
 public:
-    StiffMembrane (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = clampedBC);
+    StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = clampedBC);
     ~StiffMembrane() override;
 
     // initialisation
@@ -41,8 +41,6 @@ public:
     
     int getNumPoints() override;
     int getNumIntervals() override { return N; }; // should find a way to remove this
-    int getNumIntervalsX() { return Nx; };
-    int getNumIntervalsY() { return Ny; };
 
     // interaction
     void mouseDown (const MouseEvent& e) override;
@@ -58,7 +56,7 @@ public:
 
 private:
     
-    int Nx, Ny;
+    int maxPoints;
     
     // Model parameters
     double Lx, Ly, rho, H, T, E, D, nu, cSq, kappaSq, sig0, sig1, lambdaSq, muSq, h, k;

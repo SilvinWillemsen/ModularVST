@@ -12,7 +12,7 @@
 #include "StiffString.h"
 
 //==============================================================================
-StiffString::StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (parameters, fs, ID, instrument, bc)
+StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (rmt, parameters, fs, ID, instrument, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.

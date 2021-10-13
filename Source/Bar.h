@@ -14,12 +14,12 @@
 #include "StiffString.h"
 //==============================================================================
 /*
- A Bar is essentially a stiff string without tension
+    A Bar is a Stiff String without tension
 */
 class Bar  : public StiffString
 {
 public:
-    Bar (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
+    Bar (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
     ~Bar() override;
 
 private:

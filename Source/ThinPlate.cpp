@@ -1,23 +1,24 @@
 /*
   ==============================================================================
 
-    Bar.cpp
-    Created: 9 Sep 2021 1:18:37pm
+    ThinPlate.cpp
+    Created: 13 Oct 2021 2:40:46pm
     Author:  Silvin Willemsen
 
   ==============================================================================
 */
 
 #include <JuceHeader.h>
-#include "Bar.h"
+#include "ThinPlate.h"
 
 //==============================================================================
-Bar::Bar (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : StiffString (rmt, parameters, fs, ID, instrument, bc)
+ThinPlate::ThinPlate (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : StiffMembrane (rmt, parameters, fs, ID, instrument, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+
 }
 
-Bar::~Bar()
+ThinPlate::~ThinPlate()
 {
 }

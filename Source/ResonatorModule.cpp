@@ -12,10 +12,14 @@
 #include "ResonatorModule.h"
 
 //==============================================================================
-ResonatorModule::ResonatorModule (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : k (1.0 / fs), parameters (parameters), ID (ID), bc (bc)
+ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : k (1.0 / fs), parameters (parameters), resonatorModuleType(rmt), ID (ID), bc (bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+    if (rmt == bar || rmt == stiffString || rmt == acousticTube)
+        is1D = true;
+    else
+        is1D = false;
     addChangeListener (instrument);
 }
 
