@@ -105,12 +105,18 @@ void Instrument::resized()
 void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters)
 {
     std::shared_ptr<ResonatorModule> newResonatorModule;
-    if (rmt == stiffString)
+    switch (rmt)
     {
-        newResonatorModule = std::make_shared<StiffString> (parameters, fs, resonators.size(), this);
-    }
-    else if (rmt == acousticTube)
-    {
+        case stiffString:
+            newResonatorModule = std::make_shared<StiffString> (parameters, fs, resonators.size(), this);
+            break;
+        case bar:
+            newResonatorModule = std::make_shared<Bar> (parameters, fs, resonators.size(), this);
+            break;
+        case stiffMembrane:
+            newResonatorModule = std::make_shared<StiffMembrane> (parameters, fs, resonators.size(), this);
+            break;
+
     }
     resonators.push_back (newResonatorModule);
     addAndMakeVisible (resonators[resonators.size()-1].get(), 0);
@@ -314,7 +320,12 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                         CI[CI.size()-1].setSecondResonatorParams (res->getID(), res->getConnLoc());
 
                         // maybe the following only needs to be done when DONE is clicked
-                        resetOverlappingConnectionVectors();
+                        bool hasOverlap = resetOverlappingConnectionVectors();
+                        std::cout << "Has overlap: " << hasOverlap << std::endl;
+#ifndef USE_EIGEN
+                        if (hasOverlap)
+                            CI.pop_back();
+#endif
                     }
                     
                     setApplicationState (addConnectionState);
@@ -327,10 +338,6 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
         }
 }
 
-void Instrument::checkIfLocationAlreadyHasConnection()
-{
-    
-}
 
 std::vector<std::vector<int>> Instrument::getGridPointVector (std::vector<ConnectionInfo*>& CIO)
 {
@@ -364,10 +371,12 @@ void Instrument::resetTotalGridPoints()
         totalGridPoints += res->getNumPoints();
 }
 
-void Instrument::resetOverlappingConnectionVectors()
+bool Instrument::resetOverlappingConnectionVectors()
 {
     // find the connections that are overlapping and do a linear system solve
     // also don't include any overlapping connections in the function that this calls
+    
+    bool hasOverlap = false;
     
     // reset what connection group the connections belong to
     for (int i = 0; i < CI.size(); ++i)
@@ -392,6 +401,7 @@ void Instrument::resetOverlappingConnectionVectors()
         {
             if (connLocs[i] == connLocs[j]) // if there is an overlapping connection, add it to a connection group
             {
+                hasOverlap = true;
                 // check if one of the connections is already part of a connection group
                 if (CI[i/2].connectionGroup != -1 && CI[j/2].connectionGroup != -1) // merge groups if both belong to one connection group
                 {
@@ -493,12 +503,13 @@ void Instrument::resetOverlappingConnectionVectors()
         std::cout << std::endl;
 
     }
-
+    return hasOverlap;
 }
 
 void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 {
 
+#ifdef USE_EIGEN
     using namespace Eigen;
     SparseMatrix<double> IJminP (CIO.size(), CIO.size());
 //    std::vector<std::vector<int>> gridPointVector = getGridPointVector (CIO);
@@ -509,19 +520,22 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 //    for (int i = 1; i < resonators.size(); ++i)
 //        startIdx[i] = startIdx[i-1] + gridPointVector[i][0];
 
-    SparseMatrix<double> I (CIO.size(), totalGridPoints);
+    SparseMatrix<double, RowMajor> I (CIO.size(), totalGridPoints);
     SparseMatrix<double> J (totalGridPoints, CIO.size());
 
     std::vector<int> startIdx (resonators.size(), 0);
     for (int i = 1; i < resonators.size(); ++i)
         startIdx[i] = startIdx[i-1] + resonators[i]->getNumPoints();
 
+    int idx1, idx2;
     for (int i = 0; i < CIO.size(); ++i)
     {
-        I.coeffRef (i, startIdx[CIO[i]->idx1] + CIO[i]->loc1) -= 1.0;
-        I.coeffRef (i, startIdx[CIO[i]->idx2] + CIO[i]->loc2) +=  1.0;
-        J.coeffRef (startIdx[CIO[i]->idx1] + CIO[i]->loc1, i) -= resonators[CIO[i]->idx1]->getConnectionDivisionTerm();
-        J.coeffRef (startIdx[CIO[i]->idx2] + CIO[i]->loc2, i) += resonators[CIO[i]->idx2]->getConnectionDivisionTerm();
+        idx1 = startIdx[CIO[i]->idx1] + CIO[i]->loc1;
+        idx2 = startIdx[CIO[i]->idx2] + CIO[i]->loc2;
+        I.coeffRef (i, idx1) -= 1.0;
+        I.coeffRef (i, idx2) += 1.0;
+        J.coeffRef (idx1, i) -= resonators[CIO[i]->idx1]->getConnectionDivisionTerm();
+        J.coeffRef (idx2, i) += resonators[CIO[i]->idx2]->getConnectionDivisionTerm();
     }
     SparseMatrix<double> IJ = I * J;
     SparseMatrix<double> Pmat (CIO.size(), CIO.size());
@@ -556,16 +570,16 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
         b[i] = CIO[i]->etaNext + 0.5 * CIO[i]->K1 * oOrPlus[i] * CIO[i]->eta + rMinus[i] * oOrPlus[i] * CIO[i]->etaPrev;
 
     // solve
-    SimplicialLDLT<SparseMatrix<double>> solver;
-    solver.compute (IJminP);
+    SimplicialLDLT<SparseMatrix<double>> chol(IJminP);
+//    solver.chol (IJminP);
 
-    if(solver.info() != Success) {
+    if(chol.info() != Success) {
         std::cout << "decomposition failed" << std::endl;
         return;
     }
 
-    VectorXd forces = solver.solve (b);
-    if(solver.info() != Success) {
+    VectorXd forces = chol.solve (b);
+    if(chol.info() != Success) {
         std::cout << "solving failed" << std::endl;
         return;
     }
@@ -589,7 +603,7 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 //    std::cout << "To check this, let us compute U.transpose() * U" << std::endl;
 //    std::cout << U.transpose() * U << std::endl;
 //    std::cout << "This should equal the matrix A" << std::endl;
-
+#endif
     return;
 
 }

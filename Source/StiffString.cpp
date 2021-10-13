@@ -21,7 +21,10 @@ StiffString::StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListe
     L = *parameters.getVarPointer ("L");
     rho = *parameters.getVarPointer ("rho");
     A = *parameters.getVarPointer ("A");
-    T = *parameters.getVarPointer ("T");
+    if (parameters.contains("T"))
+        T = *parameters.getVarPointer ("T");
+    else
+        T = 0;
     E = *parameters.getVarPointer ("E");
     I = *parameters.getVarPointer ("I");
     sig0 = *parameters.getVarPointer ("sig0");

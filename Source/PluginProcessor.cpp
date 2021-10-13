@@ -101,8 +101,25 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         addResonatorModuleAction
     };
     
+    
+    initModuleTypes = {
+        stiffString,
+        stiffMembrane
+    };
+    
+    int numModules = 0;
+    for (int i = 0; i < initActions.size(); ++i)
+        if (initActions[i] == addResonatorModuleAction)
+            ++numModules;
+    
+    if (numModules != initModuleTypes.size())
+        std::cout << "WRONG NUMBER OF MODULE TYPES ASSIGNED. CHANGE initModuleTypes VECTOR TO MATCH THE AMOUNT OF 'addResonatorModuleAction's IN initModuleTypes." << std::endl;
+    
+    
     if (instruments.size() == 0)
+    {
         instruments.reserve (8);
+    }
     else
     {
         for (auto inst : instruments)
@@ -111,6 +128,9 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
             
     }
     
+    
+    int  j = 0;
+    NamedValueSet parameters;
     for (int i = 0; i < initActions.size(); ++i)
     {
         switch (initActions[i]) {
@@ -118,10 +138,21 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                 addInstrument();
                 break;
             case addResonatorModuleAction:
-                if (i % 2 == 0)
-                    addResonatorModule (stiffString, Global::defaultStringParameters);
-                else
-                    addResonatorModule (stiffString, Global::defaultBarParameters);
+                switch (initModuleTypes[j]) {
+                    case stiffString:
+                        parameters = Global::defaultStringParameters;
+                        break;
+                    case bar:
+                        parameters = Global::defaultBarParameters;
+                        break;
+                    case stiffMembrane:
+                        parameters = Global::defaultStiffMembraneParameters;
+                        break;
+                    default:
+                        break;
+                }
+                addResonatorModule (initModuleTypes[j], parameters);
+                ++j;
                 break;
             default:
                 break;
@@ -204,7 +235,13 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         {
             inst->calculate();
             inst->solveInteractions();
+#ifdef CALC_ENERGY
             inst->calcTotalEnergy();
+//#ifdef CALC_ENERGY
+            std::cout << instruments[0]->getTotalEnergy() << std::endl;
+//#endif
+
+#endif
             inst->update();
 
             totOutput[i] += inst->getOutput();
@@ -216,8 +253,6 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     for (int i = 0; i < buffer.getNumSamples(); ++i)
         for (int channel = 0; channel < numChannels; ++channel)
             curChannel[channel][0][i] = outputLimit (totOutput[i]);
-    std::cout << instruments[0]->getTotalEnergy() << std::endl;
-
 //    std::cout << totOutput[15] << std::endl;
     
 }
@@ -258,7 +293,7 @@ void ModularVSTAudioProcessor::addInstrument()
 {
     std::shared_ptr<Instrument> newInstrument = std::make_shared<Instrument> (*this, fs);
     instruments.push_back (newInstrument);
-    currentlyActiveInstrument = instruments.size()-1;
+    currentlyActiveInstrument = static_cast<int> (instruments.size()-1);
     
     refreshEditor = true;
 }

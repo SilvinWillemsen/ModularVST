@@ -104,6 +104,7 @@ private:
     ApplicationState applicationState = normalState;
     
     std::vector<Action> initActions;
+    std::vector<ResonatorModuleType> initModuleTypes;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };

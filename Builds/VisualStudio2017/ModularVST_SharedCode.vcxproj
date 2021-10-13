@@ -140,6 +140,7 @@
     <ClCompile Include="..\..\Source\CoefficientList.cpp"/>
     <ClCompile Include="..\..\Source\AddModuleWindow.cpp"/>
     <ClCompile Include="..\..\Source\ControlPanel.cpp"/>
+    <ClCompile Include="..\..\Source\StiffMembrane.cpp"/>
     <ClCompile Include="..\..\Source\Bar.cpp"/>
     <ClCompile Include="..\..\Source\StiffString.cpp"/>
     <ClCompile Include="..\..\Source\ResonatorModule.cpp"/>
@@ -2063,6 +2064,7 @@
     <ClInclude Include="..\..\Source\CoefficientList.h"/>
     <ClInclude Include="..\..\Source\AddModuleWindow.h"/>
     <ClInclude Include="..\..\Source\ControlPanel.h"/>
+    <ClInclude Include="..\..\Source\StiffMembrane.h"/>
     <ClInclude Include="..\..\Source\Bar.h"/>
     <ClInclude Include="..\..\Source\StiffString.h"/>
     <ClInclude Include="..\..\Source\ResonatorModule.h"/>

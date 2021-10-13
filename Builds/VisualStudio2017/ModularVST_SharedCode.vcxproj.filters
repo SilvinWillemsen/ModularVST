@@ -442,6 +442,9 @@
     <ClCompile Include="..\..\Source\ControlPanel.cpp">
       <Filter>ModularVST\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\StiffMembrane.cpp">
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Bar.cpp">
       <Filter>ModularVST\Source\ResonatorModules</Filter>
     </ClCompile>
@@ -2525,6 +2528,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\ControlPanel.h">
       <Filter>ModularVST\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StiffMembrane.h">
+      <Filter>ModularVST\Source\ResonatorModules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Bar.h">
       <Filter>ModularVST\Source\ResonatorModules</Filter>

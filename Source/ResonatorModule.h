@@ -54,7 +54,7 @@ public:
         
     // getters
     int getID() { return ID; };
-    int getNumIntervals() { return N; };
+    virtual int getNumIntervals() = 0;
     virtual int getNumPoints() = 0;
 
     int getVisualScaling() { return visualScaling; };

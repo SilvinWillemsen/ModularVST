@@ -9,9 +9,20 @@
 */
 
 #pragma once
-#include <JuceHeader.h>
-#include "../eigen/Eigen/Eigen"
+#define USE_EIGEN // use overlapping connections (and therefore the eigen library) or not
+#define CALC_ENERGY // calculate (and print) energy or not
+//#define SAVE_OUTPUT
 
+#include <JuceHeader.h>
+
+#ifdef USE_EIGEN
+    #include "../eigen/Eigen/Eigen"
+#endif
+
+#ifdef SAVE_OUTPUT
+    #include <iostream>
+    #include <fstream>
+#endif
 enum Action
 {
     noAction,
@@ -31,16 +42,17 @@ enum ApplicationState
 
 enum ResonatorModuleType
 {
-    stiffString = 1,
+    stiffString = 1, // set to 1 for the combo box options
     bar,
     acousticTube,
     membrane,
     thinPlate,
+    stiffMembrane,
 };
 
 enum ConnectionType
 {
-    rigid = 1,
+    rigid = 1, // set to 1 for the combo box options
     linearSpring,
     nonlinearSpring,
 };
@@ -79,14 +91,47 @@ namespace Global
 
     static NamedValueSet defaultBarParameters {
         {"L", 1},
-        {"T", 0}, // just so that it can work with experimentation (can be removed eventually)
         {"rho", 7850},
-        {"A", 0.0005 * 0.0005 * double_Pi},
+        {"A", 0.004 * 0.004 * double_Pi},
         {"E", 2e11},
-        {"I", pow (0.0005, 4) * double_Pi * 0.25},
+        {"I", pow (0.004, 4) * double_Pi * 0.25},
         {"sig0", 1},
         {"sig1", 0.005}
     };
+
+    static NamedValueSet defaultMembraneParameters {
+        {"Lx", 0.75},
+        {"Ly", 0.25},
+        {"rho", 7850},
+        {"H", 0.005},
+        {"T", 10000}, // check whether this is good
+        {"sig0", 1},
+        {"sig1", 0.005}
+    };
+
+    static NamedValueSet defaultThinPlateParameters {
+        {"Lx", 0.75},
+        {"Ly", 0.25},
+        {"rho", 7850},
+        {"H", 0.005},
+        {"E", 2e11},
+        {"nu", 0.3},
+        {"sig0", 1},
+        {"sig1", 0.005}
+    };
+
+    static NamedValueSet defaultStiffMembraneParameters {
+        {"Lx", 0.75},
+        {"Ly", 0.25},
+        {"rho", 7850},
+        {"H", 0.005},
+        {"T", 10000}, // check whether this is good
+        {"E", 2e11},
+        {"nu", 0.3},
+        {"sig0", 1},
+        {"sig1", 0.005}
+    };
+
 
     static double limit (double val, double min, double max)
     {

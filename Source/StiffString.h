@@ -22,6 +22,7 @@ public:
     StiffString (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
     ~StiffString() override;
 
+    // initialisation
     void initialise (int fs) override;
     
     // JUCE functions
@@ -34,6 +35,8 @@ public:
     float getOutput() override;
     
     int getNumPoints() override;
+    int getNumIntervals() override { return N; } ;
+
     // interaction
     void mouseDown (const MouseEvent& e) override;
 //    void mouseMove (const MouseEvent& e) override;
@@ -44,7 +47,7 @@ public:
     double getDampEnergy() override;
     double getInputEnergy() override;
 
-    void setExcitationFlagFalse() { excitationFlag = false; }
+    void setExcitationFlagFalse() { excitationFlag = false; };
     
 private:
     

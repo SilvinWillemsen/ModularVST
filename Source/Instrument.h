@@ -13,7 +13,12 @@
 #include <JuceHeader.h>
 #include "Global.h"
 #include "ResonatorModule.h"
+
+// include all types of resonator module here
 #include "StiffString.h"
+#include "Bar.h"
+#include "StiffMembrane.h"
+
 
 //==============================================================================
 /*
@@ -101,12 +106,10 @@ public:
     
 //    void setChangeListener (ChangeListener* changeListener) { if (getChangeL) addChangelistener (changeListener); };
     ApplicationState getApplicationState() { return applicationState; };
-    
-    void checkIfLocationAlreadyHasConnection();
-    
+        
     std::vector<std::vector<int>> getGridPointVector (std::vector<ConnectionInfo*>& CIO);
 
-    void resetOverlappingConnectionVectors();
+    bool resetOverlappingConnectionVectors();
     void solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO); // Solve the connections that are overlapping
     
 private:
@@ -129,5 +132,9 @@ private:
     
     double prevEnergy = 0;
     double totEnergy = 0;
+    
+#ifdef USE_EIGEN
+//    Eigen::SparseMatrix<double> IJminP, I, J, IJ, Pmat;
+#endif
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

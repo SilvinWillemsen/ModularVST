@@ -11,18 +11,16 @@
 #pragma once
 
 #include <JuceHeader.h>
-
+#include "StiffString.h"
 //==============================================================================
 /*
+ A Bar is essentially a stiff string without tension
 */
-class Bar  : public juce::Component
+class Bar  : public StiffString
 {
 public:
-    Bar();
+    Bar (NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
     ~Bar() override;
-
-    void paint (juce::Graphics&) override;
-    void resized() override;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Bar)
