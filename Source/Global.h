@@ -100,14 +100,14 @@ namespace Global
     };
 
     static NamedValueSet defaultMembraneParameters {
-        {"Lx", 0.75},
-        {"Ly", 0.25},
-        {"rho", 7850},
-        {"H", 0.005},
-        {"T", 100000}, // check whether this is good
-        {"sig0", 1},
+        {"Lx", 0.5},
+        {"Ly", 1},
+        {"rho", 10},
+        {"H", 0.001},
+        {"T", 50}, // check whether this is good
+        {"sig0", 0.5},
         {"sig1", 0.005},
-        {"maxPoints", 200}
+        {"maxPoints", 2000}
     };
 
     static NamedValueSet defaultThinPlateParameters {
@@ -119,7 +119,7 @@ namespace Global
         {"nu", 0.3},
         {"sig0", 1},
         {"sig1", 0.005},
-        {"maxPoints", 200}
+        {"maxPoints", 2000}
     };
 
     static NamedValueSet defaultStiffMembraneParameters {
@@ -132,7 +132,7 @@ namespace Global
         {"nu", 0.3},
         {"sig0", 1},
         {"sig1", 0.005},
-        {"maxPoints", 200}
+        {"maxPoints", 2000}
     };
 
 

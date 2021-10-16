@@ -19,6 +19,12 @@ StiffMembrane::StiffMembrane(ResonatorModuleType rmt, NamedValueSet& parameters,
     
     maxPoints = *parameters.getVarPointer ("maxPoints");
     
+//    if (rmt == membrane)
+//        test = &StiffMembrane::onlyCalculateMembrane;
+//    else
+//        test = &StiffMembrane::calculateAll;
+    
+    
     // Initialise member variables using the parameter set
     Lx = *parameters.getVarPointer ("Lx");
     Ly = *parameters.getVarPointer ("Ly");
@@ -90,6 +96,11 @@ void StiffMembrane::initialise (int fs)
     }
     h = std::min (Lx / Nx, Ly / Ny); // recalculate h
     
+    if (getResonatorModuleType() == membrane)
+    {
+        std::cout << "This Membrane has " << Nx << "x" << Ny << "points" << std::endl;
+    }
+    
     lambdaSq = cSq * k * k / (h * h);
     muSq = kappaSq * k * k / (h * h * h * h);
     
@@ -134,8 +145,8 @@ void StiffMembrane::initialise (int fs)
 
 void StiffMembrane::paint (juce::Graphics& g)
 {
-    float stateWidth = getWidth() / static_cast<double> (Nx);
-    float stateHeight = getHeight() / static_cast<double> (Ny);
+    float stateWidth = getWidth() / static_cast<double> (Nx+1);
+    float stateHeight = getHeight() / static_cast<double> (Ny+1);
     
     for (int l = 0; l <= Nx; ++l)
     {
@@ -144,6 +155,8 @@ void StiffMembrane::paint (juce::Graphics& g)
             int cVal = Global::limit (255 * 0.5 * (u[1][l + m*Nx] * visualScaling + 1), 0, 255);
             g.setColour(Colour::fromRGBA (cVal, cVal, cVal, 127));
             g.fillRect(l * stateWidth, m * stateHeight, stateWidth, stateHeight);
+//            g.setColour(Colour::fromRGBA (0, 0, 0, 127));
+            g.drawRect(l * stateWidth, m * stateHeight, stateWidth, stateHeight, 0.5);
         }
     }
 }
@@ -154,6 +167,13 @@ void StiffMembrane::resized()
     // components that your component contains..
 
 }
+//
+//void StiffMembrane::calculate()
+//{
+////    calculateAll();
+//    this->test();
+//    
+//}
 
 void StiffMembrane::calculate()
 {
@@ -281,18 +301,22 @@ void StiffMembrane::mouseDown (const MouseEvent& e)
         }
         case addConnectionState:
         {
-            int tmpConnLocX = getNumIntervalsX() * static_cast<float> (e.x) / getWidth();
-            int tmpConnLocY = getNumIntervalsY() * static_cast<float> (e.y) / getHeight();
-            setConnLoc (Global::limit (tmpConnLocX + tmpConnLocY * Nx, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
+            // these +1s are only if we visualise all grid points (including boundaries)
+            int tmpConnLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
+            int tmpConnLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
+        
+            setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
             sendChangeMessage();
             break;
         }
         case firstConnectionState:
         {
-            int tmpConnLocX = getNumIntervalsX() * static_cast<float> (e.x) / getWidth();
-            int tmpConnLocY = getNumIntervalsY() * static_cast<float> (e.y) / getHeight();
-            setConnLoc (Global::limit (tmpConnLocX + tmpConnLocY * Nx, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
+            // these +1s are only if we visualise all grid points (including boundaries)
+            int tmpConnLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
+            int tmpConnLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
+        
+            setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
             sendChangeMessage();
             break;
@@ -308,23 +332,24 @@ void StiffMembrane::excite()
 //    u[1][40 + 40 * Nx] += 1;
 //    u[2][40 + 40 * Nx] += 1;
 
-    excitationWidth = Global::limit (excitationWidth, 1, Nx - 5);
-    std::vector<std::vector<double>> excitationArea (excitationWidth, std::vector<double> (excitationWidth, 0));
+    int excitationWidthX = Nx / 5;
+    int excitationWidthY = Ny / 5;
+    std::vector<std::vector<double>> excitationArea (excitationWidthX, std::vector<double> (excitationWidthY, 0));
 
-    for (int i = 1; i < excitationWidth; ++i)
+    for (int i = 1; i < excitationWidthX; ++i)
     {
-        for (int j = 1; j < excitationWidth; ++j)
+        for (int j = 1; j < excitationWidthY; ++j)
         {
-            excitationArea[i][j] = (10.0 / (excitationWidth * excitationWidth) * 0.25 * (1 - cos(2.0 * double_Pi * i / static_cast<int>(excitationWidth+1))) * (1 - cos(2.0 * double_Pi * j / static_cast<int>(excitationWidth+1)))) * 0.1;
+            excitationArea[i][j] = (10.0 / (excitationWidthX * excitationWidthY) * 0.25 * (1 - cos(2.0 * double_Pi * i / static_cast<int>(excitationWidthX+1))) * (1 - cos(2.0 * double_Pi * j / static_cast<int>(excitationWidthY+1)))) * 0.1;
         }
     }
 
-    int startIdX = Global::limit (round (excitationLocX * Nx) - excitationWidth * 0.5, 2, Nx - 3 - excitationWidth);
-    int startIdY = Global::limit (round (excitationLocY * Ny) - excitationWidth * 0.5, 2, Ny - 3 - excitationWidth);
+    int startIdX = Global::limit (round (excitationLocX * Nx) - excitationWidthX * 0.5, 2, Nx - 3 - excitationWidthX);
+    int startIdY = Global::limit (round (excitationLocY * Ny) - excitationWidthY * 0.5, 2, Ny - 3 - excitationWidthY);
 
-    for (int l = 1; l < excitationWidth; ++l)
+    for (int l = 1; l < excitationWidthX; ++l)
     {
-        for (int m = 1; m < excitationWidth; ++m)
+        for (int m = 1; m < excitationWidthY; ++m)
         {
             u[1][l + startIdX + (m + startIdY) * Nx] += excitationArea[l][m];
             u[2][l + startIdX + (m + startIdY) * Nx] += excitationArea[l][m];

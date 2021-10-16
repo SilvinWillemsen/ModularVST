@@ -45,7 +45,6 @@ public:
 private:
     
     std::unique_ptr<TextButton> addModuleButton;
-    std::unique_ptr<TextButton> testButton;
     std::unique_ptr<ComboBox> resonatorTypeBox;
     std::unique_ptr<CoefficientList> coefficientList;
     std::unique_ptr<Label> coeffTopLabel;

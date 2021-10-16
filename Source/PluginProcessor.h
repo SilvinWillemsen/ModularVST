@@ -91,6 +91,7 @@ public:
     
     ApplicationState getApplicationState() { return applicationState; };
     void setApplicationState (ApplicationState a);
+
 private:
     //==============================================================================
     int fs;

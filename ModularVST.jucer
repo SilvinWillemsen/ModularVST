@@ -4,10 +4,6 @@
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
               pluginFormats="buildAU,buildStandalone,buildUnity">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
-    <GROUP id="{48D70228-30D6-E0F2-77B2-528C8E7AC3F9}" name="Eigen">
-      <FILE id="fzAZYn" name="Cholesky" compile="0" resource="0" file="eigen/Eigen/Cholesky"
-            xcodeResource="1"/>
-    </GROUP>
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
       <FILE id="YPcxjC" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
       <FILE id="rylflo" name="CoefficientList.cpp" compile="1" resource="0"

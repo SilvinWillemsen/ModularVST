@@ -24,6 +24,8 @@ public:
     Membrane (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
     ~Membrane() override;
     
+    void calculate() override;
+    
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Membrane)
 };

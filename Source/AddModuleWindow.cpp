@@ -20,19 +20,16 @@ AddModuleWindow::AddModuleWindow (ChangeListener* audioProcessorEditor)
     addModuleButton->addListener (this);
     addAndMakeVisible(addModuleButton.get());
 
-    testButton = std::make_unique<TextButton> ("Test");
-    testButton->addListener (this);
-    addAndMakeVisible(testButton.get());
-
     resonatorTypeBox = std::make_unique<ComboBox> ("Resonator Type");
     resonatorTypeBox->addListener (this);
     addAndMakeVisible(resonatorTypeBox.get());
-        
+    
     resonatorTypeBox->addItem ("Stiff String", stiffString);
     resonatorTypeBox->addItem ("Bar", bar);
     resonatorTypeBox->addItem ("Acoustic Tube", acousticTube);
     resonatorTypeBox->addItem ("Membrane", membrane);
     resonatorTypeBox->addItem ("Thin Plate", thinPlate);
+    resonatorTypeBox->addItem ("Stiff Membrane", stiffMembrane);
     resonatorTypeBox->setSelectedId (1);
     
     addChangeListener (audioProcessorEditor);
@@ -88,7 +85,6 @@ void AddModuleWindow::resized()
     Rectangle<int> buttonArea = totalArea.removeFromBottom(Global::buttonHeight + Global::margin);
     buttonArea.reduce(Global::margin, Global::margin);
 
-    testButton->setBounds(buttonArea.removeFromLeft (100));
     addModuleButton->setBounds(buttonArea.removeFromRight (100));
 
     totalArea.reduce(Global::margin, Global::margin);
@@ -113,10 +109,6 @@ void AddModuleWindow::buttonClicked (Button* button)
         dw->exitModalState (1);
 
         sendChangeMessage();
-    }
-    else if (button == testButton.get())
-    {
-        coefficientList->printParameterNames();
     }
 }
 

@@ -22,3 +22,31 @@ Membrane::Membrane (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, 
 Membrane::~Membrane()
 {
 }
+
+void Membrane::calculate()
+{
+    for (int m = 1; m < Ny; ++m) // clamped boundaries
+    {
+        for (int l = 1; l < Nx; ++l) // clamped boundaries
+        {
+            u[0][l + m*Nx] =
+                  B0 * u[1][l + m*Nx]
+                + B1 * (u[1][l+1 + m*Nx] + u[1][l-1 + m*Nx] + u[1][l + (m+1)*Nx] + u[1][l + (m-1)*Nx])
+                + C0 * u[2][l + m*Nx]
+                + C1 * (u[2][l+1 + m*Nx] + u[2][l-1 + m*Nx] + u[2][l + (m+1)*Nx] + u[2][l + (m-1)*Nx]);
+
+#ifdef SAVE_OUTPUT
+            statesSave << u[1][l + m*Nx] << ",";
+#endif
+            
+        }
+#ifdef SAVE_OUTPUT
+        statesSave << ";\n";
+#endif
+    }
+#ifdef SAVE_OUTPUT
+    ++counter;
+    if (counter >= samplesToRecord)
+        statesSave.close();
+#endif
+}

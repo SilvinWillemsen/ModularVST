@@ -75,11 +75,11 @@ void Instrument::paint (juce::Graphics& g)
         {
             int Nx = resonators[CI[i].idx1]->getNumIntervalsX();
             int Ny = resonators[CI[i].idx1]->getNumIntervalsY();
-            stateWidth1 = getWidth() / static_cast<double> (Nx);
-            stateHeight1 = moduleHeight / static_cast<double> (Ny);
+            stateWidth1 = getWidth() / static_cast<double> (Nx+1);
+            stateHeight1 = moduleHeight / static_cast<double> (Ny+1);
 
-            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1 % Nx) / Nx;
-            yLoc1 = CI[i].idx1 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / Ny;
+            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1 % Nx) / (Nx+1);
+            yLoc1 = CI[i].idx1 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / (Ny+1);
             g.fillRect(xLoc1, yLoc1, stateWidth1, stateHeight1);
         }
         
@@ -109,11 +109,11 @@ void Instrument::paint (juce::Graphics& g)
         {
             int Nx = resonators[CI[i].idx2]->getNumIntervalsX();
             int Ny = resonators[CI[i].idx2]->getNumIntervalsY();
-            stateWidth2 = getWidth() / static_cast<double> (Nx);
-            stateHeight2 = moduleHeight / static_cast<double> (Ny);
+            stateWidth2 = getWidth() / static_cast<double> (Nx+1);
+            stateHeight2 = moduleHeight / static_cast<double> (Ny+1);
 
-            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2 % Nx) / Nx;
-            yLoc2 = CI[i].idx2 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / Ny;
+            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2 % Nx) / (Nx+1);
+            yLoc2 = CI[i].idx2 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / (Ny+1);
             g.fillRect(xLoc2, yLoc2, stateWidth2, stateHeight2);
 
         }

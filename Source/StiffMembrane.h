@@ -17,7 +17,6 @@
 #include <iostream>
 #include <fstream>
 
-
 //==============================================================================
 /*
 */
@@ -37,6 +36,9 @@ public:
     Path visualiseState (Graphics& g);
 
     void calculate() override;
+    void onlyCalculateMembrane();
+    void calculateAll();
+    
     float getOutput() override;
     
     int getNumPoints() override;
@@ -54,7 +56,7 @@ public:
 
     void setExcitationFlagFalse() { excitationFlag = false; };
 
-private:
+protected:
     
     int maxPoints;
     
@@ -79,5 +81,7 @@ private:
     int samplesToRecord = 100;
     int counter = 0;
 //#endif
+//    typedef void (StiffMembrane::*updateEq)();
+//    updateEq test;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StiffMembrane)
 };
