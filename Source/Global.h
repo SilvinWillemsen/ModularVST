@@ -23,6 +23,7 @@
     #include <iostream>
     #include <fstream>
 #endif
+
 enum Action
 {
     noAction,
@@ -72,6 +73,8 @@ namespace Global
     static const int connRadius = 5;
 
     static const int listBoxRowHeight = 40;
+
+    // default parameters
 
     static const double defaultLinSpringCoeff = 1000.0;
     static const double defaultNonLinSpringCoeff = 1e8;
