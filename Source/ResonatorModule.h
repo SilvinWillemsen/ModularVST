@@ -83,10 +83,10 @@ protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
 
-    virtual double getKinEnergy() {};
-    virtual double getPotEnergy() {};
-    virtual double getDampEnergy() {};
-    virtual double getInputEnergy() {};
+    virtual double getKinEnergy() = 0;
+    virtual double getPotEnergy() = 0;
+    virtual double getDampEnergy() = 0;
+    virtual double getInputEnergy() = 0;
     
     double k;
     
