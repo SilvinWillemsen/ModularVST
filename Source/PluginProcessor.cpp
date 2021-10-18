@@ -93,6 +93,11 @@ void ModularVSTAudioProcessor::changeProgramName (int index, const juce::String&
 //==============================================================================
 void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    if (instruments.size() != 0)
+    {
+        instruments.clear();
+        instruments.reserve (8);
+    }
     fs = sampleRate;
     
     initActions = {

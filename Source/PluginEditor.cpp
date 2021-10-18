@@ -157,6 +157,7 @@ void ModularVSTAudioProcessorEditor::refresh()
     resized();
     for (auto inst : *instruments)
     {
+        addAndMakeVisible (inst.get());
         inst->resized();
         inst->addChangeListener (this);
     }
