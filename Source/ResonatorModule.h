@@ -109,7 +109,6 @@ protected:
     bool excitationFlag = false;
     Component* parentComponent;
     ApplicationState applicationState = normalState;
-
     
     int visualScaling;
     double totalEnergy;

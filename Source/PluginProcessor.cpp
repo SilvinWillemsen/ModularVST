@@ -250,7 +250,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 #ifdef CALC_ENERGY
             inst->calcTotalEnergy();
 //#ifdef CALC_ENERGY
-            std::cout << instruments[0]->getTotalEnergy() << std::endl;
+            std::cout << inst->getTotalEnergy() << std::endl;
 //#endif
 
 #endif

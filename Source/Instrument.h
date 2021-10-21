@@ -31,31 +31,33 @@ class Instrument  : public juce::Component, public ChangeBroadcaster, public Cha
 public:
     Instrument (ChangeListener& audioProcessorEditor, int fs);
     ~Instrument() override;
-
+    
     // Vector storing information about the connections. [0] resonator index, [1] location
     struct ConnectionInfo
     {
         ConnectionInfo (ConnectionType connType,
-                        int resonatorIndex,
+                        std::shared_ptr<ResonatorModule> resonator1,
                         int location,
                         ResonatorModuleType resonatorModuleType,
                         double K1 = 0,
                         double K3 = 0,
                         double R = 0) : connType (connType),
-                                        idx1 (resonatorIndex),
+                                        res1 (resonator1),
                                         loc1 (location),
                                         rmt1 (resonatorModuleType),
                                         K1 (K1), K3 (K3), R (R)
         {};
-        void setSecondResonatorParams (int i, int l, ResonatorModuleType r) { idx2 = i; loc2 = l; rmt2 = r; connected = true; };
+        void setSecondResonatorParams (std::shared_ptr<ResonatorModule> resonator2, int l, ResonatorModuleType r) { res2 = resonator2; loc2 = l; rmt2 = r; connected = true; };
         
         ConnectionType connType;
-        int idx1, idx2;
+        std::shared_ptr<ResonatorModule> res1, res2;
         int loc1, loc2;
+        ResonatorModuleType rmt1, rmt2;
+
+        // connection variables
         double K1, K3, R;
         double etaNext, eta, etaPrev;
         bool connected = false;
-        ResonatorModuleType rmt1, rmt2;
         int connectionGroup = -1;
     };
     

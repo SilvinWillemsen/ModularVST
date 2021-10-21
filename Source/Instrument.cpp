@@ -63,27 +63,27 @@ void Instrument::paint (juce::Graphics& g)
         int yLoc1;
         int stateWidth1;
         int stateHeight1;
-        if (resonators[CI[i].idx1]->isModule1D())
+        if (CI[i].res1->isModule1D())
         {
-            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1) / resonators[CI[i].idx1]->getNumIntervals();
-            yLoc1 = (0.5 + CI[i].idx1) * moduleHeight
-                - resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) * resonators[CI[i].idx1]->getVisualScaling();
+            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1) / CI[i].res1->getNumIntervals();
+            yLoc1 = (0.5 + CI[i].res1->getID()) * moduleHeight
+                - CI[i].res1->getStateAt (CI[i].loc1, 1) * CI[i].res1->getVisualScaling();
             g.drawEllipse (xLoc1 - Global::connRadius, yLoc1 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
         }
         else
         {
-            int Nx = resonators[CI[i].idx1]->getNumIntervalsX();
-            int Ny = resonators[CI[i].idx1]->getNumIntervalsY();
+            int Nx = CI[i].res1->getNumIntervalsX();
+            int Ny = CI[i].res1->getNumIntervalsY();
             stateWidth1 = getWidth() / static_cast<double> (Nx+1);
             stateHeight1 = moduleHeight / static_cast<double> (Ny+1);
 
             xLoc1 = getWidth() * static_cast<float>(CI[i].loc1 % Nx) / (Nx+1);
-            yLoc1 = CI[i].idx1 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / (Ny+1);
+            yLoc1 = CI[i].res1->getID() * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / (Ny+1);
             g.fillRect(xLoc1, yLoc1, stateWidth1, stateHeight1);
         }
         
-        if (!resonators[CI[i].idx1]->isModule1D())
+        if (!CI[i].res1->isModule1D())
         {
             xLoc1 += 0.5 * stateWidth1;
             yLoc1 += 0.5 * stateHeight1;
@@ -97,23 +97,23 @@ void Instrument::paint (juce::Graphics& g)
         float yLoc2;
         float stateWidth2;
         float stateHeight2;
-        if (resonators[CI[i].idx2]->isModule1D())
+        if (CI[i].res2->isModule1D())
         {
-            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / resonators[CI[i].idx2]->getNumIntervals();
-            yLoc2 = (0.5 + CI[i].idx2) * moduleHeight
-                - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1) * resonators[CI[i].idx2]->getVisualScaling();
+            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / CI[i].res2->getNumIntervals();
+            yLoc2 = (0.5 + CI[i].res2->getID()) * moduleHeight
+                - CI[i].res2->getStateAt (CI[i].loc2, 1) * CI[i].res2->getVisualScaling();
             g.drawEllipse (xLoc2 - Global::connRadius, yLoc2 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
         }
         else
         {
-            int Nx = resonators[CI[i].idx2]->getNumIntervalsX();
-            int Ny = resonators[CI[i].idx2]->getNumIntervalsY();
+            int Nx = CI[i].res2->getNumIntervalsX();
+            int Ny = CI[i].res2->getNumIntervalsY();
             stateWidth2 = getWidth() / static_cast<double> (Nx+1);
             stateHeight2 = moduleHeight / static_cast<double> (Ny+1);
 
             xLoc2 = getWidth() * static_cast<float>(CI[i].loc2 % Nx) / (Nx+1);
-            yLoc2 = CI[i].idx2 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / (Ny+1);
+            yLoc2 = CI[i].res2->getID() * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / (Ny+1);
             g.fillRect(xLoc2, yLoc2, stateWidth2, stateHeight2);
 
         }
@@ -123,7 +123,7 @@ void Instrument::paint (juce::Graphics& g)
         dashPattern[1] = 5.0;
 
         Line<float> line;
-        if (!resonators[CI[i].idx2]->isModule1D())
+        if (!CI[i].res2->isModule1D())
         {
             xLoc2 += 0.5 * stateWidth2;
             yLoc2 += 0.5 * stateHeight2;
@@ -236,9 +236,9 @@ void Instrument::solveInteractions()
         K3 = CI[i].K3;
         R = CI[i].R;
         
-        CI[i].etaNext = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 0) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 0);
-        CI[i].eta = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1);
-        CI[i].etaPrev = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 2) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 2);
+        CI[i].etaNext = CI[i].res1->getStateAt (CI[i].loc1, 0) - CI[i].res2->getStateAt (CI[i].loc2, 0);
+        CI[i].eta = CI[i].res1->getStateAt (CI[i].loc1, 1) - CI[i].res2->getStateAt (CI[i].loc2, 1);
+        CI[i].etaPrev = CI[i].res1->getStateAt (CI[i].loc1, 2) - CI[i].res2->getStateAt (CI[i].loc2, 2);
         
         rPlus = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta + 0.5 * fs * R;
         rMin = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta - 0.5 * fs * R;
@@ -247,19 +247,19 @@ void Instrument::solveInteractions()
         {
             case rigid:
                 force = CI[i].etaNext
-                    / (resonators[CI[i].idx1]->getConnectionDivisionTerm()
-                       + resonators[CI[i].idx2]->getConnectionDivisionTerm());
+                    / (CI[i].res1->getConnectionDivisionTerm()
+                       + CI[i].res2->getConnectionDivisionTerm());
                 break;
             case linearSpring:
             case nonlinearSpring:
                 force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMin / rPlus * CI[i].etaPrev)
-                    / (1.0 / rPlus + resonators[CI[i].idx1]->getConnectionDivisionTerm()
-                       + resonators[CI[i].idx2]->getConnectionDivisionTerm());
+                    / (1.0 / rPlus + CI[i].res1->getConnectionDivisionTerm()
+                       + CI[i].res2->getConnectionDivisionTerm());
                 break;
         }
         
-        resonators[CI[i].idx1]->addForce (-force, CI[i].loc1);
-        resonators[CI[i].idx2]->addForce (force, CI[i].loc2);
+        CI[i].res1->addForce (-force, CI[i].loc1);
+        CI[i].res2->addForce (force, CI[i].loc2);
     }
     
 }
@@ -367,9 +367,9 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                 case addConnectionState:
                     // add connection
                     if (currentConnectionType == rigid)     // add rigid connection
-                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(), res->getResonatorModuleType()));
+                        CI.push_back (ConnectionInfo (currentConnectionType, res, res->getConnLoc(), res->getResonatorModuleType()));
                     else                                    // add spring-like connection
-                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(),                                             res->getResonatorModuleType(),
+                        CI.push_back (ConnectionInfo (currentConnectionType, res, res->getConnLoc(),                                             res->getResonatorModuleType(),
                                                       Global::defaultLinSpringCoeff,
                                                       (currentConnectionType == linearSpring ? 0 : Global::defaultNonLinSpringCoeff),
                                                       Global::defaultConnDampCoeff));
@@ -378,13 +378,13 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     sendChangeMessage();
                     break;
                 case firstConnectionState:
-                    if (CI[CI.size()-1].idx1 == res->getID()) // clicked on the same component
+                    if (CI[CI.size()-1].res1 == res) // clicked on the same component
                     {
                         CI.pop_back();
                     }
                     else
                     {
-                        CI[CI.size()-1].setSecondResonatorParams (res->getID(), res->getConnLoc(), res->getResonatorModuleType());
+                        CI[CI.size()-1].setSecondResonatorParams (res, res->getConnLoc(), res->getResonatorModuleType());
 
                         // maybe the following only needs to be done when DONE is clicked
                         bool hasOverlap = resetOverlappingConnectionVectors();
@@ -416,15 +416,15 @@ std::vector<std::vector<int>> Instrument::getGridPointVector (std::vector<Connec
     for (auto C : CIO)
     {
         // if the grid points points of the resonator are already included in the total count, continue with the next loop
-        if (!gottenPointsOfResWithIdx[C->idx1])
+        if (!gottenPointsOfResWithIdx[C->res1->getID()])
         {
-            gridPointVector.push_back({resonators[C->idx1]->getNumPoints(), C->idx1});
-            gottenPointsOfResWithIdx[C->idx1] = true;
+            gridPointVector.push_back({resonators[C->res1->getID()]->getNumPoints(), C->res1->getID()});
+            gottenPointsOfResWithIdx[C->res1->getID()] = true;
         }
-        if (!gottenPointsOfResWithIdx[C->idx2])
+        if (!gottenPointsOfResWithIdx[C->res2->getID()])
         {
-            gridPointVector.push_back({resonators[C->idx2]->getNumPoints(), C->idx2});
-            gottenPointsOfResWithIdx[C->idx2] = true;
+            gridPointVector.push_back({resonators[C->res2->getID()]->getNumPoints(), C->res2->getID()});
+            gottenPointsOfResWithIdx[C->res2->getID()] = true;
         }
 
     }
@@ -453,9 +453,9 @@ bool Instrument::resetOverlappingConnectionVectors()
     std::vector<std::vector<int>> connLocs (CI.size() * 2, std::vector<int>(2, -1));
     for (int i = 0; i < CI.size() * 2; i = i + 2)
     {
-        connLocs[i][0] = CI[i/2].idx1;
+        connLocs[i][0] = CI[i/2].res1->getID();
         connLocs[i][1] = CI[i/2].loc1;
-        connLocs[i+1][0] = CI[i/2].idx2;
+        connLocs[i+1][0] = CI[i/2].res2->getID();
         connLocs[i+1][1] = CI[i/2].loc2;
     }
     std::vector<std::vector<int>> CIgroupIndices; // vector containing the indices of overlapping connections
@@ -597,12 +597,12 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
     int idx1, idx2;
     for (int i = 0; i < CIO.size(); ++i)
     {
-        idx1 = startIdx[CIO[i]->idx1] + CIO[i]->loc1;
-        idx2 = startIdx[CIO[i]->idx2] + CIO[i]->loc2;
+        idx1 = startIdx[CIO[i]->res1->getID()] + CIO[i]->loc1;
+        idx2 = startIdx[CIO[i]->res2->getID()] + CIO[i]->loc2;
         I.coeffRef (i, idx1) -= 1.0;
         I.coeffRef (i, idx2) += 1.0;
-        J.coeffRef (idx1, i) -= resonators[CIO[i]->idx1]->getConnectionDivisionTerm();
-        J.coeffRef (idx2, i) += resonators[CIO[i]->idx2]->getConnectionDivisionTerm();
+        J.coeffRef (idx1, i) -= CIO[i]->res1->getConnectionDivisionTerm();
+        J.coeffRef (idx2, i) += CIO[i]->res2->getConnectionDivisionTerm();
     }
     SparseMatrix<double> IJ = I * J;
     SparseMatrix<double> Pmat (CIO.size(), CIO.size());
@@ -611,12 +611,12 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 
     for (int i = 0; i < CIO.size(); ++i)
     {
-        CIO[i]->etaNext = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 0)
-                        - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 0);
-        CIO[i]->eta = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 1)
-                    - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 1);
-        CIO[i]->etaPrev = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 2)
-                        - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 2);
+        CIO[i]->etaNext = CIO[i]->res1->getStateAt (CIO[i]->loc1, 0)
+                        - CIO[i]->res2->getStateAt (CIO[i]->loc2, 0);
+        CIO[i]->eta = CIO[i]->res1->getStateAt (CIO[i]->loc1, 1)
+                    - CIO[i]->res2->getStateAt (CIO[i]->loc2, 1);
+        CIO[i]->etaPrev = CIO[i]->res1->getStateAt (CIO[i]->loc1, 2)
+                        - CIO[i]->res2->getStateAt (CIO[i]->loc2, 2);
         if (CIO[i]->connType == rigid)
         {
             Pmat.coeffRef(i, i) = Global::eps;
@@ -656,8 +656,8 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 //        std::cout << "wait" << std::endl;
     for (int i = 0; i < CIO.size(); ++i)
     {
-        resonators[CIO[i]->idx1]->addForce (-forces[i], CIO[i]->loc1);
-        resonators[CIO[i]->idx2]->addForce (forces[i], CIO[i]->loc2);
+        CIO[i]->res1->addForce (-forces[i], CIO[i]->loc1);
+        CIO[i]->res2->addForce (forces[i], CIO[i]->loc2);
     }
 
 
