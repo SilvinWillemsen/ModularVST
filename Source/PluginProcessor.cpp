@@ -101,11 +101,15 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     fs = sampleRate;
     
     initActions = {
-        addInstrumentAction
+        addInstrumentAction,
+        addResonatorModuleAction,
+        addResonatorModuleAction
     };
     
     
     initModuleTypes = {
+        stiffString,
+        stiffString
 //        membrane
     };
     

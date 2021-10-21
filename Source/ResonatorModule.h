@@ -52,8 +52,10 @@ public:
     int getConnLoc() { return connLoc; };
     void setConnLoc (int c) { connLoc = c; };
         
-    // getters
+    // ID
     int getID() { return ID; };
+    void setID (int I) { ID = I; } // only to be called when index of resonator in vector changes
+    
     virtual int getNumIntervals() = 0;
     virtual int getNumPoints() = 0;
     

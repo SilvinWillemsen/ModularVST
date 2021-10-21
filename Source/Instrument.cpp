@@ -177,6 +177,19 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
     resetTotalGridPoints();
 }
 
+void Instrument::removeResonatorModule (int ID)
+{
+    resonators.erase (resonators.begin() + ID);
+    resetResonatorIndices();
+    resetTotalGridPoints();
+}
+
+void Instrument::resetResonatorIndices()
+{
+    for (int i = 0; i < resonators.size(); ++i)
+        resonators[i]->setID (i);
+}
+
 void Instrument::initialise (int fs)
 {
     if (resonators.size() != 0)

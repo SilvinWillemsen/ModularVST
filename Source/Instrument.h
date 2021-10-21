@@ -69,8 +69,11 @@ public:
     // Get the number of resonator modules in the instrument
     int getNumResonatorModules() { return (int)resonators.size(); };
     
-    // Add a resonator module
+    // Add/remove a resonator module
     void addResonatorModule(ResonatorModuleType rmt, NamedValueSet& parameters);
+    void removeResonatorModule (int ID);
+    
+    void resetResonatorIndices();
     
     // function called from within the addResonatorModule function
     void resetTotalGridPoints();
