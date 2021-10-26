@@ -32,7 +32,7 @@ public:
     Path visualiseState (Graphics& g);
 
     void calculate() override;
-    float getOutput() override;
+    float getOutput (int idx) override;
     
     int getNumPoints() override;
     int getNumIntervals() override { return N; } ;

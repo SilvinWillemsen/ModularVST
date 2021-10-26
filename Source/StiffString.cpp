@@ -156,9 +156,9 @@ void StiffString::calculate()
 
 }
 
-float StiffString::getOutput()
+float StiffString::getOutput (int idx)
 {
-    return u[1][5]; // change output location to something else
+    return u[1][static_cast<int>(Global::limit (idx, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1))];
 }
 
 void StiffString::excite()
@@ -219,18 +219,12 @@ void StiffString::mouseDown (const MouseEvent& e)
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
-        case editConnectionState:
-        {
-            int tmpConnLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
-            setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
-//            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            break;
-        }
+        case editInOutputsState: {}
+        case editConnectionState: {}
         case firstConnectionState:
         {
-            int tmpConnLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
-            setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
-//            this->findParentComponentOfClass<Component>()->mouseDown(e);
+            int tmpMouseLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
+            setMouseLoc (Global::limit (tmpMouseLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
             break;
         }
         default:
@@ -241,10 +235,10 @@ void StiffString::mouseDown (const MouseEvent& e)
 
 void StiffString::mouseDrag (const MouseEvent& e)
 {
-    if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier)
+    if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier && applicationState == moveConnectionState)
     {
-        int tmpConnLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
-        setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
+        int tmpMouseLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
+        setMouseLoc (Global::limit (tmpMouseLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
         sendChangeMessage();
     }
 }

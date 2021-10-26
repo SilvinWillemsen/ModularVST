@@ -61,6 +61,65 @@ public:
         int connectionGroup = -1;
     };
     
+    struct InOutInfo
+    {
+        InOutInfo()
+        {
+            inResonators.reserve (16);
+            inLocs.reserve (16);
+            inChannels.reserve (16);
+
+            outResonators.reserve (16);
+            outLocs.reserve (16);
+            outChannels.reserve (16);
+        };
+
+        void addInput (std::shared_ptr<ResonatorModule> res, int loc, int channel = 2)
+        {
+            inResonators.push_back (res);
+            inLocs.push_back (loc);
+            inChannels.push_back (channel);
+            ++numInputs;
+        }
+        
+        void removeInput (int idx)
+        {
+            inResonators.erase (inResonators.begin() + idx);
+            inLocs.erase (inLocs.begin() + idx);
+            inChannels.erase (inChannels.begin() + idx);
+        }
+        
+        void addOutput (std::shared_ptr<ResonatorModule> res, int loc, int channel = 2)
+        {
+            outResonators.push_back (res);
+            outLocs.push_back (loc);
+            outChannels.push_back(channel);
+            ++numOutputs;
+        }
+        
+        void removeOutput (int idx)
+        {
+            outResonators.erase (outResonators.begin() + idx);
+            outLocs.erase (outLocs.begin() + idx);
+            outChannels.erase (outChannels.begin() + idx);
+        }
+        
+        // Input resonators, locations and channels
+        std::vector<std::shared_ptr<ResonatorModule>> inResonators;
+        std::vector<int> inLocs;
+        std::vector<int> inChannels; // 0 - left; 1 - right; 2 - both
+        
+        int numInputs = 0;
+        
+        // Output resonators, locations and channels
+        std::vector<std::shared_ptr<ResonatorModule>> outResonators;
+        std::vector<int> outLocs;
+        std::vector<int> outChannels; // 0 - left; 1 - right; 2 - both
+        
+        int numOutputs = 0;
+
+    };
+    
     void initialise (int fs);
     
     void paint (juce::Graphics&) override;
@@ -91,8 +150,9 @@ public:
     void update();
     
     // Returns the output of all modules
-    float getOutput();
-    
+    float getOutputL();
+    float getOutputR();
+
     // Calculates total energy of all modules
     void calcTotalEnergy();
     double getTotalEnergy() { return fs * (prevEnergy - totEnergy); };
@@ -126,7 +186,14 @@ public:
     
     std::vector<ConnectionInfo>* getConnectionInfo() { return &CI; }; // for presets
     
+    InOutInfo* getInOutInfo() { return &inOutInfo; };
+    
+    bool shouldRemoveInOrOutput() { return (inputToRemove != -1 || outputToRemove != -1); };
+    void removeInOrOutput();
+    
 private:
+    InOutInfo inOutInfo;
+    
     int fs;
     int totalGridPoints;
     
@@ -148,6 +215,8 @@ private:
     double totEnergy = 0;
     
     int resonatorToRemoveID = -1;
+    int outputToRemove = -1;
+    int inputToRemove = -1;
     bool shouldRemoveResonatorModule = false;
     
 #ifdef USE_EIGEN
@@ -157,6 +226,6 @@ private:
     int currentlySelectedResonator = -1;
     int connectionToMoveIdx;
     bool connectionToMoveIsFirst;
-    int prevConnLoc; // to prevent overlap
+    int prevMouseLoc; // to prevent overlap
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

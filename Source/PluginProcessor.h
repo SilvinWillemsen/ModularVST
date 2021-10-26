@@ -96,6 +96,7 @@ public:
     void setApplicationState (ApplicationState a);
 
     void savePreset();
+    
 private:
     //==============================================================================
     int fs;
@@ -110,6 +111,7 @@ private:
     
     std::vector<Action> initActions;
     std::vector<ResonatorModuleType> initModuleTypes;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };

@@ -32,6 +32,8 @@ enum Action
     addResonatorModuleAction,
     removeResonatorModuleAction,
     cancelRemoveResonatorModuleAction,
+    editInOutputsAction,
+    cancelInOutputsAction,
     editConnectionAction,
     cancelConnectionAction,
     savePresetAction
@@ -41,6 +43,7 @@ enum ApplicationState
 {
     normalState,
     removeResonatorModuleState,
+    editInOutputsState,
     editConnectionState,
     moveConnectionState,
     firstConnectionState
@@ -76,6 +79,8 @@ namespace Global
     static const int buttonHeight = 40;
     static const int buttonWidth = 80;
     static const int connRadius = 5;
+    static const int massRatioRadius = 5;
+    static const int inOutputWidth = 4;
 
     static const int listBoxRowHeight = 40;
 
@@ -85,6 +90,8 @@ namespace Global
     static const double defaultNonLinSpringCoeff = 1e8;
     static const double defaultConnDampCoeff = 0.0;
     static const double eps = 1e-15;
+
+    static const double twoDOutputScaling = 10.0;
 
     static NamedValueSet defaultStringParameters {
         {"L", 1.0},

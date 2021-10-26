@@ -39,7 +39,7 @@ public:
     void onlyCalculateMembrane();
     void calculateAll();
     
-    float getOutput() override;
+    float getOutput (int idx) override;
     
     int getNumPoints() override;
     int getNumIntervals() override { return N; }; // should find a way to remove this

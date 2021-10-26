@@ -205,9 +205,9 @@ void StiffMembrane::calculate()
 #endif
 }
 
-float StiffMembrane::getOutput()
+float StiffMembrane::getOutput (int idx)
 {
-    return u[1][5 + (5*Nx)] * 10; // change output location to something else
+    return u[1][idx] * Global::twoDOutputScaling;
 }
 
 int StiffMembrane::getNumPoints()
@@ -301,23 +301,15 @@ void StiffMembrane::mouseDown (const MouseEvent& e)
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
-        case editConnectionState:
-        {
-            // these +1s are only if we visualise all grid points (including boundaries)
-            int tmpConnLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
-            int tmpConnLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
-        
-            setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
-//            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            break;
-        }
+        case editInOutputsState: {}
+        case editConnectionState: {}
         case firstConnectionState:
         {
             // these +1s are only if we visualise all grid points (including boundaries)
-            int tmpConnLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
-            int tmpConnLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
+            int tmpMouseLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
+            int tmpMouseLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
         
-            setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
+            setMouseLoc (tmpMouseLocX + tmpMouseLocY * Nx);
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
@@ -332,10 +324,10 @@ void StiffMembrane::mouseDrag (const MouseEvent& e)
 {
     if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier)
     {
-        int tmpConnLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
-        int tmpConnLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
+        int tmpMouseLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
+        int tmpMouseLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
     
-        setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
+        setMouseLoc (tmpMouseLocX + tmpMouseLocY * Nx);
         sendChangeMessage();
     }
 }

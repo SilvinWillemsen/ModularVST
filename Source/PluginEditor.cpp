@@ -120,6 +120,18 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     refreshControlPanel();
                     break;
                 }
+                case editInOutputsAction:
+                {
+                    setApplicationState (editInOutputsState);
+                    refreshControlPanel();
+                    break;
+                }
+                case cancelInOutputsAction:
+                {
+                    setApplicationState (normalState);
+                    refreshControlPanel();
+                    break;
+                }
 
                 case editConnectionAction:
                 {
@@ -215,10 +227,15 @@ void ModularVSTAudioProcessorEditor::refreshControlPanel()
                 controlPanel->toggleAddInstrumentButton (true);
                 controlPanel->toggleAddResonatorButton (true);
                 if (instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->getNumResonatorModules() == 0)
+                {
                     controlPanel->toggleRemoveResonatorButton (false);
+                    controlPanel->toggleEditInOutputsButton (false);
+                }
                 else
+                {
                     controlPanel->toggleRemoveResonatorButton (true);
-
+                    controlPanel->toggleEditInOutputsButton (true);
+                }
                 if (instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->getNumResonatorModules() > 1)
                 {
                     controlPanel->toggleEditConnectionButton (true);
@@ -234,13 +251,22 @@ void ModularVSTAudioProcessorEditor::refreshControlPanel()
                 controlPanel->toggleAddInstrumentButton (false);
                 controlPanel->toggleAddResonatorButton (false);
                 controlPanel->toggleEditConnectionButton (false);
+                controlPanel->toggleEditInOutputsButton (false);
                 controlPanel->toggleRemoveResonatorButton (true);
                 break;
+            case editInOutputsState:
+                controlPanel->toggleAddInstrumentButton (false);
+                controlPanel->toggleAddResonatorButton (false);
+                controlPanel->toggleEditConnectionButton (false);
+                controlPanel->toggleRemoveResonatorButton (false);
+                break;
+
             case editConnectionState:
             case firstConnectionState:
                 controlPanel->toggleAddInstrumentButton (false);
                 controlPanel->toggleAddResonatorButton (false);
                 controlPanel->toggleRemoveResonatorButton (false);
+                controlPanel->toggleEditInOutputsButton (false);
                 break;
         }
     }

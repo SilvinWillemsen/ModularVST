@@ -27,6 +27,10 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     removeResonatorModuleButton = std::make_unique<TextButton> ("Remove Resonator Module");
     removeResonatorModuleButton->addListener (this);
     addAndMakeVisible(removeResonatorModuleButton.get());
+    
+    editInOutputsButton = std::make_unique<TextButton> ("Edit In- Outputs");
+    editInOutputsButton->addListener (this);
+    addAndMakeVisible(editInOutputsButton.get());
 
     editConnectionButton = std::make_unique<TextButton> ("Edit Connections");
     editConnectionButton->addListener (this);
@@ -81,7 +85,7 @@ void ControlPanel::resized()
     area.removeFromLeft (Global::margin);
     addResonatorModuleButton->setBounds (area.removeFromLeft (100));
     area.removeFromLeft (Global::margin);
-    removeResonatorModuleButton->setBounds (area.removeFromLeft (100));
+    editInOutputsButton->setBounds (area.removeFromLeft (100));
     area.removeFromLeft (Global::margin);
     editConnectionButton->setBounds (area.removeFromLeft (100));
     area.removeFromLeft (Global::margin);
@@ -108,6 +112,19 @@ void ControlPanel::buttonClicked (Button* button)
         {
             action = cancelRemoveResonatorModuleAction;
             removeResonatorModuleButton->setButtonText ("Remove Resonator Module");
+        }
+    }
+    else if (button == editInOutputsButton.get())
+    {
+        if (applicationState == normalState)
+        {
+            action = editInOutputsAction;
+            editInOutputsButton->setButtonText ("Done");
+        }
+        else if (applicationState == editInOutputsState)
+        {
+            action = cancelInOutputsAction;
+            editInOutputsButton->setButtonText ("Edit In- Outputs");
         }
     }
     else if (button == editConnectionButton.get())

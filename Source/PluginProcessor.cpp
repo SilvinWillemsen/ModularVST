@@ -227,13 +227,21 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     float* const channelData1 = buffer.getWritePointer (0, 0);
     float* const channelData2 = numChannels > 1 ? buffer.getWritePointer (1, 0) : nullptr;
 
-    std::vector<float> totOutput (buffer.getNumSamples(), 0.0f);
+    std::vector<float> totOutputL (buffer.getNumSamples(), 0.0f);
+    std::vector<float> totOutputR (buffer.getNumSamples(), 0.0f);
 
     std::vector<float* const*> curChannel {&channelData1, &channelData2};
     
+    for (auto inst : instruments)
+        if (inst->shouldRemoveInOrOutput())
+            inst->removeInOrOutput();
+    
     if (setToZero)
+    {
         for (auto inst : instruments)
             inst->setStatesToZero();
+        return;
+    }
     
     for (auto inst : instruments)
     {
@@ -259,15 +267,27 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 #endif
             inst->update();
 
-            totOutput[i] += inst->getOutput();
+            totOutputL[i] += inst->getOutputL();
+            totOutputR[i] += inst->getOutputR();
         }
         
     }
     
     // limit output
-    for (int i = 0; i < buffer.getNumSamples(); ++i)
-        for (int channel = 0; channel < numChannels; ++channel)
-            curChannel[channel][0][i] = outputLimit (totOutput[i]);
+    for (int channel = 0; channel < numChannels; ++channel)
+    {
+        if (channel == 0)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i)
+                curChannel[channel][0][i] = outputLimit (totOutputL[i]);
+        }
+        else if (channel == 1)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i)
+                curChannel[channel][0][i] = outputLimit (totOutputR[i]);
+        }
+    }
+
 //    std::cout << totOutput[15] << std::endl;
     
 }
@@ -352,6 +372,11 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
 
             setStatesToZero (false);
             break;
+        case editInOutputsState:
+        {
+            setStatesToZero (true);
+            break;
+        }
         case editConnectionState:
         {
             setStatesToZero (true);
