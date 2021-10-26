@@ -242,7 +242,10 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             return;
         
         inst->checkIfShouldExcite();
-
+        
+        if (inst->checkIfShouldRemoveResonatorModule())
+            inst->removeResonatorModule();
+            
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
             inst->calculate();
@@ -349,7 +352,7 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
 
             setStatesToZero (false);
             break;
-        case addConnectionState:
+        case editConnectionState:
         {
             setStatesToZero (true);
             for (auto inst : instruments)
@@ -358,12 +361,107 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
                     inst->setAddingConnection (true);
                 else
                     inst->setAddingConnection (false);
-                inst->setApplicationState (addConnectionState);
+                inst->setApplicationState (editConnectionState);
             }
+            break;
+        }
+        case removeResonatorModuleState:
+        {
+            setStatesToZero (true);
             break;
         }
     }
     for (auto inst : instruments)
         inst->setApplicationState (a);
     
+}
+
+void ModularVSTAudioProcessor::savePreset()
+{
+    std::ofstream file;
+    file.open("savedPreset.txt");
+    for (int i = 0; i < instruments.size(); ++i)
+    {
+        int numResonators = instruments[i]->getNumResonatorModules();
+        file << "Instrument " << i << " has " << numResonators << " resonators:\n\n";
+        for (int r = 0; r < numResonators; ++r)
+        {
+            ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r);
+            // type
+            file << "\t " << "Resonator " << r << " is of type ";
+            switch (curResonator->getResonatorModuleType()) {
+                case stiffString:
+                    file << "Stiff String";
+                    break;
+                case bar:
+                    file << "Bar";
+                    break;
+                case acousticTube:
+                    file << "Acoustic Tube";
+                    break;
+                case membrane:
+                    file << "Membrane";
+                    break;
+                case thinPlate:
+                    file << "Thin Plate";
+                    break;
+                case stiffMembrane:
+                    file << "Stiff Membrane";
+                    break;
+
+                default:
+                    break;
+            }
+            file << " with parameters:"<< "\n";
+
+            for (int p = 0; p < curResonator->getParamters().size(); ++p)
+            {
+                String paramName = curResonator->getParamters().getName(p).toString();
+                double value = *curResonator->getParamters().getVarPointer (paramName);
+                file << "\t " << "\t " << paramName << ": " << value << "\n";
+            }
+            file << "\n" << "\n";
+
+        }
+        int numConnections = (int)instruments[i]->getConnectionInfo()->size();
+        switch (numConnections) {
+            case 0:
+                file << "... and " << numConnections << " connections."<< "\n";
+                break;
+            case 1:
+                file << "... and " << numConnections << " connection:"<< "\n";
+                break;
+            default:
+                file << "... and " << numConnections << " connections:"<< "\n";
+                break;
+        }
+        
+        for (int c = 0; c < numConnections; ++c)
+        {
+            String connectionTypeString;
+            switch (instruments[i]->getConnectionInfo()[0][c].connType) {
+                case rigid:
+                    connectionTypeString = "rigid";
+                    break;
+                case linearSpring:
+                    connectionTypeString = "linear";
+                    break;
+                case nonlinearSpring:
+                    connectionTypeString = "nonlinear";
+                    break;
+
+                default:
+                    break;
+            }
+            
+            file << "\t "
+            << instruments[i]->getConnectionInfo()[0][c].res1->getID() << " at "
+            << instruments[i]->getConnectionInfo()[0][c].loc1
+            << " <-" << connectionTypeString << "-> "
+            << instruments[i]->getConnectionInfo()[0][c].res2->getID() << " at "
+            << instruments[i]->getConnectionInfo()[0][c].loc2 << "\n";
+            
+        }
+    }
+    file.close();
 }

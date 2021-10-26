@@ -207,6 +207,8 @@ int StiffString::getNumPoints()
 
 void StiffString::mouseDown (const MouseEvent& e)
 {
+    setModifier (e.mods);
+        
     switch (applicationState) {
             
         // excite
@@ -217,26 +219,42 @@ void StiffString::mouseDown (const MouseEvent& e)
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
-        case addConnectionState:
+        case editConnectionState:
         {
-            int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
+            int tmpConnLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
             setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            sendChangeMessage();
             break;
         }
         case firstConnectionState:
         {
-            int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
+            int tmpConnLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
             setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            sendChangeMessage();
             break;
         }
         default:
             break;
     }
+    sendChangeMessage();
 }
+
+void StiffString::mouseDrag (const MouseEvent& e)
+{
+    if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier)
+    {
+        int tmpConnLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
+        setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
+        sendChangeMessage();
+    }
+}
+
+void StiffString::mouseUp (const MouseEvent& e)
+{
+    if (applicationState == moveConnectionState)
+        this->findParentComponentOfClass<Component>()->mouseUp(e);
+}
+
 
 double StiffString::getKinEnergy()
 {

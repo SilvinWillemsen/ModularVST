@@ -107,14 +107,33 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                         std::cout << "No instruments, can't add module." << std::endl;
                     break;
                 }
-                case addConnectionAction:
+                case removeResonatorModuleAction:
                 {
-                    setApplicationState (addConnectionState);
+                    setApplicationState (removeResonatorModuleState);
+                    refreshControlPanel();
+                    break;
+                }
+                case cancelRemoveResonatorModuleAction:
+                {
+                    instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->setToRemoveResonatorModule();
+                    setApplicationState (normalState);
+                    refreshControlPanel();
+                    break;
+                }
+
+                case editConnectionAction:
+                {
+                    setApplicationState (editConnectionState);
                     break;
                 }
                 case cancelConnectionAction:
                 {
                     setApplicationState (normalState);
+                    break;
+                }
+                case savePresetAction:
+                {
+                    audioProcessor.savePreset();
                     break;
                 }
 
@@ -132,13 +151,13 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
             {
                 case normalState:
                     break;
-                case addConnectionState:
+                case editConnectionState:
                     controlPanel->toggleConnectionTypeBox (true);
-                    controlPanel->toggleAddConnectionButton (true);
+                    controlPanel->toggleEditConnectionButton (true);
                     break;
                 case firstConnectionState:
                     controlPanel->toggleConnectionTypeBox (false);
-                    controlPanel->toggleAddConnectionButton (false);
+                    controlPanel->toggleEditConnectionButton (false);
                     break;
             }
         }
@@ -185,7 +204,7 @@ void ModularVSTAudioProcessorEditor::refreshControlPanel()
     {
         controlPanel->toggleAddInstrumentButton (true);
         controlPanel->toggleAddResonatorButton (false);
-        controlPanel->toggleAddConnectionButton (false);
+        controlPanel->toggleEditConnectionButton (false);
         controlPanel->toggleConnectionTypeBox (false);
     }
     else
@@ -195,23 +214,34 @@ void ModularVSTAudioProcessorEditor::refreshControlPanel()
             case normalState:
                 controlPanel->toggleAddInstrumentButton (true);
                 controlPanel->toggleAddResonatorButton (true);
+                if (instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->getNumResonatorModules() == 0)
+                    controlPanel->toggleRemoveResonatorButton (false);
+                else
+                    controlPanel->toggleRemoveResonatorButton (true);
+
                 if (instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->getNumResonatorModules() > 1)
                 {
-                    controlPanel->toggleAddConnectionButton (true);
+                    controlPanel->toggleEditConnectionButton (true);
                     controlPanel->toggleConnectionTypeBox (true);
                 }
                 else
                 {
-                    controlPanel->toggleAddConnectionButton (false);
+                    controlPanel->toggleEditConnectionButton (false);
                     controlPanel->toggleConnectionTypeBox (false);
                 }
                 break;
-            case addConnectionState:
-            case firstConnectionState:
-            {
+            case removeResonatorModuleState:
                 controlPanel->toggleAddInstrumentButton (false);
                 controlPanel->toggleAddResonatorButton (false);
-            }
+                controlPanel->toggleEditConnectionButton (false);
+                controlPanel->toggleRemoveResonatorButton (true);
+                break;
+            case editConnectionState:
+            case firstConnectionState:
+                controlPanel->toggleAddInstrumentButton (false);
+                controlPanel->toggleAddResonatorButton (false);
+                controlPanel->toggleRemoveResonatorButton (false);
+                break;
         }
     }
 }
@@ -222,5 +252,3 @@ void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
     controlPanel->setApplicationState (a);
     audioProcessor.setApplicationState (a);
 }
-
-

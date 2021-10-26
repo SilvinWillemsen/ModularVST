@@ -70,10 +70,11 @@ public:
     
     // Get the number of resonator modules in the instrument
     int getNumResonatorModules() { return (int)resonators.size(); };
+    ResonatorModule* getResonatorPtr (int idx) { return resonators[idx].get(); };
     
     // Add/remove a resonator module
     void addResonatorModule(ResonatorModuleType rmt, NamedValueSet& parameters);
-    void removeResonatorModule (int ID);
+    void removeResonatorModule();
     
     void resetResonatorIndices();
     
@@ -98,12 +99,14 @@ public:
     
     // Checks whether modules should be excited
     void checkIfShouldExcite();
-
+    bool checkIfShouldRemoveResonatorModule() { return shouldRemoveResonatorModule; };
+    void setToRemoveResonatorModule() { shouldRemoveResonatorModule = true; };
+    
     double getFs() { return fs; };
     
     void mouseDown (const MouseEvent& e) override;
-//    void mouseMove (const MouseEvent& e) override;
-
+    void mouseUp (const MouseEvent& e) override;
+    
     void setApplicationState (ApplicationState a);
     
     void setStatesToZero() { for (auto res : resonators) res->setStatesToZero(); }
@@ -120,6 +123,8 @@ public:
 
     bool resetOverlappingConnectionVectors();
     void solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO); // Solve the connections that are overlapping
+    
+    std::vector<ConnectionInfo>* getConnectionInfo() { return &CI; }; // for presets
     
 private:
     int fs;
@@ -142,8 +147,16 @@ private:
     double prevEnergy = 0;
     double totEnergy = 0;
     
+    int resonatorToRemoveID = -1;
+    bool shouldRemoveResonatorModule = false;
+    
 #ifdef USE_EIGEN
 //    Eigen::SparseMatrix<double> IJminP, I, J, IJ, Pmat;
 #endif
+    
+    int currentlySelectedResonator = -1;
+    int connectionToMoveIdx;
+    bool connectionToMoveIsFirst;
+    int prevConnLoc; // to prevent overlap
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

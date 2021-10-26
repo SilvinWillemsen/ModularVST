@@ -36,7 +36,8 @@ public:
     void refresh();
     
     void toggleAddResonatorButton (bool t) { addResonatorModuleButton->setEnabled (t); };
-    void toggleAddConnectionButton (bool t) { addConnectionButton->setEnabled (t); };
+    void toggleRemoveResonatorButton (bool t) { removeResonatorModuleButton->setEnabled (t); };
+    void toggleEditConnectionButton (bool t) { editConnectionButton->setEnabled (t); };
     void toggleAddInstrumentButton (bool t) { addInstrumentButton->setEnabled (t); };
     void toggleConnectionTypeBox (bool t) { connectionTypeBox->setEnabled (t); };
 
@@ -52,8 +53,10 @@ private:
     
     std::unique_ptr<TextButton> addInstrumentButton;
     std::unique_ptr<TextButton> addResonatorModuleButton;
-    std::unique_ptr<TextButton> addConnectionButton;
+    std::unique_ptr<TextButton> removeResonatorModuleButton;
+    std::unique_ptr<TextButton> editConnectionButton;
     std::unique_ptr<ComboBox> connectionTypeBox;
+    std::unique_ptr<TextButton> savePresetButton;
 
     Action action = noAction;
     ApplicationState applicationState = normalState;

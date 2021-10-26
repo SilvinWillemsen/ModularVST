@@ -11,6 +11,9 @@
 #include <JuceHeader.h>
 #include "Instrument.h"
 
+#include <fstream>
+#include <iostream>
+
 //==============================================================================
 /**
 */
@@ -92,6 +95,7 @@ public:
     ApplicationState getApplicationState() { return applicationState; };
     void setApplicationState (ApplicationState a);
 
+    void savePreset();
 private:
     //==============================================================================
     int fs;

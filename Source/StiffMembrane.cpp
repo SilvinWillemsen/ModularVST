@@ -288,6 +288,8 @@ double StiffMembrane::getInputEnergy()
 
 void StiffMembrane::mouseDown (const MouseEvent& e)
 {
+    setModifier (e.mods);
+
     switch (applicationState) {
             
         // excite
@@ -299,7 +301,7 @@ void StiffMembrane::mouseDown (const MouseEvent& e)
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
-        case addConnectionState:
+        case editConnectionState:
         {
             // these +1s are only if we visualise all grid points (including boundaries)
             int tmpConnLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
@@ -307,7 +309,6 @@ void StiffMembrane::mouseDown (const MouseEvent& e)
         
             setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            sendChangeMessage();
             break;
         }
         case firstConnectionState:
@@ -318,13 +319,33 @@ void StiffMembrane::mouseDown (const MouseEvent& e)
         
             setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
 //            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            sendChangeMessage();
             break;
         }
         default:
             break;
     }
+    sendChangeMessage();
+
 }
+
+void StiffMembrane::mouseDrag (const MouseEvent& e)
+{
+    if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier)
+    {
+        int tmpConnLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
+        int tmpConnLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
+    
+        setConnLoc (tmpConnLocX + tmpConnLocY * Nx);
+        sendChangeMessage();
+    }
+}
+
+void StiffMembrane::mouseUp (const MouseEvent& e)
+{
+    if (applicationState == moveConnectionState)
+        this->findParentComponentOfClass<Component>()->mouseUp(e);
+}
+
 
 void StiffMembrane::excite()
 {
@@ -332,8 +353,8 @@ void StiffMembrane::excite()
 //    u[1][40 + 40 * Nx] += 1;
 //    u[2][40 + 40 * Nx] += 1;
 
-    int excitationWidthX = Nx / 5;
-    int excitationWidthY = Ny / 5;
+    int excitationWidthX = 3;
+    int excitationWidthY = 3;
     std::vector<std::vector<double>> excitationArea (excitationWidthX, std::vector<double> (excitationWidthY, 0));
 
     for (int i = 1; i < excitationWidthX; ++i)

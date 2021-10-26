@@ -23,10 +23,14 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     addResonatorModuleButton = std::make_unique<TextButton> ("Add Resonator Module");
     addResonatorModuleButton->addListener (this);
     addAndMakeVisible(addResonatorModuleButton.get());
+    
+    removeResonatorModuleButton = std::make_unique<TextButton> ("Remove Resonator Module");
+    removeResonatorModuleButton->addListener (this);
+    addAndMakeVisible(removeResonatorModuleButton.get());
 
-    addConnectionButton = std::make_unique<TextButton> ("Add Connection");
-    addConnectionButton->addListener (this);
-    addAndMakeVisible(addConnectionButton.get());
+    editConnectionButton = std::make_unique<TextButton> ("Edit Connections");
+    editConnectionButton->addListener (this);
+    addAndMakeVisible(editConnectionButton.get());
     
     connectionTypeBox = std::make_unique<ComboBox> ();
     connectionTypeBox->addListener (this);
@@ -37,6 +41,10 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     connectionTypeBox->setSelectedId (1);
     
     addChangeListener (audioProcessorEditor);
+    
+    savePresetButton = std::make_unique<TextButton> ("Save Preset");
+    savePresetButton->addListener (this);
+    addAndMakeVisible(savePresetButton.get());
     
 }
 
@@ -55,13 +63,13 @@ void ControlPanel::paint (juce::Graphics& g)
 
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
-    g.setColour (juce::Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("ControlPanel", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
+//    g.setColour (juce::Colours::grey);
+//    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
+//
+//    g.setColour (juce::Colours::white);
+//    g.setFont (14.0f);
+//    g.drawText ("ControlPanel", getLocalBounds(),
+//                juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void ControlPanel::resized()
@@ -73,9 +81,13 @@ void ControlPanel::resized()
     area.removeFromLeft (Global::margin);
     addResonatorModuleButton->setBounds (area.removeFromLeft (100));
     area.removeFromLeft (Global::margin);
-    addConnectionButton->setBounds (area.removeFromLeft (100));
+    removeResonatorModuleButton->setBounds (area.removeFromLeft (100));
+    area.removeFromLeft (Global::margin);
+    editConnectionButton->setBounds (area.removeFromLeft (100));
     area.removeFromLeft (Global::margin);
     connectionTypeBox->setBounds (area.removeFromLeft (100));
+    
+    savePresetButton->setBounds (area.removeFromRight (100));
 
 }
 
@@ -85,18 +97,35 @@ void ControlPanel::buttonClicked (Button* button)
         action = addInstrumentAction;
     else if (button == addResonatorModuleButton.get())
         action = addResonatorModuleAction;
-    else if (button == addConnectionButton.get())
+    else if (button == removeResonatorModuleButton.get())
     {
         if (applicationState == normalState)
         {
-            action = addConnectionAction;
-            addConnectionButton->setButtonText ("Done");
+            action = removeResonatorModuleAction;
+            removeResonatorModuleButton->setButtonText ("Remove");
         }
-        else if (applicationState == addConnectionState)
+        else if (applicationState == removeResonatorModuleState)
+        {
+            action = cancelRemoveResonatorModuleAction;
+            removeResonatorModuleButton->setButtonText ("Remove Resonator Module");
+        }
+    }
+    else if (button == editConnectionButton.get())
+    {
+        if (applicationState == normalState)
+        {
+            action = editConnectionAction;
+            editConnectionButton->setButtonText ("Done");
+        }
+        else if (applicationState == editConnectionState)
         {
             action = cancelConnectionAction;
-            addConnectionButton->setButtonText ("Add Connection");
+            editConnectionButton->setButtonText ("Edit Connections");
         }
+    }
+    else if (button == savePresetButton.get())
+    {
+        action = savePresetAction;
     }
     sendChangeMessage();
 }
@@ -106,7 +135,7 @@ void ControlPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     comboBoxChangeBool = true;
     connectionType = static_cast<ConnectionType> (connectionTypeBox->getSelectedId());
 //    if (applicationState == normalState && init)
-//        addConnectionButton->triggerClick();
+//        editConnectionButton->triggerClick();
 //    else
     sendChangeMessage();
 

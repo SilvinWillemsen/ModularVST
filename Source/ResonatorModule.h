@@ -80,6 +80,11 @@ public:
     int getVisualScaling() { return visualScaling; };
     double getConnectionDivisionTerm() { return connectionDivisionTerm; };
     void setConnectionDivisionTerm (double cDT) { connectionDivisionTerm = cDT; };
+       
+    void setModifier (ModifierKeys mod) { modifier = mod; };
+    ModifierKeys getModifier() { return modifier; };
+
+    NamedValueSet& getParamters() { return parameters; }; // for presets
     
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
@@ -98,8 +103,6 @@ protected:
     // 2D variables
     int Nx = -1;
     int Ny = -1;
-
-    NamedValueSet parameters;
     
     std::vector<double*> u;                     // state pointers
     std::vector<std::vector<double>> uStates;   // state vectors
@@ -121,16 +124,18 @@ protected:
     double dampTot = 0;
     double inputTot = 0;
     
-
+    
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised
     ResonatorModuleType resonatorModuleType; // what type of resonator is this
     bool is1D;
     int connLoc = -1;
-
+    
     double connectionDivisionTerm = -1;
+    ModifierKeys modifier; // modifier for connections (left / right mouse click + click-n-drag with ctrl)
     
-    
+    NamedValueSet parameters;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };

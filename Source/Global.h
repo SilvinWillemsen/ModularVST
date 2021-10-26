@@ -30,14 +30,19 @@ enum Action
     
     addInstrumentAction,
     addResonatorModuleAction,
-    addConnectionAction,
-    cancelConnectionAction
+    removeResonatorModuleAction,
+    cancelRemoveResonatorModuleAction,
+    editConnectionAction,
+    cancelConnectionAction,
+    savePresetAction
 };
 
 enum ApplicationState
 {
     normalState,
-    addConnectionState,
+    removeResonatorModuleState,
+    editConnectionState,
+    moveConnectionState,
     firstConnectionState
 };
 
