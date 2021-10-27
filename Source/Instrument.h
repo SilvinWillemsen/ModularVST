@@ -159,8 +159,9 @@ public:
     
     // Checks whether modules should be excited
     void checkIfShouldExcite();
+    
     bool checkIfShouldRemoveResonatorModule() { return shouldRemoveResonatorModule; };
-    void setToRemoveResonatorModule() { shouldRemoveResonatorModule = true; };
+    void setToRemoveResonatorModule () { shouldRemoveResonatorModule = true; };
     
     double getFs() { return fs; };
     

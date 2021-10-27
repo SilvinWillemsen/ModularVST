@@ -85,7 +85,8 @@ public:
     }
 
     bool shouldRefreshEditor() { return refreshEditor; };
-            
+    void dontRefreshEditor() { refreshEditor = false; };
+    
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
     
     int getCurrentlyActiveInstrument() { return currentlyActiveInstrument; };

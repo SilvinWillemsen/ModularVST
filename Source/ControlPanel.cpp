@@ -16,40 +16,50 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    addInstrumentButton = std::make_unique<TextButton> ("Add Instrument");
-    addInstrumentButton->addListener (this);
-    addAndMakeVisible(addInstrumentButton.get());
+    
+    allButtons.reserve (8);
+    allComboBoxes.reserve (8);
 
-    addResonatorModuleButton = std::make_unique<TextButton> ("Add Resonator Module");
-    addResonatorModuleButton->addListener (this);
-    addAndMakeVisible(addResonatorModuleButton.get());
-    
-    removeResonatorModuleButton = std::make_unique<TextButton> ("Remove Resonator Module");
-    removeResonatorModuleButton->addListener (this);
-    addAndMakeVisible(removeResonatorModuleButton.get());
-    
-    editInOutputsButton = std::make_unique<TextButton> ("Edit In- Outputs");
-    editInOutputsButton->addListener (this);
-    addAndMakeVisible(editInOutputsButton.get());
+    addInstrumentButton = std::make_shared<TextButton> ("Add Instrument");
+    allButtons.push_back (addInstrumentButton);
 
-    editConnectionButton = std::make_unique<TextButton> ("Edit Connections");
-    editConnectionButton->addListener (this);
-    addAndMakeVisible(editConnectionButton.get());
+    addResonatorModuleButton = std::make_shared<TextButton> ("Add Resonator Module");
+    allButtons.push_back (addResonatorModuleButton);
+
+    removeResonatorModuleButton = std::make_shared<TextButton> ("Remove Resonator Module");
+    allButtons.push_back (removeResonatorModuleButton);
     
-    connectionTypeBox = std::make_unique<ComboBox> ();
-    connectionTypeBox->addListener (this);
-    addAndMakeVisible(connectionTypeBox.get());
+    editInOutputsButton = std::make_shared<TextButton> ("Edit In- Outputs");
+    allButtons.push_back (editInOutputsButton);
+    
+    editConnectionButton = std::make_shared<TextButton> ("Edit Connections");
+    allButtons.push_back (editConnectionButton);
+
+    savePresetButton = std::make_unique<TextButton> ("Save Preset");
+    allButtons.push_back (savePresetButton);
+
+    for (int i = 0; i < allButtons.size(); ++i)
+    {
+        allButtons[i]->addListener (this);
+        addAndMakeVisible (allButtons[i].get());
+    }
+    
+    connectionTypeBox = std::make_shared<ComboBox> ();
     connectionTypeBox->addItem ("Rigid", rigid);
     connectionTypeBox->addItem ("Linear Spring", linearSpring);
     connectionTypeBox->addItem ("Nonlinear spring", nonlinearSpring);
-    connectionTypeBox->setSelectedId (1);
+
+    allComboBoxes.push_back (connectionTypeBox);
+    
+    for (int i = 0; i < allComboBoxes.size(); ++i)
+    {
+        allComboBoxes[i]->addListener (this);
+        addAndMakeVisible(allComboBoxes[i].get());
+        allComboBoxes[i]->setSelectedId (1);
+    }
     
     addChangeListener (audioProcessorEditor);
-    
-    savePresetButton = std::make_unique<TextButton> ("Save Preset");
-    savePresetButton->addListener (this);
-    addAndMakeVisible(savePresetButton.get());
-    
+        
 }
 
 ControlPanel::~ControlPanel()
@@ -81,17 +91,41 @@ void ControlPanel::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     Rectangle<int> area = getLocalBounds();
-    addInstrumentButton->setBounds (area.removeFromLeft (100));
-    area.removeFromLeft (Global::margin);
-    addResonatorModuleButton->setBounds (area.removeFromLeft (100));
-    area.removeFromLeft (Global::margin);
-    editInOutputsButton->setBounds (area.removeFromLeft (100));
-    area.removeFromLeft (Global::margin);
-    editConnectionButton->setBounds (area.removeFromLeft (100));
-    area.removeFromLeft (Global::margin);
-    connectionTypeBox->setBounds (area.removeFromLeft (100));
-    
-    savePresetButton->setBounds (area.removeFromRight (100));
+    for (int i = 0; i < allButtons.size(); ++i)
+    {
+        if (allButtons[i]->isVisible())
+        {
+            if (applicationState == normalState)
+            {
+                if (i == 5)
+                {
+                    allButtons[i]->setBounds (area.removeFromRight (100));
+                }
+                else
+                {
+                    allButtons[i]->setBounds (area.removeFromLeft (100));
+                }
+                area.removeFromLeft (Global::margin);
+
+            }
+            else
+            {
+                allButtons[i]->setBounds (area.removeFromRight (100));
+                if (i == 4 && allComboBoxes[0]->isVisible())
+                {
+                    area.removeFromRight (Global::margin);
+                    allComboBoxes[0]->setBounds(area.removeFromRight (100));
+                }
+                area.removeFromRight (Global::margin);
+
+            }
+            
+            
+           
+            
+        }
+    }
+        
 
 }
 
@@ -157,4 +191,58 @@ void ControlPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     sendChangeMessage();
 
 //    init = true;
+}
+
+void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instruments, int currentlyActiveInstrument)
+{
+    std::vector<bool> activeButtons (allButtons.size(), false);
+    std::vector<bool> activeComboBoxes (allComboBoxes.size(), false);
+    if (currentlyActiveInstrument == -1)
+    {
+        activeButtons[0] = true;
+    }
+    else
+    {
+        switch (applicationState)
+        {
+            case normalState:
+                activeButtons[0] = true;
+                activeButtons[1] = true;
+                activeButtons[5] = true;
+
+                if (instruments[0][currentlyActiveInstrument]->getNumResonatorModules() != 0)
+                {
+                    activeButtons[2] = true;
+                    activeButtons[3] = true;
+                }
+                if (instruments[0][currentlyActiveInstrument]->getNumResonatorModules() > 1)
+                {
+                    activeButtons[4] = true;
+                }
+                break;
+            case removeResonatorModuleState:
+                activeButtons[2] = true;
+                break;
+            case editInOutputsState:
+                activeButtons[3] = true;
+                break;
+
+            case editConnectionState:
+            case moveConnectionState:
+            case firstConnectionState:
+                activeButtons[4] = true;
+                activeComboBoxes[0] = true;
+                break;
+        }
+    }
+    for (int i = 0; i < allButtons.size(); ++i)
+    {
+        allButtons[i]->setVisible (activeButtons[i]);
+    }
+    
+    for (int i = 0; i < allComboBoxes.size(); ++i)
+    {
+        allComboBoxes[i]->setVisible (activeComboBoxes[i]);
+    }
+    resized();
 }

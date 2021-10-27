@@ -103,13 +103,21 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     initActions = {
         addInstrumentAction,
         addResonatorModuleAction,
-        addResonatorModuleAction
+        addResonatorModuleAction,
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addResonatorModuleAction
     };
     
     
     initModuleTypes = {
         stiffString,
-        stiffString
+        stiffString,
+//        thinPlate,
+//        bar,
+//        bar,
 //        membrane
     };
     
@@ -252,8 +260,10 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         inst->checkIfShouldExcite();
         
         if (inst->checkIfShouldRemoveResonatorModule())
+        {
             inst->removeResonatorModule();
-            
+            refreshEditor = true;
+        }
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
             inst->calculate();
@@ -405,10 +415,24 @@ void ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
     file.open("savedPreset.txt");
+    file << "The application has  " << instruments.size() << " instruments.";
     for (int i = 0; i < instruments.size(); ++i)
     {
+        file << "\n\n";
         int numResonators = instruments[i]->getNumResonatorModules();
-        file << "Instrument " << i << " has " << numResonators << " resonators:\n\n";
+        file << "Instrument " << i << " has ";
+
+        switch (numResonators) {
+            case 0:
+                file << numResonators << " resonators.\n\n";
+                break;
+            case 1:
+                file << numResonators << " resonator:\n\n";
+                break;
+            default:
+                file << numResonators << " resonators:\n\n";
+                break;
+        }
         for (int r = 0; r < numResonators; ++r)
         {
             ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r);

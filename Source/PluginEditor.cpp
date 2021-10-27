@@ -75,7 +75,10 @@ void ModularVSTAudioProcessorEditor::buttonClicked (Button* button)
 void ModularVSTAudioProcessorEditor::timerCallback()
 {
     if (audioProcessor.shouldRefreshEditor())
+    {
         refresh();
+        audioProcessor.dontRefreshEditor();
+    }
     repaint();
 }
 
@@ -110,26 +113,22 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 case removeResonatorModuleAction:
                 {
                     setApplicationState (removeResonatorModuleState);
-                    refreshControlPanel();
                     break;
                 }
                 case cancelRemoveResonatorModuleAction:
                 {
                     instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->setToRemoveResonatorModule();
                     setApplicationState (normalState);
-                    refreshControlPanel();
                     break;
                 }
                 case editInOutputsAction:
                 {
                     setApplicationState (editInOutputsState);
-                    refreshControlPanel();
                     break;
                 }
                 case cancelInOutputsAction:
                 {
                     setApplicationState (normalState);
-                    refreshControlPanel();
                     break;
                 }
 
@@ -212,64 +211,7 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
 
 void ModularVSTAudioProcessorEditor::refreshControlPanel()
 {
-    if (audioProcessor.getCurrentlyActiveInstrument() == -1)
-    {
-        controlPanel->toggleAddInstrumentButton (true);
-        controlPanel->toggleAddResonatorButton (false);
-        controlPanel->toggleEditConnectionButton (false);
-        controlPanel->toggleConnectionTypeBox (false);
-    }
-    else
-    {
-        switch (applicationState)
-        {
-            case normalState:
-                controlPanel->toggleAddInstrumentButton (true);
-                controlPanel->toggleAddResonatorButton (true);
-                if (instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->getNumResonatorModules() == 0)
-                {
-                    controlPanel->toggleRemoveResonatorButton (false);
-                    controlPanel->toggleEditInOutputsButton (false);
-                }
-                else
-                {
-                    controlPanel->toggleRemoveResonatorButton (true);
-                    controlPanel->toggleEditInOutputsButton (true);
-                }
-                if (instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->getNumResonatorModules() > 1)
-                {
-                    controlPanel->toggleEditConnectionButton (true);
-                    controlPanel->toggleConnectionTypeBox (true);
-                }
-                else
-                {
-                    controlPanel->toggleEditConnectionButton (false);
-                    controlPanel->toggleConnectionTypeBox (false);
-                }
-                break;
-            case removeResonatorModuleState:
-                controlPanel->toggleAddInstrumentButton (false);
-                controlPanel->toggleAddResonatorButton (false);
-                controlPanel->toggleEditConnectionButton (false);
-                controlPanel->toggleEditInOutputsButton (false);
-                controlPanel->toggleRemoveResonatorButton (true);
-                break;
-            case editInOutputsState:
-                controlPanel->toggleAddInstrumentButton (false);
-                controlPanel->toggleAddResonatorButton (false);
-                controlPanel->toggleEditConnectionButton (false);
-                controlPanel->toggleRemoveResonatorButton (false);
-                break;
-
-            case editConnectionState:
-            case firstConnectionState:
-                controlPanel->toggleAddInstrumentButton (false);
-                controlPanel->toggleAddResonatorButton (false);
-                controlPanel->toggleRemoveResonatorButton (false);
-                controlPanel->toggleEditInOutputsButton (false);
-                break;
-        }
-    }
+    controlPanel->refresh (instruments, audioProcessor.getCurrentlyActiveInstrument());
 }
 
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)

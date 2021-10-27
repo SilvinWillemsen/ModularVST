@@ -256,7 +256,7 @@ void Instrument::removeResonatorModule()
     // FIND A THREAD-SAFE WAY TO DO THIS
     
 //    resonators[currentlySelectedResonator]->~ResonatorModule();
-//    resonators.erase (resonators.begin() + currentlySelectedResonator);
+    resonators.erase (resonators.begin() + currentlySelectedResonator);
     currentlySelectedResonator = -1;
     shouldRemoveResonatorModule = false;
     
