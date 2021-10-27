@@ -104,21 +104,21 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         addInstrumentAction,
         addResonatorModuleAction,
         addResonatorModuleAction,
-//        addInstrumentAction,
-//        addResonatorModuleAction,
-//        addInstrumentAction,
-//        addResonatorModuleAction,
-//        addResonatorModuleAction
+        addInstrumentAction,
+        addResonatorModuleAction,
+        addInstrumentAction,
+        addResonatorModuleAction,
+        addResonatorModuleAction
     };
     
     
     initModuleTypes = {
         stiffString,
         stiffString,
-//        thinPlate,
-//        bar,
-//        bar,
-//        membrane
+        thinPlate,
+        bar,
+        bar,
+        membrane
     };
     
     int numModules = 0;
@@ -259,6 +259,11 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         
         inst->checkIfShouldExcite();
         
+        if (inst->checkIfShouldRemoveResonatorModule())
+        {
+            inst->removeResonatorModule();
+            refreshEditor = true;
+        }
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
             inst->calculate();
@@ -409,79 +414,72 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
 void ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
-    file.open("savedPreset.txt");
-    file << "The application has  " << instruments.size() << " instruments.";
+
+    file.open("savedPreset.xml");
+    file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
     {
-        file << "\n\n";
         int numResonators = instruments[i]->getNumResonatorModules();
-        file << "Instrument " << i << " has ";
+        file << "\t " << "<Instrument id=\"" << i << "\">"<< "\n";
 
-        switch (numResonators) {
-            case 0:
-                file << numResonators << " resonators.\n\n";
-                break;
-            case 1:
-                file << numResonators << " resonator:\n\n";
-                break;
-            default:
-                file << numResonators << " resonators:\n\n";
-                break;
-        }
         for (int r = 0; r < numResonators; ++r)
         {
             ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r);
             // type
-            file << "\t " << "Resonator " << r << " is of type ";
+
+            file << "\t " << "\t " << "<Resonator id=\"" << i <<"_"<< r << "r\" type=\"";
             switch (curResonator->getResonatorModuleType()) {
                 case stiffString:
-                    file << "Stiff String";
+                    file << "Stiff_String\">";
                     break;
                 case bar:
-                    file << "Bar";
+                    file << "Bar\">";
                     break;
                 case acousticTube:
-                    file << "Acoustic Tube";
+                    file << "Acoustic_Tube\">";
                     break;
                 case membrane:
-                    file << "Membrane";
+                    file << "Membrane\">";
                     break;
                 case thinPlate:
-                    file << "Thin Plate";
+                    file << "Thin_Plate\">";
                     break;
                 case stiffMembrane:
-                    file << "Stiff Membrane";
+                    file << "Stiff_Membrane\">";
                     break;
 
                 default:
                     break;
             }
-            file << " with parameters:"<< "\n";
+            file << "\n";
 
             for (int p = 0; p < curResonator->getParamters().size(); ++p)
             {
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << r << "r_";
                 String paramName = curResonator->getParamters().getName(p).toString();
                 double value = *curResonator->getParamters().getVarPointer (paramName);
-                file << "\t " << "\t " << paramName << ": " << value << "\n";
+                file << paramName << "\" value=\"" << value << "\"/>\n";
             }
-            file << "\n" << "\n";
+
+            file << "\t " << "\t " << "</Resonator>" << "\n";
 
         }
         int numConnections = (int)instruments[i]->getConnectionInfo()->size();
-        switch (numConnections) {
-            case 0:
-                file << "... and " << numConnections << " connections."<< "\n";
-                break;
-            case 1:
-                file << "... and " << numConnections << " connection:"<< "\n";
-                break;
-            default:
-                file << "... and " << numConnections << " connections:"<< "\n";
-                break;
-        }
+        //switch (numConnections) {
+        //    case 0:
+        //        file << "... and " << numConnections << " connections."<< "\n";
+        //        break;
+        //    case 1:
+        //        file << "... and " << numConnections << " connection:"<< "\n";
+        //        break;
+        //    default:
+        //        file << "... and " << numConnections << " connections:"<< "\n";
+        //        break;
+        //}
         
         for (int c = 0; c < numConnections; ++c)
         {
+            file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "c\" type=\"";
             String connectionTypeString;
             switch (instruments[i]->getConnectionInfo()[0][c].connType) {
                 case rigid:
@@ -498,14 +496,14 @@ void ModularVSTAudioProcessor::savePreset()
                     break;
             }
             
-            file << "\t "
-            << instruments[i]->getConnectionInfo()[0][c].res1->getID() << " at "
+            file << connectionTypeString <<"\" fromResonator=\""
+            << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\" fromLocation=\""
             << instruments[i]->getConnectionInfo()[0][c].loc1
-            << " <-" << connectionTypeString << "-> "
-            << instruments[i]->getConnectionInfo()[0][c].res2->getID() << " at "
-            << instruments[i]->getConnectionInfo()[0][c].loc2 << "\n";
-            
+            << "\" toResonator=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\" toLocation=\""
+            << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>" << "\n";
         }
+        file << "\t " << "</Instrument>" << "\n";
     }
+    file << "</App" << ">" << "\n";
     file.close();
 }
