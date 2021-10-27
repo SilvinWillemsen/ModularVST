@@ -28,7 +28,8 @@ public:
     void setStatesToZero();
     
     bool isModuleReady() { return moduleIsReady; };
-    
+    void unReadyModule() { moduleIsReady = false; }; // for module removal
+
     // Scheme functions
     virtual void calculate() = 0;   // Calculate the FD scheme
     void update();                  // Update internal system states

@@ -253,13 +253,33 @@ void Instrument::removeResonatorModule()
 {
     if (currentlySelectedResonator == -1)
         return;
-    // FIND A THREAD-SAFE WAY TO DO THIS
     
-//    resonators[currentlySelectedResonator]->~ResonatorModule();
+    resonators[currentlySelectedResonator]->unReadyModule();
+
+    for (int i = 0; i < inOutInfo.numInputs; ++i)
+    {
+        if (inOutInfo.inResonators[i] == resonators[currentlySelectedResonator])
+        {
+            inOutInfo.removeInput(i);
+            --i;
+        }
+    }
+    
+    for (int i = 0; i < inOutInfo.numOutputs; ++i)
+    {
+        if (inOutInfo.outResonators[i] == resonators[currentlySelectedResonator])
+        {
+            inOutInfo.removeOutput(i);
+            --i;
+        }
+    }
+            
+    resonators[currentlySelectedResonator]->setVisible (false);
+//    resonators[currentlySelectedResonator]->repaint();
     resonators.erase (resonators.begin() + currentlySelectedResonator);
     currentlySelectedResonator = -1;
     shouldRemoveResonatorModule = false;
-    
+
     resetResonatorIndices();
     resetTotalGridPoints();
 }
@@ -956,14 +976,12 @@ void Instrument::removeInOrOutput()
     {
         inOutInfo.removeInput (inputToRemove);
         inputToRemove = -1;
-        --inOutInfo.numInputs;
     }
     
     if (outputToRemove != -1)
     {
         inOutInfo.removeOutput (outputToRemove);
         outputToRemove = -1;
-        --inOutInfo.numOutputs;
         
     }
 }

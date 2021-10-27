@@ -87,6 +87,8 @@ public:
             inResonators.erase (inResonators.begin() + idx);
             inLocs.erase (inLocs.begin() + idx);
             inChannels.erase (inChannels.begin() + idx);
+            --numInputs;
+
         }
         
         void addOutput (std::shared_ptr<ResonatorModule> res, int loc, int channel = 2)
@@ -102,6 +104,7 @@ public:
             outResonators.erase (outResonators.begin() + idx);
             outLocs.erase (outLocs.begin() + idx);
             outChannels.erase (outChannels.begin() + idx);
+            --numOutputs;
         }
         
         // Input resonators, locations and channels

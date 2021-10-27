@@ -74,6 +74,14 @@ void ModularVSTAudioProcessorEditor::buttonClicked (Button* button)
 
 void ModularVSTAudioProcessorEditor::timerCallback()
 {
+    for (auto inst : *instruments)
+        if (inst->checkIfShouldRemoveResonatorModule())
+        {
+            inst->removeResonatorModule();
+            audioProcessor.setStatesToZero (false);
+            refresh();
+        }
+        
     if (audioProcessor.shouldRefreshEditor())
     {
         refresh();

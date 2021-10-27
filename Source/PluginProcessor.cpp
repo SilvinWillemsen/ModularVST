@@ -259,11 +259,6 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         
         inst->checkIfShouldExcite();
         
-        if (inst->checkIfShouldRemoveResonatorModule())
-        {
-            inst->removeResonatorModule();
-            refreshEditor = true;
-        }
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
             inst->calculate();
