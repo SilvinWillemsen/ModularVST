@@ -363,8 +363,6 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
         inst->setApplicationState (a);
     
 }
-<<<<<<< Updated upstream
-=======
 
 void ModularVSTAudioProcessor::savePreset()
 {
@@ -459,4 +457,3 @@ void ModularVSTAudioProcessor::savePreset()
     file << "</App" << ">" << "\n";
     file.close();
 }
->>>>>>> Stashed changes
