@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "Global.h"
+#include "Instrument.h"
 
 //==============================================================================
 /*
@@ -33,10 +34,12 @@ public:
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
     
-    void refresh();
+    void refresh (std::vector<std::shared_ptr<Instrument>>* instruments, int currentlyActiveInstrument);
     
     void toggleAddResonatorButton (bool t) { addResonatorModuleButton->setEnabled (t); };
-    void toggleAddConnectionButton (bool t) { addConnectionButton->setEnabled (t); };
+    void toggleRemoveResonatorButton (bool t) { removeResonatorModuleButton->setEnabled (t); };
+    void toggleEditInOutputsButton (bool t) { editInOutputsButton->setEnabled (t); };
+    void toggleEditConnectionButton (bool t) { editConnectionButton->setEnabled (t); };
     void toggleAddInstrumentButton (bool t) { addInstrumentButton->setEnabled (t); };
     void toggleConnectionTypeBox (bool t) { connectionTypeBox->setEnabled (t); };
 
@@ -50,10 +53,28 @@ public:
     
 private:
     
-    std::unique_ptr<TextButton> addInstrumentButton;
-    std::unique_ptr<TextButton> addResonatorModuleButton;
-    std::unique_ptr<TextButton> addConnectionButton;
-    std::unique_ptr<ComboBox> connectionTypeBox;
+    // Collection of all buttons
+    // 0 - Add Instrument
+    // 1 - Add Resonator
+    // 2 - Remove Resonator
+    // 3 - Edit In- Outputs
+    // 4 - Edit Connections
+    // 5 - Save Preset
+
+    std::vector<std::shared_ptr<TextButton>> allButtons;
+    
+    std::shared_ptr<TextButton> addInstrumentButton;
+    std::shared_ptr<TextButton> addResonatorModuleButton;
+    std::shared_ptr<TextButton> removeResonatorModuleButton;
+    std::shared_ptr<TextButton> editInOutputsButton;
+    std::shared_ptr<TextButton> editConnectionButton;
+    std::shared_ptr<TextButton> savePresetButton;
+    
+    // Collection of all combo boxes
+    // 0 - Connection Type
+    // 1 - Input Output
+    std::vector<std::shared_ptr<ComboBox>> allComboBoxes;
+    std::shared_ptr<ComboBox> connectionTypeBox;
 
     Action action = noAction;
     ApplicationState applicationState = normalState;

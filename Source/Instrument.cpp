@@ -41,49 +41,87 @@ void Instrument::paint (juce::Graphics& g)
         g.drawText("Click on \"Add Resonator Module\" to add a module to this instrument!", getLocalBounds(), Justification::centred);
         g.drawRect (getLocalBounds().reduced(Global::margin, Global::margin), 1.0f);
     }
-    g.setColour (Colours::orange);
 
+    int moduleHeight = static_cast<float>(getHeight())/ resonators.size();
+    // draw inputs and outputs
+    for (int i = 0; i < inOutInfo.numOutputs; ++i)
+    {
+        switch (inOutInfo.outChannels[i])
+        {
+            case 0:
+                g.setColour (Colours::white.withAlpha(0.5f));
+                break;
+            case 1:
+                g.setColour (Colours::red.withAlpha(0.5f));
+                break;
+            case 2:
+                g.setColour (Colours::yellow.withAlpha(0.5f));
+                break;
+        }
+        ResonatorModule* curResonator = inOutInfo.outResonators[i].get();
+
+        if (curResonator->isModule1D())
+        {
+            int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i]) / curResonator->getNumIntervals();
+            int yLoc = (0.5 + curResonator->getID()) * moduleHeight
+            - curResonator->getStateAt (inOutInfo.outLocs[i], 1) * curResonator->getVisualScaling();
+            g.drawArrow (Line<float>(xLoc, yLoc, xLoc, (curResonator->getID() + 0.75) * moduleHeight), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
+        }
+        else
+        {
+            int Nx = curResonator->getNumIntervalsX();
+            int Ny = curResonator->getNumIntervalsY();
+            int stateWidth = getWidth() / static_cast<double> (Nx+1);
+            int stateHeight = moduleHeight / static_cast<double> (Ny+1);
+
+            int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i] % Nx) / (Nx+1);
+            int yLoc = curResonator->getID() * moduleHeight + moduleHeight * static_cast<float>(inOutInfo.outLocs[i] / Nx) / (Ny+1);
+            g.drawRect (xLoc, yLoc, stateWidth, stateHeight, Global::inOutputWidth);
+        }
+        
+    }
+    
+    
     // draw connections
     for (int i = 0; i < CI.size(); ++i)
     {
         switch (CI[i].connType)
         {
             case rigid:
-                g.setColour (Colours::white);
+                g.setColour (Colours::limegreen);
                 break;
             case linearSpring:
                 g.setColour (Colours::orange);
                 break;
             case nonlinearSpring:
-                g.setColour (Colours::red);
+                g.setColour (Colours::magenta);
                 break;
         }
-        int moduleHeight = static_cast<float>(getHeight())/ resonators.size();
         int xLoc1;
         int yLoc1;
         int stateWidth1;
         int stateHeight1;
-        if (resonators[CI[i].idx1]->isModule1D())
+        if (CI[i].res1->isModule1D())
         {
-            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1) / resonators[CI[i].idx1]->getNumIntervals();
-            yLoc1 = (0.5 + CI[i].idx1) * moduleHeight
-                - resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) * resonators[CI[i].idx1]->getVisualScaling();
+            xLoc1 = getWidth() * static_cast<float>(CI[i].loc1) / CI[i].res1->getNumIntervals();
+            yLoc1 = (0.5 + CI[i].res1->getID()) * moduleHeight
+                - CI[i].res1->getStateAt (CI[i].loc1, 1) * CI[i].res1->getVisualScaling();
             g.drawEllipse (xLoc1 - Global::connRadius, yLoc1 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
         }
         else
         {
-            int Nx = resonators[CI[i].idx1]->getNumIntervalsX();
-            int Ny = resonators[CI[i].idx1]->getNumIntervalsY();
+            int Nx = CI[i].res1->getNumIntervalsX();
+            int Ny = CI[i].res1->getNumIntervalsY();
             stateWidth1 = getWidth() / static_cast<double> (Nx+1);
             stateHeight1 = moduleHeight / static_cast<double> (Ny+1);
 
             xLoc1 = getWidth() * static_cast<float>(CI[i].loc1 % Nx) / (Nx+1);
-            yLoc1 = CI[i].idx1 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / (Ny+1);
+            yLoc1 = CI[i].res1->getID() * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / (Ny+1);
             g.fillRect(xLoc1, yLoc1, stateWidth1, stateHeight1);
         }
         
-        if (!resonators[CI[i].idx1]->isModule1D())
+        if (!CI[i].res1->isModule1D())
         {
             xLoc1 += 0.5 * stateWidth1;
             yLoc1 += 0.5 * stateHeight1;
@@ -97,23 +135,23 @@ void Instrument::paint (juce::Graphics& g)
         float yLoc2;
         float stateWidth2;
         float stateHeight2;
-        if (resonators[CI[i].idx2]->isModule1D())
+        if (CI[i].res2->isModule1D())
         {
-            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / resonators[CI[i].idx2]->getNumIntervals();
-            yLoc2 = (0.5 + CI[i].idx2) * moduleHeight
-                - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1) * resonators[CI[i].idx2]->getVisualScaling();
+            xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / CI[i].res2->getNumIntervals();
+            yLoc2 = (0.5 + CI[i].res2->getID()) * moduleHeight
+                - CI[i].res2->getStateAt (CI[i].loc2, 1) * CI[i].res2->getVisualScaling();
             g.drawEllipse (xLoc2 - Global::connRadius, yLoc2 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
         }
         else
         {
-            int Nx = resonators[CI[i].idx2]->getNumIntervalsX();
-            int Ny = resonators[CI[i].idx2]->getNumIntervalsY();
+            int Nx = CI[i].res2->getNumIntervalsX();
+            int Ny = CI[i].res2->getNumIntervalsY();
             stateWidth2 = getWidth() / static_cast<double> (Nx+1);
             stateHeight2 = moduleHeight / static_cast<double> (Ny+1);
 
             xLoc2 = getWidth() * static_cast<float>(CI[i].loc2 % Nx) / (Nx+1);
-            yLoc2 = CI[i].idx2 * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / (Ny+1);
+            yLoc2 = CI[i].res2->getID() * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / (Ny+1);
             g.fillRect(xLoc2, yLoc2, stateWidth2, stateHeight2);
 
         }
@@ -123,20 +161,49 @@ void Instrument::paint (juce::Graphics& g)
         dashPattern[1] = 5.0;
 
         Line<float> line;
-        if (!resonators[CI[i].idx2]->isModule1D())
+        if (!CI[i].res2->isModule1D())
         {
             xLoc2 += 0.5 * stateWidth2;
             yLoc2 += 0.5 * stateHeight2;
         }
+        
+        double massRatio;
+        int sign;
+        if (CI[i].res1->getConnectionDivisionTerm() > CI[i].res2->getConnectionDivisionTerm())
+        {
+            massRatio = CI[i].res1->getConnectionDivisionTerm() / CI[i].res2->getConnectionDivisionTerm();
+            sign = 1;
+        }
+        else
+        {
+            massRatio = CI[i].res2->getConnectionDivisionTerm() / CI[i].res1->getConnectionDivisionTerm();
+            sign = -1;
+
+        }
 
         line = Line<float> (xLoc1, yLoc1, xLoc2, yLoc2);
+//        float testLength = sqrt((yLoc2 - yLoc1) * (yLoc2 - yLoc1) + (xLoc2 - xLoc1) * (xLoc2 - xLoc1));
+//        float lineGetLength = line.getLength();
+        
+        Point<float> test = line.getPointAlongLine(0.9 * (sign * log10(massRatio) * 0.125 + 0.5) * line.getLength());
+        g.fillEllipse(test.x - Global::massRatioRadius, test.y - Global::massRatioRadius,
+                      2.0 * Global::massRatioRadius, 2.0 * Global::massRatioRadius);
         if (CI[i].connType == rigid)
             g.drawLine (line, 1.0f);
         else
             g.drawDashedLine (line, dashPattern, 2, dashPattern[0], 0);
     }
+    if (applicationState == removeResonatorModuleState)
+    {
+        g.setColour (Colours::red.withAlpha(0.5f));
+        g.fillRect (0, moduleHeight * resonatorToRemoveID,
+                    getWidth(), moduleHeight);
+    }
+    
+    
     
 }
+
 
 void Instrument::resized()
 {
@@ -157,24 +224,50 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
     {
         case stiffString:
             newResonatorModule = std::make_shared<StiffString> (rmt, parameters, fs, resonators.size(), this);
+            inOutInfo.addOutput (newResonatorModule, 5, resonators.size() % 2 == 0 ? 0 : 1);
             break;
         case bar:
             newResonatorModule = std::make_shared<Bar> (rmt, parameters, fs, resonators.size(), this);
+            inOutInfo.addOutput (newResonatorModule, 5);
             break;
         case membrane:
             newResonatorModule = std::make_shared<Membrane> (rmt, parameters, fs, resonators.size(), this);
+            inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()));
             break;
         case thinPlate:
             newResonatorModule = std::make_shared<ThinPlate> (rmt, parameters, fs, resonators.size(), this);
+            inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()));
             break;
         case stiffMembrane:
             newResonatorModule = std::make_shared<StiffMembrane> (rmt, parameters, fs, resonators.size(), this);
+            inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()));
             break;
 
     }
     resonators.push_back (newResonatorModule);
     addAndMakeVisible (resonators[resonators.size()-1].get(), 0);
     resetTotalGridPoints();
+}
+
+void Instrument::removeResonatorModule()
+{
+    if (currentlySelectedResonator == -1)
+        return;
+    // FIND A THREAD-SAFE WAY TO DO THIS
+    
+//    resonators[currentlySelectedResonator]->~ResonatorModule();
+    resonators.erase (resonators.begin() + currentlySelectedResonator);
+    currentlySelectedResonator = -1;
+    shouldRemoveResonatorModule = false;
+    
+    resetResonatorIndices();
+    resetTotalGridPoints();
+}
+
+void Instrument::resetResonatorIndices()
+{
+    for (int i = 0; i < resonators.size(); ++i)
+        resonators[i]->setID (i);
 }
 
 void Instrument::initialise (int fs)
@@ -223,9 +316,9 @@ void Instrument::solveInteractions()
         K3 = CI[i].K3;
         R = CI[i].R;
         
-        CI[i].etaNext = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 0) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 0);
-        CI[i].eta = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 1) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 1);
-        CI[i].etaPrev = resonators[CI[i].idx1]->getStateAt (CI[i].loc1, 2) - resonators[CI[i].idx2]->getStateAt (CI[i].loc2, 2);
+        CI[i].etaNext = CI[i].res1->getStateAt (CI[i].loc1, 0) - CI[i].res2->getStateAt (CI[i].loc2, 0);
+        CI[i].eta = CI[i].res1->getStateAt (CI[i].loc1, 1) - CI[i].res2->getStateAt (CI[i].loc2, 1);
+        CI[i].etaPrev = CI[i].res1->getStateAt (CI[i].loc1, 2) - CI[i].res2->getStateAt (CI[i].loc2, 2);
         
         rPlus = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta + 0.5 * fs * R;
         rMin = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta - 0.5 * fs * R;
@@ -234,19 +327,19 @@ void Instrument::solveInteractions()
         {
             case rigid:
                 force = CI[i].etaNext
-                    / (resonators[CI[i].idx1]->getConnectionDivisionTerm()
-                       + resonators[CI[i].idx2]->getConnectionDivisionTerm());
+                    / (CI[i].res1->getConnectionDivisionTerm()
+                       + CI[i].res2->getConnectionDivisionTerm());
                 break;
             case linearSpring:
             case nonlinearSpring:
                 force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMin / rPlus * CI[i].etaPrev)
-                    / (1.0 / rPlus + resonators[CI[i].idx1]->getConnectionDivisionTerm()
-                       + resonators[CI[i].idx2]->getConnectionDivisionTerm());
+                    / (1.0 / rPlus + CI[i].res1->getConnectionDivisionTerm()
+                       + CI[i].res2->getConnectionDivisionTerm());
                 break;
         }
         
-        resonators[CI[i].idx1]->addForce (-force, CI[i].loc1);
-        resonators[CI[i].idx2]->addForce (force, CI[i].loc2);
+        CI[i].res1->addForce (-force, CI[i].loc1);
+        CI[i].res2->addForce (force, CI[i].loc2);
     }
     
 }
@@ -258,12 +351,24 @@ void Instrument::update()
         res->update();
 }
 
-float Instrument::getOutput()
+float Instrument::getOutputL()
 {
-    float output = 0.0f;
-    for (auto res : resonators)
-        output += res->getOutput();
-    return output;
+    float outputL = 0.0f;
+    for (int i = 0; i < inOutInfo.numOutputs; ++i)
+        if (inOutInfo.outChannels[i] == 0 || inOutInfo.outChannels[i] == 2)
+            outputL += inOutInfo.outResonators[i]->getOutput (inOutInfo.outLocs[i]);
+
+    return outputL;
+}
+
+float Instrument::getOutputR()
+{
+    float outputR = 0.0f;
+    for (int i = 0; i < inOutInfo.numOutputs; ++i)
+        if (inOutInfo.outChannels[i] == 1 || inOutInfo.outChannels[i] == 2)
+            outputR += inOutInfo.outResonators[i]->getOutput (inOutInfo.outLocs[i]);
+
+    return outputR;
 }
 
 void Instrument::calcTotalEnergy()
@@ -292,13 +397,26 @@ void Instrument::mouseDown (const MouseEvent& e)
     sendChangeMessage(); // set instrument to active one (for adding modules)
 }
 
+void Instrument::mouseUp (const MouseEvent& e)
+{
+    // maybe the following only needs to be done when DONE is clicked
+    bool hasOverlap = resetOverlappingConnectionVectors();
+    std::cout << "Has overlap: " << hasOverlap << std::endl;
+#ifndef USE_EIGEN
+    if (hasOverlap)
+        CI.erase(CI.begin() + connectionToMoveIdx);
+#endif
+    if (applicationState == moveConnectionState)
+        setApplicationState (editConnectionState);
+}
+
 //void Instrument::mouseMove (const MouseEvent& e)
 //{
 //
 //    switch (applicationState) {
 //        case normalState:
 //            break;
-//        case addConnectionState:
+//        case editConnectionState:
 ////            mouseX = e.x;
 ////            mouseY = e.y;
 //            break;
@@ -315,7 +433,7 @@ void Instrument::setApplicationState (ApplicationState a)
             setAddingConnection (false);
             setAlpha (1.0);
             break;
-        case addConnectionState:
+        case editConnectionState:
             if (!addingConnection)
                 setAlpha (0.2);
             break;
@@ -327,7 +445,7 @@ void Instrument::setApplicationState (ApplicationState a)
     
 //    switch (a)
 //    {
-//        case addConnectionState:
+//        case editConnectionState:
 //        {
 //            setInterceptsMouseClicks (false, false);
 //            break;
@@ -343,35 +461,201 @@ void Instrument::setApplicationState (ApplicationState a)
 
 void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
-    // do not add connections if this is not the currently active instrument
-    if (!addingConnection)
-        return;
+    for (int i = 0; i < resonators.size(); ++i)
+        if (resonators[i].get() == changeBroadcaster)
+            currentlySelectedResonator = i;
+//
+//    // do not add connections if this is not the currently active instrument
+//    if (!addingConnection)
+//        return;
     
     for (auto res : resonators)
+    {
         if (res.get() == changeBroadcaster)
         {
             switch (applicationState) {
-                case addConnectionState:
-                    // add connection
-                    if (currentConnectionType == rigid)     // add rigid connection
-                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(), res->getResonatorModuleType()));
-                    else                                    // add spring-like connection
-                        CI.push_back (ConnectionInfo (currentConnectionType, res->getID(), res->getConnLoc(),                                             res->getResonatorModuleType(),
-                                                      Global::defaultLinSpringCoeff,
-                                                      (currentConnectionType == linearSpring ? 0 : Global::defaultNonLinSpringCoeff),
-                                                      Global::defaultConnDampCoeff));
+                case moveConnectionState:
+                    if (connectionToMoveIsFirst)
+                        CI[connectionToMoveIdx].loc1 = res->getMouseLoc();
+                    else
+                        CI[connectionToMoveIdx].loc2 = res->getMouseLoc();
 
-                    setApplicationState (firstConnectionState);
-                    sendChangeMessage();
+                    break;
+                case editInOutputsState:
+                    if (res->getModifier() == ModifierKeys::leftButtonModifier ||
+                        res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier ||
+                        res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::altModifier)
+                    {
+                        // prevent outputs from being added on top of each other
+                        int margin = res->isModule1D() ? Global::inOutputWidth : 0; // give the mouseclick a radius for 1D object
+                        for (int i = 0; i < inOutInfo.numOutputs; ++i)
+                        {
+                            if (inOutInfo.outResonators[i] == res)
+                            {
+                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                                int xLocConn = static_cast<float> (inOutInfo.outLocs[i]) / res->getNumPoints() * getWidth();
+
+                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                    return;
+                            }
+                        }
+//                        for (int i = 0; i < inOutInfo.numInputs; ++i)
+//                        {
+//
+//                            // prevent inputs from being added on top of each other
+//                            if (inOutInfo.inResonators[i] == res)
+//                            {
+//                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+//                                int xLocConn = static_cast<float> (inOutInfo.inLocs[i]) / res->getNumPoints() * getWidth();
+//
+//                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+//                                    return;
+//                            }
+//                            
+//                        }
+                        switch (res->getModifier().getRawFlags())
+                        {
+                            case ModifierKeys::leftButtonModifier:
+                                inOutInfo.addOutput (res, res->getMouseLoc());
+                                break;
+                            case ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier:
+                                inOutInfo.addOutput (res, res->getMouseLoc(), 0);
+                                break;
+                            case ModifierKeys::leftButtonModifier + ModifierKeys::altModifier:
+                                inOutInfo.addOutput (res, res->getMouseLoc(), 1);
+                                break;
+
+                        }
+                    }
+                    
+                    if (res->getModifier() == ModifierKeys::rightButtonModifier)
+                    {
+                        int margin = res->isModule1D() ? Global::inOutputWidth : 0; // give the mouseclick a radius for 1D object
+                        for (int i = 0; i < inOutInfo.numOutputs; ++i) // ALSO DO FOR INPUTS
+                        {
+                            if (inOutInfo.outResonators[i] == res)
+                            {
+                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                                int xLocConn = static_cast<float> (inOutInfo.outLocs[i]) / res->getNumPoints() * getWidth();
+
+                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                {
+                                    outputToRemove = i;
+                                    //break?
+
+                                }
+                            }
+                        }
+                        for (int i = 0; i < inOutInfo.numInputs; ++i)
+                        {
+                            if (inOutInfo.inResonators[i] == res)
+                            {
+                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                                int xLocConn = static_cast<float> (inOutInfo.inLocs[i]) / res->getNumPoints() * getWidth();
+
+                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                {
+                                    inputToRemove = i;
+                                    //break?
+                                }
+                            }
+                            
+                        }
+
+                    }
+                    break;
+                case editConnectionState:
+                    if (res->getModifier() == ModifierKeys::leftButtonModifier) // add connection
+                    {
+                        if (currentConnectionType == rigid)     // add rigid connection
+                            CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(), res->getResonatorModuleType()));
+                        else                                    // add spring-like connection
+                            CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(),                                             res->getResonatorModuleType(),
+                                                          Global::defaultLinSpringCoeff,
+                                                          (currentConnectionType == linearSpring ? 0 : Global::defaultNonLinSpringCoeff),
+                                                          Global::defaultConnDampCoeff));
+
+                        setApplicationState (firstConnectionState);
+                        sendChangeMessage();
+                        break;
+                    }
+                    else if (res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier) // move connection
+                    {
+                        // find whether there is a connection where the mouse clicked
+                        int margin = res->isModule1D() ? Global::connRadius : 0; // give the mouseclick a radius for 1D object
+                        for (int i = 0; i < CI.size(); ++i)
+                        {
+                            if (CI[i].res1 == res)
+                            {
+                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                                int xLocConn = static_cast<float> (CI[i].loc1) / res->getNumPoints() * getWidth();
+
+                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                {
+                                    connectionToMoveIdx = i;
+                                    connectionToMoveIsFirst = true;
+                                    prevMouseLoc = CI[i].loc1;
+                                    setApplicationState (moveConnectionState);
+                                    break;
+                                }
+                            }
+                            else if (CI[i].res2 == res)
+                            {
+                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                                int xLocConn = static_cast<float> (CI[i].loc2) / res->getNumPoints() * getWidth();
+                                
+                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                {
+                                    connectionToMoveIdx = i;
+                                    connectionToMoveIsFirst = false;
+                                    prevMouseLoc = CI[i].loc2;
+                                    setApplicationState (moveConnectionState);
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+                    else if (res->getModifier() == ModifierKeys::rightButtonModifier) // remove connection
+                    {
+                        // find whether there is a connection where the mouse clicked
+                        int margin = res->isModule1D() ? Global::connRadius : 0; // give the mouseclick a radius for 1D object
+                        for (int i = 0; i < CI.size(); ++i)
+                        {
+                            if (CI[i].res1 == res)
+                            {
+                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                                int xLocConn = static_cast<float> (CI[i].loc1) / res->getNumPoints() * getWidth();
+                                
+                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                {
+                                    CI.erase (CI.begin() + i);
+                                    break;
+                                }
+                            }
+                            else if (CI[i].res2 == res)
+                            {
+                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                                int xLocConn = static_cast<float> (CI[i].loc2) / res->getNumPoints() * getWidth();
+                                
+                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                {
+                                    CI.erase (CI.begin() + i);
+                                    break;
+                                }
+                            
+                            }
+                        }
+                    }
                     break;
                 case firstConnectionState:
-                    if (CI[CI.size()-1].idx1 == res->getID()) // clicked on the same component
+                    if (CI[CI.size()-1].res1 == res || res->getModifier() != ModifierKeys::leftButtonModifier) // clicked on the same component or rightclicked
                     {
                         CI.pop_back();
                     }
                     else
                     {
-                        CI[CI.size()-1].setSecondResonatorParams (res->getID(), res->getConnLoc(), res->getResonatorModuleType());
+                        CI[CI.size()-1].setSecondResonatorParams (res, res->getMouseLoc(), res->getResonatorModuleType());
 
                         // maybe the following only needs to be done when DONE is clicked
                         bool hasOverlap = resetOverlappingConnectionVectors();
@@ -382,14 +666,18 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 #endif
                     }
                     
-                    setApplicationState (addConnectionState);
+                    setApplicationState (editConnectionState);
                     sendChangeMessage();
 
+                    break;
+                case removeResonatorModuleState:
+                    resonatorToRemoveID = res->getID();
                     break;
                 default:
                     break;
             }
         }
+    }
 }
 
 
@@ -403,15 +691,15 @@ std::vector<std::vector<int>> Instrument::getGridPointVector (std::vector<Connec
     for (auto C : CIO)
     {
         // if the grid points points of the resonator are already included in the total count, continue with the next loop
-        if (!gottenPointsOfResWithIdx[C->idx1])
+        if (!gottenPointsOfResWithIdx[C->res1->getID()])
         {
-            gridPointVector.push_back({resonators[C->idx1]->getNumPoints(), C->idx1});
-            gottenPointsOfResWithIdx[C->idx1] = true;
+            gridPointVector.push_back({resonators[C->res1->getID()]->getNumPoints(), C->res1->getID()});
+            gottenPointsOfResWithIdx[C->res1->getID()] = true;
         }
-        if (!gottenPointsOfResWithIdx[C->idx2])
+        if (!gottenPointsOfResWithIdx[C->res2->getID()])
         {
-            gridPointVector.push_back({resonators[C->idx2]->getNumPoints(), C->idx2});
-            gottenPointsOfResWithIdx[C->idx2] = true;
+            gridPointVector.push_back({resonators[C->res2->getID()]->getNumPoints(), C->res2->getID()});
+            gottenPointsOfResWithIdx[C->res2->getID()] = true;
         }
 
     }
@@ -440,9 +728,9 @@ bool Instrument::resetOverlappingConnectionVectors()
     std::vector<std::vector<int>> connLocs (CI.size() * 2, std::vector<int>(2, -1));
     for (int i = 0; i < CI.size() * 2; i = i + 2)
     {
-        connLocs[i][0] = CI[i/2].idx1;
+        connLocs[i][0] = CI[i/2].res1->getID();
         connLocs[i][1] = CI[i/2].loc1;
-        connLocs[i+1][0] = CI[i/2].idx2;
+        connLocs[i+1][0] = CI[i/2].res2->getID();
         connLocs[i+1][1] = CI[i/2].loc2;
     }
     std::vector<std::vector<int>> CIgroupIndices; // vector containing the indices of overlapping connections
@@ -584,12 +872,12 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
     int idx1, idx2;
     for (int i = 0; i < CIO.size(); ++i)
     {
-        idx1 = startIdx[CIO[i]->idx1] + CIO[i]->loc1;
-        idx2 = startIdx[CIO[i]->idx2] + CIO[i]->loc2;
+        idx1 = startIdx[CIO[i]->res1->getID()] + CIO[i]->loc1;
+        idx2 = startIdx[CIO[i]->res2->getID()] + CIO[i]->loc2;
         I.coeffRef (i, idx1) -= 1.0;
         I.coeffRef (i, idx2) += 1.0;
-        J.coeffRef (idx1, i) -= resonators[CIO[i]->idx1]->getConnectionDivisionTerm();
-        J.coeffRef (idx2, i) += resonators[CIO[i]->idx2]->getConnectionDivisionTerm();
+        J.coeffRef (idx1, i) -= CIO[i]->res1->getConnectionDivisionTerm();
+        J.coeffRef (idx2, i) += CIO[i]->res2->getConnectionDivisionTerm();
     }
     SparseMatrix<double> IJ = I * J;
     SparseMatrix<double> Pmat (CIO.size(), CIO.size());
@@ -598,12 +886,12 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 
     for (int i = 0; i < CIO.size(); ++i)
     {
-        CIO[i]->etaNext = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 0)
-                        - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 0);
-        CIO[i]->eta = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 1)
-                    - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 1);
-        CIO[i]->etaPrev = resonators[CIO[i]->idx1]->getStateAt (CIO[i]->loc1, 2)
-                        - resonators[CIO[i]->idx2]->getStateAt (CIO[i]->loc2, 2);
+        CIO[i]->etaNext = CIO[i]->res1->getStateAt (CIO[i]->loc1, 0)
+                        - CIO[i]->res2->getStateAt (CIO[i]->loc2, 0);
+        CIO[i]->eta = CIO[i]->res1->getStateAt (CIO[i]->loc1, 1)
+                    - CIO[i]->res2->getStateAt (CIO[i]->loc2, 1);
+        CIO[i]->etaPrev = CIO[i]->res1->getStateAt (CIO[i]->loc1, 2)
+                        - CIO[i]->res2->getStateAt (CIO[i]->loc2, 2);
         if (CIO[i]->connType == rigid)
         {
             Pmat.coeffRef(i, i) = Global::eps;
@@ -643,8 +931,8 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 //        std::cout << "wait" << std::endl;
     for (int i = 0; i < CIO.size(); ++i)
     {
-        resonators[CIO[i]->idx1]->addForce (-forces[i], CIO[i]->loc1);
-        resonators[CIO[i]->idx2]->addForce (forces[i], CIO[i]->loc2);
+        CIO[i]->res1->addForce (-forces[i], CIO[i]->loc1);
+        CIO[i]->res2->addForce (forces[i], CIO[i]->loc2);
     }
 
 
@@ -660,4 +948,22 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 #endif
     return;
 
+}
+
+void Instrument::removeInOrOutput()
+{
+    if (inputToRemove != -1)
+    {
+        inOutInfo.removeInput (inputToRemove);
+        inputToRemove = -1;
+        --inOutInfo.numInputs;
+    }
+    
+    if (outputToRemove != -1)
+    {
+        inOutInfo.removeOutput (outputToRemove);
+        outputToRemove = -1;
+        --inOutInfo.numOutputs;
+        
+    }
 }

@@ -11,6 +11,9 @@
 #include <JuceHeader.h>
 #include "Instrument.h"
 
+#include <fstream>
+#include <iostream>
+
 //==============================================================================
 /**
 */
@@ -82,7 +85,8 @@ public:
     }
 
     bool shouldRefreshEditor() { return refreshEditor; };
-            
+    void dontRefreshEditor() { refreshEditor = false; };
+    
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
     
     int getCurrentlyActiveInstrument() { return currentlyActiveInstrument; };
@@ -92,6 +96,8 @@ public:
     ApplicationState getApplicationState() { return applicationState; };
     void setApplicationState (ApplicationState a);
 
+    void savePreset();
+    
 private:
     //==============================================================================
     int fs;
@@ -106,6 +112,7 @@ private:
     
     std::vector<Action> initActions;
     std::vector<ResonatorModuleType> initModuleTypes;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };

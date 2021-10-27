@@ -101,11 +101,23 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     fs = sampleRate;
     
     initActions = {
-        addInstrumentAction
+        addInstrumentAction,
+        addResonatorModuleAction,
+        addResonatorModuleAction,
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addResonatorModuleAction
     };
     
     
     initModuleTypes = {
+        stiffString,
+        stiffString,
+//        thinPlate,
+//        bar,
+//        bar,
 //        membrane
     };
     
@@ -223,13 +235,21 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     float* const channelData1 = buffer.getWritePointer (0, 0);
     float* const channelData2 = numChannels > 1 ? buffer.getWritePointer (1, 0) : nullptr;
 
-    std::vector<float> totOutput (buffer.getNumSamples(), 0.0f);
+    std::vector<float> totOutputL (buffer.getNumSamples(), 0.0f);
+    std::vector<float> totOutputR (buffer.getNumSamples(), 0.0f);
 
     std::vector<float* const*> curChannel {&channelData1, &channelData2};
     
+    for (auto inst : instruments)
+        if (inst->shouldRemoveInOrOutput())
+            inst->removeInOrOutput();
+    
     if (setToZero)
+    {
         for (auto inst : instruments)
             inst->setStatesToZero();
+        return;
+    }
     
     for (auto inst : instruments)
     {
@@ -238,7 +258,12 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             return;
         
         inst->checkIfShouldExcite();
-
+        
+        if (inst->checkIfShouldRemoveResonatorModule())
+        {
+            inst->removeResonatorModule();
+            refreshEditor = true;
+        }
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
             inst->calculate();
@@ -246,21 +271,33 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 #ifdef CALC_ENERGY
             inst->calcTotalEnergy();
 //#ifdef CALC_ENERGY
-            std::cout << instruments[0]->getTotalEnergy() << std::endl;
+            std::cout << inst->getTotalEnergy() << std::endl;
 //#endif
 
 #endif
             inst->update();
 
-            totOutput[i] += inst->getOutput();
+            totOutputL[i] += inst->getOutputL();
+            totOutputR[i] += inst->getOutputR();
         }
         
     }
     
     // limit output
-    for (int i = 0; i < buffer.getNumSamples(); ++i)
-        for (int channel = 0; channel < numChannels; ++channel)
-            curChannel[channel][0][i] = outputLimit (totOutput[i]);
+    for (int channel = 0; channel < numChannels; ++channel)
+    {
+        if (channel == 0)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i)
+                curChannel[channel][0][i] = outputLimit (totOutputL[i]);
+        }
+        else if (channel == 1)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i)
+                curChannel[channel][0][i] = outputLimit (totOutputR[i]);
+        }
+    }
+
 //    std::cout << totOutput[15] << std::endl;
     
 }
@@ -345,7 +382,12 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
 
             setStatesToZero (false);
             break;
-        case addConnectionState:
+        case editInOutputsState:
+        {
+            setStatesToZero (true);
+            break;
+        }
+        case editConnectionState:
         {
             setStatesToZero (true);
             for (auto inst : instruments)
@@ -354,8 +396,13 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
                     inst->setAddingConnection (true);
                 else
                     inst->setAddingConnection (false);
-                inst->setApplicationState (addConnectionState);
+                inst->setApplicationState (editConnectionState);
             }
+            break;
+        }
+        case removeResonatorModuleState:
+        {
+            setStatesToZero (true);
             break;
         }
     }
@@ -367,16 +414,19 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
 void ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
+
     file.open("savedPreset.xml");
     file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
     {
         int numResonators = instruments[i]->getNumResonatorModules();
         file << "\t " << "<Instrument id=\"" << i << "\">"<< "\n";
+
         for (int r = 0; r < numResonators; ++r)
         {
             ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r);
             // type
+
             file << "\t " << "\t " << "<Resonator id=\"" << i <<"_"<< r << "r\" type=\"";
             switch (curResonator->getResonatorModuleType()) {
                 case stiffString:

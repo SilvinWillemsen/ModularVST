@@ -156,9 +156,9 @@ void StiffString::calculate()
 
 }
 
-float StiffString::getOutput()
+float StiffString::getOutput (int idx)
 {
-    return u[1][5]; // change output location to something else
+    return u[1][static_cast<int>(Global::limit (idx, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1))];
 }
 
 void StiffString::excite()
@@ -207,6 +207,8 @@ int StiffString::getNumPoints()
 
 void StiffString::mouseDown (const MouseEvent& e)
 {
+    setModifier (e.mods);
+        
     switch (applicationState) {
             
         // excite
@@ -217,26 +219,36 @@ void StiffString::mouseDown (const MouseEvent& e)
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
-        case addConnectionState:
-        {
-            int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
-            setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
-//            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            sendChangeMessage();
-            break;
-        }
+        case editInOutputsState: {}
+        case editConnectionState: {}
         case firstConnectionState:
         {
-            int tmpConnLoc = getNumIntervals() * static_cast<float> (e.x) / getWidth();
-            setConnLoc (Global::limit (tmpConnLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
-//            this->findParentComponentOfClass<Component>()->mouseDown(e);
-            sendChangeMessage();
+            int tmpMouseLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
+            setMouseLoc (Global::limit (tmpMouseLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
             break;
         }
         default:
             break;
     }
+    sendChangeMessage();
 }
+
+void StiffString::mouseDrag (const MouseEvent& e)
+{
+    if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier && applicationState == moveConnectionState)
+    {
+        int tmpMouseLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
+        setMouseLoc (Global::limit (tmpMouseLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
+        sendChangeMessage();
+    }
+}
+
+void StiffString::mouseUp (const MouseEvent& e)
+{
+    if (applicationState == moveConnectionState)
+        this->findParentComponentOfClass<Component>()->mouseUp(e);
+}
+
 
 double StiffString::getKinEnergy()
 {

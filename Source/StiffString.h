@@ -32,14 +32,15 @@ public:
     Path visualiseState (Graphics& g);
 
     void calculate() override;
-    float getOutput() override;
+    float getOutput (int idx) override;
     
     int getNumPoints() override;
     int getNumIntervals() override { return N; } ;
 
     // interaction
     void mouseDown (const MouseEvent& e) override;
-//    void mouseMove (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
     void excite() override;
     
     double getKinEnergy() override;
