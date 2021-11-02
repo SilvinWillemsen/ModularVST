@@ -400,7 +400,7 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
     for (auto inst : instruments)
         inst->unReadyAllModules();
     
-    loadPresetWindow = std::make_unique<FileChooser> ("Load Preset", audioProcessor.getPresetPath(), "*.xml", true, true);
+    loadPresetWindow = std::make_unique<FileChooser> ("Load Preset", File::getCurrentWorkingDirectory().getChildFile(audioProcessor.getPresetPath()), "*.xml", true, true);
     loadPresetWindow->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles,
        [this] (const FileChooser& fileChooser) {
         PresetResult res;

@@ -117,7 +117,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     if (Global::loadPresetAtStartUp)
     {
-        File lastSavedPresetFile (presetPath + "lastPreset.txt");
+        File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
         if (!lastSavedPresetFile.exists())
         {
             DBG("There is no last saved preset!");
