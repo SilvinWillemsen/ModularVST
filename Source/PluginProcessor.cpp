@@ -24,11 +24,12 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 #endif
 {
 //#ifdef NO_EDITOR
-    addParameter (mouseX = new MyAudioParameterFloat (this, "mouseX", "Mouse X", 0, 0.99, 0.5) );
-    addParameter (mouseY = new MyAudioParameterFloat (this, "mouseY", "Mouse Y", 0, 0.99, 0.5) );
-    addParameter (excite = new MyAudioParameterFloat (this, "excite", "Excite", 0, 1, 1, 0) );
-    addParameter (excitationType = new MyAudioParameterFloat (this, "excitationType", "Excitation Type", 0, 2, 1, 0) );
-//#endif
+    addParameter (mouseX = new AudioParameterFloat ("mouseX", "Mouse X", 0, 0.99, 0.5) );
+    addParameter (mouseY = new AudioParameterFloat ("mouseY", "Mouse Y", 0, 0.99, 0.5) );
+    addParameter (excite = new AudioParameterBool ("excite", "Excite", 1) );
+    addParameter (excitationType = new AudioParameterInt ("excitationType", "Excitation Type", 0, 2, 0));
+
+    //#endif
 //#ifdef EDITOR_AND_SLIDERS
     allParameters.reserve(8);
     allParameters.push_back (mouseX);
@@ -37,6 +38,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (excitationType);
 //#endif
     sliderValues.resize (allParameters.size());
+    prevSliderValues.resize (allParameters.size());
 }
 
 ModularVSTAudioProcessor::~ModularVSTAudioProcessor()
@@ -203,7 +205,19 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     std::vector<float> totOutputR (buffer.getNumSamples(), 0.0f);
 
     std::vector<float* const*> curChannel {&channelData1, &channelData2};
-    
+#ifndef EDITOR_AND_SLIDERS
+    for (int i = 0; i < sliderValues.size(); ++i)
+    {
+        sliderValues[i] = allParameters[i]->getValue();
+    }
+#endif
+    for (int i = 0; i < sliderValues.size(); ++i)
+    {
+        if (sliderValues[i] != prevSliderValues[i])
+            myAudioParameterFloatValueChanged (allParameters[i]);
+    }
+    prevSliderValues = sliderValues;
+
     for (auto inst : instruments)
         if (inst->shouldRemoveInOrOutput())
             inst->removeInOrOutput();
@@ -870,13 +884,13 @@ void ModularVSTAudioProcessor::genericAudioParameterFloatValueChanged (String na
 
     }
 }
-void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter)
+void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (AudioProcessorParameterWithID* myAudioParameter)
 {
     for (int i = 0; i < allParameters.size(); ++i)
         if (myAudioParameter == allParameters[i])
-            sliderValues[i] = *myAudioParameter;
+            sliderValues[i] = myAudioParameter->getValue();
 
-    genericAudioParameterFloatValueChanged (myAudioParameter->paramID, *myAudioParameter);
+    genericAudioParameterFloatValueChanged (myAudioParameter->paramID, myAudioParameter->getValue());
 }
 
 #ifdef EDITOR_AND_SLIDERS
@@ -890,36 +904,36 @@ void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (Slider* mySlid
 }
 #endif
 
-ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
-                                            ModularVSTAudioProcessor* audioProcessor,
-                                            String parameterID,
-                                            String parameterName,
-                                            float minValue,
-                                            float maxValue,
-                                            float defaultValue) : AudioParameterFloat (parameterID,
-                                                                                       parameterName,
-                                                                                       minValue,
-                                                                                       maxValue,
-                                                                                       defaultValue),
-                                                                  audioProcessor (audioProcessor)
-{
-    
-}
-
-ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
-                                            ModularVSTAudioProcessor* audioProcessor,
-                                            String parameterID,
-                                            String parameterName,
-                                            float minValue,
-                                            float maxValue,
-                                            float stepSize,
-                                            float defaultValue) : AudioParameterFloat (parameterID,
-                                                                                       parameterName,
-                                                                                       {minValue, maxValue, stepSize},
-                                                                                       defaultValue),
-                                                                  audioProcessor (audioProcessor)
-{
-    
-}
-
-//#endif
+//ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
+//                                            ModularVSTAudioProcessor* audioProcessor,
+//                                            String parameterID,
+//                                            String parameterName,
+//                                            float minValue,
+//                                            float maxValue,
+//                                            float defaultValue) : AudioParameterFloat (parameterID,
+//                                                                                       parameterName,
+//                                                                                       minValue,
+//                                                                                       maxValue,
+//                                                                                       defaultValue),
+//                                                                  audioProcessor (audioProcessor)
+//{
+//    
+//}
+//
+//ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
+//                                            ModularVSTAudioProcessor* audioProcessor,
+//                                            String parameterID,
+//                                            String parameterName,
+//                                            float minValue,
+//                                            float maxValue,
+//                                            float stepSize,
+//                                            float defaultValue) : AudioParameterFloat (parameterID,
+//                                                                                       parameterName,
+//                                                                                       {minValue, maxValue, stepSize},
+//                                                                                       defaultValue),
+//                                                                  audioProcessor (audioProcessor)
+//{
+//    
+//}
+//
+////#endif

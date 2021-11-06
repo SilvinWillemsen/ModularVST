@@ -58,7 +58,7 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-
+    
     void addInstrument();
     void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo inOutInfo = InOutInfo(), bool advanced = true);
 
@@ -117,36 +117,36 @@ public:
         exciteID,
         excitationTypeID
     };
+//
+//    class MyAudioParameterFloat  : public AudioParameterFloat
+//    {
+//    public:
+//
+//
+//        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
+//                               String parameterID,
+//                               String parameterName,
+//                               float minValue,
+//                               float maxValue,
+//                               float defaultValue);
+//
+//        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
+//                               String parameterID,
+//                               String parameterName,
+//                               float minValue,
+//                               float maxValue,
+//                               float stepSize,
+//                               float defaultValue);
+//
+//        ~MyAudioParameterFloat() override {};
+//
+//        void valueChanged (float value) override { audioProcessor->myAudioParameterFloatValueChanged (this); };
+//
+//    private:
+//        ModularVSTAudioProcessor* audioProcessor;
+//    };
     
-    class MyAudioParameterFloat  : public AudioParameterFloat
-    {
-    public:
-        
-        
-        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
-                               String parameterID,
-                               String parameterName,
-                               float minValue,
-                               float maxValue,
-                               float defaultValue);
-        
-        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
-                               String parameterID,
-                               String parameterName,
-                               float minValue,
-                               float maxValue,
-                               float stepSize,
-                               float defaultValue);
-
-        ~MyAudioParameterFloat() override {};
-
-        void valueChanged (float value) override { audioProcessor->myAudioParameterFloatValueChanged (this); };
-
-    private:
-        ModularVSTAudioProcessor* audioProcessor;
-    };
-    
-    void myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter);
+    void myAudioParameterFloatValueChanged (AudioProcessorParameterWithID* myAudioParameter);
     void genericAudioParameterFloatValueChanged (String name, float value);
     
 #ifdef EDITOR_AND_SLIDERS
@@ -181,12 +181,14 @@ private:
     long counter = 0;
     
 //#ifdef NO_EDITOR
-    MyAudioParameterFloat* mouseX;
-    MyAudioParameterFloat* mouseY;
-    MyAudioParameterFloat* excite;
-    MyAudioParameterFloat* excitationType;
-    std::vector<MyAudioParameterFloat*> allParameters;
+    AudioParameterFloat* mouseX;
+    AudioParameterFloat* mouseY;
+    AudioParameterBool* excite;
+    AudioParameterInt* excitationType;
+
+    std::vector<AudioProcessorParameterWithID*> allParameters;
     std::vector<float> sliderValues;
+    std::vector<float> prevSliderValues;
 //#endif
 #ifdef EDITOR_AND_SLIDERS
     std::vector<std::shared_ptr<Slider>>* editorSliders;

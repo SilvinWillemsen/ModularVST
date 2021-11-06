@@ -99,19 +99,19 @@ void ResonatorModule::addForce (double force, int idx, double customMassRatio)
 
 void ResonatorModule::setExcitationType (ExcitationType e)
 {
-    if (excitationType == e)
-        return;
-    excitationType = e;
-    switch (e)
-    {
-        case pluck:
-            curExciterModule = pluckModule;
-            break;
-        case bow:
-            curExciterModule = bowModule;
-            curExciterModule->setControlParameter (0.2);
-            break;
-    }
+//    if (excitationType == e)
+//        return;
+//    excitationType = e;
+//    switch (e)
+//    {
+//        case pluck:
+//            curExciterModule = pluckModule;
+//            break;
+//        case bow:
+//            curExciterModule = bowModule;
+//            curExciterModule->setControlParameter (0.2);
+//            break;
+//    }
 
 }
 

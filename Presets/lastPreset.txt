@@ -1,1 +1,1 @@
-Harp.xml
+SimpleString.xml
