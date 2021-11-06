@@ -38,7 +38,12 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (excitationType);
 //#endif
     sliderValues.resize (allParameters.size());
-    prevSliderValues.resize (allParameters.size());
+    
+//    for (int i = 0; i < sliderValues.size(); ++i)
+//    {
+//        sliderValues[i] = allParameters[i]->getValue();
+//    }
+    prevSliderValues = sliderValues;
 }
 
 ModularVSTAudioProcessor::~ModularVSTAudioProcessor()
@@ -210,13 +215,14 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     {
         sliderValues[i] = allParameters[i]->getValue();
     }
-#endif
     for (int i = 0; i < sliderValues.size(); ++i)
     {
         if (sliderValues[i] != prevSliderValues[i])
-            myAudioParameterFloatValueChanged (allParameters[i]);
+            myRangedAudioParameterChanged (allParameters[i]);
     }
+
     prevSliderValues = sliderValues;
+#endif
 
     for (auto inst : instruments)
         if (inst->shouldRemoveInOrOutput())
@@ -852,7 +858,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
 
 //# ifdef NO_EDITOR
 
-void ModularVSTAudioProcessor::genericAudioParameterFloatValueChanged (String name, float value)
+void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, float value)
 {
     if ((name == "mouseX" || name == "mouseY") && (sliderValues[exciteID] >= 0.5))
         currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
@@ -884,23 +890,23 @@ void ModularVSTAudioProcessor::genericAudioParameterFloatValueChanged (String na
 
     }
 }
-void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (AudioProcessorParameterWithID* myAudioParameter)
+void ModularVSTAudioProcessor::myRangedAudioParameterChanged (RangedAudioParameter* myAudioParameter)
 {
     for (int i = 0; i < allParameters.size(); ++i)
         if (myAudioParameter == allParameters[i])
             sliderValues[i] = myAudioParameter->getValue();
 
-    genericAudioParameterFloatValueChanged (myAudioParameter->paramID, myAudioParameter->getValue());
+    genericAudioParameterValueChanged (myAudioParameter->paramID, myAudioParameter->getValue());
 }
 
 #ifdef EDITOR_AND_SLIDERS
-void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (Slider* mySlider)
+void ModularVSTAudioProcessor::myRangedAudioParameterChanged (Slider* mySlider)
 {
     for (int i = 0; i < editorSliders->size(); ++i)
         if (mySlider == (*editorSliders)[i].get())
             sliderValues[i] = mySlider->getValue();
     
-    genericAudioParameterFloatValueChanged (mySlider->getName(), mySlider->getValue());
+    genericAudioParameterValueChanged (mySlider->getName(), mySlider->getValue());
 }
 #endif
 

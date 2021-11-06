@@ -146,12 +146,12 @@ public:
 //        ModularVSTAudioProcessor* audioProcessor;
 //    };
     
-    void myAudioParameterFloatValueChanged (AudioProcessorParameterWithID* myAudioParameter);
-    void genericAudioParameterFloatValueChanged (String name, float value);
+    void myRangedAudioParameterChanged (RangedAudioParameter* myAudioParameter);
+    void genericAudioParameterValueChanged (String name, float value);
     
 #ifdef EDITOR_AND_SLIDERS
-    void myAudioParameterFloatValueChanged (Slider* mySlider);
-    std::vector<MyAudioParameterFloat*>& getMyParameters() { return allParameters; };
+    void myRangedAudioParameterChanged (Slider* mySlider);
+    std::vector<RangedAudioParameter*>& getMyParameters() { return allParameters; };
     void setEditorSliders (std::vector<std::shared_ptr<Slider>>* s) { editorSliders = s; };
 #endif
     
@@ -186,7 +186,7 @@ private:
     AudioParameterBool* excite;
     AudioParameterInt* excitationType;
 
-    std::vector<AudioProcessorParameterWithID*> allParameters;
+    std::vector<RangedAudioParameter*> allParameters;
     std::vector<float> sliderValues;
     std::vector<float> prevSliderValues;
 //#endif

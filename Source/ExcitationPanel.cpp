@@ -27,7 +27,7 @@ ExcitationPanel::ExcitationPanel (ChangeListener* audioProcessorEditor)
     if (Global::bowAtStartup)
         excitationTypeBox->setSelectedId (3);
     else
-        excitationTypeBox->setSelectedId (1);
+        excitationTypeBox->setSelectedId (1, dontSendNotification);
     
     toggleExcitationButton = std::make_shared<TextButton> ("Excite!");
     toggleExcitationButton->setColour (TextButton::ColourIds::buttonColourId, Colours::red);

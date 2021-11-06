@@ -52,7 +52,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         std::shared_ptr<Slider> newSlider = std::make_shared<Slider> (Slider::SliderStyle::LinearHorizontal, Slider::TextBoxRight);
         newSlider->setName (s->paramID);
         newSlider->setRange (s->getNormalisableRange().start, s->getNormalisableRange().end, s->getNormalisableRange().interval);
-        newSlider->setValue(s->get());
+        newSlider->setValue (s->getValue());
         newSlider->addListener (this);
         
         std::shared_ptr<Label> newLabel = std::make_shared<Label> (s->name, s->name);
@@ -463,7 +463,7 @@ void ModularVSTAudioProcessorEditor::sliderValueChanged (Slider* slider)
     for (int i = 0; i < parameters.size(); ++i)
     {
         if (parameters[i].get() == slider)
-            audioProcessor.myAudioParameterFloatValueChanged (slider);
+            audioProcessor.myRangedAudioParameterChanged (slider);
     }
 }
 #endif
