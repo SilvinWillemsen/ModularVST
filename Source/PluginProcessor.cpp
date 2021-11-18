@@ -105,31 +105,11 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     pugi::xml_node node = doc.child("App");
     pugi::xml_node instrum = node.child("Instrument");
     
-<<<<<<< Updated upstream
-    initActions = {
-        addInstrumentAction,
-        addResonatorModuleAction,
-        addResonatorModuleAction,
-//        addInstrumentAction,
-//        addResonatorModuleAction,
-//        addInstrumentAction,
-//        addResonatorModuleAction,
-//        addResonatorModuleAction
-    };
-=======
->>>>>>> Stashed changes
-    
     juce::Logger::getCurrentLogger()->outputDebugString("hello");
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Resonator").child("PARAM").attribute("id").value());
     juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
-<<<<<<< Updated upstream
-    initModuleTypes = {
-        stiffString,
-        thinPlate,
-    };
-=======
     std::vector<std::string> resType{};
     std::vector<int> resonNum;
     int i = 0;
@@ -202,7 +182,6 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         bar,
         membrane
     };*/
->>>>>>> Stashed changes
     
     int numModules = 0;
     for (int i = 0; i < initActions.size(); ++i)
