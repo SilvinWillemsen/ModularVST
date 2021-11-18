@@ -12,7 +12,7 @@
 	 	 	 <PARAM id="0_0_r_maxPoints" value="2000"/>
 	 	 </Resonator>
 	 	 <Resonator id="0_1_r" type="Stiff_String">
-	 	 	 <PARAM id="0_1_r_L" value="1"/>
+	 	 	 <PARAM id="0_1_r_L" value="2"/>
 	 	 	 <PARAM id="0_1_r_T" value="300"/>
 	 	 	 <PARAM id="0_1_r_rho" value="7850"/>
 	 	 	 <PARAM id="0_1_r_A" value="7.85398e-07"/>
@@ -21,16 +21,18 @@
 	 	 	 <PARAM id="0_1_r_sig0" value="1"/>
 	 	 	 <PARAM id="0_1_r_sig1" value="0.005"/>
 	 	 </Resonator>
-	 	 <Resonator id="0_2_r" type="Stiff_String">
-	 	 	 <PARAM id="0_2_r_L" value="2"/>
-	 	 	 <PARAM id="0_2_r_T" value="300"/>
-	 	 	 <PARAM id="0_2_r_rho" value="7850"/>
-	 	 	 <PARAM id="0_2_r_A" value="7.85398e-07"/>
-	 	 	 <PARAM id="0_2_r_E" value="2e+11"/>
-	 	 	 <PARAM id="0_2_r_I" value="4.90874e-14"/>
-	 	 	 <PARAM id="0_2_r_sig0" value="1"/>
-	 	 	 <PARAM id="0_2_r_sig1" value="0.005"/>
-	 	 </Resonator>
+	 	 <Connection id="0_0_c" type="nonlinear">
+	 	 	 <PARAM id="0_0_c_fR" value="0"/>
+	 	 	 <PARAM id="0_0_c_fL" value="105"/>
+	 	 	 <PARAM id="0_0_c_tR" value="1"/>
+	 	 	 <PARAM id="0_0_c_tL" value="120"/>
+	 	 </Connection>
+	 	 <Connection id="0_1_c" type="linear">
+	 	 	 <PARAM id="0_1_c_fR" value="0"/>
+	 	 	 <PARAM id="0_1_c_fL" value="182"/>
+	 	 	 <PARAM id="0_1_c_tR" value="1"/>
+	 	 	 <PARAM id="0_1_c_tL" value="71"/>
+	 	 </Connection>
 	 </Instrument>
 	 <Instrument id="1">
 	 	 <Resonator id="1_0_r" type="Bar">
@@ -52,5 +54,17 @@
 	 	 	 <PARAM id="1_1_r_sig0" value="1"/>
 	 	 	 <PARAM id="1_1_r_sig1" value="0.005"/>
 	 	 </Resonator>
+	 	 <Connection id="1_0_c" type="linear">
+	 	 	 <PARAM id="1_0_c_fR" value="0"/>
+	 	 	 <PARAM id="1_0_c_fL" value="25"/>
+	 	 	 <PARAM id="1_0_c_tR" value="1"/>
+	 	 	 <PARAM id="1_0_c_tL" value="13"/>
+	 	 </Connection>
+	 	 <Connection id="1_1_c" type="rigid">
+	 	 	 <PARAM id="1_1_c_fR" value="0"/>
+	 	 	 <PARAM id="1_1_c_fL" value="17"/>
+	 	 	 <PARAM id="1_1_c_tR" value="1"/>
+	 	 	 <PARAM id="1_1_c_tL" value="6"/>
+	 	 </Connection>
 	 </Instrument>
 </App>

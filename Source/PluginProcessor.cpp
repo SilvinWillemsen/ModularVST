@@ -121,69 +121,95 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
     std::vector< std::vector<std::vector<double>>> params;
-    std::vector<std::string> resType{};
-    std::vector<int> resonNum;
+    std::vector< std::vector<std::vector<double>>> connects;
+    std::vector<std::string> resoType{};
+    std::vector<std::string> connType{};
+    std::vector<int> resoNum;
+    std::vector<int> connNum;
     int i = 0;
     for (pugi::xml_node inst : node.children("Instrument"))
     {
-        resonNum.push_back(0);
+        resoNum.push_back(0);
+        connNum.push_back(0);
         params.push_back(std::vector< std::vector<double>>());
+        connects.push_back(std::vector< std::vector<double>>());
         int j = 0;
+        int c = 0;
         for (pugi::xml_node reso : inst.children("Resonator"))
         {
             params[i].push_back(std::vector<double>());
-            ++resonNum[i];
+            ++resoNum[i];
             juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
-            for (pugi::xml_attribute attr : reso.attributes())
+            for (pugi::xml_attribute resoAttr : reso.attributes())
             {
-                juce::Logger::getCurrentLogger()->outputDebugString(attr.name());
-                juce::Logger::getCurrentLogger()->outputDebugString(attr.value());
-                auto attrib = *(attr.name());
+                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.name());
+                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.value());
+                auto attrib = *(resoAttr.name());
                 if (attrib == 't') {
-                    resType.push_back(attr.value());
+                    resoType.push_back(resoAttr.value());
                 }
             }
             juce::Logger::getCurrentLogger()->outputDebugString("Parameters:"); 
             
-            for (pugi::xml_node child : reso.children())
+            for (pugi::xml_node resoChild : reso.children())
             {
-                juce::Logger::getCurrentLogger()->outputDebugString(child.attribute("id").value());
-                juce::Logger::getCurrentLogger()->outputDebugString(child.attribute("value").value());
-                params[i][j].push_back(std::stod(child.attribute("value").value()));
+                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
+                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("value").value());
+                params[i][j].push_back(std::stod(resoChild.attribute("value").value()));
                 
             }
             
             ++j;
         }
-        for (pugi::xml_node reso : instrum.children("Connection"))  // not yet done, now just printing out
+        
+        // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        for (pugi::xml_node conn : inst.children("Connection"))
         {
-            juce::Logger::getCurrentLogger()->outputDebugString("Connections:");
-
-            for (pugi::xml_attribute attr : reso.attributes())
+            connects[i].push_back(std::vector<double>());
+            ++connNum[i];
+            juce::Logger::getCurrentLogger()->outputDebugString("Connection:");
+            for (pugi::xml_attribute connAttr : conn.attributes())
             {
-                juce::Logger::getCurrentLogger()->outputDebugString(attr.name());
-                juce::Logger::getCurrentLogger()->outputDebugString(attr.value());
+                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.name());
+                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.value());
+                auto attrib = String(connAttr.name());
+                if (attrib == "type") {
+                    connType.push_back(connAttr.value());
+                }
             }
+            juce::Logger::getCurrentLogger()->outputDebugString("Connection locations:");
+
+            for (pugi::xml_node connChild : conn.children())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("id").value());
+                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("value").value());
+                connects[i][c].push_back(std::stod(connChild.attribute("value").value()));
+
+            }
+
+            ++c;
         }
         ++i;
+        // --------------------------------------------------------------------------------------------------
+
         
     }
-    for (int i = 0; i < resonNum.size(); ++i)
+    for (int i = 0; i < resoNum.size(); ++i)
     {
         initActions.push_back(addInstrumentAction);
-        for (int j = 0; j < resonNum[i]; ++j)
+        for (int j = 0; j < resoNum[i]; ++j)
         {
             initActions.push_back(addResonatorModuleAction);
         }
     }
 
     
-    for (int i = 0; i < resType.size(); ++i) {
-        if (resType[i] == "Stiff_String") { initModuleTypes.push_back(stiffString); }
-        else if (resType[i] == "Bar") { initModuleTypes.push_back(bar); }
-        else if (resType[i] == "Thin_Plate") { initModuleTypes.push_back(thinPlate); }
-        else if (resType[i] == "Membrane") { initModuleTypes.push_back(membrane); } 
-        else if (resType[i] == "Stiff_Membrane") { initModuleTypes.push_back(stiffMembrane); }
+    for (int i = 0; i < resoType.size(); ++i) {
+        if (resoType[i] == "Stiff_String") { initModuleTypes.push_back(stiffString); }
+        else if (resoType[i] == "Bar") { initModuleTypes.push_back(bar); }
+        else if (resoType[i] == "Thin_Plate") { initModuleTypes.push_back(thinPlate); }
+        else if (resoType[i] == "Membrane") { initModuleTypes.push_back(membrane); } 
+        else if (resoType[i] == "Stiff_Membrane") { initModuleTypes.push_back(stiffMembrane); }
     }
     
     int numModules = 0;
@@ -576,7 +602,41 @@ void ModularVSTAudioProcessor::savePreset()
             file << "\t " << "\t " << "</Resonator>" << "\n";
 
         }
+
+        // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         int numConnections = (int)instruments[i]->getConnectionInfo()->size();
+
+        for (int c = 0; c < numConnections; ++c)
+        {
+            String connectionTypeString;
+            // type
+
+            file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "_c\" type=\"";
+            switch (instruments[i]->getConnectionInfo()[0][c].connType) {
+            case rigid:
+                file << "rigid\">";
+                break;
+            case linearSpring:
+                file << "linear\">";
+                break;
+            case nonlinearSpring:
+                file << "nonlinear\">";
+                break;
+            default:
+                break;
+            }
+            file << "\n";
+
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_fL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc1 << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_tR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_tL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>\n";
+
+            file << "\t " << "\t " << "</Connection>" << "\n";
+
+
+        // ----------------------------------------------------------------------------------
+       
         //switch (numConnections) {
         //    case 0:
         //        file << "... and " << numConnections << " connections."<< "\n";
@@ -589,30 +649,30 @@ void ModularVSTAudioProcessor::savePreset()
         //        break;
         //}
         
-        for (int c = 0; c < numConnections; ++c)
-        {
-            file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "_c\" type=\"";
-            String connectionTypeString;
-            switch (instruments[i]->getConnectionInfo()[0][c].connType) {
-                case rigid:
-                    connectionTypeString = "rigid";
-                    break;
-                case linearSpring:
-                    connectionTypeString = "linear";
-                    break;
-                case nonlinearSpring:
-                    connectionTypeString = "nonlinear";
-                    break;
+        //for (int c = 0; c < numConnections; ++c)
+        //{
+        //    file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "_c\" type=\"";
+        //    String connectionTypeString;
+        //    switch (instruments[i]->getConnectionInfo()[0][c].connType) {
+        //        case rigid:
+        //            connectionTypeString = "rigid";
+        //            break;
+        //        case linearSpring:
+        //            connectionTypeString = "linear";
+        //            break;
+        //        case nonlinearSpring:
+        //            connectionTypeString = "nonlinear";
+        //            break;
 
-                default:
-                    break;
-            }
-            
-            file << connectionTypeString <<"\" fromResonator=\""
-            << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\" fromLocation=\""
-            << instruments[i]->getConnectionInfo()[0][c].loc1
-            << "\" toResonator=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\" toLocation=\""
-            << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>" << "\n";
+        //        default:
+        //            break;
+        //    }
+        //    
+        //    file << connectionTypeString <<"\" fromResonator=\""
+        //    << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\" fromLocation=\""
+        //    << instruments[i]->getConnectionInfo()[0][c].loc1
+        //    << "\" toResonator=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\" toLocation=\""
+        //    << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>" << "\n";
         }
         file << "\t " << "</Instrument>" << "\n";
     }
