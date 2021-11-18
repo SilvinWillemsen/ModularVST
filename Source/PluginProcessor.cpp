@@ -115,15 +115,18 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
-    //std::vector<std::string> 
+    std::vector< std::vector<std::vector<double>>> params;
     std::vector<std::string> resType{};
     std::vector<int> resonNum;
     int i = 0;
     for (pugi::xml_node inst : node.children("Instrument"))
     {
         resonNum.push_back(0);
+        params.push_back(std::vector< std::vector<double>>());
+        int j = 0;
         for (pugi::xml_node reso : inst.children("Resonator"))
         {
+            params[i].push_back(std::vector<double>());
             resonNum[i]++;
             juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
             for (pugi::xml_attribute attr : reso.attributes())
@@ -136,11 +139,16 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                 }
             }
             juce::Logger::getCurrentLogger()->outputDebugString("Parameters:");  // not yet done, now just printing out
+            
             for (pugi::xml_node child : reso.children())
             {
                 juce::Logger::getCurrentLogger()->outputDebugString(child.attribute("id").value());
                 juce::Logger::getCurrentLogger()->outputDebugString(child.attribute("value").value());
+                params[i][j].push_back(std::stod(child.attribute("value").value()));
+                
             }
+            
+            j++;
         }
         for (pugi::xml_node reso : instrum.children("Connection"))  // not yet done, now just printing out
         {
@@ -153,6 +161,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
             }
         }
         i++;
+        
     }
     for (int i = 0; i < resonNum.size(); i++)
     {
@@ -212,29 +221,77 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     
     int  j = 0;
+    int x = 0;
+    int y = 0;
     NamedValueSet parameters;
     for (int i = 0; i < initActions.size(); ++i)
     {
         switch (initActions[i]) {
             case addInstrumentAction:
                 addInstrument();
+                x++; 
+                y = 0;
                 break;
             case addResonatorModuleAction:
+                y++;
                 switch (initModuleTypes[j]) {
                     case stiffString:
-                        parameters = Global::defaultStringParameters;
+                        juce::Logger::getCurrentLogger()->outputDebugString(std::to_string(params[x - 1][y - 1][0]));
+                        parameters = {
+                            {"L", params[x-1][y-1][0]},
+                            {"T", params[x - 1][y - 1][1]},
+                            {"rho", params[x - 1][y - 1][2]},
+                            {"A", params[x - 1][y - 1][3]},
+                            {"E", params[x - 1][y - 1][4]},
+                            {"I", params[x - 1][y - 1][5]},
+                            {"sig0", params[x - 1][y - 1][6]},
+                            {"sig1", params[x - 1][y - 1][7]} };
                         break;
                     case bar:
-                        parameters = Global::defaultBarParameters;
+                        parameters = {
+                            {"L", params[x - 1][y - 1][0]},
+                            {"rho", params[x - 1][y - 1][1]},
+                            {"A", params[x - 1][y - 1][2]},
+                            {"E", params[x - 1][y - 1][3]},
+                            {"I", params[x - 1][y - 1][4]},
+                            {"sig0", params[x - 1][y - 1][5]},
+                            {"sig1", params[x - 1][y - 1][6]} };
                         break;
                     case membrane:
-                        parameters = Global::defaultMembraneParameters;
+                        parameters = {
+                            {"Lx", params[x - 1][y - 1][0]},
+                            {"Ly", params[x - 1][y - 1][1]},
+                            {"rho", params[x - 1][y - 1][2]},
+                            {"H", params[x - 1][y - 1][3]},
+                            {"T", params[x - 1][y - 1][4]}, 
+                            {"sig0", params[x - 1][y - 1][5]},
+                            {"sig1", params[x - 1][y - 1][6]},
+                            {"maxPoints", params[x - 1][y - 1][7]} };
                         break;
                     case thinPlate:
-                        parameters = Global::defaultThinPlateParameters;
+                        parameters = {
+                            {"Lx", params[x - 1][y - 1][0]},
+                            {"Ly", params[x - 1][y - 1][1]},
+                            {"rho", params[x - 1][y - 1][2]},
+                            {"H", params[x - 1][y - 1][3]},
+                            {"E", params[x - 1][y - 1][4]},
+                            {"nu", params[x - 1][y - 1][5]},
+                            {"sig0", params[x - 1][y - 1][6]},
+                            {"sig1", params[x - 1][y - 1][7]},
+                            {"maxPoints", params[x - 1][y - 1][8]} };
                         break;
                     case stiffMembrane:
-                        parameters = Global::defaultStiffMembraneParameters;
+                        parameters = {
+                            {"Lx", params[x - 1][y - 1][0]},
+                            {"Ly", params[x - 1][y - 1][1]},
+                            {"rho", params[x - 1][y - 1][2]},
+                            {"H", params[x - 1][y - 1][3]},
+                            {"T", params[x - 1][y - 1][4]},
+                            {"E", params[x - 1][y - 1][5]},
+                            {"nu", params[x - 1][y - 1][6]},
+                            {"sig0", params[x - 1][y - 1][7]},
+                            {"sig1", params[x - 1][y - 1][8]},
+                            {"maxPoints", params[x - 1][y - 1][9]} };
                         break;
                     default:
                         break;

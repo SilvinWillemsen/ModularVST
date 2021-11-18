@@ -31,9 +31,26 @@
 	 	 	 <PARAM id="0_2_r_sig1" value="0.005"/>
 	 	 	 <PARAM id="0_2_r_maxPoints" value="2000"/>
 	 	 </Resonator>
-	 	 <Connection id="0_0_c" type="rigid" fromResonator="0" fromLocation="52" toResonator="1" toLocation="54"/>
-	 	 <Connection id="0_1_c" type="nonlinear" fromResonator="1" fromLocation="74" toResonator="2" toLocation="193"/>
-	 	 <Connection id="0_2_c" type="linear" fromResonator="0" fromLocation="75" toResonator="2" toLocation="216"/>
+	 	 <Resonator id="0_3_r" type="Stiff_String">
+	 	 	 <PARAM id="0_3_r_L" value="1"/>
+	 	 	 <PARAM id="0_3_r_T" value="300"/>
+	 	 	 <PARAM id="0_3_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_3_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_3_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_3_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_3_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_3_r_sig1" value="0.005"/>
+	 	 </Resonator>
+	 	 <Resonator id="0_4_r" type="Stiff_String">
+	 	 	 <PARAM id="0_4_r_L" value="2"/>
+	 	 	 <PARAM id="0_4_r_T" value="300"/>
+	 	 	 <PARAM id="0_4_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_4_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_4_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_4_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_4_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_4_r_sig1" value="0.005"/>
+	 	 </Resonator>
 	 </Instrument>
 	 <Instrument id="1">
 	 	 <Resonator id="1_0_r" type="Bar">
