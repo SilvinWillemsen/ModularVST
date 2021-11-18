@@ -101,12 +101,20 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     fs = sampleRate;
     
     initActions = {
-        addInstrumentAction
+        addInstrumentAction,
+        addResonatorModuleAction,
+        addResonatorModuleAction,
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addResonatorModuleAction
     };
     
     
     initModuleTypes = {
-//        membrane
+        stiffString,
+        thinPlate,
     };
     
     int numModules = 0;
@@ -223,13 +231,21 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     float* const channelData1 = buffer.getWritePointer (0, 0);
     float* const channelData2 = numChannels > 1 ? buffer.getWritePointer (1, 0) : nullptr;
 
-    std::vector<float> totOutput (buffer.getNumSamples(), 0.0f);
+    std::vector<float> totOutputL (buffer.getNumSamples(), 0.0f);
+    std::vector<float> totOutputR (buffer.getNumSamples(), 0.0f);
 
     std::vector<float* const*> curChannel {&channelData1, &channelData2};
     
+    for (auto inst : instruments)
+        if (inst->shouldRemoveInOrOutput())
+            inst->removeInOrOutput();
+    
     if (setToZero)
+    {
         for (auto inst : instruments)
             inst->setStatesToZero();
+        return;
+    }
     
     for (auto inst : instruments)
     {
@@ -238,7 +254,12 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             return;
         
         inst->checkIfShouldExcite();
-
+        
+//        if (inst->checkIfShouldRemoveResonatorModule())
+//        {
+//            inst->removeResonatorModule();
+//            refreshEditor = true;
+//        }
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
             inst->calculate();
@@ -246,21 +267,33 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 #ifdef CALC_ENERGY
             inst->calcTotalEnergy();
 //#ifdef CALC_ENERGY
-            std::cout << instruments[0]->getTotalEnergy() << std::endl;
+            std::cout << inst->getTotalEnergy() << std::endl;
 //#endif
 
 #endif
             inst->update();
 
-            totOutput[i] += inst->getOutput();
+            totOutputL[i] += inst->getOutputL();
+            totOutputR[i] += inst->getOutputR();
         }
         
     }
     
     // limit output
-    for (int i = 0; i < buffer.getNumSamples(); ++i)
-        for (int channel = 0; channel < numChannels; ++channel)
-            curChannel[channel][0][i] = outputLimit (totOutput[i]);
+    for (int channel = 0; channel < numChannels; ++channel)
+    {
+        if (channel == 0)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i)
+                curChannel[channel][0][i] = outputLimit (totOutputL[i]);
+        }
+        else if (channel == 1)
+        {
+            for (int i = 0; i < buffer.getNumSamples(); ++i)
+                curChannel[channel][0][i] = outputLimit (totOutputR[i]);
+        }
+    }
+
 //    std::cout << totOutput[15] << std::endl;
     
 }
@@ -340,22 +373,23 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
     switch (a)
     {
         case normalState:
-            for (auto inst : instruments)
-                inst->setApplicationState (normalState);
-
             setStatesToZero (false);
             break;
-        case addConnectionState:
+        case editInOutputsState:
         {
             setStatesToZero (true);
-            for (auto inst : instruments)
-            {
-                if (inst == instruments[currentlyActiveInstrument])
-                    inst->setAddingConnection (true);
-                else
-                    inst->setAddingConnection (false);
-                inst->setApplicationState (addConnectionState);
-            }
+            highlightInstrument (currentlyActiveInstrument);
+            break;
+        }
+        case editConnectionState:
+        {
+            setStatesToZero (true);
+            highlightInstrument (currentlyActiveInstrument);
+            break;
+        }
+        case removeResonatorModuleState:
+        {
+            setStatesToZero (true);
             break;
         }
     }
@@ -364,19 +398,30 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
     
 }
 
+void ModularVSTAudioProcessor::highlightInstrument (int instrumentToHighlight)
+{
+    for (auto inst : instruments)
+        inst->setHighlightedInstrument (false);
+    instruments[instrumentToHighlight]->setHighlightedInstrument (true);
+
+}
+
 void ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
+
     file.open("savedPreset.xml");
     file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
     {
         int numResonators = instruments[i]->getNumResonatorModules();
         file << "\t " << "<Instrument id=\"" << i << "\">"<< "\n";
+
         for (int r = 0; r < numResonators; ++r)
         {
             ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r);
             // type
+
             file << "\t " << "\t " << "<Resonator id=\"" << i <<"_"<< r << "r\" type=\"";
             switch (curResonator->getResonatorModuleType()) {
                 case stiffString:
@@ -405,7 +450,7 @@ void ModularVSTAudioProcessor::savePreset()
 
             for (int p = 0; p < curResonator->getParamters().size(); ++p)
             {
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << r << "r";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << r << "r_";
                 String paramName = curResonator->getParamters().getName(p).toString();
                 double value = *curResonator->getParamters().getVarPointer (paramName);
                 file << paramName << "\" value=\"" << value << "\"/>\n";
@@ -446,7 +491,7 @@ void ModularVSTAudioProcessor::savePreset()
                     break;
             }
             
-            file << connectionTypeString <<" \" fromResonator=\""
+            file << connectionTypeString <<"\" fromResonator=\""
             << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\" fromLocation=\""
             << instruments[i]->getConnectionInfo()[0][c].loc1
             << "\" toResonator=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\" toLocation=\""
