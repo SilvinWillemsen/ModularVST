@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "pugixml.hpp"
 
 //==============================================================================
 ModularVSTAudioProcessor::ModularVSTAudioProcessor()
@@ -99,7 +100,12 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         instruments.reserve (8);
     }
     fs = sampleRate;
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file("savedPreset.xml");
+    pugi::xml_node node = doc.child("App");
+    pugi::xml_node instrum = node.child("Instrument");
     
+<<<<<<< Updated upstream
     initActions = {
         addInstrumentAction,
         addResonatorModuleAction,
@@ -110,12 +116,93 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 //        addResonatorModuleAction,
 //        addResonatorModuleAction
     };
+=======
+>>>>>>> Stashed changes
     
+    juce::Logger::getCurrentLogger()->outputDebugString("hello");
+    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Resonator").child("PARAM").attribute("id").value());
+    juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
+    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
+<<<<<<< Updated upstream
     initModuleTypes = {
         stiffString,
         thinPlate,
     };
+=======
+    std::vector<std::string> resType{};
+    std::vector<int> resonNum;
+    int i = 0;
+    for (pugi::xml_node inst : node.children("Instrument")) {
+        
+        resonNum.push_back(i);
+        for (pugi::xml_node reso : inst.children("Resonator"))
+        {
+            resonNum[i]++;
+            juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
+            for (pugi::xml_attribute attr : reso.attributes())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(attr.name());
+                juce::Logger::getCurrentLogger()->outputDebugString(attr.value());
+                auto attrib = *(attr.name());
+                if (attrib == 't') {
+                    resType.push_back(attr.value());
+                }
+            }
+            juce::Logger::getCurrentLogger()->outputDebugString("Parameters:");  // not yet done, now just printing out
+            for (pugi::xml_node child : reso.children())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(child.attribute("id").value());
+                juce::Logger::getCurrentLogger()->outputDebugString(child.attribute("value").value());
+            }
+        }
+        for (pugi::xml_node reso : instrum.children("Connection"))  // not yet done, now just printing out
+        {
+            juce::Logger::getCurrentLogger()->outputDebugString("Connections:");
+
+            for (pugi::xml_attribute attr : reso.attributes())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(attr.name());
+                juce::Logger::getCurrentLogger()->outputDebugString(attr.value());
+            }
+        }
+        i++;
+    }
+    for (int i = 0; i < resonNum.size(); i++)
+    {
+        initActions.push_back(addInstrumentAction);
+        for (int j = 0; j < resonNum[i]; j++)
+        {
+            initActions.push_back(addResonatorModuleAction);
+        }
+    }
+
+    //initActions = {
+      //  addInstrumentAction,
+        /*addInstrumentAction,
+        addResonatorModuleAction,
+        addInstrumentAction,
+        addResonatorModuleAction,
+        addResonatorModuleAction*/
+   //  addResonatorModuleAction, addResonatorModuleAction, addResonatorModuleAction };
+    
+    for (int i = 0; i < resType.size(); i++) {
+        if (resType[i] == "Stiff_String") { initModuleTypes.push_back(stiffString); }
+        else if (resType[i] == "Bar") { initModuleTypes.push_back(bar); }
+        else if (resType[i] == "Thin_Plate") { initModuleTypes.push_back(thinPlate); }
+        else if (resType[i] == "Membrane") { initModuleTypes.push_back(membrane); } 
+        else if (resType[i] == "Stiff_Membrane") { initModuleTypes.push_back(stiffMembrane); }
+    }
+
+    /*initModuleTypes = {
+        stiffString,
+        stiffString,
+        thinPlate,
+        bar,
+        bar,
+        membrane
+    };*/
+>>>>>>> Stashed changes
     
     int numModules = 0;
     for (int i = 0; i < initActions.size(); ++i)
