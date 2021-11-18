@@ -100,8 +100,13 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         instruments.reserve (8);
     }
     fs = sampleRate;
+    
     pugi::xml_document doc;
+#if (JUCE_MAC)
+    pugi::xml_parse_result result = doc.load_file("../../../../Presets/savedPreset.xml");
+#elif (JUCE_WINDOWS)
     pugi::xml_parse_result result = doc.load_file("../../Presets/savedPreset.xml");
+#endif
     if (result.status != pugi::status_ok)
     {
         DBG ("status not ok!");
