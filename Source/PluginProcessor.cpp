@@ -127,7 +127,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         for (pugi::xml_node reso : inst.children("Resonator"))
         {
             params[i].push_back(std::vector<double>());
-            resonNum[i]++;
+            ++resonNum[i];
             juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
             for (pugi::xml_attribute attr : reso.attributes())
             {
@@ -138,7 +138,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                     resType.push_back(attr.value());
                 }
             }
-            juce::Logger::getCurrentLogger()->outputDebugString("Parameters:");  // not yet done, now just printing out
+            juce::Logger::getCurrentLogger()->outputDebugString("Parameters:"); 
             
             for (pugi::xml_node child : reso.children())
             {
@@ -148,7 +148,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                 
             }
             
-            j++;
+            ++j;
         }
         for (pugi::xml_node reso : instrum.children("Connection"))  // not yet done, now just printing out
         {
@@ -160,43 +160,26 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                 juce::Logger::getCurrentLogger()->outputDebugString(attr.value());
             }
         }
-        i++;
+        ++i;
         
     }
-    for (int i = 0; i < resonNum.size(); i++)
+    for (int i = 0; i < resonNum.size(); ++i)
     {
         initActions.push_back(addInstrumentAction);
-        for (int j = 0; j < resonNum[i]; j++)
+        for (int j = 0; j < resonNum[i]; ++j)
         {
             initActions.push_back(addResonatorModuleAction);
         }
     }
 
-    //initActions = {
-      //  addInstrumentAction,
-        /*addInstrumentAction,
-        addResonatorModuleAction,
-        addInstrumentAction,
-        addResonatorModuleAction,
-        addResonatorModuleAction*/
-   //  addResonatorModuleAction, addResonatorModuleAction, addResonatorModuleAction };
     
-    for (int i = 0; i < resType.size(); i++) {
+    for (int i = 0; i < resType.size(); ++i) {
         if (resType[i] == "Stiff_String") { initModuleTypes.push_back(stiffString); }
         else if (resType[i] == "Bar") { initModuleTypes.push_back(bar); }
         else if (resType[i] == "Thin_Plate") { initModuleTypes.push_back(thinPlate); }
         else if (resType[i] == "Membrane") { initModuleTypes.push_back(membrane); } 
         else if (resType[i] == "Stiff_Membrane") { initModuleTypes.push_back(stiffMembrane); }
     }
-
-    /*initModuleTypes = {
-        stiffString,
-        stiffString,
-        thinPlate,
-        bar,
-        bar,
-        membrane
-    };*/
     
     int numModules = 0;
     for (int i = 0; i < initActions.size(); ++i)
@@ -221,83 +204,83 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     
     int  j = 0;
-    int x = 0;
-    int y = 0;
+    int x = -1;
+    int y;
     NamedValueSet parameters;
     for (int i = 0; i < initActions.size(); ++i)
     {
         switch (initActions[i]) {
             case addInstrumentAction:
                 addInstrument();
-                x++; 
+                ++x; 
                 y = 0;
                 break;
             case addResonatorModuleAction:
-                y++;
                 switch (initModuleTypes[j]) {
                     case stiffString:
-                        juce::Logger::getCurrentLogger()->outputDebugString(std::to_string(params[x - 1][y - 1][0]));
+                        juce::Logger::getCurrentLogger()->outputDebugString(std::to_string(params[x][y][0]));
                         parameters = {
-                            {"L", params[x-1][y-1][0]},
-                            {"T", params[x - 1][y - 1][1]},
-                            {"rho", params[x - 1][y - 1][2]},
-                            {"A", params[x - 1][y - 1][3]},
-                            {"E", params[x - 1][y - 1][4]},
-                            {"I", params[x - 1][y - 1][5]},
-                            {"sig0", params[x - 1][y - 1][6]},
-                            {"sig1", params[x - 1][y - 1][7]} };
+                            {"L", params[x][y][0]},
+                            {"T", params[x][y][1]},
+                            {"rho", params[x][y][2]},
+                            {"A", params[x][y][3]},
+                            {"E", params[x][y][4]},
+                            {"I", params[x][y][5]},
+                            {"sig0", params[x][y][6]},
+                            {"sig1", params[x][y][7]} };   
                         break;
                     case bar:
                         parameters = {
-                            {"L", params[x - 1][y - 1][0]},
-                            {"rho", params[x - 1][y - 1][1]},
-                            {"A", params[x - 1][y - 1][2]},
-                            {"E", params[x - 1][y - 1][3]},
-                            {"I", params[x - 1][y - 1][4]},
-                            {"sig0", params[x - 1][y - 1][5]},
-                            {"sig1", params[x - 1][y - 1][6]} };
+                            {"L", params[x][y][0]},
+                            {"rho", params[x][y][1]},
+                            {"A", params[x][y][2]},
+                            {"E", params[x][y][3]},
+                            {"I", params[x][y][4]},
+                            {"sig0", params[x][y][5]},
+                            {"sig1", params[x][y][6]} };
                         break;
                     case membrane:
                         parameters = {
-                            {"Lx", params[x - 1][y - 1][0]},
-                            {"Ly", params[x - 1][y - 1][1]},
-                            {"rho", params[x - 1][y - 1][2]},
-                            {"H", params[x - 1][y - 1][3]},
-                            {"T", params[x - 1][y - 1][4]}, 
-                            {"sig0", params[x - 1][y - 1][5]},
-                            {"sig1", params[x - 1][y - 1][6]},
-                            {"maxPoints", params[x - 1][y - 1][7]} };
+                            {"Lx", params[x][y][0]},
+                            {"Ly", params[x][y][1]},
+                            {"rho", params[x][y][2]},
+                            {"H", params[x][y][3]},
+                            {"T", params[x][y][4]}, 
+                            {"sig0", params[x][y][5]},
+                            {"sig1", params[x][y][6]},
+                            {"maxPoints", params[x][y][7]} };
                         break;
                     case thinPlate:
                         parameters = {
-                            {"Lx", params[x - 1][y - 1][0]},
-                            {"Ly", params[x - 1][y - 1][1]},
-                            {"rho", params[x - 1][y - 1][2]},
-                            {"H", params[x - 1][y - 1][3]},
-                            {"E", params[x - 1][y - 1][4]},
-                            {"nu", params[x - 1][y - 1][5]},
-                            {"sig0", params[x - 1][y - 1][6]},
-                            {"sig1", params[x - 1][y - 1][7]},
-                            {"maxPoints", params[x - 1][y - 1][8]} };
+                            {"Lx", params[x][y][0]},
+                            {"Ly", params[x][y][1]},
+                            {"rho", params[x][y][2]},
+                            {"H", params[x][y][3]},
+                            {"E", params[x][y][4]},
+                            {"nu", params[x][y][5]},
+                            {"sig0", params[x][y][6]},
+                            {"sig1", params[x][y][7]},
+                            {"maxPoints", params[x][y][8]} };
                         break;
                     case stiffMembrane:
                         parameters = {
-                            {"Lx", params[x - 1][y - 1][0]},
-                            {"Ly", params[x - 1][y - 1][1]},
-                            {"rho", params[x - 1][y - 1][2]},
-                            {"H", params[x - 1][y - 1][3]},
-                            {"T", params[x - 1][y - 1][4]},
-                            {"E", params[x - 1][y - 1][5]},
-                            {"nu", params[x - 1][y - 1][6]},
-                            {"sig0", params[x - 1][y - 1][7]},
-                            {"sig1", params[x - 1][y - 1][8]},
-                            {"maxPoints", params[x - 1][y - 1][9]} };
+                            {"Lx", params[x][y][0]},
+                            {"Ly", params[x][y][1]},
+                            {"rho", params[x][y][2]},
+                            {"H", params[x][y][3]},
+                            {"T", params[x][y][4]},
+                            {"E", params[x][y][5]},
+                            {"nu", params[x][y][6]},
+                            {"sig0", params[x][y][7]},
+                            {"sig1", params[x][y][8]},
+                            {"maxPoints", params[x][y][9]} };
                         break;
                     default:
                         break;
                 }
                 addResonatorModule (initModuleTypes[j], parameters);
                 ++j;
+                ++y;        
                 break;
             default:
                 break;
