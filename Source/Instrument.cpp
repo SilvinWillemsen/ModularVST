@@ -85,18 +85,21 @@ void Instrument::paint (juce::Graphics& g)
     // draw connections
     for (int i = 0; i < CI.size(); ++i)
     {
+        Colour connectionColour;
         switch (CI[i].connType)
         {
             case rigid:
-                g.setColour (Colours::limegreen);
+                connectionColour = Colours::limegreen;
                 break;
             case linearSpring:
-                g.setColour (Colours::orange);
+                connectionColour = Colours::orange;
                 break;
             case nonlinearSpring:
-                g.setColour (Colours::magenta);
+                connectionColour = Colours::magenta;
                 break;
         }
+        g.setColour (connectionColour);
+
         int xLoc1;
         int yLoc1;
         int stateWidth1;
@@ -108,6 +111,14 @@ void Instrument::paint (juce::Graphics& g)
                 - CI[i].res1->getStateAt (CI[i].loc1, 1) * CI[i].res1->getVisualScaling();
             g.drawEllipse (xLoc1 - Global::connRadius, yLoc1 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
+            if (&CI[i] == currentlyActiveConnection  && applicationState != normalState)
+            {
+                g.setColour (Colours::yellow.withAlpha (0.5f));
+                g.drawEllipse(xLoc1 - Global::selectionRadius, yLoc1 - Global::selectionRadius,
+                              2.0 * Global::selectionRadius, 2.0 * Global::selectionRadius, 2.0);
+                g.setColour (connectionColour);
+
+            }
         }
         else
         {
@@ -119,6 +130,15 @@ void Instrument::paint (juce::Graphics& g)
             xLoc1 = getWidth() * static_cast<float>(CI[i].loc1 % Nx) / (Nx+1);
             yLoc1 = CI[i].res1->getID() * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc1 / Nx) / (Ny+1);
             g.fillRect(xLoc1, yLoc1, stateWidth1, stateHeight1);
+            
+            if (&CI[i] == currentlyActiveConnection && applicationState != normalState)
+            {
+                g.setColour (Colours::yellow.withAlpha (0.5f));
+                g.drawRect(xLoc1 - 0.5 * Global::selectionRadius, yLoc1 - 0.5 * Global::selectionRadius, stateWidth1 +  Global::selectionRadius, stateHeight1 + Global::selectionRadius, 2.0);
+                g.setColour (connectionColour);
+
+            }
+            
         }
         
         if (!CI[i].res1->isModule1D())
@@ -142,6 +162,15 @@ void Instrument::paint (juce::Graphics& g)
                 - CI[i].res2->getStateAt (CI[i].loc2, 1) * CI[i].res2->getVisualScaling();
             g.drawEllipse (xLoc2 - Global::connRadius, yLoc2 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
+            
+            if (&CI[i] == currentlyActiveConnection && applicationState != normalState)
+            {
+                g.setColour (Colours::yellow.withAlpha (0.5f));
+                g.drawEllipse(xLoc2 - Global::selectionRadius, yLoc2 - Global::selectionRadius,
+                              2.0 * Global::selectionRadius, 2.0 * Global::selectionRadius, 2.0);
+                g.setColour (connectionColour);
+
+            }
         }
         else
         {
@@ -154,6 +183,13 @@ void Instrument::paint (juce::Graphics& g)
             yLoc2 = CI[i].res2->getID() * moduleHeight + moduleHeight * static_cast<float>(CI[i].loc2 / Nx) / (Ny+1);
             g.fillRect(xLoc2, yLoc2, stateWidth2, stateHeight2);
 
+            if (&CI[i] == currentlyActiveConnection && applicationState != normalState)
+            {
+                g.setColour (Colours::yellow.withAlpha (0.5f));
+                g.drawRect(xLoc2 - 0.5 * Global::selectionRadius, yLoc2 - 0.5 * Global::selectionRadius, stateWidth2 +  Global::selectionRadius, stateHeight2 + Global::selectionRadius, 2.0);
+                g.setColour (connectionColour);
+
+            }
         }
 
         float dashPattern[2];
@@ -167,18 +203,12 @@ void Instrument::paint (juce::Graphics& g)
             yLoc2 += 0.5 * stateHeight2;
         }
         
-        double massRatio;
-        int sign;
-        if (CI[i].res1->getConnectionDivisionTerm() > CI[i].res2->getConnectionDivisionTerm())
+        double massRatio = CI[i].customMassRatio * CI[i].res1->getConnectionDivisionTerm() / CI[i].res2->getConnectionDivisionTerm();
+        int sign = 1;
+        if (CI[i].res1->getConnectionDivisionTerm() < CI[i].res2->getConnectionDivisionTerm())
         {
-            massRatio = CI[i].res1->getConnectionDivisionTerm() / CI[i].res2->getConnectionDivisionTerm();
-            sign = 1;
-        }
-        else
-        {
-            massRatio = CI[i].res2->getConnectionDivisionTerm() / CI[i].res1->getConnectionDivisionTerm();
+            massRatio = 1.0 / massRatio;
             sign = -1;
-
         }
 
         line = Line<float> (xLoc1, yLoc1, xLoc2, yLoc2);
@@ -224,25 +254,29 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
     {
         case stiffString:
             newResonatorModule = std::make_shared<StiffString> (rmt, parameters, fs, resonators.size(), this);
-            inOutInfo.addOutput (newResonatorModule, 5, resonators.size() % 2 == 0 ? 0 : 1);
             break;
         case bar:
             newResonatorModule = std::make_shared<Bar> (rmt, parameters, fs, resonators.size(), this);
-            inOutInfo.addOutput (newResonatorModule, 5);
             break;
         case membrane:
             newResonatorModule = std::make_shared<Membrane> (rmt, parameters, fs, resonators.size(), this);
-            inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()));
             break;
         case thinPlate:
             newResonatorModule = std::make_shared<ThinPlate> (rmt, parameters, fs, resonators.size(), this);
-            inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()));
             break;
         case stiffMembrane:
             newResonatorModule = std::make_shared<StiffMembrane> (rmt, parameters, fs, resonators.size(), this);
-            inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()));
             break;
 
+    }
+    
+    if (newResonatorModule->isModule1D())
+    {
+        inOutInfo.addOutput (newResonatorModule, 5, 0);
+        inOutInfo.addOutput (newResonatorModule, newResonatorModule->getNumPoints() - 5, 1);
+    } else {
+        inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()), 0);
+        inOutInfo.addOutput (newResonatorModule, (newResonatorModule->getNumIntervalsX() - 5) + (5 * newResonatorModule->getNumIntervalsX()), 1);
     }
     resonators.push_back (newResonatorModule);
     addAndMakeVisible (resonators[resonators.size()-1].get(), 0);
@@ -273,8 +307,19 @@ void Instrument::removeResonatorModule()
             --i;
         }
     }
+    
+    // also remove connections
+    
+    int i = 0;
+    while (i < CI.size())
+    {
+        if (CI[i].res1 == resonators[currentlySelectedResonator] || CI[i].res2 == resonators[currentlySelectedResonator])
+            CI.erase (CI.begin() + i);
+        else
+            ++i;
+    }
             
-    resonators[currentlySelectedResonator]->setVisible (false);
+//    resonators[currentlySelectedResonator]->setVisible (false);
 //    resonators[currentlySelectedResonator]->repaint();
     resonators.erase (resonators.begin() + currentlySelectedResonator);
     currentlySelectedResonator = -1;
@@ -347,8 +392,7 @@ void Instrument::solveInteractions()
         {
             case rigid:
                 force = CI[i].etaNext
-                    / (CI[i].res1->getConnectionDivisionTerm()
-                       + CI[i].res2->getConnectionDivisionTerm());
+                    / (CI[i].res1->getConnectionDivisionTerm() + CI[i].res2->getConnectionDivisionTerm());
                 break;
             case linearSpring:
             case nonlinearSpring:
@@ -357,9 +401,10 @@ void Instrument::solveInteractions()
                        + CI[i].res2->getConnectionDivisionTerm());
                 break;
         }
-        
-        CI[i].res1->addForce (-force, CI[i].loc1);
-        CI[i].res2->addForce (force, CI[i].loc2);
+        if (isnan(force))
+            std::cout << "wait" << std::endl;
+        CI[i].res1->addForce (-force, CI[i].loc1, 1.0);
+        CI[i].res2->addForce (force, CI[i].loc2, 1.0);
     }
     
 }
@@ -424,7 +469,10 @@ void Instrument::mouseUp (const MouseEvent& e)
     std::cout << "Has overlap: " << hasOverlap << std::endl;
 #ifndef USE_EIGEN
     if (hasOverlap)
-        CI.erase(CI.begin() + connectionToMoveIdx);
+    {
+        CI.erase (CI.begin() + connectionToMoveIdx);
+        currentlyActiveConnection = nullptr;
+    }
 #endif
     if (applicationState == moveConnectionState)
         setApplicationState (editConnectionState);
@@ -450,11 +498,12 @@ void Instrument::setApplicationState (ApplicationState a)
     applicationState = a;
     switch (a) {
         case normalState:
-            setAddingConnection (false);
+            setHighlightedInstrument (false);
             setAlpha (1.0);
             break;
         case editConnectionState:
-            if (!addingConnection)
+        case editInOutputsState:
+            if (!highlightedInstrument)
                 setAlpha (0.2);
             break;
         default:
@@ -484,10 +533,16 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
     for (int i = 0; i < resonators.size(); ++i)
         if (resonators[i].get() == changeBroadcaster)
             currentlySelectedResonator = i;
-//
-//    // do not add connections if this is not the currently active instrument
-//    if (!addingConnection)
-//        return;
+    
+    // do not edit connections if this is not the currently highlighted instrument
+    if (((applicationState == editConnectionState
+            || applicationState == moveConnectionState)
+            || applicationState == firstConnectionState) && !highlightedInstrument)
+        return;
+    
+    // do not edit in- and outputs if this is not the currently highlighted instrument
+    if (applicationState == editInOutputsState && !highlightedInstrument)
+        return;
     
     for (auto res : resonators)
     {
@@ -585,24 +640,25 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     }
                     break;
                 case editConnectionState:
-                    if (res->getModifier() == ModifierKeys::leftButtonModifier) // add connection
+                    if (res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier) // add connection
                     {
-                        if (currentConnectionType == rigid)     // add rigid connection
-                            CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(), res->getResonatorModuleType()));
-                        else                                    // add spring-like connection
-                            CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(),                                             res->getResonatorModuleType(),
-                                                          Global::defaultLinSpringCoeff,
-                                                          (currentConnectionType == linearSpring ? 0 : Global::defaultNonLinSpringCoeff),
-                                                          Global::defaultConnDampCoeff));
+//                        if (currentConnectionType == rigid)     // add rigid connection
+//                            CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(), res->getResonatorModuleType()));
+//                        else                                    // add spring-like connection
+                        CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(),                                             res->getResonatorModuleType(),
+                                                      Global::defaultLinSpringCoeff,
+                                                      Global::defaultNonLinSpringCoeff,
+                                                      Global::defaultConnDampCoeff));
 
                         setApplicationState (firstConnectionState);
                         sendChangeMessage();
                         break;
                     }
-                    else if (res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier) // move connection
+                    else if (res->getModifier() == ModifierKeys::leftButtonModifier) // move connection
                     {
                         // find whether there is a connection where the mouse clicked
                         int margin = res->isModule1D() ? Global::connRadius : 0; // give the mouseclick a radius for 1D object
+                        bool clickedOnConnection = false;
                         for (int i = 0; i < CI.size(); ++i)
                         {
                             if (CI[i].res1 == res)
@@ -612,10 +668,12 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 
                                 if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
                                 {
+                                    setCurrentlyActiveConnection (&CI[i]);
                                     connectionToMoveIdx = i;
                                     connectionToMoveIsFirst = true;
                                     prevMouseLoc = CI[i].loc1;
                                     setApplicationState (moveConnectionState);
+                                    clickedOnConnection = true;
                                     break;
                                 }
                             }
@@ -626,15 +684,20 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                                 
                                 if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
                                 {
+                                    setCurrentlyActiveConnection (&CI[i]);
                                     connectionToMoveIdx = i;
                                     connectionToMoveIsFirst = false;
                                     prevMouseLoc = CI[i].loc2;
                                     setApplicationState (moveConnectionState);
+                                    clickedOnConnection = true;
                                     break;
                                 }
                             }
+                            
                         }
-
+                        
+                        if (!clickedOnConnection)
+                            currentlyActiveConnection = nullptr;
                     }
                     else if (res->getModifier() == ModifierKeys::rightButtonModifier) // remove connection
                     {
@@ -649,6 +712,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                                 
                                 if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
                                 {
+                                    setCurrentlyActiveConnection (nullptr);
                                     CI.erase (CI.begin() + i);
                                     break;
                                 }
@@ -660,6 +724,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                                 
                                 if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
                                 {
+                                    setCurrentlyActiveConnection (nullptr);
                                     CI.erase (CI.begin() + i);
                                     break;
                                 }
@@ -669,14 +734,16 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     }
                     break;
                 case firstConnectionState:
-                    if (CI[CI.size()-1].res1 == res || res->getModifier() != ModifierKeys::leftButtonModifier) // clicked on the same component or rightclicked
+                    if (CI[CI.size()-1].res1 == res || res->getModifier() != ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier) // clicked on the same component or rightclicked
                     {
                         CI.pop_back();
                     }
                     else
                     {
+                        
                         CI[CI.size()-1].setSecondResonatorParams (res, res->getMouseLoc(), res->getResonatorModuleType());
-
+                        setCurrentlyActiveConnection (&CI[CI.size()-1]);
+                        
                         // maybe the following only needs to be done when DONE is clicked
                         bool hasOverlap = resetOverlappingConnectionVectors();
                         std::cout << "Has overlap: " << hasOverlap << std::endl;
@@ -984,4 +1051,19 @@ void Instrument::removeInOrOutput()
         outputToRemove = -1;
         
     }
+}
+
+void Instrument::setCurrentlyActiveConnection (ConnectionInfo* CI)
+{
+    currentlyActiveConnection = CI;
+    action = changeActiveConnectionAction;
+    sendChangeMessage();
+}
+
+void Instrument::setConnectionType (ConnectionType c)
+{
+    currentConnectionType = c;
+    
+    if (currentlyActiveConnection != nullptr)
+        currentlyActiveConnection->connType = c;
 }

@@ -36,7 +36,7 @@ public:
     
     // Connection
     double getStateAt (int idx, int time);
-    void addForce (double force, int idx);
+    void addForce (double force, int idx, double customMassRatio);
 //    void addToStateAt (int idx);
     
     // energy
@@ -87,6 +87,12 @@ public:
 
     NamedValueSet& getParamters() { return parameters; }; // for presets
     
+    void changeTotInputs (bool increment) { if (increment) ++totInputs; else --totInputs; };
+    void changeTotOutputs (bool increment) { if (increment) ++totOutputs; else --totOutputs; };
+
+    int getTotInputs() { return totInputs; };
+    int getTotOutputs() { return totOutputs; };
+    
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -125,18 +131,20 @@ protected:
     double dampTot = 0;
     double inputTot = 0;
     
-    
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised
     ResonatorModuleType resonatorModuleType; // what type of resonator is this
     bool is1D;
     int mouseLoc = -1;
-    
+
     double connectionDivisionTerm = -1;
     ModifierKeys modifier; // modifier for connections (left / right mouse click + click-n-drag with ctrl)
     
     NamedValueSet parameters;
+
+    int totInputs = 0;
+    int totOutputs = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };

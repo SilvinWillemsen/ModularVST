@@ -235,7 +235,7 @@ void StiffString::mouseDown (const MouseEvent& e)
 
 void StiffString::mouseDrag (const MouseEvent& e)
 {
-    if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier && applicationState == moveConnectionState)
+    if (e.mods == ModifierKeys::leftButtonModifier && applicationState == moveConnectionState)
     {
         int tmpMouseLoc = round(getNumIntervals() * static_cast<float> (e.x) / getWidth());
         setMouseLoc (Global::limit (tmpMouseLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));

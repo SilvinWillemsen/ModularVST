@@ -42,6 +42,8 @@ public:
 
     void setApplicationState (ApplicationState applicationState);
     
+//    void retrieveDlgModal();
+    
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -54,6 +56,6 @@ private:
     std::unique_ptr<AddModuleWindow> addModuleWindow;
     
     ApplicationState applicationState;
-    
+    DialogWindow* dlgWindow;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessorEditor)
 };

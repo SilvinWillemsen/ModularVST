@@ -18,7 +18,11 @@
 /*
 */
 
-class ControlPanel  : public juce::Component, public ChangeBroadcaster, public Button::Listener, public ComboBox::Listener
+class ControlPanel  :   public juce::Component,
+                        public ChangeBroadcaster,
+                        public Button::Listener,
+                        public ComboBox::Listener,
+                        public Slider::Listener
 {
 public:
     ControlPanel (ChangeListener* audioProcessorEditor);
@@ -40,17 +44,24 @@ public:
     void toggleRemoveResonatorButton (bool t) { removeResonatorModuleButton->setEnabled (t); };
     void toggleEditInOutputsButton (bool t) { editInOutputsButton->setEnabled (t); };
     void toggleEditConnectionButton (bool t) { editConnectionButton->setEnabled (t); };
+    void toggleMassRatioSlider (bool t) { massRatioSlider->setEnabled (t); };
+
     void toggleAddInstrumentButton (bool t) { addInstrumentButton->setEnabled (t); };
     void toggleConnectionTypeBox (bool t) { connectionTypeBox->setEnabled (t); };
 
     void setApplicationState (ApplicationState a) { applicationState = a; };
+    void setComboBoxId (ConnectionType c) { connectionTypeBox->setSelectedId (c); };
     
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    
+    void sliderValueChanged (Slider* slider) override;
+
     bool didComboBoxChange() { return comboBoxChangeBool; };
     void setComboBoxChangeBoolFalse() { comboBoxChangeBool = false; };
     ConnectionType getConnectionType() { return connectionType; };
     
+    double getCurSliderValue() { return curSliderValue; };
+    void setMassRatioSliderValue (double val) { massRatioSlider->setValue (val, dontSendNotification); };
+
 private:
     
     // Collection of all buttons
@@ -75,6 +86,10 @@ private:
     // 1 - Input Output
     std::vector<std::shared_ptr<ComboBox>> allComboBoxes;
     std::shared_ptr<ComboBox> connectionTypeBox;
+
+    std::vector<std::shared_ptr<Slider>> allSliders;
+    std::shared_ptr<Slider> massRatioSlider;
+    double curSliderValue = 0;
 
     Action action = noAction;
     ApplicationState applicationState = normalState;

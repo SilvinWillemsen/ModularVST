@@ -19,6 +19,7 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     
     allButtons.reserve (8);
     allComboBoxes.reserve (8);
+    allSliders.reserve (8);
 
     addInstrumentButton = std::make_shared<TextButton> ("Add Instrument");
     allButtons.push_back (addInstrumentButton);
@@ -57,6 +58,18 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
         addAndMakeVisible(allComboBoxes[i].get());
         allComboBoxes[i]->setSelectedId (1);
     }
+    
+    massRatioSlider = std::make_shared<Slider>();
+    massRatioSlider->setRange (1e-6, 1e6);
+    massRatioSlider->setSkewFactorFromMidPoint (1.0);
+    allSliders.push_back (massRatioSlider);
+
+    for (int i = 0; i < allComboBoxes.size(); ++i)
+    {
+        allSliders[i]->addListener (this);
+        addAndMakeVisible(allSliders[i].get());
+    }
+    
     
     addChangeListener (audioProcessorEditor);
         
@@ -115,6 +128,9 @@ void ControlPanel::resized()
                 {
                     area.removeFromRight (Global::margin);
                     allComboBoxes[0]->setBounds(area.removeFromRight (100));
+                    area.removeFromRight (Global::margin);
+                    allSliders[0]->setBounds(area.removeFromRight (300));
+
                 }
                 area.removeFromRight (Global::margin);
 
@@ -197,6 +213,7 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
 {
     std::vector<bool> activeButtons (allButtons.size(), false);
     std::vector<bool> activeComboBoxes (allComboBoxes.size(), false);
+    std::vector<bool> activeSliders (allSliders.size(), false);
     if (currentlyActiveInstrument == -1)
     {
         activeButtons[0] = true;
@@ -232,6 +249,7 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
             case firstConnectionState:
                 activeButtons[4] = true;
                 activeComboBoxes[0] = true;
+                activeSliders[0] = true;
                 break;
         }
     }
@@ -244,5 +262,22 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
     {
         allComboBoxes[i]->setVisible (activeComboBoxes[i]);
     }
+    
+    for (int i = 0; i < allSliders.size(); ++i)
+    {
+//        allSliders[i]->setVisible (activeSliders[i]);
+        allSliders[i]->setVisible (false); // do not use custom mass ratio for now
+    }
     resized();
+}
+
+void ControlPanel::sliderValueChanged (Slider* slider)
+{
+    if (slider == massRatioSlider.get())
+    {
+        curSliderValue = massRatioSlider->getValue();
+        
+        action = changeMassRatioAction;
+        sendChangeMessage();
+    }
 }

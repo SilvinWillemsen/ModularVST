@@ -106,8 +106,9 @@ void AddModuleWindow::buttonClicked (Button* button)
         action = addResonatorModuleAction;
         DialogWindow* dw = this->findParentComponentOfClass<DialogWindow>();
         std::cout << "Adding module" << std::endl;
+        dlgModal = 1;
         dw->exitModalState (1);
-
+        action = addResonatorModuleFromWindowAction;
         sendChangeMessage();
     }
 }

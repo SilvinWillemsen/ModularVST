@@ -30,11 +30,14 @@ enum Action
     
     addInstrumentAction,
     addResonatorModuleAction,
+    addResonatorModuleFromWindowAction,
     removeResonatorModuleAction,
     cancelRemoveResonatorModuleAction,
     editInOutputsAction,
     cancelInOutputsAction,
     editConnectionAction,
+    changeMassRatioAction,
+    changeActiveConnectionAction,
     cancelConnectionAction,
     savePresetAction
 };
@@ -79,6 +82,7 @@ namespace Global
     static const int buttonHeight = 40;
     static const int buttonWidth = 80;
     static const int connRadius = 5;
+    static const int selectionRadius = 10;
     static const int massRatioRadius = 5;
     static const int inOutputWidth = 4;
 

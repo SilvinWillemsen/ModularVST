@@ -32,7 +32,8 @@ public:
 
     void buttonClicked (Button* button) override;
     void setAction (Action a) { action = a; };
-
+    Action getAction() { return action; };
+    
     ResonatorModuleType getResonatorModuleType() { return resonatorModuleType; };
     NamedValueSet& getParameters() { return coefficientList->getParameters(); };
     
@@ -42,6 +43,10 @@ public:
     void textEditorReturnKeyPressed (TextEditor&) override;
     
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
+    
+    int getDlgModal() { return dlgModal; };
+    void setDlgModal (int d) { dlgModal = d; };
+    
 private:
     
     std::unique_ptr<TextButton> addModuleButton;
@@ -54,6 +59,8 @@ private:
     ResonatorModuleType resonatorModuleType;
     
     std::unique_ptr<TextEditor> valueEditor;
+    
+    int dlgModal = -1;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddModuleWindow)
 };

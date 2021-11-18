@@ -145,6 +145,12 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     setApplicationState (editConnectionState);
                     break;
                 }
+                    
+                case changeMassRatioAction:
+                {
+                    instruments[0][audioProcessor.getCurrentlyActiveInstrument()]->setCustomMassRatio (controlPanel->getCurSliderValue());
+                    break;
+                }
                 case cancelConnectionAction:
                 {
                     setApplicationState (normalState);
@@ -166,24 +172,36 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     {
         if (changeBroadcaster == inst.get())
         {
+            if (inst->getAction() == changeActiveConnectionAction)
+            {
+                controlPanel->setMassRatioSliderValue (inst->getCurrentlyActiveConnection()->getMassRatio());
+                controlPanel->setComboBoxId (inst->getCurrentlyActiveConnection()->connType);
+                inst->setAction (noAction);
+            }
             switch (inst->getApplicationState())
             {
-                case normalState:
-                    break;
-                case editConnectionState:
-                    controlPanel->toggleConnectionTypeBox (true);
-                    controlPanel->toggleEditConnectionButton (true);
-                    break;
                 case firstConnectionState:
                     controlPanel->toggleConnectionTypeBox (false);
                     controlPanel->toggleEditConnectionButton (false);
+                    controlPanel->toggleMassRatioSlider (false);
                     break;
+                default:
+                    controlPanel->toggleConnectionTypeBox (true);
+                    controlPanel->toggleEditConnectionButton (true);
+                    controlPanel->toggleMassRatioSlider (true);
+                    break;
+
             }
         }
     }
     
     if (changeBroadcaster == addModuleWindow.get())
     {
+        if (addModuleWindow->getAction() == addResonatorModuleFromWindowAction)
+            if (addModuleWindow->getDlgModal() == 1)
+                audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters());
+
+        addModuleWindow->setDlgModal (-1);
         addModuleWindow->setAction (noAction);
     }
 
@@ -208,13 +226,13 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
     DialogWindow::LaunchOptions dlg;
     int dlgModal = -1;
     addAndMakeVisible (addModuleWindow.get());
-
-    dlg.dialogTitle = "Add Resonator Module";
-    dlg.content.set (addModuleWindow.get(), false);
-    dlgModal = dlg.runModal();
-    
-    if (dlgModal == 1)
-        audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters());
+    dlgWindow->showDialog ("Add Resonator Module", addModuleWindow.get(), this, getLookAndFeel().findColour (ResizableWindow::backgroundColourId), true);
+//    dlg.dialogTitle = "Add Resonator Module";
+//    dlg.content.set (addModuleWindow.get(), false);
+//    
+//    dlgWindow = dlg.launchAsync();
+//    if (dlgModal == 1)
+//        audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters());
 }
 
 void ModularVSTAudioProcessorEditor::refreshControlPanel()

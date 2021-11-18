@@ -47,7 +47,35 @@ public:
                                         rmt1 (resonatorModuleType),
                                         K1 (K1), K3 (K3), R (R)
         {};
-        void setSecondResonatorParams (std::shared_ptr<ResonatorModule> resonator2, int l, ResonatorModuleType r) { res2 = resonator2; loc2 = l; rmt2 = r; connected = true; };
+        void setSecondResonatorParams (std::shared_ptr<ResonatorModule> resonator2, int l, ResonatorModuleType r)
+        {
+            if (res1->getID() > resonator2->getID()) // always have res1 have the lower ID than res2
+            {
+                // copy all values from res1 to res2
+                res2 = res1;
+                loc2 = loc1;
+                rmt2 = rmt1;
+                res2 = res1;
+                
+                res1 = resonator2;
+                loc1 = l;
+                rmt1 = r;
+                
+            }
+            else
+            {
+                res2 = resonator2;
+                loc2 = l;
+                rmt2 = r;
+            }
+            connected = true;
+        };
+        
+        void setCustomMassRatio (double value) {
+            customMassRatio = value / (res1->getConnectionDivisionTerm() / res2->getConnectionDivisionTerm());
+        };
+        
+        double getMassRatio() { return customMassRatio * (res1->getConnectionDivisionTerm() / res2->getConnectionDivisionTerm()); };
         
         ConnectionType connType;
         std::shared_ptr<ResonatorModule> res1, res2;
@@ -59,6 +87,10 @@ public:
         double etaNext, eta, etaPrev;
         bool connected = false;
         int connectionGroup = -1;
+        
+        double customMassRatio = 1.0;
+        
+        
     };
     
     struct InOutInfo
@@ -76,6 +108,7 @@ public:
 
         void addInput (std::shared_ptr<ResonatorModule> res, int loc, int channel = 2)
         {
+            res->changeTotInputs (true);
             inResonators.push_back (res);
             inLocs.push_back (loc);
             inChannels.push_back (channel);
@@ -84,6 +117,7 @@ public:
         
         void removeInput (int idx)
         {
+            inResonators[idx]->changeTotInputs (false);
             inResonators.erase (inResonators.begin() + idx);
             inLocs.erase (inLocs.begin() + idx);
             inChannels.erase (inChannels.begin() + idx);
@@ -93,6 +127,7 @@ public:
         
         void addOutput (std::shared_ptr<ResonatorModule> res, int loc, int channel = 2)
         {
+            res->changeTotOutputs (true);
             outResonators.push_back (res);
             outLocs.push_back (loc);
             outChannels.push_back(channel);
@@ -101,6 +136,7 @@ public:
         
         void removeOutput (int idx)
         {
+            outResonators[idx]->changeTotOutputs (false);
             outResonators.erase (outResonators.begin() + idx);
             outLocs.erase (outLocs.begin() + idx);
             outChannels.erase (outChannels.begin() + idx);
@@ -177,8 +213,8 @@ public:
     
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
     
-    void setAddingConnection (bool a) { addingConnection = a; };
-    void setConnectionType (ConnectionType c) { currentConnectionType = c; };
+    void setHighlightedInstrument (bool h) { highlightedInstrument = h; };
+    void setConnectionType (ConnectionType c);
     
 //    void setChangeListener (ChangeListener* changeListener) { if (getChangeL) addChangelistener (changeListener); };
     ApplicationState getApplicationState() { return applicationState; };
@@ -195,6 +231,12 @@ public:
     bool shouldRemoveInOrOutput() { return (inputToRemove != -1 || outputToRemove != -1); };
     void removeInOrOutput();
     
+    ConnectionInfo* getCurrentlyActiveConnection() { return currentlyActiveConnection; };
+    void setCurrentlyActiveConnection (ConnectionInfo* CI);
+    void setCustomMassRatio (double value) { currentlyActiveConnection->setCustomMassRatio (value); };
+    
+    Action getAction() { return action; };
+    void setAction (Action a) { action = a; };
 private:
     InOutInfo inOutInfo;
     
@@ -203,13 +245,15 @@ private:
     
     std::vector<ConnectionInfo> CI;
     std::vector<std::vector<ConnectionInfo*>> CIOverlapVector; // a vector of groups of overlapping connections
+    ConnectionInfo* currentlyActiveConnection = nullptr;
+    
     std::vector<std::shared_ptr<ResonatorModule>> resonators;
     
     ApplicationState applicationState = normalState;
     
     bool painting = true;
     int resonatorModuleHeight = 0;
-    bool addingConnection = false;
+    bool highlightedInstrument = false;
     
     ConnectionType currentConnectionType = rigid;
     
@@ -231,5 +275,7 @@ private:
     int connectionToMoveIdx;
     bool connectionToMoveIsFirst;
     int prevMouseLoc; // to prevent overlap
+    
+    Action action = noAction;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

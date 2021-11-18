@@ -76,7 +76,7 @@ double ResonatorModule::getStateAt (int idx, int time)
     return u[time][idx];
 }
 
-void ResonatorModule::addForce (double force, int idx)
+void ResonatorModule::addForce (double force, int idx, double customMassRatio)
 {
-    u[0][idx] += connectionDivisionTerm * force;
+    u[0][idx] += customMassRatio * connectionDivisionTerm * force;
 }

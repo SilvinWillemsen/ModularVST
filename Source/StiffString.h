@@ -36,7 +36,7 @@ public:
     
     int getNumPoints() override;
     int getNumIntervals() override { return N; } ;
-
+    
     // interaction
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;

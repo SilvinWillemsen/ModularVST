@@ -104,21 +104,17 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         addInstrumentAction,
         addResonatorModuleAction,
         addResonatorModuleAction,
-        addInstrumentAction,
-        addResonatorModuleAction,
-        addInstrumentAction,
-        addResonatorModuleAction,
-        addResonatorModuleAction
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addInstrumentAction,
+//        addResonatorModuleAction,
+//        addResonatorModuleAction
     };
     
     
     initModuleTypes = {
         stiffString,
-        stiffString,
         thinPlate,
-        bar,
-        bar,
-        membrane
     };
     
     int numModules = 0;
@@ -259,11 +255,11 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         
         inst->checkIfShouldExcite();
         
-        if (inst->checkIfShouldRemoveResonatorModule())
-        {
-            inst->removeResonatorModule();
-            refreshEditor = true;
-        }
+//        if (inst->checkIfShouldRemoveResonatorModule())
+//        {
+//            inst->removeResonatorModule();
+//            refreshEditor = true;
+//        }
         for (int i = 0; i < buffer.getNumSamples(); ++i)
         {
             inst->calculate();
@@ -377,27 +373,18 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
     switch (a)
     {
         case normalState:
-            for (auto inst : instruments)
-                inst->setApplicationState (normalState);
-
             setStatesToZero (false);
             break;
         case editInOutputsState:
         {
             setStatesToZero (true);
+            highlightInstrument (currentlyActiveInstrument);
             break;
         }
         case editConnectionState:
         {
             setStatesToZero (true);
-            for (auto inst : instruments)
-            {
-                if (inst == instruments[currentlyActiveInstrument])
-                    inst->setAddingConnection (true);
-                else
-                    inst->setAddingConnection (false);
-                inst->setApplicationState (editConnectionState);
-            }
+            highlightInstrument (currentlyActiveInstrument);
             break;
         }
         case removeResonatorModuleState:
@@ -409,6 +396,14 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
     for (auto inst : instruments)
         inst->setApplicationState (a);
     
+}
+
+void ModularVSTAudioProcessor::highlightInstrument (int instrumentToHighlight)
+{
+    for (auto inst : instruments)
+        inst->setHighlightedInstrument (false);
+    instruments[instrumentToHighlight]->setHighlightedInstrument (true);
+
 }
 
 void ModularVSTAudioProcessor::savePreset()

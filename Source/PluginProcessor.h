@@ -96,6 +96,7 @@ public:
     ApplicationState getApplicationState() { return applicationState; };
     void setApplicationState (ApplicationState a);
 
+    void highlightInstrument (int instrumentToHighlight);
     void savePreset();
     
 private:

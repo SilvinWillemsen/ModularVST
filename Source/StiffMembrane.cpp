@@ -131,8 +131,8 @@ void StiffMembrane::initialise (int fs)
     C0 *= Adiv;
     C1 *= Adiv;
     
-    setConnectionDivisionTerm (k * k / (rho * H * h * (1.0 + sig0 * k)));
-    
+    setConnectionDivisionTerm (k * k / (rho * H * h * h * (1.0 + sig0 * k)));
+
 #ifdef SAVE_OUTPUT
     std::ofstream NxNy;
     NxNy.open("NxNy.csv");
@@ -322,7 +322,7 @@ void StiffMembrane::mouseDown (const MouseEvent& e)
 
 void StiffMembrane::mouseDrag (const MouseEvent& e)
 {
-    if (e.mods == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier)
+    if (e.mods == ModifierKeys::leftButtonModifier && applicationState == moveConnectionState)
     {
         int tmpMouseLocX = Global::limit ((getNumIntervalsX() + 1) * static_cast<float> (e.x) / getWidth(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Nx-2 : Nx-1);
         int tmpMouseLocY = Global::limit ((getNumIntervalsY() + 1) * static_cast<float> (e.y) / getHeight(), (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? Ny-2 : Ny-1);
