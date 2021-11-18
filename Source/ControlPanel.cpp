@@ -70,7 +70,16 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
         addAndMakeVisible(allSliders[i].get());
     }
     
+    instructionsLabel1 = std::make_shared<Label>("Instructions test");
+    instructionsLabel1->setColour(Label::ColourIds::backgroundColourId, Colours::transparentBlack);
+    addAndMakeVisible (instructionsLabel1.get());
+    instructionsLabel1->setVisible (false);
     
+    instructionsLabel2 = std::make_shared<Label>("Instructions test");
+    instructionsLabel2->setColour(Label::ColourIds::backgroundColourId, Colours::transparentBlack);
+    addAndMakeVisible (instructionsLabel2.get());
+    instructionsLabel2->setVisible (false);
+
     addChangeListener (audioProcessorEditor);
         
 }
@@ -128,20 +137,20 @@ void ControlPanel::resized()
                 {
                     area.removeFromRight (Global::margin);
                     allComboBoxes[0]->setBounds(area.removeFromRight (100));
-                    area.removeFromRight (Global::margin);
-                    allSliders[0]->setBounds(area.removeFromRight (300));
+//                    area.removeFromRight (Global::margin);
+//                    allSliders[0]->setBounds(area.removeFromRight (300));
 
                 }
                 area.removeFromRight (Global::margin);
 
             }
-            
-            
-           
-            
         }
     }
-        
+    if (instructionsLabel1->isVisible())
+    {
+        instructionsLabel1->setBounds (area.removeFromLeft (area.getWidth()*0.5));
+        instructionsLabel2->setBounds (area);
+    }
 
 }
 
@@ -214,6 +223,10 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
     std::vector<bool> activeButtons (allButtons.size(), false);
     std::vector<bool> activeComboBoxes (allComboBoxes.size(), false);
     std::vector<bool> activeSliders (allSliders.size(), false);
+    bool instructionsActive = false;
+    instructionsLabel1->setText ("", dontSendNotification);
+    instructionsLabel2->setText ("", dontSendNotification);
+
     if (currentlyActiveInstrument == -1)
     {
         activeButtons[0] = true;
@@ -242,11 +255,18 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
                 break;
             case editInOutputsState:
                 activeButtons[3] = true;
+                setInstructionsText (Global::inOutInstructions);
+//                instructionsLabel->setText (Global::inOutInstructions, dontSendNotification);
+                instructionsActive = true;
+
                 break;
 
             case editConnectionState:
             case moveConnectionState:
             case firstConnectionState:
+                setInstructionsText (Global::connectionInstructions);
+                instructionsActive = true;
+                
                 activeButtons[4] = true;
                 activeComboBoxes[0] = true;
                 activeSliders[0] = true;
@@ -268,6 +288,9 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
 //        allSliders[i]->setVisible (activeSliders[i]);
         allSliders[i]->setVisible (false); // do not use custom mass ratio for now
     }
+    instructionsLabel1->setVisible (instructionsActive);
+    instructionsLabel2->setVisible (instructionsActive);
+
     resized();
 }
 
@@ -279,5 +302,20 @@ void ControlPanel::sliderValueChanged (Slider* slider)
         
         action = changeMassRatioAction;
         sendChangeMessage();
+    }
+}
+
+void ControlPanel::setInstructionsText (StringArray& instructions)
+{
+    
+    for (int i = 0; i < ceil (0.5 * instructions.size()); ++i)
+    {
+        instructionsLabel1->setText (instructionsLabel1->getText() + instructions[i], dontSendNotification);
+        instructionsLabel1->setText (instructionsLabel1->getText() + "\n", dontSendNotification);
+    }
+    for (int i = ceil (0.5 * instructions.size()); i < instructions.size(); ++i)
+    {
+        instructionsLabel2->setText (instructionsLabel2->getText() + instructions[i], dontSendNotification);
+        instructionsLabel2->setText (instructionsLabel2->getText() + "\n", dontSendNotification);
     }
 }

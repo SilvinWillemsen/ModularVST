@@ -50,7 +50,9 @@ void ModularVSTAudioProcessorEditor::paint (juce::Graphics& g)
     if (instruments->size() == 0)
     {
         g.setColour (Colours::white);
-        g.drawText("Click on \"Add Instrument\" to add an instrument to the application!", getLocalBounds(), Justification::centred);
+        g.drawText ("Click on \"Add Instrument\" to add an instrument to the application!", getLocalBounds(), Justification::centred);
+        Rectangle<int> area = getLocalBounds().withHeight (getHeight()-Global::buttonHeight).reduced (20, 20);
+        g.drawRect (area);
     }
 }
 
@@ -174,8 +176,11 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         {
             if (inst->getAction() == changeActiveConnectionAction)
             {
-                controlPanel->setMassRatioSliderValue (inst->getCurrentlyActiveConnection()->getMassRatio());
-                controlPanel->setComboBoxId (inst->getCurrentlyActiveConnection()->connType);
+                if (inst->getCurrentlyActiveConnection() != nullptr)
+                {
+                    controlPanel->setMassRatioSliderValue (inst->getCurrentlyActiveConnection()->getMassRatio());
+                    controlPanel->setComboBoxId (inst->getCurrentlyActiveConnection()->connType);
+                }
                 inst->setAction (noAction);
             }
             switch (inst->getApplicationState())

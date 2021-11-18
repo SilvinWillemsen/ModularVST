@@ -88,6 +88,8 @@ namespace Global
 
     static const int listBoxRowHeight = 40;
 
+    static const bool alwaysShowInOuts = false;
+
     // default parameters
 
     static const double defaultLinSpringCoeff = 1000.0;
@@ -96,6 +98,19 @@ namespace Global
     static const double eps = 1e-15;
 
     static const double twoDOutputScaling = 10.0;
+
+    static StringArray inOutInstructions = {
+        "Left-Click: add a stereo output.",
+        "Right-click: remove output.",
+        "CTRL-click: add left output.",
+        "ALT-click: add right output."
+    };
+
+    static StringArray connectionInstructions = {
+        "Click-and-drag: move connection.",
+        "Right-click: remove connection.",
+        "CTRL-click: add connection."
+    };
 
     static NamedValueSet defaultStringParameters {
         {"L", 1.0},

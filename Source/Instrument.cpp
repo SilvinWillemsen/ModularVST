@@ -38,49 +38,51 @@ void Instrument::paint (juce::Graphics& g)
     if (resonators.size() == 0)
     {
         g.setColour (Colours::white);
-        g.drawText("Click on \"Add Resonator Module\" to add a module to this instrument!", getLocalBounds(), Justification::centred);
+        g.drawText ("Click on \"Add Resonator Module\" to add a module to this instrument!", getLocalBounds(), Justification::centred);
         g.drawRect (getLocalBounds().reduced(Global::margin, Global::margin), 1.0f);
     }
 
-    int moduleHeight = static_cast<float>(getHeight())/ resonators.size();
+    int moduleHeight = static_cast<float>(getHeight()) / resonators.size();
     // draw inputs and outputs
-    for (int i = 0; i < inOutInfo.numOutputs; ++i)
+    if (applicationState == editInOutputsState || Global::alwaysShowInOuts)
     {
-        switch (inOutInfo.outChannels[i])
+        for (int i = 0; i < inOutInfo.numOutputs; ++i)
         {
-            case 0:
-                g.setColour (Colours::white.withAlpha(0.5f));
-                break;
-            case 1:
-                g.setColour (Colours::red.withAlpha(0.5f));
-                break;
-            case 2:
-                g.setColour (Colours::yellow.withAlpha(0.5f));
-                break;
-        }
-        ResonatorModule* curResonator = inOutInfo.outResonators[i].get();
+            switch (inOutInfo.outChannels[i])
+            {
+                case 0:
+                    g.setColour (Colours::white.withAlpha(0.5f));
+                    break;
+                case 1:
+                    g.setColour (Colours::red.withAlpha(0.5f));
+                    break;
+                case 2:
+                    g.setColour (Colours::yellow.withAlpha(0.5f));
+                    break;
+            }
+            ResonatorModule* curResonator = inOutInfo.outResonators[i].get();
 
-        if (curResonator->isModule1D())
-        {
-            int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i]) / curResonator->getNumIntervals();
-            int yLoc = (0.5 + curResonator->getID()) * moduleHeight
-            - curResonator->getStateAt (inOutInfo.outLocs[i], 1) * curResonator->getVisualScaling();
-            g.drawArrow (Line<float>(xLoc, yLoc, xLoc, (curResonator->getID() + 0.75) * moduleHeight), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
-        }
-        else
-        {
-            int Nx = curResonator->getNumIntervalsX();
-            int Ny = curResonator->getNumIntervalsY();
-            int stateWidth = getWidth() / static_cast<double> (Nx+1);
-            int stateHeight = moduleHeight / static_cast<double> (Ny+1);
+            if (curResonator->isModule1D())
+            {
+                int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i]) / curResonator->getNumIntervals();
+                int yLoc = (0.5 + curResonator->getID()) * moduleHeight
+                - curResonator->getStateAt (inOutInfo.outLocs[i], 1) * curResonator->getVisualScaling();
+                g.drawArrow (Line<float>(xLoc, yLoc, xLoc, (curResonator->getID() + 0.75) * moduleHeight), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
+            }
+            else
+            {
+                int Nx = curResonator->getNumIntervalsX();
+                int Ny = curResonator->getNumIntervalsY();
+                int stateWidth = getWidth() / static_cast<double> (Nx+1);
+                int stateHeight = moduleHeight / static_cast<double> (Ny+1);
 
-            int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i] % Nx) / (Nx+1);
-            int yLoc = curResonator->getID() * moduleHeight + moduleHeight * static_cast<float>(inOutInfo.outLocs[i] / Nx) / (Ny+1);
-            g.drawRect (xLoc, yLoc, stateWidth, stateHeight, Global::inOutputWidth);
+                int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i] % Nx) / (Nx+1);
+                int yLoc = curResonator->getID() * moduleHeight + moduleHeight * static_cast<float>(inOutInfo.outLocs[i] / Nx) / (Ny+1);
+                g.drawRect (xLoc, yLoc, stateWidth, stateHeight, Global::inOutputWidth);
+            }
+            
         }
-        
     }
-    
     
     // draw connections
     for (int i = 0; i < CI.size(); ++i)
@@ -272,8 +274,10 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
     
     if (newResonatorModule->isModule1D())
     {
-        inOutInfo.addOutput (newResonatorModule, 5, 0);
-        inOutInfo.addOutput (newResonatorModule, newResonatorModule->getNumPoints() - 5, 1);
+//        inOutInfo.addOutput (newResonatorModule, 5, 0);
+//        inOutInfo.addOutput (newResonatorModule, newResonatorModule->getNumPoints() - 8, 1);
+        inOutInfo.addOutput (newResonatorModule, 4);
+        inOutInfo.addOutput (newResonatorModule, newResonatorModule->getNumPoints() - 15);
     } else {
         inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()), 0);
         inOutInfo.addOutput (newResonatorModule, (newResonatorModule->getNumIntervalsX() - 5) + (5 * newResonatorModule->getNumIntervalsX()), 1);
@@ -605,6 +609,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     
                     if (res->getModifier() == ModifierKeys::rightButtonModifier)
                     {
+                        currentlyActiveConnection = nullptr;
                         int margin = res->isModule1D() ? Global::inOutputWidth : 0; // give the mouseclick a radius for 1D object
                         for (int i = 0; i < inOutInfo.numOutputs; ++i) // ALSO DO FOR INPUTS
                         {

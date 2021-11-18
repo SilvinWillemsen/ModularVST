@@ -62,6 +62,7 @@ public:
     double getCurSliderValue() { return curSliderValue; };
     void setMassRatioSliderValue (double val) { massRatioSlider->setValue (val, dontSendNotification); };
 
+    void setInstructionsText (StringArray& instructions);
 private:
     
     // Collection of all buttons
@@ -81,6 +82,10 @@ private:
     std::shared_ptr<TextButton> editConnectionButton;
     std::shared_ptr<TextButton> savePresetButton;
     
+    std::shared_ptr<Label> instructionsLabel1;
+    std::shared_ptr<Label> instructionsLabel2;
+    String instructionsText;
+
     // Collection of all combo boxes
     // 0 - Connection Type
     // 1 - Input Output
