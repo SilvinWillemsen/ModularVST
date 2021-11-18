@@ -31,8 +31,9 @@
 	 	 	 <PARAM id="0_2_r_sig1" value="0.005"/>
 	 	 	 <PARAM id="0_2_r_maxPoints" value="2000"/>
 	 	 </Resonator>
-	 	 <Connection id="0_0_c" type="linear" fromResonator="1" fromLocation="59" toResonator="2" toLocation="156"/>
-	 	 <Connection id="0_1_c" type="nonlinear" fromResonator="0" fromLocation="78" toResonator="1" toLocation="81"/>
+	 	 <Connection id="0_0_c" type="rigid" fromResonator="0" fromLocation="52" toResonator="1" toLocation="54"/>
+	 	 <Connection id="0_1_c" type="nonlinear" fromResonator="1" fromLocation="74" toResonator="2" toLocation="193"/>
+	 	 <Connection id="0_2_c" type="linear" fromResonator="0" fromLocation="75" toResonator="2" toLocation="216"/>
 	 </Instrument>
 	 <Instrument id="1">
 	 	 <Resonator id="1_0_r" type="Bar">

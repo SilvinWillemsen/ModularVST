@@ -115,6 +115,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
+    //std::vector<std::string> 
     std::vector<std::string> resType{};
     std::vector<int> resonNum;
     int i = 0;
@@ -481,7 +482,7 @@ void ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
 
-    file.open("savedPreset.xml");
+    file.open("../../Presets/savedPreset.xml");
     file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
     {
