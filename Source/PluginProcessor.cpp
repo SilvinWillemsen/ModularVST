@@ -101,7 +101,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     }
     fs = sampleRate;
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("/Users/SilvinW/repositories/ModularVST/Presets/savedPreset.xml");
+    pugi::xml_parse_result result = doc.load_file("../../Presets/savedPreset.xml");
     if (result.status != pugi::status_ok)
     {
         DBG ("status not ok!");
@@ -493,7 +493,7 @@ void ModularVSTAudioProcessor::savePreset()
             ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r);
             // type
 
-            file << "\t " << "\t " << "<Resonator id=\"" << i <<"_"<< r << "r\" type=\"";
+            file << "\t " << "\t " << "<Resonator id=\"" << i <<"_"<< r << "_r\" type=\"";
             switch (curResonator->getResonatorModuleType()) {
                 case stiffString:
                     file << "Stiff_String\">";
@@ -521,7 +521,7 @@ void ModularVSTAudioProcessor::savePreset()
 
             for (int p = 0; p < curResonator->getParamters().size(); ++p)
             {
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << r << "r_";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << r << "_r_";
                 String paramName = curResonator->getParamters().getName(p).toString();
                 double value = *curResonator->getParamters().getVarPointer (paramName);
                 file << paramName << "\" value=\"" << value << "\"/>\n";
@@ -545,7 +545,7 @@ void ModularVSTAudioProcessor::savePreset()
         
         for (int c = 0; c < numConnections; ++c)
         {
-            file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "c\" type=\"";
+            file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "_c\" type=\"";
             String connectionTypeString;
             switch (instruments[i]->getConnectionInfo()[0][c].connType) {
                 case rigid:

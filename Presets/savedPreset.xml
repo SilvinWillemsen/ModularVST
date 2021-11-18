@@ -1,48 +1,48 @@
 <App>
 	 <Instrument id="0">
-	 	 <Resonator id="0_0r" type="Stiff_String">
-	 	 	 <PARAM id="0_0rL" value="1"/>
-	 	 	 <PARAM id="0_0rT" value="300"/>
-	 	 	 <PARAM id="0_0rrho" value="7850"/>
-	 	 	 <PARAM id="0_0rA" value="7.85398e-07"/>
-	 	 	 <PARAM id="0_0rE" value="2e+11"/>
-	 	 	 <PARAM id="0_0rI" value="4.90874e-14"/>
-	 	 	 <PARAM id="0_0rsig0" value="1"/>
-	 	 	 <PARAM id="0_0rsig1" value="0.005"/>
+	 	 <Resonator id="0_0_r" type="Stiff_String">
+	 	 	 <PARAM id="0_0_r_L" value="1"/>
+	 	 	 <PARAM id="0_0_r_T" value="300"/>
+	 	 	 <PARAM id="0_0_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_0_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_0_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_0_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_0_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_0_r_sig1" value="0.005"/>
 	 	 </Resonator>
-	 	 <Resonator id="0_1r" type="Stiff_String">
-	 	 	 <PARAM id="0_1rL" value="1"/>
-	 	 	 <PARAM id="0_1rT" value="300"/>
-	 	 	 <PARAM id="0_1rrho" value="7850"/>
-	 	 	 <PARAM id="0_1rA" value="7.85398e-07"/>
-	 	 	 <PARAM id="0_1rE" value="2e+11"/>
-	 	 	 <PARAM id="0_1rI" value="4.90874e-14"/>
-	 	 	 <PARAM id="0_1rsig0" value="1"/>
-	 	 	 <PARAM id="0_1rsig1" value="0.005"/>
+	 	 <Resonator id="0_1_r" type="Stiff_String">
+	 	 	 <PARAM id="0_1_r_L" value="1"/>
+	 	 	 <PARAM id="0_1_r_T" value="300"/>
+	 	 	 <PARAM id="0_1_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_1_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_1_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_1_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_1_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_1_r_sig1" value="0.005"/>
 	 	 </Resonator>
-		 <Resonator id="0_2r" type="Thin_Plate">
-	 	 	 <PARAM id="0_1rL" value="1"/>
-	 	 	 <PARAM id="0_1rT" value="300"/>
-	 	 	 <PARAM id="0_1rrho" value="7850"/>
-	 	 	 <PARAM id="0_1rA" value="7.85398e-07"/>
-	 	 	 <PARAM id="0_1rE" value="2e+11"/>
-	 	 	 <PARAM id="0_1rI" value="4.90874e-14"/>
-	 	 	 <PARAM id="0_1rsig0" value="1"/>
-	 	 	 <PARAM id="0_1rsig1" value="0.005"/>
+	 	 <Resonator id="0_2_r" type="Thin_Plate">
+	 	 	 <PARAM id="0_2_r_Lx" value="0.75"/>
+	 	 	 <PARAM id="0_2_r_Ly" value="0.25"/>
+	 	 	 <PARAM id="0_2_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_2_r_H" value="0.005"/>
+	 	 	 <PARAM id="0_2_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_2_r_nu" value="0.3"/>
+	 	 	 <PARAM id="0_2_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_2_r_sig1" value="0.005"/>
+	 	 	 <PARAM id="0_2_r_maxPoints" value="2000"/>
 	 	 </Resonator>
-	 	 <Connection id="0_0c" type="rigid " fromResonator="0" fromLocation="76" toResonator="1" toLocation="73"/>
-	 	 <Connection id="0_1c" type="nonlinear " fromResonator="0" fromLocation="98" toResonator="1" toLocation="95"/>
+	 	 <Connection id="0_0_c" type="linear" fromResonator="1" fromLocation="59" toResonator="2" toLocation="156"/>
+	 	 <Connection id="0_1_c" type="nonlinear" fromResonator="0" fromLocation="78" toResonator="1" toLocation="81"/>
 	 </Instrument>
-	<Instrument id="1">
-	 	 <Resonator id="0_0r" type="Bar">
-	 	 	 <PARAM id="0_0rL" value="1"/>
-	 	 	 <PARAM id="0_0rT" value="300"/>
-	 	 	 <PARAM id="0_0rrho" value="7850"/>
-	 	 	 <PARAM id="0_0rA" value="7.85398e-07"/>
-	 	 	 <PARAM id="0_0rE" value="2e+11"/>
-	 	 	 <PARAM id="0_0rI" value="4.90874e-14"/>
-	 	 	 <PARAM id="0_0rsig0" value="1"/>
-	 	 	 <PARAM id="0_0rsig1" value="0.005"/>
+	 <Instrument id="1">
+	 	 <Resonator id="1_0_r" type="Bar">
+	 	 	 <PARAM id="1_0_r_L" value="1"/>
+	 	 	 <PARAM id="1_0_r_rho" value="7850"/>
+	 	 	 <PARAM id="1_0_r_A" value="5.02655e-05"/>
+	 	 	 <PARAM id="1_0_r_E" value="2e+11"/>
+	 	 	 <PARAM id="1_0_r_I" value="2.01062e-10"/>
+	 	 	 <PARAM id="1_0_r_sig0" value="1"/>
+	 	 	 <PARAM id="1_0_r_sig1" value="0.005"/>
 	 	 </Resonator>
-	</Instrument>
+	 </Instrument>
 </App>
