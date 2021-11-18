@@ -5,6 +5,9 @@
               pluginFormats="buildAU,buildStandalone,buildUnity">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
+      <FILE id="lPVLco" name="pugiconfig.hpp" compile="0" resource="0" file="../pugixml-1.11/src/pugiconfig.hpp"/>
+      <FILE id="PsENVh" name="pugixml.cpp" compile="1" resource="0" file="../pugixml-1.11/src/pugixml.cpp"/>
+      <FILE id="Zfwab2" name="pugixml.hpp" compile="0" resource="0" file="../pugixml-1.11/src/pugixml.hpp"/>
       <FILE id="YPcxjC" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
       <FILE id="rylflo" name="CoefficientList.cpp" compile="1" resource="0"
             file="Source/CoefficientList.cpp"/>
