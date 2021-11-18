@@ -101,7 +101,12 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     }
     fs = sampleRate;
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("savedPreset.xml");
+    pugi::xml_parse_result result = doc.load_file("/Users/SilvinW/repositories/ModularVST/Presets/savedPreset.xml");
+    if (result.status != pugi::status_ok)
+    {
+        DBG ("status not ok!");
+        exit(0);
+    }
     pugi::xml_node node = doc.child("App");
     pugi::xml_node instrum = node.child("Instrument");
     
@@ -113,9 +118,9 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     std::vector<std::string> resType{};
     std::vector<int> resonNum;
     int i = 0;
-    for (pugi::xml_node inst : node.children("Instrument")) {
-        
-        resonNum.push_back(i);
+    for (pugi::xml_node inst : node.children("Instrument"))
+    {
+        resonNum.push_back(0);
         for (pugi::xml_node reso : inst.children("Resonator"))
         {
             resonNum[i]++;
