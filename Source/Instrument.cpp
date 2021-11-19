@@ -503,6 +503,7 @@ void Instrument::setApplicationState (ApplicationState a)
     switch (a) {
         case normalState:
             setHighlightedInstrument (false);
+            currentlyActiveConnection = nullptr;
             setAlpha (1.0);
             break;
         case editConnectionState:
@@ -650,11 +651,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 //                        if (currentConnectionType == rigid)     // add rigid connection
 //                            CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(), res->getResonatorModuleType()));
 //                        else                                    // add spring-like connection
-                        CI.push_back (ConnectionInfo (currentConnectionType, res, res->getMouseLoc(),                                             res->getResonatorModuleType(),
-                                                      Global::defaultLinSpringCoeff,
-                                                      Global::defaultNonLinSpringCoeff,
-                                                      Global::defaultConnDampCoeff));
-
+                        addFirstConnection (res, currentConnectionType, res->getMouseLoc());
                         setApplicationState (firstConnectionState);
                         sendChangeMessage();
                         break;
@@ -745,9 +742,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     }
                     else
                     {
-                        
-                        CI[CI.size()-1].setSecondResonatorParams (res, res->getMouseLoc(), res->getResonatorModuleType());
-                        setCurrentlyActiveConnection (&CI[CI.size()-1]);
+                        addSecondConnection (res, res->getMouseLoc());
                         
                         // maybe the following only needs to be done when DONE is clicked
                         bool hasOverlap = resetOverlappingConnectionVectors();
@@ -1071,4 +1066,18 @@ void Instrument::setConnectionType (ConnectionType c)
     
     if (currentlyActiveConnection != nullptr)
         currentlyActiveConnection->connType = c;
+}
+
+void Instrument::addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, int loc)
+{
+    CI.push_back (ConnectionInfo (connType, res, loc,                                             res->getResonatorModuleType(),
+                                  Global::defaultLinSpringCoeff,
+                                  Global::defaultNonLinSpringCoeff,
+                                  Global::defaultConnDampCoeff));
+}
+
+void Instrument::addSecondConnection (std::shared_ptr<ResonatorModule> res, int loc)
+{
+    CI[CI.size()-1].setSecondResonatorParams (res, loc, res->getResonatorModuleType());
+    setCurrentlyActiveConnection (&CI[CI.size()-1]);
 }

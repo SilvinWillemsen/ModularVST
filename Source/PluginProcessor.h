@@ -98,7 +98,7 @@ public:
 
     void highlightInstrument (int instrumentToHighlight);
     void savePreset();
-    
+    LoadPresetResult loadPreset();
 private:
     //==============================================================================
     int fs;
@@ -113,6 +113,12 @@ private:
     
     std::vector<Action> initActions;
     std::vector<ResonatorModuleType> initModuleTypes;
+    
+#if (JUCE_MAC)
+    const char* presetPath = "../../../../Presets/savedPreset.xml";
+#elif (JUCE_WINDOWS)
+    const char* presetPath = "../../Presets/savedPreset.xml";
+#endif
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     

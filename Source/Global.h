@@ -29,16 +29,21 @@ enum Action
     noAction,
     
     addInstrumentAction,
+    
     addResonatorModuleAction,
     addResonatorModuleFromWindowAction,
     removeResonatorModuleAction,
     cancelRemoveResonatorModuleAction,
+    
     editInOutputsAction,
     cancelInOutputsAction,
+    
+    addConnectionAction, // only for presets
     editConnectionAction,
+    cancelConnectionAction,
+
     changeMassRatioAction,
     changeActiveConnectionAction,
-    cancelConnectionAction,
     savePresetAction
 };
 
@@ -76,8 +81,18 @@ enum BoundaryCondition
     freeBC,
 };
 
+enum LoadPresetResult
+{
+    success,
+    applicationIsNotEmpty,
+    fileNotFound,
+    presetNotLoaded
+};
+
 namespace Global
 {
+    static const bool loadPresetAtStartUp = true;
+
     static const int margin = 20;
     static const int buttonHeight = 40;
     static const int buttonWidth = 80;

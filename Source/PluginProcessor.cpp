@@ -101,223 +101,26 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     }
     fs = sampleRate;
     
-    pugi::xml_document doc;
-#if (JUCE_MAC)
-    pugi::xml_parse_result result = doc.load_file("../../../../Presets/savedPreset.xml");
-#elif (JUCE_WINDOWS)
-    pugi::xml_parse_result result = doc.load_file("../../Presets/savedPreset.xml");
-#endif
-    if (result.status != pugi::status_ok)
+    if (Global::loadPresetAtStartUp)
     {
-        DBG ("status not ok!");
-        exit(0);
-    }
-    pugi::xml_node node = doc.child("App");
-    pugi::xml_node instrum = node.child("Instrument");
-    
-    juce::Logger::getCurrentLogger()->outputDebugString("hello");
-    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Resonator").child("PARAM").attribute("id").value());
-    juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
-    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
-    
-    std::vector< std::vector<std::vector<double>>> params;
-    std::vector< std::vector<std::vector<double>>> connects;
-    std::vector<std::string> resoType{};
-    std::vector<std::string> connType{};
-    std::vector<int> resoNum;
-    std::vector<int> connNum;
-    int i = 0;
-    for (pugi::xml_node inst : node.children("Instrument"))
-    {
-        resoNum.push_back(0);
-        connNum.push_back(0);
-        params.push_back(std::vector< std::vector<double>>());
-        connects.push_back(std::vector< std::vector<double>>());
-        int j = 0;
-        int c = 0;
-        for (pugi::xml_node reso : inst.children("Resonator"))
-        {
-            params[i].push_back(std::vector<double>());
-            ++resoNum[i];
-            juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
-            for (pugi::xml_attribute resoAttr : reso.attributes())
-            {
-                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.name());
-                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.value());
-                auto attrib = *(resoAttr.name());
-                if (attrib == 't') {
-                    resoType.push_back(resoAttr.value());
-                }
-            }
-            juce::Logger::getCurrentLogger()->outputDebugString("Parameters:"); 
-            
-            for (pugi::xml_node resoChild : reso.children())
-            {
-                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
-                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("value").value());
-                params[i][j].push_back(std::stod(resoChild.attribute("value").value()));
-                
-            }
-            
-            ++j;
-        }
-        
-        // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        for (pugi::xml_node conn : inst.children("Connection"))
-        {
-            connects[i].push_back(std::vector<double>());
-            ++connNum[i];
-            juce::Logger::getCurrentLogger()->outputDebugString("Connection:");
-            for (pugi::xml_attribute connAttr : conn.attributes())
-            {
-                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.name());
-                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.value());
-                auto attrib = String(connAttr.name());
-                if (attrib == "type") {
-                    connType.push_back(connAttr.value());
-                }
-            }
-            juce::Logger::getCurrentLogger()->outputDebugString("Connection locations:");
-
-            for (pugi::xml_node connChild : conn.children())
-            {
-                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("id").value());
-                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("value").value());
-                connects[i][c].push_back(std::stod(connChild.attribute("value").value()));
-
-            }
-
-            ++c;
-        }
-        ++i;
-        // --------------------------------------------------------------------------------------------------
-
-        
-    }
-    for (int i = 0; i < resoNum.size(); ++i)
-    {
-        initActions.push_back(addInstrumentAction);
-        for (int j = 0; j < resoNum[i]; ++j)
-        {
-            initActions.push_back(addResonatorModuleAction);
-        }
-    }
-
-    
-    for (int i = 0; i < resoType.size(); ++i) {
-        if (resoType[i] == "Stiff_String") { initModuleTypes.push_back(stiffString); }
-        else if (resoType[i] == "Bar") { initModuleTypes.push_back(bar); }
-        else if (resoType[i] == "Thin_Plate") { initModuleTypes.push_back(thinPlate); }
-        else if (resoType[i] == "Membrane") { initModuleTypes.push_back(membrane); } 
-        else if (resoType[i] == "Stiff_Membrane") { initModuleTypes.push_back(stiffMembrane); }
-    }
-    
-    int numModules = 0;
-    for (int i = 0; i < initActions.size(); ++i)
-        if (initActions[i] == addResonatorModuleAction)
-            ++numModules;
-    
-    if (numModules != initModuleTypes.size())
-        std::cout << "WRONG NUMBER OF MODULE TYPES ASSIGNED. CHANGE initModuleTypes VECTOR TO MATCH THE AMOUNT OF 'addResonatorModuleAction's IN initModuleTypes." << std::endl;
-    
-    
-    if (instruments.size() == 0)
-    {
-        instruments.reserve (8);
-    }
-    else
-    {
-        for (auto inst : instruments)
-            if (inst->getFs() != fs)
-                inst->initialise (fs);
-            
-    }
-    
-    
-    int  j = 0;
-    int x = -1;
-    int y;
-    NamedValueSet parameters;
-    for (int i = 0; i < initActions.size(); ++i)
-    {
-        switch (initActions[i]) {
-            case addInstrumentAction:
-                addInstrument();
-                ++x; 
-                y = 0;
+        LoadPresetResult res = loadPreset();
+        switch (res) {
+            case applicationIsNotEmpty:
+                DBG ("Application is not empty.");
                 break;
-            case addResonatorModuleAction:
-                switch (initModuleTypes[j]) {
-                    case stiffString:
-                        juce::Logger::getCurrentLogger()->outputDebugString(std::to_string(params[x][y][0]));
-                        parameters = {
-                            {"L", params[x][y][0]},
-                            {"T", params[x][y][1]},
-                            {"rho", params[x][y][2]},
-                            {"A", params[x][y][3]},
-                            {"E", params[x][y][4]},
-                            {"I", params[x][y][5]},
-                            {"sig0", params[x][y][6]},
-                            {"sig1", params[x][y][7]} };   
-                        break;
-                    case bar:
-                        parameters = {
-                            {"L", params[x][y][0]},
-                            {"rho", params[x][y][1]},
-                            {"A", params[x][y][2]},
-                            {"E", params[x][y][3]},
-                            {"I", params[x][y][4]},
-                            {"sig0", params[x][y][5]},
-                            {"sig1", params[x][y][6]} };
-                        break;
-                    case membrane:
-                        parameters = {
-                            {"Lx", params[x][y][0]},
-                            {"Ly", params[x][y][1]},
-                            {"rho", params[x][y][2]},
-                            {"H", params[x][y][3]},
-                            {"T", params[x][y][4]}, 
-                            {"sig0", params[x][y][5]},
-                            {"sig1", params[x][y][6]},
-                            {"maxPoints", params[x][y][7]} };
-                        break;
-                    case thinPlate:
-                        parameters = {
-                            {"Lx", params[x][y][0]},
-                            {"Ly", params[x][y][1]},
-                            {"rho", params[x][y][2]},
-                            {"H", params[x][y][3]},
-                            {"E", params[x][y][4]},
-                            {"nu", params[x][y][5]},
-                            {"sig0", params[x][y][6]},
-                            {"sig1", params[x][y][7]},
-                            {"maxPoints", params[x][y][8]} };
-                        break;
-                    case stiffMembrane:
-                        parameters = {
-                            {"Lx", params[x][y][0]},
-                            {"Ly", params[x][y][1]},
-                            {"rho", params[x][y][2]},
-                            {"H", params[x][y][3]},
-                            {"T", params[x][y][4]},
-                            {"E", params[x][y][5]},
-                            {"nu", params[x][y][6]},
-                            {"sig0", params[x][y][7]},
-                            {"sig1", params[x][y][8]},
-                            {"maxPoints", params[x][y][9]} };
-                        break;
-                    default:
-                        break;
-                }
-                addResonatorModule (initModuleTypes[j], parameters);
-                ++j;
-                ++y;        
+            case fileNotFound:
+                DBG ("Presetfile not found");
                 break;
+            case presetNotLoaded:
+                DBG ("For whatever reason, the preset was not loaded.");
+            case success:
+                DBG ("Preset loaded successfully.");
+                break;
+
             default:
                 break;
         }
     }
-    
 }
 
 void ModularVSTAudioProcessor::releaseResources()
@@ -553,7 +356,8 @@ void ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
 
-    file.open("../../Presets/savedPreset.xml");
+    
+    file.open (presetPath);
     file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
     {
@@ -562,7 +366,7 @@ void ModularVSTAudioProcessor::savePreset()
 
         for (int r = 0; r < numResonators; ++r)
         {
-            ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r);
+            ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r).get();
             // type
 
             file << "\t " << "\t " << "<Resonator id=\"" << i <<"_"<< r << "_r\" type=\"";
@@ -678,4 +482,269 @@ void ModularVSTAudioProcessor::savePreset()
     }
     file << "</App" << ">" << "\n";
     file.close();
+}
+
+LoadPresetResult ModularVSTAudioProcessor::loadPreset()
+{
+    // make sure that application is loaded from scratch
+    if (instruments.size() != 0)
+        return applicationIsNotEmpty;
+    
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file (presetPath);
+    if (result.status != pugi::status_ok)
+    {
+        return fileNotFound;
+    }
+    pugi::xml_node node = doc.child("App");
+    pugi::xml_node instrum = node.child("Instrument");
+    
+    juce::Logger::getCurrentLogger()->outputDebugString("hello");
+    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Resonator").child("PARAM").attribute("id").value());
+    juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
+    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
+    
+    std::vector< std::vector<std::vector<double>>> params;
+    std::vector< std::vector<std::vector<double>>> connects;
+    std::vector<String> resoType;
+    std::vector<std::vector<String>> connType;
+    std::vector<int> resoNum;
+    std::vector<int> connNum;
+    
+    int i = 0;
+    for (pugi::xml_node inst : node.children("Instrument"))
+    {
+        resoNum.push_back(0);
+        connNum.push_back(0);
+        params.push_back(std::vector< std::vector<double>>());
+        connects.push_back(std::vector< std::vector<double>>());
+        int j = 0;
+        int c = 0;
+        for (pugi::xml_node reso : inst.children("Resonator"))
+        {
+            params[i].push_back(std::vector<double>());
+            ++resoNum[i];
+            juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
+            for (pugi::xml_attribute resoAttr : reso.attributes())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.name());
+                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.value());
+                auto attrib = *(resoAttr.name());
+                if (attrib == 't') {
+                    resoType.push_back(resoAttr.value());
+                }
+            }
+            juce::Logger::getCurrentLogger()->outputDebugString("Parameters:");
+            
+            for (pugi::xml_node resoChild : reso.children())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
+                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("value").value());
+                params[i][j].push_back(std::stod(resoChild.attribute("value").value()));
+                
+            }
+            
+            ++j;
+        }
+        
+        // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        for (pugi::xml_node conn : inst.children("Connection"))
+        {
+            connects[i].push_back(std::vector<double>());
+            connType.push_back(std::vector<String>());
+            ++connNum[i];
+            juce::Logger::getCurrentLogger()->outputDebugString("Connection:");
+            for (pugi::xml_attribute connAttr : conn.attributes())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.name());
+                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.value());
+                auto attrib = String(connAttr.name());
+                if (attrib == "type") {
+                    connType[i].push_back(connAttr.value());
+                }
+            }
+            juce::Logger::getCurrentLogger()->outputDebugString("Connection locations:");
+
+            for (pugi::xml_node connChild : conn.children())
+            {
+                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("id").value());
+                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("value").value());
+                connects[i][c].push_back(std::stod(connChild.attribute("value").value()));
+
+            }
+
+            ++c;
+        }
+        ++i;
+        // --------------------------------------------------------------------------------------------------
+
+        
+    }
+    if (resoNum.size() != connNum.size())
+    {
+        DBG ("Silvin: If this happens, I apparently didn't understand it correctly :)");
+    }
+    for (int i = 0; i < resoNum.size(); ++i)
+    {
+        initActions.push_back(addInstrumentAction);
+        for (int j = 0; j < resoNum[i]; ++j)
+        {
+            initActions.push_back (addResonatorModuleAction);
+        }
+        for (int j = 0; j < connNum[i]; ++j)
+        {
+            initActions.push_back (addConnectionAction);
+        }
+    }
+    
+    for (int i = 0; i < resoType.size(); ++i) {
+        if (resoType[i] == "Stiff_String") { initModuleTypes.push_back(stiffString); }
+        else if (resoType[i] == "Bar") { initModuleTypes.push_back(bar); }
+        else if (resoType[i] == "Thin_Plate") { initModuleTypes.push_back(thinPlate); }
+        else if (resoType[i] == "Membrane") { initModuleTypes.push_back(membrane); }
+        else if (resoType[i] == "Stiff_Membrane") { initModuleTypes.push_back(stiffMembrane); }
+    }
+    
+    int numModules = 0;
+    for (int i = 0; i < initActions.size(); ++i)
+    {
+        if (initActions[i] == addResonatorModuleAction)
+            ++numModules;
+        
+    }
+    
+    if (numModules != initModuleTypes.size())
+        std::cout << "WRONG NUMBER OF MODULE TYPES ASSIGNED. CHANGE initModuleTypes VECTOR TO MATCH THE AMOUNT OF 'addResonatorModuleAction's IN initModuleTypes." << std::endl;
+    
+    
+    if (instruments.size() == 0)
+    {
+        instruments.reserve (8);
+    }
+    else
+    {
+        for (auto inst : instruments)
+            if (inst->getFs() != fs)
+                inst->initialise (fs);
+            
+    }
+    
+    // indices  for loop below
+    int m = 0;  // module type
+    int r;      // resonator
+    int c;      // connection
+    
+    i = -1; // reinitialise instrument index
+
+    NamedValueSet parameters;
+    for (int a = 0; a < initActions.size(); ++a)
+    {
+        switch (initActions[a]) {
+            case addInstrumentAction:
+            {
+                addInstrument();
+                ++i;
+                r = 0;
+                c = 0;
+                break;
+            }
+            case addResonatorModuleAction:
+            {
+                switch (initModuleTypes[m]) {
+                    case stiffString:
+                        juce::Logger::getCurrentLogger()->outputDebugString(std::to_string(params[i][r][0]));
+                        parameters = {
+                            {"L", params[i][r][0]},
+                            {"T", params[i][r][1]},
+                            {"rho", params[i][r][2]},
+                            {"A", params[i][r][3]},
+                            {"E", params[i][r][4]},
+                            {"I", params[i][r][5]},
+                            {"sig0", params[i][r][6]},
+                            {"sig1", params[i][r][7]} };
+                        break;
+                    case bar:
+                        parameters = {
+                            {"L", params[i][r][0]},
+                            {"rho", params[i][r][1]},
+                            {"A", params[i][r][2]},
+                            {"E", params[i][r][3]},
+                            {"I", params[i][r][4]},
+                            {"sig0", params[i][r][5]},
+                            {"sig1", params[i][r][6]} };
+                        break;
+                    case membrane:
+                        parameters = {
+                            {"Lx", params[i][r][0]},
+                            {"Ly", params[i][r][1]},
+                            {"rho", params[i][r][2]},
+                            {"H", params[i][r][3]},
+                            {"T", params[i][r][4]},
+                            {"sig0", params[i][r][5]},
+                            {"sig1", params[i][r][6]},
+                            {"maxPoints", params[i][r][7]} };
+                        break;
+                    case thinPlate:
+                        parameters = {
+                            {"Lx", params[i][r][0]},
+                            {"Ly", params[i][r][1]},
+                            {"rho", params[i][r][2]},
+                            {"H", params[i][r][3]},
+                            {"E", params[i][r][4]},
+                            {"nu", params[i][r][5]},
+                            {"sig0", params[i][r][6]},
+                            {"sig1", params[i][r][7]},
+                            {"maxPoints", params[i][r][8]} };
+                        break;
+                    case stiffMembrane:
+                        
+                        parameters = {
+                            {"Lx", params[i][r][0]},
+                            {"Ly", params[i][r][1]},
+                            {"rho", params[i][r][2]},
+                            {"H", params[i][r][3]},
+                            {"T", params[i][r][4]},
+                            {"E", params[i][r][5]},
+                            {"nu", params[i][r][6]},
+                            {"sig0", params[i][r][7]},
+                            {"sig1", params[i][r][8]},
+                            {"maxPoints", params[i][r][9]} };
+                        break;
+                    default:
+                        break;
+                }
+                addResonatorModule (initModuleTypes[m], parameters);
+                ++m;
+                ++r;
+                break;
+            }
+            case addConnectionAction:
+            {
+                int resFromIdx = connects[i][c][0];
+                int resFromLoc = connects[i][c][1];
+                int resToIdx = connects[i][c][2];
+                int resToLoc = connects[i][c][3];
+                ConnectionType curConnType;
+                
+                if (connType[i][c] == "rigid")
+                    curConnType = rigid;
+                else if (connType[i][c] == "linear")
+                    curConnType = linearSpring;
+                else if (connType[i][c] == "nonlinear")
+                    curConnType = nonlinearSpring;
+                        
+                instruments[i]->addFirstConnection (instruments[i]->getResonatorPtr(resFromIdx),
+                                                    curConnType,
+                                                    resFromLoc);
+                instruments[i]->addSecondConnection (instruments[i]->getResonatorPtr(resToIdx),
+                                                     resToLoc);
+                instruments[i]->setCurrentlyActiveConnection (nullptr);
+                ++c;
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    return success;
 }

@@ -168,7 +168,7 @@ public:
     
     // Get the number of resonator modules in the instrument
     int getNumResonatorModules() { return (int)resonators.size(); };
-    ResonatorModule* getResonatorPtr (int idx) { return resonators[idx].get(); };
+    std::shared_ptr<ResonatorModule> getResonatorPtr (int idx) { return resonators[idx]; };
     
     // Add/remove a resonator module
     void addResonatorModule(ResonatorModuleType rmt, NamedValueSet& parameters);
@@ -216,6 +216,10 @@ public:
     void setHighlightedInstrument (bool h) { highlightedInstrument = h; };
     void setConnectionType (ConnectionType c);
     
+    // Have separate functions (and separate location) for presets
+    void addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, int loc);
+    void addSecondConnection (std::shared_ptr<ResonatorModule> res, int loc);
+
 //    void setChangeListener (ChangeListener* changeListener) { if (getChangeL) addChangelistener (changeListener); };
     ApplicationState getApplicationState() { return applicationState; };
         
