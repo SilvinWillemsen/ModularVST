@@ -204,7 +204,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     {
         if (addModuleWindow->getAction() == addResonatorModuleFromWindowAction)
             if (addModuleWindow->getDlgModal() == 1)
-                audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters());
+                audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters(), addModuleWindow->isAdvanced());
 
         addModuleWindow->setDlgModal (-1);
         addModuleWindow->setAction (noAction);
@@ -231,13 +231,8 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
     DialogWindow::LaunchOptions dlg;
     int dlgModal = -1;
     addAndMakeVisible (addModuleWindow.get());
+    addModuleWindow->triggerComboBox(); // to prevent advanced parameters from appearing when non-advanced parameters should be shown
     dlgWindow->showDialog ("Add Resonator Module", addModuleWindow.get(), this, getLookAndFeel().findColour (ResizableWindow::backgroundColourId), true);
-//    dlg.dialogTitle = "Add Resonator Module";
-//    dlg.content.set (addModuleWindow.get(), false);
-//    
-//    dlgWindow = dlg.launchAsync();
-//    if (dlgModal == 1)
-//        audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters());
 }
 
 void ModularVSTAudioProcessorEditor::refreshControlPanel()

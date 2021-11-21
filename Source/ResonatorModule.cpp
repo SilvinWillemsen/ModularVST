@@ -12,7 +12,7 @@
 #include "ResonatorModule.h"
 
 //==============================================================================
-ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : k (1.0 / fs), parameters (parameters), resonatorModuleType(rmt), ID (ID), bc (bc)
+ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : k (1.0 / fs), parameters (parameters), resonatorModuleType(rmt), ID (ID), bc (bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -30,7 +30,7 @@ ResonatorModule::~ResonatorModule()
 void ResonatorModule::initialiseModule()
 {
     // Check whether the number of grid points has been set
-    jassert (N != -1);
+    jassert (N > 0);
     
     /*  Make u pointers point to the first index of the state vectors.
         To use u (and obtain a vector from the state vectors) use indices like u[n][l] where,

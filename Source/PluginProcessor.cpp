@@ -285,12 +285,12 @@ void ModularVSTAudioProcessor::addInstrument()
     refreshEditor = true;
 }
 
-void ModularVSTAudioProcessor::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters)
+void ModularVSTAudioProcessor::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced)
 {
     jassert(currentlyActiveInstrument != -1);
     jassert(currentlyActiveInstrument < instruments.size());
 
-    instruments[currentlyActiveInstrument]->addResonatorModule (rmt, parameters);
+    instruments[currentlyActiveInstrument]->addResonatorModule (rmt, parameters, advanced);
     refreshEditor = true;
 }
 

@@ -58,7 +58,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     void addInstrument();
-    void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters);
+    void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced = true);
 
     void addChannelProcessor() {
         std::cout << getBusCount(false) << std::endl;

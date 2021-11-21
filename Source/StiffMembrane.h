@@ -23,7 +23,7 @@
 class StiffMembrane  : public ResonatorModule
 {
 public:
-    StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = clampedBC);
+    StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = clampedBC);
     ~StiffMembrane() override;
 
     // initialisation

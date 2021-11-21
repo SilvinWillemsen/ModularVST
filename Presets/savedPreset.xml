@@ -2,7 +2,7 @@
 	 <Instrument id="0">
 	 	 <Resonator id="0_0_r" type="Stiff_String">
 	 	 	 <PARAM id="0_0_r_L" value="1"/>
-	 	 	 <PARAM id="0_0_r_T" value="300"/>
+	 	 	 <PARAM id="0_0_r_T" value="669.864"/>
 	 	 	 <PARAM id="0_0_r_rho" value="7850"/>
 	 	 	 <PARAM id="0_0_r_A" value="7.85398e-07"/>
 	 	 	 <PARAM id="0_0_r_E" value="2e+11"/>
@@ -10,81 +10,189 @@
 	 	 	 <PARAM id="0_0_r_sig0" value="1"/>
 	 	 	 <PARAM id="0_0_r_sig1" value="0.005"/>
 	 	 </Resonator>
-	 	 <Resonator id="0_1_r" type="Bar">
+	 	 <Resonator id="0_1_r" type="Stiff_String">
 	 	 	 <PARAM id="0_1_r_L" value="1"/>
+	 	 	 <PARAM id="0_1_r_T" value="1193.62"/>
 	 	 	 <PARAM id="0_1_r_rho" value="7850"/>
-	 	 	 <PARAM id="0_1_r_A" value="5.02655e-05"/>
+	 	 	 <PARAM id="0_1_r_A" value="7.85398e-07"/>
 	 	 	 <PARAM id="0_1_r_E" value="2e+11"/>
-	 	 	 <PARAM id="0_1_r_I" value="2.01062e-10"/>
+	 	 	 <PARAM id="0_1_r_I" value="4.90874e-14"/>
 	 	 	 <PARAM id="0_1_r_sig0" value="1"/>
 	 	 	 <PARAM id="0_1_r_sig1" value="0.005"/>
 	 	 </Resonator>
+	 	 <Resonator id="0_2_r" type="Stiff_String">
+	 	 	 <PARAM id="0_2_r_L" value="1"/>
+	 	 	 <PARAM id="0_2_r_T" value="2126.71"/>
+	 	 	 <PARAM id="0_2_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_2_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_2_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_2_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_2_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_2_r_sig1" value="0.005"/>
+	 	 </Resonator>
+	 	 <Resonator id="0_3_r" type="Stiff_String">
+	 	 	 <PARAM id="0_3_r_L" value="1"/>
+	 	 	 <PARAM id="0_3_r_T" value="3789.59"/>
+	 	 	 <PARAM id="0_3_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_3_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_3_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_3_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_3_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_3_r_sig1" value="0.005"/>
+	 	 </Resonator>
+	 	 <Resonator id="0_4_r" type="Stiff_String">
+	 	 	 <PARAM id="0_4_r_L" value="1"/>
+	 	 	 <PARAM id="0_4_r_T" value="6015.37"/>
+	 	 	 <PARAM id="0_4_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_4_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_4_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_4_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_4_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_4_r_sig1" value="0.005"/>
+	 	 </Resonator>
+	 	 <Resonator id="0_5_r" type="Stiff_String">
+	 	 	 <PARAM id="0_5_r_L" value="1"/>
+	 	 	 <PARAM id="0_5_r_T" value="10718.1"/>
+	 	 	 <PARAM id="0_5_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_5_r_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="0_5_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_5_r_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="0_5_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_5_r_sig1" value="0.005"/>
+	 	 </Resonator>
+	 	 <Resonator id="0_6_r" type="Bar">
+	 	 	 <PARAM id="0_6_r_L" value="0.5"/>
+	 	 	 <PARAM id="0_6_r_rho" value="1190"/>
+	 	 	 <PARAM id="0_6_r_A" value="2.0175e-05"/>
+	 	 	 <PARAM id="0_6_r_E" value="3.2e+09"/>
+	 	 	 <PARAM id="0_6_r_I" value="9.45703e-11"/>
+	 	 	 <PARAM id="0_6_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_6_r_sig1" value="0.05"/>
+	 	 </Resonator>
+	 	 <Resonator id="0_7_r" type="Thin_Plate">
+	 	 	 <PARAM id="0_7_r_Lx" value="0.75"/>
+	 	 	 <PARAM id="0_7_r_Ly" value="0.5"/>
+	 	 	 <PARAM id="0_7_r_rho" value="7850"/>
+	 	 	 <PARAM id="0_7_r_H" value="0.005"/>
+	 	 	 <PARAM id="0_7_r_E" value="2e+11"/>
+	 	 	 <PARAM id="0_7_r_nu" value="0.3"/>
+	 	 	 <PARAM id="0_7_r_sig0" value="1"/>
+	 	 	 <PARAM id="0_7_r_sig1" value="0.005"/>
+	 	 	 <PARAM id="0_7_r_maxPoints" value="2000"/>
+	 	 </Resonator>
 	 	 <Connection id="0_0_c" type="linear">
 	 	 	 <PARAM id="0_0_c_fR" value="0"/>
-	 	 	 <PARAM id="0_0_c_fL" value="19"/>
-	 	 	 <PARAM id="0_0_c_tR" value="1"/>
-	 	 	 <PARAM id="0_0_c_tL" value="6"/>
+	 	 	 <PARAM id="0_0_c_fL" value="103"/>
+	 	 	 <PARAM id="0_0_c_tR" value="6"/>
+	 	 	 <PARAM id="0_0_c_tL" value="3"/>
 	 	 </Connection>
-	 	 <Connection id="0_1_c" type="rigid">
-	 	 	 <PARAM id="0_1_c_fR" value="0"/>
-	 	 	 <PARAM id="0_1_c_fL" value="101"/>
-	 	 	 <PARAM id="0_1_c_tR" value="1"/>
-	 	 	 <PARAM id="0_1_c_tL" value="38"/>
+	 	 <Connection id="0_1_c" type="linear">
+	 	 	 <PARAM id="0_1_c_fR" value="1"/>
+	 	 	 <PARAM id="0_1_c_fL" value="88"/>
+	 	 	 <PARAM id="0_1_c_tR" value="6"/>
+	 	 	 <PARAM id="0_1_c_tL" value="9"/>
 	 	 </Connection>
-	 	 <Connection id="0_2_c" type="nonlinear">
-	 	 	 <PARAM id="0_2_c_fR" value="0"/>
-	 	 	 <PARAM id="0_2_c_fL" value="76"/>
-	 	 	 <PARAM id="0_2_c_tR" value="1"/>
-	 	 	 <PARAM id="0_2_c_tL" value="26"/>
+	 	 <Connection id="0_2_c" type="linear">
+	 	 	 <PARAM id="0_2_c_fR" value="2"/>
+	 	 	 <PARAM id="0_2_c_fL" value="70"/>
+	 	 	 <PARAM id="0_2_c_tR" value="6"/>
+	 	 	 <PARAM id="0_2_c_tL" value="15"/>
 	 	 </Connection>
-	 </Instrument>
-	 <Instrument id="1">
-	 	 <Resonator id="1_0_r" type="Thin_Plate">
-	 	 	 <PARAM id="1_0_r_Lx" value="0.75"/>
-	 	 	 <PARAM id="1_0_r_Ly" value="0.25"/>
-	 	 	 <PARAM id="1_0_r_rho" value="7850"/>
-	 	 	 <PARAM id="1_0_r_H" value="0.005"/>
-	 	 	 <PARAM id="1_0_r_E" value="2e+11"/>
-	 	 	 <PARAM id="1_0_r_nu" value="0.3"/>
-	 	 	 <PARAM id="1_0_r_sig0" value="1"/>
-	 	 	 <PARAM id="1_0_r_sig1" value="0.005"/>
-	 	 	 <PARAM id="1_0_r_maxPoints" value="2000"/>
-	 	 </Resonator>
-	 	 <Resonator id="1_1_r" type="Stiff_Membrane">
-	 	 	 <PARAM id="1_1_r_Lx" value="0.75"/>
-	 	 	 <PARAM id="1_1_r_Ly" value="0.25"/>
-	 	 	 <PARAM id="1_1_r_rho" value="7850"/>
-	 	 	 <PARAM id="1_1_r_H" value="0.005"/>
-	 	 	 <PARAM id="1_1_r_T" value="100000"/>
-	 	 	 <PARAM id="1_1_r_E" value="2e+11"/>
-	 	 	 <PARAM id="1_1_r_nu" value="0.3"/>
-	 	 	 <PARAM id="1_1_r_sig0" value="1"/>
-	 	 	 <PARAM id="1_1_r_sig1" value="0.005"/>
-	 	 	 <PARAM id="1_1_r_maxPoints" value="2000"/>
-	 	 </Resonator>
-	 	 <Connection id="1_0_c" type="nonlinear">
-	 	 	 <PARAM id="1_0_c_fR" value="0"/>
-	 	 	 <PARAM id="1_0_c_fL" value="147"/>
-	 	 	 <PARAM id="1_0_c_tR" value="1"/>
-	 	 	 <PARAM id="1_0_c_tL" value="119"/>
+	 	 <Connection id="0_3_c" type="linear">
+	 	 	 <PARAM id="0_3_c_fR" value="3"/>
+	 	 	 <PARAM id="0_3_c_fL" value="54"/>
+	 	 	 <PARAM id="0_3_c_tR" value="6"/>
+	 	 	 <PARAM id="0_3_c_tL" value="22"/>
 	 	 </Connection>
-	 	 <Connection id="1_1_c" type="nonlinear">
-	 	 	 <PARAM id="1_1_c_fR" value="0"/>
-	 	 	 <PARAM id="1_1_c_fL" value="124"/>
-	 	 	 <PARAM id="1_1_c_tR" value="1"/>
-	 	 	 <PARAM id="1_1_c_tL" value="151"/>
+	 	 <Connection id="0_4_c" type="linear">
+	 	 	 <PARAM id="0_4_c_fR" value="4"/>
+	 	 	 <PARAM id="0_4_c_fL" value="43"/>
+	 	 	 <PARAM id="0_4_c_tR" value="6"/>
+	 	 	 <PARAM id="0_4_c_tL" value="28"/>
 	 	 </Connection>
-	 	 <Connection id="1_2_c" type="nonlinear">
-	 	 	 <PARAM id="1_2_c_fR" value="0"/>
-	 	 	 <PARAM id="1_2_c_fL" value="214"/>
-	 	 	 <PARAM id="1_2_c_tR" value="1"/>
-	 	 	 <PARAM id="1_2_c_tL" value="76"/>
+	 	 <Connection id="0_5_c" type="linear">
+	 	 	 <PARAM id="0_5_c_fR" value="5"/>
+	 	 	 <PARAM id="0_5_c_fL" value="32"/>
+	 	 	 <PARAM id="0_5_c_tR" value="6"/>
+	 	 	 <PARAM id="0_5_c_tL" value="34"/>
 	 	 </Connection>
-	 	 <Connection id="1_3_c" type="rigid">
-	 	 	 <PARAM id="1_3_c_fR" value="0"/>
-	 	 	 <PARAM id="1_3_c_fL" value="127"/>
-	 	 	 <PARAM id="1_3_c_tR" value="1"/>
-	 	 	 <PARAM id="1_3_c_tL" value="73"/>
+	 	 <Connection id="0_6_c" type="rigid">
+	 	 	 <PARAM id="0_6_c_fR" value="6"/>
+	 	 	 <PARAM id="0_6_c_fL" value="4"/>
+	 	 	 <PARAM id="0_6_c_tR" value="7"/>
+	 	 	 <PARAM id="0_6_c_tL" value="255"/>
+	 	 </Connection>
+	 	 <Connection id="0_7_c" type="rigid">
+	 	 	 <PARAM id="0_7_c_fR" value="6"/>
+	 	 	 <PARAM id="0_7_c_fL" value="6"/>
+	 	 	 <PARAM id="0_7_c_tR" value="7"/>
+	 	 	 <PARAM id="0_7_c_tL" value="257"/>
+	 	 </Connection>
+	 	 <Connection id="0_8_c" type="rigid">
+	 	 	 <PARAM id="0_8_c_fR" value="6"/>
+	 	 	 <PARAM id="0_8_c_fL" value="10"/>
+	 	 	 <PARAM id="0_8_c_tR" value="7"/>
+	 	 	 <PARAM id="0_8_c_tL" value="231"/>
+	 	 </Connection>
+	 	 <Connection id="0_9_c" type="rigid">
+	 	 	 <PARAM id="0_9_c_fR" value="6"/>
+	 	 	 <PARAM id="0_9_c_fL" value="13"/>
+	 	 	 <PARAM id="0_9_c_tR" value="7"/>
+	 	 	 <PARAM id="0_9_c_tL" value="233"/>
+	 	 </Connection>
+	 	 <Connection id="0_10_c" type="rigid">
+	 	 	 <PARAM id="0_10_c_fR" value="6"/>
+	 	 	 <PARAM id="0_10_c_fL" value="16"/>
+	 	 	 <PARAM id="0_10_c_tR" value="7"/>
+	 	 	 <PARAM id="0_10_c_tL" value="291"/>
+	 	 </Connection>
+	 	 <Connection id="0_11_c" type="rigid">
+	 	 	 <PARAM id="0_11_c_fR" value="6"/>
+	 	 	 <PARAM id="0_11_c_fL" value="18"/>
+	 	 	 <PARAM id="0_11_c_tR" value="7"/>
+	 	 	 <PARAM id="0_11_c_tL" value="265"/>
+	 	 </Connection>
+	 	 <Connection id="0_12_c" type="rigid">
+	 	 	 <PARAM id="0_12_c_fR" value="6"/>
+	 	 	 <PARAM id="0_12_c_fL" value="20"/>
+	 	 	 <PARAM id="0_12_c_tR" value="7"/>
+	 	 	 <PARAM id="0_12_c_tL" value="239"/>
+	 	 </Connection>
+	 	 <Connection id="0_13_c" type="rigid">
+	 	 	 <PARAM id="0_13_c_fR" value="6"/>
+	 	 	 <PARAM id="0_13_c_fL" value="23"/>
+	 	 	 <PARAM id="0_13_c_tR" value="7"/>
+	 	 	 <PARAM id="0_13_c_tL" value="241"/>
+	 	 </Connection>
+	 	 <Connection id="0_14_c" type="rigid">
+	 	 	 <PARAM id="0_14_c_fR" value="6"/>
+	 	 	 <PARAM id="0_14_c_fL" value="25"/>
+	 	 	 <PARAM id="0_14_c_tR" value="7"/>
+	 	 	 <PARAM id="0_14_c_tL" value="299"/>
+	 	 </Connection>
+	 	 <Connection id="0_15_c" type="rigid">
+	 	 	 <PARAM id="0_15_c_fR" value="6"/>
+	 	 	 <PARAM id="0_15_c_fL" value="29"/>
+	 	 	 <PARAM id="0_15_c_tR" value="7"/>
+	 	 	 <PARAM id="0_15_c_tL" value="356"/>
+	 	 </Connection>
+	 	 <Connection id="0_16_c" type="rigid">
+	 	 	 <PARAM id="0_16_c_fR" value="6"/>
+	 	 	 <PARAM id="0_16_c_fL" value="31"/>
+	 	 	 <PARAM id="0_16_c_tR" value="7"/>
+	 	 	 <PARAM id="0_16_c_tL" value="218"/>
+	 	 </Connection>
+	 	 <Connection id="0_17_c" type="rigid">
+	 	 	 <PARAM id="0_17_c_fR" value="6"/>
+	 	 	 <PARAM id="0_17_c_fL" value="33"/>
+	 	 	 <PARAM id="0_17_c_tR" value="7"/>
+	 	 	 <PARAM id="0_17_c_tL" value="304"/>
+	 	 </Connection>
+	 	 <Connection id="0_18_c" type="rigid">
+	 	 	 <PARAM id="0_18_c_fR" value="6"/>
+	 	 	 <PARAM id="0_18_c_fL" value="36"/>
+	 	 	 <PARAM id="0_18_c_tR" value="7"/>
+	 	 	 <PARAM id="0_18_c_tL" value="306"/>
 	 	 </Connection>
 	 </Instrument>
 </App>

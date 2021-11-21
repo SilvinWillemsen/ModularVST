@@ -171,7 +171,7 @@ public:
     std::shared_ptr<ResonatorModule> getResonatorPtr (int idx) { return resonators[idx]; };
     
     // Add/remove a resonator module
-    void addResonatorModule(ResonatorModuleType rmt, NamedValueSet& parameters);
+    void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced);
     void removeResonatorModule();
     
     void resetResonatorIndices();
@@ -205,8 +205,9 @@ public:
     double getFs() { return fs; };
     
     void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
-    
+
     void setApplicationState (ApplicationState a);
     
     void setStatesToZero() { for (auto res : resonators) res->setStatesToZero(); }

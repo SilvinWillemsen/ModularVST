@@ -12,7 +12,7 @@
 #include "ThinPlate.h"
 
 //==============================================================================
-ThinPlate::ThinPlate (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : StiffMembrane (rmt, parameters, fs, ID, instrument, bc)
+ThinPlate::ThinPlate (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : StiffMembrane (rmt, parameters, advanced, fs, ID, instrument, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.

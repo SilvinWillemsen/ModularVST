@@ -22,7 +22,7 @@
 class ThinPlate  : public StiffMembrane
 {
 public:
-    ThinPlate (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = clampedBC);
+    ThinPlate (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = clampedBC);
     ~ThinPlate() override;
     
 private:

@@ -19,6 +19,10 @@ AddModuleWindow::AddModuleWindow (ChangeListener* audioProcessorEditor)
     addModuleButton = std::make_unique<TextButton> ("Add Module");
     addModuleButton->addListener (this);
     addAndMakeVisible(addModuleButton.get());
+    
+    advancedSettingsButton = std::make_unique<TextButton> ("Advanced");
+    advancedSettingsButton->addListener (this);
+    addAndMakeVisible(advancedSettingsButton.get());
 
     resonatorTypeBox = std::make_unique<ComboBox> ("Resonator Type");
     resonatorTypeBox->addListener (this);
@@ -56,7 +60,7 @@ AddModuleWindow::AddModuleWindow (ChangeListener* audioProcessorEditor)
     
     // initialise to string
     resonatorModuleType = stiffString;
-    coefficientList->setParameters (Global::defaultStringParameters);
+    coefficientList->setParameters (showAdvanced ? Global::defaultStringParametersAdvanced : Global::defaultStringParameters);
     
     setSize (400, 300);
 }
@@ -86,6 +90,7 @@ void AddModuleWindow::resized()
     buttonArea.reduce(Global::margin, Global::margin);
 
     addModuleButton->setBounds(buttonArea.removeFromRight (100));
+    advancedSettingsButton->setBounds(buttonArea.removeFromLeft (100));
 
     totalArea.reduce(Global::margin, Global::margin);
     resonatorTypeBox->setBounds (totalArea.removeFromTop (Global::buttonHeight));
@@ -111,6 +116,12 @@ void AddModuleWindow::buttonClicked (Button* button)
         action = addResonatorModuleFromWindowAction;
         sendChangeMessage();
     }
+    else if (button == advancedSettingsButton.get())
+    {
+        showAdvanced = !showAdvanced;
+        triggerComboBox();
+        coefficientList->repaintAndUpdate();
+    }
 }
 
 void AddModuleWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
@@ -119,19 +130,19 @@ void AddModuleWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     switch (resonatorModuleType)
     {
         case stiffString:
-            coefficientList->setParameters (Global::defaultStringParameters);
+            coefficientList->setParameters (showAdvanced ? Global::defaultStringParametersAdvanced : Global::defaultStringParameters);
             break;
         case bar:
-            coefficientList->setParameters (Global::defaultBarParameters);
+            coefficientList->setParameters (showAdvanced ? Global::defaultBarParametersAdvanced : Global::defaultBarParameters);
             break;
         case membrane:
-            coefficientList->setParameters (Global::defaultMembraneParameters);
+            coefficientList->setParameters (Global::defaultMembraneParametersAdvanced);
             break;
         case thinPlate:
-            coefficientList->setParameters (Global::defaultThinPlateParameters);
+            coefficientList->setParameters (Global::defaultThinPlateParametersAdvanced);
             break;
         case stiffMembrane:
-            coefficientList->setParameters (Global::defaultStiffMembraneParameters);
+            coefficientList->setParameters (Global::defaultStiffMembraneParametersAdvanced);
             break;
         // add other cases as well
         default:
@@ -143,7 +154,7 @@ void AddModuleWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     coefficientList->repaintAndUpdate();
 }
 
-void AddModuleWindow::textEditorReturnKeyPressed (TextEditor& TE)
+void AddModuleWindow::textEditorTextChanged (TextEditor& TE)
 {
     coefficientList->setParameter (TE.getTextValue().toString().getDoubleValue());
     coefficientList->repaintAndUpdate();

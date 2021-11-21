@@ -12,24 +12,73 @@
 #include "StiffString.h"
 
 //==============================================================================
-StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (rmt, parameters, fs, ID, instrument, bc)
+StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (rmt, parameters, advanced, fs, ID, instrument, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
     
     // Initialise member variables using the parameter set
-    L = *parameters.getVarPointer ("L");
-    rho = *parameters.getVarPointer ("rho");
-    A = *parameters.getVarPointer ("A");
-    if (parameters.contains("T"))
-        T = *parameters.getVarPointer ("T");
-    else
-        T = 0;
-    E = *parameters.getVarPointer ("E");
-    I = *parameters.getVarPointer ("I");
-    sig0 = *parameters.getVarPointer ("sig0");
-    sig1 = *parameters.getVarPointer ("sig1");
-    
+    if (advanced)
+    {
+        L = *parameters.getVarPointer ("L");
+        rho = *parameters.getVarPointer ("rho");
+        A = *parameters.getVarPointer ("A");
+        if (parameters.contains("T"))
+            T = *parameters.getVarPointer ("T");
+        else
+            T = 0;
+        E = *parameters.getVarPointer ("E");
+        I = *parameters.getVarPointer ("I");
+        sig0 = *parameters.getVarPointer ("sig0");
+        sig1 = *parameters.getVarPointer ("sig1");
+    } else {
+        // CALCULATE PARAMETERS FROM SIMPLE PARAMETERS
+        if (rmt == stiffString)
+        {
+            NamedValueSet advancedParameters = Global::defaultStringParametersAdvanced;
+            double r = (*parameters.getVarPointer ("r"));
+            double f0 = (*parameters.getVarPointer ("f0"));
+            L = (*parameters.getVarPointer("L"));
+            rho = (*advancedParameters.getVarPointer("rho"));
+            A = double_Pi * r * r;
+            E = (*advancedParameters.getVarPointer("E"));
+            I = pow (r, 4) * double_Pi * 0.25;
+            sig0 = (*advancedParameters.getVarPointer("sig0"));;
+            sig1 = (*advancedParameters.getVarPointer("sig1"));;
+    //        f0 = c/2L
+            T = pow(2 * L * f0, 2) * rho * A;
+        }
+        else if (rmt == bar)
+        {
+            NamedValueSet advancedParameters = Global::defaultBarParametersAdvanced;
+            L = (*parameters.getVarPointer ("L"));
+            rho = (*parameters.getVarPointer ("rho"));
+            
+            double b = (*parameters.getVarPointer ("b"));
+            double H = (*parameters.getVarPointer ("H"));
+            A = b * H;
+            I = 1.0 / 12.0 * b * H * H * H;
+            
+            T = 0;
+            E = (*advancedParameters.getVarPointer("E"));
+            sig0 = (*advancedParameters.getVarPointer("sig0"));
+            sig1 = (*advancedParameters.getVarPointer("sig1"));
+
+        }
+        // reinitialise parameters (for saving presets)
+        parameters.clear();
+        parameters.set ("L", L);
+        if (rmt != bar)
+            parameters.set ("T", T);
+        parameters.set ("rho", rho);
+        parameters.set ("A", A);
+        parameters.set ("E", E);
+        parameters.set ("I", I);
+        parameters.set ("sig0", sig0);
+        parameters.set ("sig1", sig1);
+        
+        setParameters (parameters);
+    }
     // Calculate wave speed (squared)
     cSq = T / (rho * A);
     
@@ -241,12 +290,22 @@ void StiffString::mouseDrag (const MouseEvent& e)
         setMouseLoc (Global::limit (tmpMouseLoc, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1));
         sendChangeMessage();
     }
+    this->findParentComponentOfClass<Component>()->mouseDrag (e);
+
+//    if (!alreadyExcited)
+//    {
+//        std::cout << getID() << std::endl;
+//        alreadyExcited = true;
+//        mouseDown (e);
+//    }
 }
 
 void StiffString::mouseUp (const MouseEvent& e)
 {
     if (applicationState == moveConnectionState)
         this->findParentComponentOfClass<Component>()->mouseUp(e);
+    
+    alreadyExcited = false;
 }
 
 

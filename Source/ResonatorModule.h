@@ -21,7 +21,7 @@
 class ResonatorModule  : public juce::Component, public ChangeBroadcaster
 {
 public:
-    ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc);
+    ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc);
     ~ResonatorModule() override;
     
     virtual void initialise (int fs) = 0;
@@ -77,7 +77,6 @@ public:
 
     bool isModule1D() { return is1D; };
 
-    
     int getVisualScaling() { return visualScaling; };
     double getConnectionDivisionTerm() { return connectionDivisionTerm; };
     void setConnectionDivisionTerm (double cDT) { connectionDivisionTerm = cDT; };
@@ -92,6 +91,8 @@ public:
 
     int getTotInputs() { return totInputs; };
     int getTotOutputs() { return totOutputs; };
+    
+    void setParameters (NamedValueSet& p) { parameters = p; };
     
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
@@ -130,6 +131,8 @@ protected:
     double prevInputEnergy = 0;
     double dampTot = 0;
     double inputTot = 0;
+    
+    bool alreadyExcited = false; // for click-and-drag excitation
     
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument

@@ -123,7 +123,7 @@ void ControlPanel::resized()
                 {
                     allButtons[i]->setBounds (area.removeFromRight (100));
                 }
-                else
+                 else
                 {
                     allButtons[i]->setBounds (area.removeFromLeft (100));
                 }

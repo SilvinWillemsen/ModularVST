@@ -40,16 +40,22 @@ public:
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     
     // Texteditor
-    void textEditorReturnKeyPressed (TextEditor&) override;
+    void textEditorTextChanged (TextEditor&) override;
     
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
     
     int getDlgModal() { return dlgModal; };
     void setDlgModal (int d) { dlgModal = d; };
     
+    bool isAdvanced() { return showAdvanced; };
+    
+    void triggerComboBox() { comboBoxChanged (resonatorTypeBox.get()); }
 private:
     
     std::unique_ptr<TextButton> addModuleButton;
+    std::unique_ptr<TextButton> advancedSettingsButton;
+    bool showAdvanced = false;
+    
     std::unique_ptr<ComboBox> resonatorTypeBox;
     std::unique_ptr<CoefficientList> coefficientList;
     std::unique_ptr<Label> coeffTopLabel;

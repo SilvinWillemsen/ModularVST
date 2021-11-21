@@ -19,6 +19,7 @@ Instrument::Instrument (ChangeListener& audioProcessor, int fs) : fs (fs)
     addChangeListener (&audioProcessor);
     resonators.reserve (8);
     CI.reserve (16);
+    setInterceptsMouseClicks (true, false);
 }
 
 Instrument::~Instrument()
@@ -249,25 +250,25 @@ void Instrument::resized()
             res->setBounds(totalArea.removeFromTop (resonatorModuleHeight));
 }
 
-void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters)
+void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced)
 {
     std::shared_ptr<ResonatorModule> newResonatorModule;
     switch (rmt)
     {
         case stiffString:
-            newResonatorModule = std::make_shared<StiffString> (rmt, parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<StiffString> (rmt, parameters, advanced, fs, resonators.size(), this);
             break;
         case bar:
-            newResonatorModule = std::make_shared<Bar> (rmt, parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<Bar> (rmt, parameters, advanced, fs, resonators.size(), this);
             break;
         case membrane:
-            newResonatorModule = std::make_shared<Membrane> (rmt, parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<Membrane> (rmt, parameters, advanced, fs, resonators.size(), this);
             break;
         case thinPlate:
-            newResonatorModule = std::make_shared<ThinPlate> (rmt, parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<ThinPlate> (rmt, parameters, advanced, fs, resonators.size(), this);
             break;
         case stiffMembrane:
-            newResonatorModule = std::make_shared<StiffMembrane> (rmt, parameters, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<StiffMembrane> (rmt, parameters, advanced, fs, resonators.size(), this);
             break;
 
     }
@@ -464,6 +465,11 @@ void Instrument::mouseDown (const MouseEvent& e)
 {
     jassert (applicationState == normalState);
     sendChangeMessage(); // set instrument to active one (for adding modules)
+}
+
+void Instrument::mouseDrag (const MouseEvent& e)
+{
+    
 }
 
 void Instrument::mouseUp (const MouseEvent& e)

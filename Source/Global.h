@@ -127,7 +127,7 @@ namespace Global
         "CTRL-click: add connection."
     };
 
-    static NamedValueSet defaultStringParameters {
+    static NamedValueSet defaultStringParametersAdvanced {
         {"L", 1.0},
         {"T", 300.0},
         {"rho", 7850.0},
@@ -138,17 +138,31 @@ namespace Global
         {"sig1", 0.005}
     };
 
-    static NamedValueSet defaultBarParameters {
+    static NamedValueSet defaultStringParameters {
         {"L", 1},
-        {"rho", 7850},
-        {"A", 0.004 * 0.004 * double_Pi},
-        {"E", 2e11},
-        {"I", pow (0.004, 4) * double_Pi * 0.25},
-        {"sig0", 1},
-        {"sig1", 0.005}
+        {"f0", 110.29},
+        {"r", 0.0005}
     };
 
-    static NamedValueSet defaultMembraneParameters {
+    static NamedValueSet defaultBarParametersAdvanced {
+        {"L", 0.5},
+        {"rho", 1190},
+        {"A", 0.004 * 0.004 * double_Pi},
+        {"E", 3.2e9},
+        {"I", pow (0.004, 4) * double_Pi * 0.25},
+        {"sig0", 1},
+        {"sig1", 0.05}
+    };
+
+    static NamedValueSet defaultBarParameters {
+        {"L", 0.5},
+        {"b", 2.69e-3},
+        {"H", 0.0075},
+        {"rho", 1190}
+    };
+
+
+    static NamedValueSet defaultMembraneParametersAdvanced {
         {"Lx", 0.5},
         {"Ly", 1},
         {"rho", 10},
@@ -159,7 +173,7 @@ namespace Global
         {"maxPoints", 2000}
     };
 
-    static NamedValueSet defaultThinPlateParameters {
+    static NamedValueSet defaultThinPlateParametersAdvanced {
         {"Lx", 0.75},
         {"Ly", 0.25},
         {"rho", 7850},
@@ -171,7 +185,7 @@ namespace Global
         {"maxPoints", 2000}
     };
 
-    static NamedValueSet defaultStiffMembraneParameters {
+    static NamedValueSet defaultStiffMembraneParametersAdvanced {
         {"Lx", 0.75},
         {"Ly", 0.25},
         {"rho", 7850},

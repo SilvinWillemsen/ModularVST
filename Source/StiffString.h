@@ -19,7 +19,7 @@
 class StiffString  : public ResonatorModule
 {
 public:
-    StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
+    StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
     ~StiffString() override;
 
     // initialisation
@@ -49,7 +49,8 @@ public:
     double getInputEnergy() override;
 
     void setExcitationFlagFalse() { excitationFlag = false; };
-    
+    void setAlreadyExcited (bool a) { alreadyExcited = a; };
+
 private:
     
     // Model parameters
