@@ -37,7 +37,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     }
     addAndMakeVisible (controlPanel.get());
         
-    setSize (800, 400);
+    setSize (1000, 600);
 }
 
 ModularVSTAudioProcessorEditor::~ModularVSTAudioProcessorEditor()

@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "Global.h"
+#include "InOutInfo.h"
 #include "ResonatorModule.h"
 
 // include all types of resonator module here
@@ -93,72 +94,6 @@ public:
         
     };
     
-    struct InOutInfo
-    {
-        InOutInfo()
-        {
-            inResonators.reserve (16);
-            inLocs.reserve (16);
-            inChannels.reserve (16);
-
-            outResonators.reserve (16);
-            outLocs.reserve (16);
-            outChannels.reserve (16);
-        };
-
-        void addInput (std::shared_ptr<ResonatorModule> res, int loc, int channel = 2)
-        {
-            res->changeTotInputs (true);
-            inResonators.push_back (res);
-            inLocs.push_back (loc);
-            inChannels.push_back (channel);
-            ++numInputs;
-        }
-        
-        void removeInput (int idx)
-        {
-            inResonators[idx]->changeTotInputs (false);
-            inResonators.erase (inResonators.begin() + idx);
-            inLocs.erase (inLocs.begin() + idx);
-            inChannels.erase (inChannels.begin() + idx);
-            --numInputs;
-
-        }
-        
-        void addOutput (std::shared_ptr<ResonatorModule> res, int loc, int channel = 2)
-        {
-            res->changeTotOutputs (true);
-            outResonators.push_back (res);
-            outLocs.push_back (loc);
-            outChannels.push_back(channel);
-            ++numOutputs;
-        }
-        
-        void removeOutput (int idx)
-        {
-            outResonators[idx]->changeTotOutputs (false);
-            outResonators.erase (outResonators.begin() + idx);
-            outLocs.erase (outLocs.begin() + idx);
-            outChannels.erase (outChannels.begin() + idx);
-            --numOutputs;
-        }
-        
-        // Input resonators, locations and channels
-        std::vector<std::shared_ptr<ResonatorModule>> inResonators;
-        std::vector<int> inLocs;
-        std::vector<int> inChannels; // 0 - left; 1 - right; 2 - both
-        
-        int numInputs = 0;
-        
-        // Output resonators, locations and channels
-        std::vector<std::shared_ptr<ResonatorModule>> outResonators;
-        std::vector<int> outLocs;
-        std::vector<int> outChannels; // 0 - left; 1 - right; 2 - both
-        
-        int numOutputs = 0;
-
-    };
-    
     void initialise (int fs);
     
     void paint (juce::Graphics&) override;
@@ -171,7 +106,7 @@ public:
     std::shared_ptr<ResonatorModule> getResonatorPtr (int idx) { return resonators[idx]; };
     
     // Add/remove a resonator module
-    void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced);
+    void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo& inOutInfo, bool advanced);
     void removeResonatorModule();
     
     void resetResonatorIndices();
@@ -230,9 +165,7 @@ public:
     void solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO); // Solve the connections that are overlapping
     
     std::vector<ConnectionInfo>* getConnectionInfo() { return &CI; }; // for presets
-    
-    InOutInfo* getInOutInfo() { return &inOutInfo; };
-    
+        
     bool shouldRemoveInOrOutput() { return (inputToRemove != -1 || outputToRemove != -1); };
     void removeInOrOutput();
     
@@ -243,7 +176,6 @@ public:
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
 private:
-    InOutInfo inOutInfo;
     
     int fs;
     int totalGridPoints;

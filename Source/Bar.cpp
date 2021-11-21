@@ -12,7 +12,7 @@
 #include "Bar.h"
 
 //==============================================================================
-Bar::Bar (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : StiffString (rmt, parameters, advanced, fs, ID, instrument, bc)
+Bar::Bar (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo, BoundaryCondition bc) : StiffString (rmt, parameters, advanced, fs, ID, instrument, inOutInfo, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.

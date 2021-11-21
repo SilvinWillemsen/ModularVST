@@ -19,7 +19,7 @@
 class StiffString  : public ResonatorModule
 {
 public:
-    StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
+    StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo = InOutInfo(), BoundaryCondition bc = simplySupportedBC);
     ~StiffString() override;
 
     // initialisation

@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "Global.h"
+#include "InOutInfo.h"
 //==============================================================================
 /*
  Things that need to be initialised in the constructor of a resonator module (inheriting from this class):
@@ -21,7 +22,7 @@
 class ResonatorModule  : public juce::Component, public ChangeBroadcaster
 {
 public:
-    ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc);
+    ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo = InOutInfo(), BoundaryCondition bc = clampedBC);
     ~ResonatorModule() override;
     
     virtual void initialise (int fs) = 0;
@@ -94,6 +95,8 @@ public:
     
     void setParameters (NamedValueSet& p) { parameters = p; };
     
+    InOutInfo* getInOutInfo() { return &inOutInfo; };
+
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -114,6 +117,8 @@ protected:
     
     std::vector<double*> u;                     // state pointers
     std::vector<std::vector<double>> uStates;   // state vectors
+    
+    InOutInfo inOutInfo;
     
     BoundaryCondition bc;
 

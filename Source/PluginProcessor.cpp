@@ -285,12 +285,12 @@ void ModularVSTAudioProcessor::addInstrument()
     refreshEditor = true;
 }
 
-void ModularVSTAudioProcessor::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced)
+void ModularVSTAudioProcessor::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo inOutInfo, bool advanced)
 {
     jassert(currentlyActiveInstrument != -1);
     jassert(currentlyActiveInstrument < instruments.size());
 
-    instruments[currentlyActiveInstrument]->addResonatorModule (rmt, parameters, advanced);
+    instruments[currentlyActiveInstrument]->addResonatorModule (rmt, parameters, inOutInfo, advanced);
     refreshEditor = true;
 }
 
@@ -362,14 +362,14 @@ void ModularVSTAudioProcessor::savePreset()
     for (int i = 0; i < instruments.size(); ++i)
     {
         int numResonators = instruments[i]->getNumResonatorModules();
-        file << "\t " << "<Instrument id=\"" << i << "\">"<< "\n";
+        file << "\t " << "<Instrument id=\"i" << i << "\">"<< "\n";
 
         for (int r = 0; r < numResonators; ++r)
         {
             ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r).get();
             // type
 
-            file << "\t " << "\t " << "<Resonator id=\"" << i <<"_"<< r << "_r\" type=\"";
+            file << "\t " << "\t " << "<Resonator id=\"i" << i <<"_r"<< r << "\" type=\"";
             switch (curResonator->getResonatorModuleType()) {
                 case stiffString:
                     file << "Stiff_String\">";
@@ -397,11 +397,20 @@ void ModularVSTAudioProcessor::savePreset()
 
             for (int p = 0; p < curResonator->getParamters().size(); ++p)
             {
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << r << "_r_";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_r" << r << "_";
                 String paramName = curResonator->getParamters().getName(p).toString();
                 double value = *curResonator->getParamters().getVarPointer (paramName);
                 file << paramName << "\" value=\"" << value << "\"/>\n";
             }
+            for (int o = 0; o < curResonator->getInOutInfo()->getNumOutputs(); ++o)
+            {
+                file << "\t " << "\t " << "\t " << "<Output id=\"i" << i << "_r" << r << "_o" << o;
+                int channel = curResonator->getInOutInfo()->getOutChannelAt (o);
+                int loc = curResonator->getInOutInfo()->getOutLocAt (o);
+                file << "\" channel=\"" << channel << "\" loc=\"" << loc << "\"/>\n";
+            }
+            
+            // inputs
 
             file << "\t " << "\t " << "</Resonator>" << "\n";
 
@@ -415,7 +424,7 @@ void ModularVSTAudioProcessor::savePreset()
             String connectionTypeString;
             // type
 
-            file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "_c\" type=\"";
+            file << "\t " << "\t " << "<Connection id=\"i" << i << "_c" << c << "\" type=\"";
             switch (instruments[i]->getConnectionInfo()[0][c].connType) {
             case rigid:
                 file << "rigid\">";
@@ -431,10 +440,10 @@ void ModularVSTAudioProcessor::savePreset()
             }
             file << "\n";
 
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_fL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc1 << "\"/>\n";
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_tR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\"/>\n";
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"" << i << "_" << c << "_c_tL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc1 << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_tR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_tL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>\n";
 
             file << "\t " << "\t " << "</Connection>" << "\n";
 
@@ -506,31 +515,46 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
     
     std::vector< std::vector<std::vector<double>>> params;
     std::vector< std::vector<std::vector<double>>> connects;
+    std::vector< std::vector<std::vector<double>>> outputLocs;
+    std::vector< std::vector<std::vector<double>>> outputChannels;
+
     std::vector<String> resoType;
     std::vector<std::vector<String>> connType;
-    std::vector<int> resoNum;
-    std::vector<int> connNum;
+//    std::vector<int> resoNum;
+//    std::vector<int> connNum;
+    
+    InOutInfo IOinfo (false); // for presets we do not want to do a default initialisation of the in- and outputs
     
     int i = 0;
+    
     for (pugi::xml_node inst : node.children("Instrument"))
     {
-        resoNum.push_back(0);
-        connNum.push_back(0);
+        initActions.push_back(addInstrumentAction);
+        
+//        resoNum.push_back(0);
+//        connNum.push_back(0);
         params.push_back(std::vector< std::vector<double>>());
         connects.push_back(std::vector< std::vector<double>>());
-        int j = 0;
+        outputLocs.push_back(std::vector< std::vector<double>>());
+        outputChannels.push_back(std::vector< std::vector<double>>());
+
+        int r = 0;
         int c = 0;
         for (pugi::xml_node reso : inst.children("Resonator"))
         {
+            initActions.push_back (addResonatorModuleAction);
+
             params[i].push_back(std::vector<double>());
-            ++resoNum[i];
+            outputLocs[i].push_back(std::vector<double>());
+            outputChannels[i].push_back(std::vector<double>());
+//            ++resoNum[i];
             juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
             for (pugi::xml_attribute resoAttr : reso.attributes())
             {
                 juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.name());
                 juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.value());
-                auto attrib = *(resoAttr.name());
-                if (attrib == 't') {
+                auto attrib = String (resoAttr.name());
+                if (attrib == "type") {
                     resoType.push_back(resoAttr.value());
                 }
             }
@@ -538,21 +562,36 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
             
             for (pugi::xml_node resoChild : reso.children())
             {
-                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
-                juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("value").value());
-                params[i][j].push_back(std::stod(resoChild.attribute("value").value()));
-                
+                if (String (resoChild.name()) == "PARAM")
+                {
+                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
+                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("value").value());
+                    params[i][r].push_back(std::stod(resoChild.attribute("value").value()));
+                }
+                else if (String (resoChild.name()) == "Output")
+                {
+                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
+                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("loc").value());
+                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("channel").value());
+                    outputLocs[i][r].push_back(std::stod(resoChild.attribute("loc").value()));
+                    outputChannels[i][r].push_back(std::stod(resoChild.attribute("channel").value()));
+                    
+                    initActions.push_back (addOutputAction);
+                    
+                }
             }
-            
-            ++j;
+            ++r;
         }
         
+        // Do connections after resonators
         // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         for (pugi::xml_node conn : inst.children("Connection"))
         {
+            initActions.push_back (addConnectionAction);
+            
             connects[i].push_back(std::vector<double>());
             connType.push_back(std::vector<String>());
-            ++connNum[i];
+//            ++connNum[i];
             juce::Logger::getCurrentLogger()->outputDebugString("Connection:");
             for (pugi::xml_attribute connAttr : conn.attributes())
             {
@@ -580,22 +619,13 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
 
         
     }
-    if (resoNum.size() != connNum.size())
-    {
-        DBG ("Silvin: If this happens, I apparently didn't understand it correctly :)");
-    }
-    for (int i = 0; i < resoNum.size(); ++i)
-    {
-        initActions.push_back(addInstrumentAction);
-        for (int j = 0; j < resoNum[i]; ++j)
-        {
-            initActions.push_back (addResonatorModuleAction);
-        }
-        for (int j = 0; j < connNum[i]; ++j)
-        {
-            initActions.push_back (addConnectionAction);
-        }
-    }
+//    if (resoNum.size() != connNum.size())
+//    {
+//        DBG ("Silvin: If this happens, I apparently didn't understand it correctly :)");
+//    }
+//    for (int i = 0; i < resoNum.size(); ++i)
+//    {
+//    }
     
     for (int i = 0; i < resoType.size(); ++i) {
         if (resoType[i] == "Stiff_String") { initModuleTypes.push_back(stiffString); }
@@ -633,7 +663,7 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
     int m = 0;  // module type
     int r;      // resonator
     int c;      // connection
-    
+    int o;      // output
     i = -1; // reinitialise instrument index
 
     NamedValueSet parameters;
@@ -650,6 +680,7 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
             }
             case addResonatorModuleAction:
             {
+                o = 0;
                 switch (initModuleTypes[m]) {
                     case stiffString:
                         juce::Logger::getCurrentLogger()->outputDebugString(std::to_string(params[i][r][0]));
@@ -713,7 +744,7 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
                     default:
                         break;
                 }
-                addResonatorModule (initModuleTypes[m], parameters);
+                addResonatorModule (initModuleTypes[m], parameters, IOinfo);
                 ++m;
                 ++r;
                 break;
@@ -740,6 +771,13 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
                                                      resToLoc);
                 instruments[i]->setCurrentlyActiveConnection (nullptr);
                 ++c;
+                break;
+            }
+            case addOutputAction:
+            {
+                // as the resonator idx is incremented before the outputs are added, subtract 1 from this index
+                instruments[i]->getResonatorPtr(r-1)->getInOutInfo()->addOutput (outputLocs[i][r-1][o], outputChannels[i][r-1][o]);
+                ++o;
                 break;
             }
             default:

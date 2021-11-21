@@ -12,7 +12,7 @@
 #include "StiffString.h"
 
 //==============================================================================
-StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (rmt, parameters, advanced, fs, ID, instrument, bc)
+StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo, BoundaryCondition bc) : ResonatorModule (rmt, parameters, advanced, fs, ID, instrument, inOutInfo, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -136,6 +136,13 @@ void StiffString::initialise (int fs)
     C1 *= Adiv;
     
     setConnectionDivisionTerm (k * k / (rho * A * h * (1.0 + sig0 * k)));
+    
+    if (inOutInfo.isDefaultInit())
+    {
+        // Add in / outputs
+        inOutInfo.addOutput (4);
+        inOutInfo.addOutput (N - 4);
+    }
 }
 
 void StiffString::paint (juce::Graphics& g)
@@ -148,6 +155,32 @@ void StiffString::paint (juce::Graphics& g)
     
     // draw the state
     g.strokePath(visualiseState (g), PathStrokeType(2.0f));
+    
+    // draw inputs and outputs
+    if (applicationState == editInOutputsState || Global::alwaysShowInOuts)
+    {
+        for (int i = 0; i < inOutInfo.getNumOutputs(); ++i)
+        {
+            switch (inOutInfo.getOutChannelAt (i))
+            {
+                case 0:
+                    g.setColour (Colours::white.withAlpha(0.5f));
+                    break;
+                case 1:
+                    g.setColour (Colours::red.withAlpha(0.5f));
+                    break;
+                case 2:
+                    g.setColour (Colours::yellow.withAlpha(0.5f));
+                    break;
+            }
+
+            int xLoc = getWidth() * static_cast<float>(inOutInfo.getOutLocAt(i)) / N;
+            int yLoc = 0.5 * getHeight();
+//            - curResonator->getStateAt (inOutInfo.outLocs[i], 1) * curResonator->getVisualScaling();
+            g.drawArrow (Line<float>(xLoc, yLoc, xLoc, getHeight()), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
+        
+        }
+    }
 
 }
 

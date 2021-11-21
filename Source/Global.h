@@ -39,6 +39,8 @@ enum Action
     cancelInOutputsAction,
     
     addConnectionAction, // only for presets
+    addInputAction,
+    addOutputAction,
     editConnectionAction,
     cancelConnectionAction,
 

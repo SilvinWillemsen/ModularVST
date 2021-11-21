@@ -21,7 +21,7 @@
 class Membrane  : public StiffMembrane
 {
 public:
-    Membrane (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
+    Membrane (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo = InOutInfo(), BoundaryCondition bc = simplySupportedBC);
     ~Membrane() override;
     
     void calculate() override;

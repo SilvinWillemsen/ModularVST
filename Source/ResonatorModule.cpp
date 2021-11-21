@@ -12,7 +12,7 @@
 #include "ResonatorModule.h"
 
 //==============================================================================
-ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : k (1.0 / fs), parameters (parameters), resonatorModuleType(rmt), ID (ID), bc (bc)
+ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo, BoundaryCondition bc) : k (1.0 / fs), parameters (parameters), resonatorModuleType(rmt), ID (ID), inOutInfo (inOutInfo), bc (bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -52,6 +52,7 @@ void ResonatorModule::initialiseModule()
         u[i] = &uStates[i][0];
 
     jassert (connectionDivisionTerm != -1); // connectionDivisionTerm must have been set in module inheriting from this class
+
     moduleIsReady = true;
 }
 

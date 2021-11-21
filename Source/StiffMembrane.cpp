@@ -12,7 +12,7 @@
 #include "StiffMembrane.h"
 
 //==============================================================================
-StiffMembrane::StiffMembrane(ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc) : ResonatorModule (rmt, parameters, advanced, fs, ID, instrument, bc)
+StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo, BoundaryCondition bc) : ResonatorModule (rmt, parameters, advanced, fs, ID, instrument, inOutInfo, bc)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -133,6 +133,13 @@ void StiffMembrane::initialise (int fs)
     
     setConnectionDivisionTerm (k * k / (rho * H * h * h * (1.0 + sig0 * k)));
 
+    if (inOutInfo.isDefaultInit())
+    {
+        // Add in / outputs
+        inOutInfo.addOutput (5 + (5 * Nx));
+        inOutInfo.addOutput ((Nx - 5) + (5 * Nx));
+    }
+    
 #ifdef SAVE_OUTPUT
     std::ofstream NxNy;
     NxNy.open("NxNy.csv");
@@ -157,6 +164,30 @@ void StiffMembrane::paint (juce::Graphics& g)
             g.fillRect(l * stateWidth, m * stateHeight, stateWidth, stateHeight);
 //            g.setColour(Colour::fromRGBA (0, 0, 0, 127));
             g.drawRect(l * stateWidth, m * stateHeight, stateWidth, stateHeight, 0.5);
+        }
+    }
+    if (applicationState == editInOutputsState || Global::alwaysShowInOuts)
+    {
+        for (int i = 0; i < inOutInfo.getNumOutputs(); ++i)
+        {
+            switch (inOutInfo.getOutChannelAt (i))
+            {
+                case 0:
+                    g.setColour (Colours::white.withAlpha(0.5f));
+                    break;
+                case 1:
+                    g.setColour (Colours::red.withAlpha(0.5f));
+                    break;
+                case 2:
+                    g.setColour (Colours::yellow.withAlpha(0.5f));
+                    break;
+            }
+            int stateWidth = static_cast<float> (getWidth()) / (Nx+1);
+            int stateHeight = static_cast<float> (getHeight()) / (Ny+1);
+
+            int xLoc = getWidth() * static_cast<float>(inOutInfo.getOutLocAt (i) % Nx) / (Nx+1);
+            int yLoc = getHeight() * static_cast<float>(inOutInfo.getOutLocAt (i) / Nx) / (Ny+1);
+            g.drawRect (xLoc, yLoc, stateWidth, stateHeight, Global::inOutputWidth);
         }
     }
 }

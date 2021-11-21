@@ -19,7 +19,7 @@
 class Bar  : public StiffString
 {
 public:
-    Bar (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, BoundaryCondition bc = simplySupportedBC);
+    Bar (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo = InOutInfo(), BoundaryCondition bc = simplySupportedBC);
     ~Bar() override;
 
 private:

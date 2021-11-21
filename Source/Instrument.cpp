@@ -44,46 +44,6 @@ void Instrument::paint (juce::Graphics& g)
     }
 
     int moduleHeight = static_cast<float>(getHeight()) / resonators.size();
-    // draw inputs and outputs
-    if (applicationState == editInOutputsState || Global::alwaysShowInOuts)
-    {
-        for (int i = 0; i < inOutInfo.numOutputs; ++i)
-        {
-            switch (inOutInfo.outChannels[i])
-            {
-                case 0:
-                    g.setColour (Colours::white.withAlpha(0.5f));
-                    break;
-                case 1:
-                    g.setColour (Colours::red.withAlpha(0.5f));
-                    break;
-                case 2:
-                    g.setColour (Colours::yellow.withAlpha(0.5f));
-                    break;
-            }
-            ResonatorModule* curResonator = inOutInfo.outResonators[i].get();
-
-            if (curResonator->isModule1D())
-            {
-                int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i]) / curResonator->getNumIntervals();
-                int yLoc = (0.5 + curResonator->getID()) * moduleHeight
-                - curResonator->getStateAt (inOutInfo.outLocs[i], 1) * curResonator->getVisualScaling();
-                g.drawArrow (Line<float>(xLoc, yLoc, xLoc, (curResonator->getID() + 0.75) * moduleHeight), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
-            }
-            else
-            {
-                int Nx = curResonator->getNumIntervalsX();
-                int Ny = curResonator->getNumIntervalsY();
-                int stateWidth = getWidth() / static_cast<double> (Nx+1);
-                int stateHeight = moduleHeight / static_cast<double> (Ny+1);
-
-                int xLoc = getWidth() * static_cast<float>(inOutInfo.outLocs[i] % Nx) / (Nx+1);
-                int yLoc = curResonator->getID() * moduleHeight + moduleHeight * static_cast<float>(inOutInfo.outLocs[i] / Nx) / (Ny+1);
-                g.drawRect (xLoc, yLoc, stateWidth, stateHeight, Global::inOutputWidth);
-            }
-            
-        }
-    }
     
     // draw connections
     for (int i = 0; i < CI.size(); ++i)
@@ -250,39 +210,29 @@ void Instrument::resized()
             res->setBounds(totalArea.removeFromTop (resonatorModuleHeight));
 }
 
-void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced)
+void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo& inOutInfo, bool advanced)
 {
     std::shared_ptr<ResonatorModule> newResonatorModule;
     switch (rmt)
     {
         case stiffString:
-            newResonatorModule = std::make_shared<StiffString> (rmt, parameters, advanced, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<StiffString> (rmt, parameters, advanced, fs, resonators.size(), this, inOutInfo);
             break;
         case bar:
-            newResonatorModule = std::make_shared<Bar> (rmt, parameters, advanced, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<Bar> (rmt, parameters, advanced, fs, resonators.size(), this, inOutInfo);
             break;
         case membrane:
-            newResonatorModule = std::make_shared<Membrane> (rmt, parameters, advanced, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<Membrane> (rmt, parameters, advanced, fs, resonators.size(), this, inOutInfo);
             break;
         case thinPlate:
-            newResonatorModule = std::make_shared<ThinPlate> (rmt, parameters, advanced, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<ThinPlate> (rmt, parameters, advanced, fs, resonators.size(), this, inOutInfo);
             break;
         case stiffMembrane:
-            newResonatorModule = std::make_shared<StiffMembrane> (rmt, parameters, advanced, fs, resonators.size(), this);
+            newResonatorModule = std::make_shared<StiffMembrane> (rmt, parameters, advanced, fs, resonators.size(), this, inOutInfo);
             break;
 
     }
-    
-    if (newResonatorModule->isModule1D())
-    {
-//        inOutInfo.addOutput (newResonatorModule, 5, 0);
-//        inOutInfo.addOutput (newResonatorModule, newResonatorModule->getNumPoints() - 8, 1);
-        inOutInfo.addOutput (newResonatorModule, 4);
-        inOutInfo.addOutput (newResonatorModule, newResonatorModule->getNumPoints() - 15);
-    } else {
-        inOutInfo.addOutput (newResonatorModule, 5 + (5 * newResonatorModule->getNumIntervalsX()), 0);
-        inOutInfo.addOutput (newResonatorModule, (newResonatorModule->getNumIntervalsX() - 5) + (5 * newResonatorModule->getNumIntervalsX()), 1);
-    }
+
     resonators.push_back (newResonatorModule);
     addAndMakeVisible (resonators[resonators.size()-1].get(), 0);
     resetTotalGridPoints();
@@ -295,24 +245,24 @@ void Instrument::removeResonatorModule()
     
     resonators[currentlySelectedResonator]->unReadyModule();
 
-    for (int i = 0; i < inOutInfo.numInputs; ++i)
-    {
-        if (inOutInfo.inResonators[i] == resonators[currentlySelectedResonator])
-        {
-            inOutInfo.removeInput(i);
-            --i;
-        }
-    }
-    
-    for (int i = 0; i < inOutInfo.numOutputs; ++i)
-    {
-        if (inOutInfo.outResonators[i] == resonators[currentlySelectedResonator])
-        {
-            inOutInfo.removeOutput(i);
-            --i;
-        }
-    }
-    
+//    for (int i = 0; i < inOutInfo.numInputs; ++i)
+//    {
+//        if (inOutInfo.inResonators[i] == resonators[currentlySelectedResonator])
+//        {
+//            inOutInfo.removeInput(i);
+//            --i;
+//        }
+//    }
+//
+//    for (int i = 0; i < inOutInfo.numOutputs; ++i)
+//    {
+//        if (inOutInfo.outResonators[i] == resonators[currentlySelectedResonator])
+//        {
+//            inOutInfo.removeOutput(i);
+//            --i;
+//        }
+//    }
+//
     // also remove connections
     
     int i = 0;
@@ -424,20 +374,26 @@ void Instrument::update()
 float Instrument::getOutputL()
 {
     float outputL = 0.0f;
-    for (int i = 0; i < inOutInfo.numOutputs; ++i)
-        if (inOutInfo.outChannels[i] == 0 || inOutInfo.outChannels[i] == 2)
-            outputL += inOutInfo.outResonators[i]->getOutput (inOutInfo.outLocs[i]);
-
+    for (auto res : resonators)
+    {
+        InOutInfo* IOinfo = res->getInOutInfo();
+        for (int i = 0; i < IOinfo->getNumOutputs(); ++i )
+            if (IOinfo->getOutChannelAt (i) == 0 || IOinfo->getOutChannelAt(i) == 2)
+                outputL += res->getOutput (IOinfo->getOutLocAt (i));
+    }
     return outputL;
 }
 
 float Instrument::getOutputR()
 {
     float outputR = 0.0f;
-    for (int i = 0; i < inOutInfo.numOutputs; ++i)
-        if (inOutInfo.outChannels[i] == 1 || inOutInfo.outChannels[i] == 2)
-            outputR += inOutInfo.outResonators[i]->getOutput (inOutInfo.outLocs[i]);
-
+    for (auto res : resonators)
+    {
+        InOutInfo* IOinfo = res->getInOutInfo();
+        for (int i = 0; i < IOinfo->getNumOutputs(); ++i )
+            if (IOinfo->getOutChannelAt (i) == 1 || IOinfo->getOutChannelAt(i) == 2)
+                outputR += res->getOutput (IOinfo->getOutLocAt (i));
+    }
     return outputR;
 }
 
@@ -561,29 +517,31 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
         {
             switch (applicationState) {
                 case moveConnectionState:
+                {
                     if (connectionToMoveIsFirst)
                         CI[connectionToMoveIdx].loc1 = res->getMouseLoc();
                     else
                         CI[connectionToMoveIdx].loc2 = res->getMouseLoc();
 
                     break;
+                }
                 case editInOutputsState:
+                {
+                    InOutInfo* IOinfo = res->getInOutInfo();
+                    
                     if (res->getModifier() == ModifierKeys::leftButtonModifier ||
                         res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier ||
                         res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::altModifier)
                     {
                         // prevent outputs from being added on top of each other
                         int margin = res->isModule1D() ? Global::inOutputWidth : 0; // give the mouseclick a radius for 1D object
-                        for (int i = 0; i < inOutInfo.numOutputs; ++i)
+                        for (int i = 0; i < IOinfo->getNumOutputs(); ++i)
                         {
-                            if (inOutInfo.outResonators[i] == res)
-                            {
-                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
-                                int xLocConn = static_cast<float> (inOutInfo.outLocs[i]) / res->getNumPoints() * getWidth();
+                            int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                            int xLocConn = static_cast<float> (IOinfo->getOutLocAt (i)) / res->getNumPoints() * getWidth();
 
-                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
-                                    return;
-                            }
+                            if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                                return;
                         }
 //                        for (int i = 0; i < inOutInfo.numInputs; ++i)
 //                        {
@@ -602,13 +560,13 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                         switch (res->getModifier().getRawFlags())
                         {
                             case ModifierKeys::leftButtonModifier:
-                                inOutInfo.addOutput (res, res->getMouseLoc());
+                                IOinfo->addOutput (res->getMouseLoc());
                                 break;
                             case ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier:
-                                inOutInfo.addOutput (res, res->getMouseLoc(), 0);
+                                IOinfo->addOutput (res->getMouseLoc(), 0);
                                 break;
                             case ModifierKeys::leftButtonModifier + ModifierKeys::altModifier:
-                                inOutInfo.addOutput (res, res->getMouseLoc(), 1);
+                                IOinfo->addOutput (res->getMouseLoc(), 1);
                                 break;
 
                         }
@@ -618,40 +576,36 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     {
                         currentlyActiveConnection = nullptr;
                         int margin = res->isModule1D() ? Global::inOutputWidth : 0; // give the mouseclick a radius for 1D object
-                        for (int i = 0; i < inOutInfo.numOutputs; ++i) // ALSO DO FOR INPUTS
+                        for (int i = 0; i < IOinfo->getNumOutputs(); ++i) // ALSO DO FOR INPUTS
                         {
-                            if (inOutInfo.outResonators[i] == res)
+                            int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                            int xLocConn = static_cast<float> (IOinfo->getOutLocAt (i)) / res->getNumPoints() * getWidth();
+
+                            if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
                             {
-                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
-                                int xLocConn = static_cast<float> (inOutInfo.outLocs[i]) / res->getNumPoints() * getWidth();
+                                outputToRemove = i;
+                                //break?
 
-                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
-                                {
-                                    outputToRemove = i;
-                                    //break?
-
-                                }
                             }
                         }
-                        for (int i = 0; i < inOutInfo.numInputs; ++i)
+                        for (int i = 0; i < IOinfo->getNumInputs(); ++i)
                         {
-                            if (inOutInfo.inResonators[i] == res)
-                            {
-                                int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
-                                int xLocConn = static_cast<float> (inOutInfo.inLocs[i]) / res->getNumPoints() * getWidth();
+                            int xLocClick = static_cast<float> (res->getMouseLoc()) / res->getNumPoints() * getWidth();
+                            int xLocConn = static_cast<float> (IOinfo->getInLocAt (i)) / res->getNumPoints() * getWidth();
 
-                                if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
-                                {
-                                    inputToRemove = i;
-                                    //break?
-                                }
+                            if (xLocConn >= xLocClick - margin && xLocConn <= xLocClick + margin)
+                            {
+                                inputToRemove = i;
+                                //break?
                             }
                             
                         }
 
                     }
                     break;
+                }
                 case editConnectionState:
+                {
                     if (res->getModifier() == ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier) // add connection
                     {
 //                        if (currentConnectionType == rigid)     // add rigid connection
@@ -741,7 +695,9 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                         }
                     }
                     break;
+                }
                 case firstConnectionState:
+                {
                     if (CI[CI.size()-1].res1 == res || res->getModifier() != ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier) // clicked on the same component or rightclicked
                     {
                         CI.pop_back();
@@ -763,11 +719,16 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     sendChangeMessage();
 
                     break;
+                }
                 case removeResonatorModuleState:
+                {
                     resonatorToRemoveID = res->getID();
                     break;
+                }
                 default:
+                {
                     break;
+                }
             }
         }
     }
@@ -1047,13 +1008,13 @@ void Instrument::removeInOrOutput()
 {
     if (inputToRemove != -1)
     {
-        inOutInfo.removeInput (inputToRemove);
+        resonators[currentlySelectedResonator]->getInOutInfo()->removeInput (inputToRemove);
         inputToRemove = -1;
     }
     
     if (outputToRemove != -1)
     {
-        inOutInfo.removeOutput (outputToRemove);
+        resonators[currentlySelectedResonator]->getInOutInfo()->removeOutput (outputToRemove);
         outputToRemove = -1;
         
     }
