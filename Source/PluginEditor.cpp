@@ -14,6 +14,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
 
+    setResizable (true, true);
     controlPanel = std::make_unique<ControlPanel> (this);
     addAndMakeVisible (controlPanel.get());
     addModuleWindow = std::make_unique<AddModuleWindow> (this);
@@ -37,7 +38,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     }
     addAndMakeVisible (controlPanel.get());
         
-    setSize (1000, 600);
+    setSize (1200, 600);
 }
 
 ModularVSTAudioProcessorEditor::~ModularVSTAudioProcessorEditor()
