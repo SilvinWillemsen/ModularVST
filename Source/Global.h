@@ -114,6 +114,7 @@ enum LoadPresetResult
 namespace Global
 {
     static const bool loadPresetAtStartUp = true;
+    static const bool bowAtStartup = false;
 
     static const int margin = 10;
     static const int buttonHeight = 40;
@@ -128,14 +129,14 @@ namespace Global
     static const int listBoxRowHeight = 40;
 
     static const bool alwaysShowInOuts = false;
-    static const double oneDOutputScaling = 10000.0;
+    static const double oneDOutputScaling = 1000.0;
     static const double twoDOutputScaling = 10000.0;
 
     static const double excitationVisualWidth = 6;
 
     // default parameters
-    static const double defaultLinSpringCoeff = 1e6;
-    static const double defaultNonLinSpringCoeff = 1e8;
+    static const double defaultLinSpringCoeff = 1e8;
+    static const double defaultNonLinSpringCoeff = 1e10;
     static const double defaultConnDampCoeff = 0.0;
     static const double eps = 1e-15;
 

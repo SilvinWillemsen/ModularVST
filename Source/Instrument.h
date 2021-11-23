@@ -39,15 +39,15 @@ public:
         ConnectionInfo (ConnectionType connType,
                         std::shared_ptr<ResonatorModule> resonator1,
                         int location,
-                        ResonatorModuleType resonatorModuleType,
-                        double K1 = 0,
-                        double K3 = 0,
-                        double R = 0) : connType (connType),
+                        ResonatorModuleType resonatorModuleType) : connType (connType),
                                         res1 (resonator1),
                                         loc1 (location),
-                                        rmt1 (resonatorModuleType),
-                                        K1 (K1), K3 (K3), R (R)
-        {};
+                                        rmt1 (resonatorModuleType)
+        {
+
+            setDefaultParameters();
+            
+        };
         void setSecondResonatorParams (std::shared_ptr<ResonatorModule> resonator2, int l, ResonatorModuleType r)
         {
             if (res1->getID() > resonator2->getID()) // always have res1 have the lower ID than res2
@@ -72,11 +72,35 @@ public:
             connected = true;
         };
         
+        void setDefaultParameters()
+        {
+            switch (connType)
+            {
+                case rigid:
+                    K1 = 0;
+                    K3 = 0;
+                    R = 0;
+                    break;
+                case linearSpring:
+                    K1 = Global::defaultLinSpringCoeff;
+                    K3 = 0;
+                    R = Global::defaultConnDampCoeff;
+                    break;
+                case nonlinearSpring:
+                    K1 = 0.00001 * Global::defaultLinSpringCoeff;
+                    K3 = Global::defaultNonLinSpringCoeff;
+                    R = Global::defaultConnDampCoeff;
+                    break;
+            };
+        }
+        
         void setCustomMassRatio (double value) {
             customMassRatio = value / (res1->getConnectionDivisionTerm() / res2->getConnectionDivisionTerm());
         };
         
         double getMassRatio() { return customMassRatio * (res1->getConnectionDivisionTerm() / res2->getConnectionDivisionTerm()); };
+        
+        std::vector<double> getParams() { return std::vector<double> {K1, K3, R}; };
         
         ConnectionType connType;
         std::shared_ptr<ResonatorModule> res1, res2;

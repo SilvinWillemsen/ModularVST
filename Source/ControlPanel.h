@@ -63,6 +63,9 @@ public:
     void setMassRatioSliderValue (double val) { massRatioSlider->setValue (val, dontSendNotification); };
 
     void setInstructionsText (StringArray& instructions);
+    void setCurrentlyActiveConnection (Instrument::ConnectionInfo* CI);
+    void refreshConnectionLabel(); 
+
 private:
     
     // Collection of all buttons
@@ -84,6 +87,7 @@ private:
     
     std::shared_ptr<Label> instructionsLabel1;
     std::shared_ptr<Label> instructionsLabel2;
+    std::shared_ptr<Label> connectionLabel;
     String instructionsText;
 
     // Collection of all combo boxes
@@ -102,5 +106,7 @@ private:
     bool comboBoxChangeBool = false;
 //    bool init = false;
     ConnectionType connectionType = rigid;
+    
+    Instrument::ConnectionInfo* currentlyActiveConnection = nullptr;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlPanel)
 };

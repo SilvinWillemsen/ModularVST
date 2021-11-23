@@ -451,7 +451,7 @@ void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& w
 //    std::cout << wheel.deltaY << std::endl;
     for (auto res : resonators)
         if (res->getExcitationType() == bow)
-            res->getExciterModule()->setControlParameter (Global::limit(res->getExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
+            res->getExciterModule()->setControlParameter (Global::limit (res->getExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
 }
 
 //void Instrument::mouseMove (const MouseEvent& e)
@@ -1042,15 +1042,15 @@ void Instrument::setConnectionType (ConnectionType c)
     currentConnectionType = c;
     
     if (currentlyActiveConnection != nullptr)
+    {
         currentlyActiveConnection->connType = c;
+        currentlyActiveConnection->setDefaultParameters();
+    }
 }
 
 void Instrument::addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, int loc)
 {
-    CI.push_back (ConnectionInfo (connType, res, loc,                                             res->getResonatorModuleType(),
-                                  Global::defaultLinSpringCoeff * (connType == linearSpring ? 100 : 1),
-                                  connType == nonlinearSpring ? Global::defaultNonLinSpringCoeff : 0,
-                                  Global::defaultConnDampCoeff));
+    CI.push_back (ConnectionInfo (connType, res, loc, res->getResonatorModuleType()));
 }
 
 void Instrument::addSecondConnection (std::shared_ptr<ResonatorModule> res, int loc)

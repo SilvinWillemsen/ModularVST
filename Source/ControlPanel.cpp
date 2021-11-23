@@ -80,6 +80,12 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     addAndMakeVisible (instructionsLabel2.get());
     instructionsLabel2->setVisible (false);
 
+    connectionLabel = std::make_shared<Label>("Connections");
+    connectionLabel->setColour(Label::ColourIds::backgroundColourId, Colours::transparentBlack);
+    addAndMakeVisible (connectionLabel.get());
+    connectionLabel->setVisible (false);
+
+    
     addChangeListener (audioProcessorEditor);
         
 }
@@ -147,6 +153,9 @@ void ControlPanel::resized()
             }
         }
     }
+    if (connectionLabel->isVisible())
+        connectionLabel->setBounds (area.removeFromRight (area.getWidth()*0.3333));
+    
     if (instructionsLabel1->isVisible())
     {
         instructionsLabel1->setBounds (area.removeFromLeft (area.getWidth()*0.5));
@@ -225,6 +234,7 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
     std::vector<bool> activeComboBoxes (allComboBoxes.size(), false);
     std::vector<bool> activeSliders (allSliders.size(), false);
     bool instructionsActive = false;
+    bool connectionInfoActive = false;
     instructionsLabel1->setText ("", dontSendNotification);
     instructionsLabel2->setText ("", dontSendNotification);
 
@@ -266,6 +276,8 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
             case moveConnectionState:
             case firstConnectionState:
                 setInstructionsText (Global::connectionInstructions);
+                if (currentlyActiveConnection != nullptr)
+                    connectionInfoActive = true;
                 instructionsActive = true;
                 
                 activeButtons[4] = true;
@@ -291,7 +303,7 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
     }
     instructionsLabel1->setVisible (instructionsActive);
     instructionsLabel2->setVisible (instructionsActive);
-
+    connectionLabel->setVisible (connectionInfoActive);
     resized();
 }
 
@@ -319,4 +331,24 @@ void ControlPanel::setInstructionsText (StringArray& instructions)
         instructionsLabel2->setText (instructionsLabel2->getText() + instructions[i], dontSendNotification);
         instructionsLabel2->setText (instructionsLabel2->getText() + "\n", dontSendNotification);
     }
+}
+
+void ControlPanel::setCurrentlyActiveConnection (Instrument::ConnectionInfo* CI)
+{
+    currentlyActiveConnection = CI;
+
+    
+    setComboBoxId (currentlyActiveConnection->connType);
+    refreshConnectionLabel();
+}
+
+void ControlPanel::refreshConnectionLabel()
+{
+    if (currentlyActiveConnection == nullptr)
+        return;
+    
+    auto params = currentlyActiveConnection->getParams();
+    connectionLabel->setText (String ("K1 = " + String(params[0]) + " K3 = " + String(params[1]) + "\nR = " + String(params[2])), dontSendNotification);
+    resized();
+
 }

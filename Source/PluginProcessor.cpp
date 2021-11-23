@@ -356,8 +356,8 @@ void ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
 
-    
-    file.open (presetPath);
+    const char* pathToUse = String (presetPath + "lastSavedPreset.xml").getCharPointer();
+    file.open (pathToUse);
     file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
     {
@@ -500,7 +500,8 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
         return applicationIsNotEmpty;
     
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file (presetPath);
+    const char* pathToUse = String (presetPath + "lastSavedPreset.xml").getCharPointer();
+    pugi::xml_parse_result result = doc.load_file (pathToUse);
     if (result.status != pugi::status_ok)
     {
         return fileNotFound;
@@ -770,6 +771,7 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
                 instruments[i]->addSecondConnection (instruments[i]->getResonatorPtr(resToIdx),
                                                      resToLoc);
                 instruments[i]->setCurrentlyActiveConnection (nullptr);
+                instruments[i]->setAction (noAction);
                 ++c;
                 break;
             }

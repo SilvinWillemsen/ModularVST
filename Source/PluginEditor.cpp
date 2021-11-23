@@ -107,6 +107,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
             for (auto inst : *instruments)
                 inst->setConnectionType (controlPanel->getConnectionType());
             controlPanel->setComboBoxChangeBoolFalse();
+            controlPanel->refreshConnectionLabel();
         }
         else
         {
@@ -197,11 +198,8 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         {
             if (inst->getAction() == changeActiveConnectionAction)
             {
-                if (inst->getCurrentlyActiveConnection() != nullptr)
-                {
-                    controlPanel->setMassRatioSliderValue (inst->getCurrentlyActiveConnection()->getMassRatio());
-                    controlPanel->setComboBoxId (inst->getCurrentlyActiveConnection()->connType);
-                }
+                controlPanel->setCurrentlyActiveConnection (inst->getCurrentlyActiveConnection()); // nullptr is handled inside funtion
+                controlPanel->refresh (instruments, audioProcessor.getCurrentlyActiveInstrument());
                 inst->setAction (noAction);
             }
             switch (inst->getApplicationState())

@@ -24,12 +24,18 @@ ExcitationPanel::ExcitationPanel (ChangeListener* audioProcessorEditor)
 
     excitationTypeBox->addListener (this);
     addAndMakeVisible(excitationTypeBox.get());
-    excitationTypeBox->setSelectedId (1);
+    if (Global::bowAtStartup)
+        excitationTypeBox->setSelectedId (3);
+    else
+        excitationTypeBox->setSelectedId (1);
     
     toggleExcitationButton = std::make_shared<TextButton> ("Excite!");
     toggleExcitationButton->setColour (TextButton::ColourIds::buttonColourId, Colours::red);
     toggleExcitationButton->addListener (this);
     addAndMakeVisible (toggleExcitationButton.get());
+    
+    if (Global::bowAtStartup)
+        buttonClicked (toggleExcitationButton.get());
     
     addChangeListener (audioProcessorEditor);
 

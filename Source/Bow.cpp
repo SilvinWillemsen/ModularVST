@@ -14,7 +14,7 @@
 //==============================================================================
 Bow::Bow (int N) : ExciterModule (N, bowExciter)
 {
-    tol = 1e-4;
+    tol = 1e-7;
     a = 100; // Free parameter
     BM = sqrt(2.0 * a) * exp (0.5);
     vB = 0;
@@ -33,7 +33,7 @@ void Bow::drawExciter (Graphics& g)
     if (f == 0)
         return;
     
-    prop += getControlParameter() * 0.01;
+    prop += getControlParameter() * 0.1;
 //    std::cout << prop << std::endl;
     if (prop > 1)
         prop -= 1;
@@ -63,6 +63,7 @@ void Bow::initialise (NamedValueSet& parametersFromResonator)
     sig0 = *parametersFromResonator.getVarPointer("sig0");
     double sig1 = *parametersFromResonator.getVarPointer("sig1");
     connectionDivisionTerm = *parametersFromResonator.getVarPointer("connDivTerm");
+    
     // Bow parameters
     cOhSq = cSq / (h * h);
     kOhhSq = kappaSq / (h * h * h * h);
@@ -75,7 +76,7 @@ void Bow::initialise (NamedValueSet& parametersFromResonator)
 
 void Bow::calculate (std::vector<double*>& u)
 {
-    int bp = floor (excitationLoc * N);
+    int bp = Global::limit(floor (excitationLoc * N), 3, N - 4);
     double alpha = excitationLoc * N - bp;
     
     // Interpolation
@@ -97,6 +98,7 @@ void Bow::calculate (std::vector<double*>& u)
 
     Fb = f / (rho * A);
 
+    qPrev = 0;
     // NR loop
     if (f != 0)
     {
@@ -121,7 +123,7 @@ void Bow::calculate (std::vector<double*>& u)
     // apply to u
     double excitation = connectionDivisionTerm * BM * f * q * exp (-a * q * q);
     Global::extrapolation (u[0], bp, alpha, -excitation);
-
+    ++calcCounter;
 }
 
 void Bow::hiResTimerCallback()

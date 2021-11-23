@@ -93,6 +93,14 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
     // Initialise states and connection division term of the system
     initialiseModule();
     
+    if (Global::bowAtStartup)
+    {
+        // something double here
+        setExcitationType (bow);
+        getExciterModule()->setExciterModuleType (bowExciter);
+        initialiseExciterModule();
+    }
+    
 //    excite(); // start by exciting
 }
 
@@ -166,7 +174,7 @@ void StiffString::paint (juce::Graphics& g)
     g.strokePath (visualiseState (g), PathStrokeType(2.0f));
     
     // draw excitation
-    if (isExcitationActive())
+    if (applicationState == normalState && isExcitationActive())
     {
         switch (getExcitationType())
         {
@@ -269,6 +277,7 @@ void StiffString::calculate()
 //        double excitation = getConnectionDivisionTerm() * fB * q * exp (-a * q * q);
 //        Global::extrapolation (u[0], floor(loc), loc - floor(loc), -excitation);
 //    }
+    ++calcCounter;
 }
 
 float StiffString::getOutput (int idx)
@@ -285,7 +294,7 @@ void StiffString::exciteRaisedCos()
 //            //// Arbitrary excitation function (raised cosine) ////
             
             // width (in grid points) of the excitation
-            double width = 0.2 * N;
+            double width = 0.1 * N;
             
             // make sure we're not going out of bounds at the left boundary
             int start = std::max (floor((N+1) * excitationLoc) - floor(width * 0.5), 1.0);
@@ -296,8 +305,8 @@ void StiffString::exciteRaisedCos()
                 if (l+start >= (clampedBC ? N - 2 : N - 1))
                     break;
                 
-                u[1][l+start] += 0.00005 * (1 - cos(2.0 * double_Pi * l / width));
-                u[2][l+start] += 0.00005 * (1 - cos(2.0 * double_Pi * l / width));
+                u[1][l+start] += 0.0005 * (1 - cos(2.0 * double_Pi * l / width));
+                u[2][l+start] += 0.0005 * (1 - cos(2.0 * double_Pi * l / width));
             }
 //            break;
 //        }
@@ -496,7 +505,7 @@ void StiffString::initialiseExciterModule()
     {
         case bow:
             parametersFromResonator.set ("cSq", cSq);
-            parametersFromResonator.set ("kappaSq", cSq);
+            parametersFromResonator.set ("kappaSq", kappaSq);
             parametersFromResonator.set ("h", h);
             parametersFromResonator.set ("k", k);
             parametersFromResonator.set ("rho", rho);

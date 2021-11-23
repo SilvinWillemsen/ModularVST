@@ -42,14 +42,17 @@ public:
 
     void hiResTimerCallback() override {};
     
+    long getCalcCounter() { return calcCounter; };
+    
 protected:
     ExciterModuleType exciterModuleType;
-    double excitationLoc = 0;
+    double excitationLoc = 0.5;
     double controlLoc = 0;
 
     int N = 0;
     double f = 1;
     double controlParameter = 0; // parameter to be controlled by the application. Could be bow velocity fx.
     
+    long calcCounter = 0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExciterModule)
 };

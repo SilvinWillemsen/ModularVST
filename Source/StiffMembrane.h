@@ -57,8 +57,6 @@ public:
     double getDampEnergy() override;
     double getInputEnergy() override;
 
-    void setExcitationFlagFalse() { rcExcitationFlag = false; };
-
 protected:
     
     int maxPoints;

@@ -113,6 +113,8 @@ public:
     std::shared_ptr<ExciterModule> getExciterModule() { return exciterModule; };
     virtual void initialiseExciterModule() {};
     
+    long getCalcCounter() { return calcCounter; };
+
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -155,6 +157,8 @@ protected:
     
     bool alreadyExcited = false; // for hover excitation
     
+    long calcCounter = 0;
+    
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised
@@ -172,6 +176,6 @@ private:
     
     ExcitationType excitationType = noExcitation;
     std::shared_ptr<ExciterModule> exciterModule;
-    bool excitationActive = false;
+    bool excitationActive = Global::bowAtStartup ? true : false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };
