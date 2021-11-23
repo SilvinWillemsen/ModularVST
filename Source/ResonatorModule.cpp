@@ -21,6 +21,8 @@ ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parame
     else
         is1D = false;
     addChangeListener (instrument);
+    
+    exciterModule = std::make_shared<ExciterModule>();
 }
 
 ResonatorModule::~ResonatorModule()
@@ -50,7 +52,7 @@ void ResonatorModule::initialiseModule()
     // Make set memory addresses to first index of the state vectors.
     for (int i = 0; i < 3; ++i)
         u[i] = &uStates[i][0];
-
+    
     jassert (connectionDivisionTerm != -1); // connectionDivisionTerm must have been set in module inheriting from this class
 
     moduleIsReady = true;
@@ -81,3 +83,21 @@ void ResonatorModule::addForce (double force, int idx, double customMassRatio)
 {
     u[0][idx] += customMassRatio * connectionDivisionTerm * force;
 }
+
+void ResonatorModule::setExcitationType (ExcitationType e)
+{
+    excitationType = e;
+    switch (e)
+    {
+        case bow:
+            exciterModule = std::make_shared<Bow> (N);
+            initialiseExciterModule();
+            exciterModule->setControlParameter (0.2);
+            break;
+    }    
+}
+
+//void ResonatorModule::timerCallback()
+//{
+//    
+//}

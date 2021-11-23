@@ -12,6 +12,8 @@
 
 #include <JuceHeader.h>
 #include "Global.h"
+#include "ExciterModule.h"
+#include "Bow.h"
 #include "InOutInfo.h"
 //==============================================================================
 /*
@@ -19,7 +21,7 @@
     -initialise module
 */
 
-class ResonatorModule  : public juce::Component, public ChangeBroadcaster
+class ResonatorModule  : public juce::Component, public ChangeBroadcaster//, public Timer
 {
 public:
     ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo = InOutInfo(), BoundaryCondition bc = clampedBC);
@@ -46,9 +48,13 @@ public:
     // Output
     virtual float getOutput (int idx) = 0;
         
-    bool shouldExcite() { return excitationFlag; };
-    virtual void excite() {};
+    // Raised cosine excitation
+    bool shouldExciteRaisedCos() { return rcExcitationFlag; };
+    virtual void exciteRaisedCos() {};
     
+    // Excite using excitation module
+    void excite() { if (excitationActive) getExciterModule()->calculate (u); };
+
     void setApplicationState (ApplicationState a) { applicationState = a; };
     
     int getMouseLoc() { return mouseLoc; };
@@ -85,7 +91,7 @@ public:
     void setModifier (ModifierKeys mod) { modifier = mod; };
     ModifierKeys getModifier() { return modifier; };
 
-    NamedValueSet& getParamters() { return parameters; }; // for presets
+    NamedValueSet& getParameters() { return parameters; }; // for presets
     
     void changeTotInputs (bool increment) { if (increment) ++totInputs; else --totInputs; };
     void changeTotOutputs (bool increment) { if (increment) ++totOutputs; else --totOutputs; };
@@ -97,6 +103,16 @@ public:
     
     InOutInfo* getInOutInfo() { return &inOutInfo; };
 
+    void setExcitationType (ExcitationType e);
+    ExcitationType getExcitationType() { return excitationType; };
+    
+//    void timerCallback() override;
+    bool isExcitationActive() { return excitationActive; };
+    void setExcitationActive (bool a) { excitationActive = a; };
+    
+    std::shared_ptr<ExciterModule> getExciterModule() { return exciterModule; };
+    virtual void initialiseExciterModule() {};
+    
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -122,7 +138,7 @@ protected:
     
     BoundaryCondition bc;
 
-    bool excitationFlag = false;
+    bool rcExcitationFlag = false;
     Component* parentComponent;
     ApplicationState applicationState = normalState;
     
@@ -137,7 +153,7 @@ protected:
     double dampTot = 0;
     double inputTot = 0;
     
-    bool alreadyExcited = false; // for click-and-drag excitation
+    bool alreadyExcited = false; // for hover excitation
     
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
@@ -153,6 +169,9 @@ private:
 
     int totInputs = 0;
     int totOutputs = 0;
-
+    
+    ExcitationType excitationType = noExcitation;
+    std::shared_ptr<ExciterModule> exciterModule;
+    bool excitationActive = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };

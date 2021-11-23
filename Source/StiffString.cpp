@@ -38,7 +38,7 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
             NamedValueSet advancedParameters = Global::defaultStringParametersAdvanced;
             double r = (*parameters.getVarPointer ("r"));
             double f0 = (*parameters.getVarPointer ("f0"));
-            L = (*parameters.getVarPointer("L"));
+            L = 1;
             rho = (*advancedParameters.getVarPointer("rho"));
             A = double_Pi * r * r;
             E = (*advancedParameters.getVarPointer("E"));
@@ -85,7 +85,7 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
     // Calculate stiffness coefficient (squared)
     kappaSq = E * I / (rho * A);
 
-    visualScaling = 100;
+    visualScaling = 100000;
         
     // Initialise paramters
     initialise (fs);
@@ -134,7 +134,7 @@ void StiffString::initialise (int fs)
     Bss *= Adiv;
     C0 *= Adiv;
     C1 *= Adiv;
-    
+
     setConnectionDivisionTerm (k * k / (rho * A * h * (1.0 + sig0 * k)));
     
     if (inOutInfo.isDefaultInit())
@@ -151,11 +151,38 @@ void StiffString::paint (juce::Graphics& g)
 //    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 //    
     // choose your favourite colour
-    g.setColour(Colours::cyan);
+    switch (getResonatorModuleType()) {
+        case stiffString:
+            g.setColour (Colours::cyan);
+            break;
+        case bar:
+            g.setColour (Colours::mediumpurple);
+            break;
+        default:
+            break;
+    }
     
     // draw the state
-    g.strokePath(visualiseState (g), PathStrokeType(2.0f));
+    g.strokePath (visualiseState (g), PathStrokeType(2.0f));
     
+    // draw excitation
+    if (isExcitationActive())
+    {
+        switch (getExcitationType())
+        {
+            case pluck:
+                g.setColour (Colours::yellow);
+                g.fillEllipse (excitationLoc * getWidth() - 0.5 * Global::excitationVisualWidth,
+                               yLoc - 0.5 * Global::excitationVisualWidth,
+                               Global::excitationVisualWidth,
+                               Global::excitationVisualWidth);
+                break;
+                
+            case bow:
+                getExciterModule()->drawExciter (g);
+                break;
+        }
+    }
     // draw inputs and outputs
     if (applicationState == editInOutputsState || Global::alwaysShowInOuts)
     {
@@ -177,7 +204,7 @@ void StiffString::paint (juce::Graphics& g)
             int xLoc = getWidth() * static_cast<float>(inOutInfo.getOutLocAt(i)) / N;
             int yLoc = 0.5 * getHeight();
 //            - curResonator->getStateAt (inOutInfo.outLocs[i], 1) * curResonator->getVisualScaling();
-            g.drawArrow (Line<float>(xLoc, yLoc, xLoc, getHeight()), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
+            g.drawArrow (Line<float>(xLoc, yLoc, xLoc, yLoc + std::min (Global::arrowHeight, static_cast<int> (0.5 * getHeight()))), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
         
         }
     }
@@ -234,39 +261,52 @@ void StiffString::calculate()
         u[0][1] = Bss * u[1][1] + B1 * u[1][2] + B2 * u[1][3] + C0 * u[2][1] + C1 * u[2][2];
         u[0][N-1] = Bss * u[1][N-1] + B1 * u[1][N-2] + B2 * u[1][N-3] + C0 * u[2][N-1] + C1 * u[2][N-2];
     }
-
-
+    
+//    if (getExcitationType() == bow)
+//    {
+//        double loc = Global::limit (excitationLoc * N, clampedBC ? 3 : 2, clampedBC ? N-4 : N-5);
+//        NRbow (floor(loc), loc - floor(loc));
+//        double excitation = getConnectionDivisionTerm() * fB * q * exp (-a * q * q);
+//        Global::extrapolation (u[0], floor(loc), loc - floor(loc), -excitation);
+//    }
 }
 
 float StiffString::getOutput (int idx)
 {
-    return u[1][static_cast<int>(Global::limit (idx, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1))];
+    return Global::oneDOutputScaling * u[1][static_cast<int>(Global::limit (idx, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1))];
 }
 
-void StiffString::excite()
+void StiffString::exciteRaisedCos()
 {
-    //// Arbitrary excitation function (raised cosine) ////
-    
-    // width (in grid points) of the excitation
-    double width = 10;
-    
-    // make sure we're not going out of bounds at the left boundary
-    int start = std::max (floor((N+1) * excitationLoc) - floor(width * 0.5), 1.0);
+//    switch (getExcitationType())
+//    {
+//        case noExcitation:
+//        {
+//            //// Arbitrary excitation function (raised cosine) ////
+            
+            // width (in grid points) of the excitation
+            double width = 0.2 * N;
+            
+            // make sure we're not going out of bounds at the left boundary
+            int start = std::max (floor((N+1) * excitationLoc) - floor(width * 0.5), 1.0);
 
-    for (int l = 0; l <= width; ++l)
-    {
-        // make sure we're not going out of bounds at the right boundary (this does 'cut off' the raised cosine)
-        if (l+start >= (clampedBC ? N - 2 : N - 1))
-            break;
-        
-        u[1][l+start] += 0.5 * (1 - cos(2.0 * double_Pi * l / width));
-        u[2][l+start] += 0.5 * (1 - cos(2.0 * double_Pi * l / width));
-    }
-    
+            for (int l = 0; l <= width; ++l)
+            {
+                // make sure we're not going out of bounds at the right boundary (this does 'cut off' the raised cosine)
+                if (l+start >= (clampedBC ? N - 2 : N - 1))
+                    break;
+                
+                u[1][l+start] += 0.00005 * (1 - cos(2.0 * double_Pi * l / width));
+                u[2][l+start] += 0.00005 * (1 - cos(2.0 * double_Pi * l / width));
+            }
+//            break;
+//        }
+//    }
     // Disable the excitation flag to only excite once
-    excitationFlag = false;
-
+    rcExcitationFlag = false;
 }
+
+
 
 int StiffString::getNumPoints()
 {
@@ -297,7 +337,7 @@ void StiffString::mouseDown (const MouseEvent& e)
         case normalState:
         {
             excitationLoc = static_cast<float>(e.x) / static_cast<float>(getWidth());
-            excitationFlag = true;
+            rcExcitationFlag = true;
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
@@ -313,6 +353,66 @@ void StiffString::mouseDown (const MouseEvent& e)
             break;
     }
     sendChangeMessage();
+}
+
+void StiffString::mouseEnter (const MouseEvent& e)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+    
+    getExciterModule()->startTimer (1.0 / 150.0);
+
+    //    prevYLoc = e.y;
+    switch (getExcitationType()) {
+        case bow:
+            getExciterModule()->setForce (0.5);
+            break;
+            
+        default:
+            break;
+    }
+    setExcitationActive (true);
+}
+
+void StiffString::mouseExit (const MouseEvent& e)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+        
+    getExciterModule()->stopTimer();
+
+    switch (getExcitationType()) {
+        case bow:
+            getExciterModule()->setForce (0.0);
+            break;
+            
+        default:
+            break;
+    }
+    setExcitationActive (false);
+
+}
+
+void StiffString::mouseMove (const MouseEvent& e)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+    
+    getExciterModule()->setExcitationLoc (static_cast<float> (e.x) / getWidth());
+    getExciterModule()->setControlLoc (e.y);
+    
+//    double lpCoeff = 0.99;
+//    double curLoc = static_cast<float> (e.y) / getHeight();
+//    double locUse = (1.0 - lpCoeff) * curLoc + lpCoeff * prevLoc;
+//    Time t;
+//    double curTime = t.currentTimeMillis();
+//    vB = (locUse - prevLoc) / (0.001 * (curTime - prevTime));
+//    std::cout << locUse << std::endl;
+//    prevLoc = locUse;
+//    prevTime = curTime;
+
+    
+//    std::cout << getID() << " " << e.y << std::endl;
 }
 
 void StiffString::mouseDrag (const MouseEvent& e)
@@ -386,4 +486,26 @@ double StiffString::getDampEnergy()
 double StiffString::getInputEnergy()
 {
     return 0;
+}
+
+void StiffString::initialiseExciterModule()
+{
+    
+    NamedValueSet parametersFromResonator;
+    switch (getExcitationType())
+    {
+        case bow:
+            parametersFromResonator.set ("cSq", cSq);
+            parametersFromResonator.set ("kappaSq", cSq);
+            parametersFromResonator.set ("h", h);
+            parametersFromResonator.set ("k", k);
+            parametersFromResonator.set ("rho", rho);
+            parametersFromResonator.set ("A", A);
+            parametersFromResonator.set ("sig0", sig0);
+            parametersFromResonator.set ("sig1", sig1);
+            parametersFromResonator.set ("connDivTerm", getConnectionDivisionTerm());
+            break;
+            
+    }
+    getExciterModule()->initialise (parametersFromResonator);
 }

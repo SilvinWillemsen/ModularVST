@@ -36,6 +36,8 @@ public:
     Path visualiseState (Graphics& g);
 
     void calculate() override;
+    void exciteRaisedCos() override;
+    
     void onlyCalculateMembrane();
     void calculateAll();
     
@@ -49,14 +51,13 @@ public:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 //    void mouseMove (const MouseEvent& e) override;
-    void excite() override;
     
     double getKinEnergy() override;
     double getPotEnergy() override;
     double getDampEnergy() override;
     double getInputEnergy() override;
 
-    void setExcitationFlagFalse() { excitationFlag = false; };
+    void setExcitationFlagFalse() { rcExcitationFlag = false; };
 
 protected:
     

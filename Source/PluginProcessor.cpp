@@ -199,7 +199,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         if (!inst->areModulesReady())
             return;
         
-        inst->checkIfShouldExcite();
+        inst->checkIfShouldExciteRaisedCos();
         
 //        if (inst->checkIfShouldRemoveResonatorModule())
 //        {
@@ -210,6 +210,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         {
             inst->calculate();
             inst->solveInteractions();
+            inst->excite();
 #ifdef CALC_ENERGY
             inst->calcTotalEnergy();
 //#ifdef CALC_ENERGY
@@ -239,7 +240,6 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                 curChannel[channel][0][i] = outputLimit (totOutputR[i]);
         }
     }
-
 //    std::cout << totOutput[15] << std::endl;
     
 }
@@ -395,11 +395,11 @@ void ModularVSTAudioProcessor::savePreset()
             }
             file << "\n";
 
-            for (int p = 0; p < curResonator->getParamters().size(); ++p)
+            for (int p = 0; p < curResonator->getParameters().size(); ++p)
             {
                 file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_r" << r << "_";
-                String paramName = curResonator->getParamters().getName(p).toString();
-                double value = *curResonator->getParamters().getVarPointer (paramName);
+                String paramName = curResonator->getParameters().getName(p).toString();
+                double value = *curResonator->getParameters().getVarPointer (paramName);
                 file << paramName << "\" value=\"" << value << "\"/>\n";
             }
             for (int o = 0; o < curResonator->getInOutInfo()->getNumOutputs(); ++o)

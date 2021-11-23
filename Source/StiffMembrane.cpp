@@ -136,8 +136,8 @@ void StiffMembrane::initialise (int fs)
     if (inOutInfo.isDefaultInit())
     {
         // Add in / outputs
-        inOutInfo.addOutput (5 + (5 * Nx));
-        inOutInfo.addOutput ((Nx - 5) + (5 * Nx));
+        inOutInfo.addOutput (5 + (5 * Nx), 0);
+        inOutInfo.addOutput ((Nx - 5) + (5 * Nx), 1);
     }
     
 #ifdef SAVE_OUTPUT
@@ -328,7 +328,7 @@ void StiffMembrane::mouseDown (const MouseEvent& e)
         {
             excitationLocX = static_cast<float>(e.x) / static_cast<float>(getWidth());
             excitationLocY = static_cast<float>(e.y) / static_cast<float>(getHeight());
-            excitationFlag = true;
+            rcExcitationFlag = true;
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
@@ -370,9 +370,9 @@ void StiffMembrane::mouseUp (const MouseEvent& e)
 }
 
 
-void StiffMembrane::excite()
+void StiffMembrane::exciteRaisedCos()
 {
-    excitationFlag = false;
+    rcExcitationFlag = false;
 //    u[1][40 + 40 * Nx] += 1;
 //    u[2][40 + 40 * Nx] += 1;
 
@@ -384,7 +384,7 @@ void StiffMembrane::excite()
     {
         for (int j = 1; j < excitationWidthY; ++j)
         {
-            excitationArea[i][j] = (10.0 / (excitationWidthX * excitationWidthY) * 0.25 * (1 - cos(2.0 * double_Pi * i / static_cast<int>(excitationWidthX+1))) * (1 - cos(2.0 * double_Pi * j / static_cast<int>(excitationWidthY+1)))) * 0.1;
+            excitationArea[i][j] = 0.001 / (excitationWidthX * excitationWidthY) * 0.25 * (1 - cos(2.0 * double_Pi * i / static_cast<int>(excitationWidthX+1))) * (1 - cos(2.0 * double_Pi * j / static_cast<int>(excitationWidthY+1)));
         }
     }
 

@@ -32,25 +32,31 @@ public:
     Path visualiseState (Graphics& g);
 
     void calculate() override;
+    void exciteRaisedCos() override;
+
     float getOutput (int idx) override;
     
     int getNumPoints() override;
     int getNumIntervals() override { return N; } ;
     
     // interaction
+    void mouseEnter (const MouseEvent& e) override;
+    void mouseExit (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
+    void mouseMove (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
-    void excite() override;
-    
+        
     double getKinEnergy() override;
     double getPotEnergy() override;
     double getDampEnergy() override;
     double getInputEnergy() override;
 
-    void setExcitationFlagFalse() { excitationFlag = false; };
+    void setExcitationFlagFalse() { rcExcitationFlag = false; };
     void setAlreadyExcited (bool a) { alreadyExcited = a; };
-
+    
+    void initialiseExciterModule() override;
+    
 private:
     
     // Model parameters
@@ -64,7 +70,9 @@ private:
     */
     double Adiv, B0, B1, B2, C0, C1, S0, S1, Bss;
 
-    float excitationLoc = 0.5;    
-    
+    double prevLoc = 0;
+    float excitationLoc = 0.5;
+    float yLoc = 0;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StiffString)
 };

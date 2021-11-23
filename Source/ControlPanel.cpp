@@ -113,6 +113,7 @@ void ControlPanel::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     Rectangle<int> area = getLocalBounds();
+    area.reduce (Global::margin, Global::margin);
     for (int i = 0; i < allButtons.size(); ++i)
     {
         if (allButtons[i]->isVisible())

@@ -17,6 +17,10 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     setResizable (true, true);
     controlPanel = std::make_unique<ControlPanel> (this);
     addAndMakeVisible (controlPanel.get());
+    
+    excitationPanel = std::make_unique<ExcitationPanel> (this);
+    addAndMakeVisible (excitationPanel.get());
+    
     addModuleWindow = std::make_unique<AddModuleWindow> (this);
 //    addAndMakeVisible (addModuleWindow.get());
     
@@ -61,8 +65,9 @@ void ModularVSTAudioProcessorEditor::resized()
 {
 
     Rectangle<int> totalArea = getLocalBounds();
-    controlPanel->setBounds(totalArea.removeFromBottom (Global::buttonHeight));
-    
+    controlPanel->setBounds (totalArea.removeFromBottom (Global::buttonHeight + 2.0 * Global::margin));
+    excitationPanel->setBounds (totalArea.removeFromRight (Global::buttonWidth + 2.0 * Global::margin));
+
     int height = static_cast<float>(totalArea.getHeight())
                     / static_cast<float>(instruments->size());
     
@@ -170,6 +175,21 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         }
         refresh();
     }
+    else if (changeBroadcaster == excitationPanel.get())
+    {
+        switch (excitationPanel->getAction()) {
+            case exciteAction:
+            case changeExcitationAction:
+                if (excitationPanel->getExciteMode())
+                    audioProcessor.setExcitationType (excitationPanel->getExcitationType());
+                else
+                    audioProcessor.setExcitationType (noExcitation);
+                break;
+            default:
+                break;
+        }
+        excitationPanel->setAction (noAction);
+    }
     
     for (auto inst : *instruments)
     {
@@ -205,7 +225,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     {
         if (addModuleWindow->getAction() == addResonatorModuleFromWindowAction)
             if (addModuleWindow->getDlgModal() == 1)
-                audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters(), addModuleWindow->isAdvanced());
+                audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters(), InOutInfo(), addModuleWindow->isAdvanced());
 
         addModuleWindow->setDlgModal (-1);
         addModuleWindow->setAction (noAction);

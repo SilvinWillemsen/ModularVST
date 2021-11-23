@@ -46,7 +46,11 @@ enum Action
 
     changeMassRatioAction,
     changeActiveConnectionAction,
-    savePresetAction
+    savePresetAction,
+    
+    exciteAction,
+    changeExcitationAction,
+    
 };
 
 enum ApplicationState
@@ -69,11 +73,27 @@ enum ResonatorModuleType
     stiffMembrane,
 };
 
+enum ExciterModuleType
+{
+    noExciter = 0,
+    pluckExciter,
+    hammerExciter,
+    bowExciter
+};
+
 enum ConnectionType
 {
     rigid = 1, // set to 1 for the combo box options
     linearSpring,
     nonlinearSpring,
+};
+
+enum ExcitationType
+{
+    noExcitation = 0, // not included in the combo box options
+    pluck,
+    hammer,
+    bow,
 };
 
 enum BoundaryCondition
@@ -95,26 +115,30 @@ namespace Global
 {
     static const bool loadPresetAtStartUp = true;
 
-    static const int margin = 20;
+    static const int margin = 10;
     static const int buttonHeight = 40;
     static const int buttonWidth = 80;
     static const int connRadius = 5;
+
     static const int selectionRadius = 10;
     static const int massRatioRadius = 5;
     static const int inOutputWidth = 4;
+    static const int arrowHeight = 40;
 
     static const int listBoxRowHeight = 40;
 
     static const bool alwaysShowInOuts = false;
+    static const double oneDOutputScaling = 10000.0;
+    static const double twoDOutputScaling = 10000.0;
+
+    static const double excitationVisualWidth = 6;
 
     // default parameters
-
-    static const double defaultLinSpringCoeff = 1000.0;
+    static const double defaultLinSpringCoeff = 1e6;
     static const double defaultNonLinSpringCoeff = 1e8;
     static const double defaultConnDampCoeff = 0.0;
     static const double eps = 1e-15;
 
-    static const double twoDOutputScaling = 10.0;
 
     static StringArray inOutInstructions = {
         "Left-Click: add a stereo output.",
@@ -141,7 +165,6 @@ namespace Global
     };
 
     static NamedValueSet defaultStringParameters {
-        {"L", 1},
         {"f0", 110.29},
         {"r", 0.0005}
     };
@@ -215,5 +238,23 @@ namespace Global
         }
         return val;
     }
+
+    static double interpolation (double* uVec, int bp, double alpha)
+    {
+        return uVec[bp - 1] * (alpha * (alpha - 1) * (alpha - 2)) / -6.0
+        + uVec[bp] * ((alpha - 1) * (alpha + 1) * (alpha - 2)) / 2.0
+        + uVec[bp + 1] * (alpha * (alpha + 1) * (alpha - 2)) / -2.0
+        + uVec[bp + 2] * (alpha * (alpha + 1) * (alpha - 1)) / 6.0;
+    }
+
+    static void extrapolation (double* uVec, int bp, double alpha, double val)
+    {
+        uVec[bp - 1] = uVec[bp - 1] + val * (alpha * (alpha - 1) * (alpha - 2)) / -6.0;
+        uVec[bp] = uVec[bp] + val * ((alpha - 1) * (alpha + 1) * (alpha - 2)) / 2.0;
+        uVec[bp + 1] = uVec[bp + 1] + val * (alpha * (alpha + 1) * (alpha - 2)) / -2.0;
+        uVec[bp + 2] = uVec[bp + 2] + val * (alpha * (alpha + 1) * (alpha - 1)) / 6.0;
+        
+    }
+
 
 };

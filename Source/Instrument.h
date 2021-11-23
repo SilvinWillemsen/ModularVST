@@ -120,6 +120,9 @@ public:
     // Solve interactions between resonator modules
     void solveInteractions();
     
+    // Trigger excitation modules in resonator modules
+    void excite();
+    
     // Update the resonator modules
     void update();
     
@@ -131,18 +134,18 @@ public:
     void calcTotalEnergy();
     double getTotalEnergy() { return fs * (prevEnergy - totEnergy); };
     
-    // Checks whether modules should be excited
-    void checkIfShouldExcite();
+    // Checks whether modules should be excited using raised cosine
+    void checkIfShouldExciteRaisedCos();
     
     bool checkIfShouldRemoveResonatorModule() { return shouldRemoveResonatorModule; };
-    void setToRemoveResonatorModule () { shouldRemoveResonatorModule = true; };
+    void setToRemoveResonatorModule() { shouldRemoveResonatorModule = true; };
     
     double getFs() { return fs; };
     
     void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
-
+    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
+    
     void setApplicationState (ApplicationState a);
     
     void setStatesToZero() { for (auto res : resonators) res->setStatesToZero(); }
@@ -175,6 +178,9 @@ public:
     
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
+    
+    void setExcitationType (ExcitationType e) { for (auto res : resonators) { res->setExcitationType (e); } };
+    
 private:
     
     int fs;

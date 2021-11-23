@@ -99,6 +99,12 @@ public:
     void highlightInstrument (int instrumentToHighlight);
     void savePreset();
     LoadPresetResult loadPreset();
+    
+    void setExcitationType (ExcitationType e) {
+        if (currentlyActiveInstrument != -1)
+            instruments[currentlyActiveInstrument]->setExcitationType (e);
+    };
+    
 private:
     //==============================================================================
     int fs;

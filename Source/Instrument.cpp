@@ -364,6 +364,13 @@ void Instrument::solveInteractions()
     
 }
 
+void Instrument::excite()
+{
+    for (auto res : resonators)
+        if (res->getExcitationType() != noExcitation)
+            res->excite();
+}
+
 
 void Instrument::update()
 {
@@ -410,22 +417,17 @@ void Instrument::calcTotalEnergy()
             + 0.25 * CI[i].K3 * (CI[i].eta * CI[i].etaPrev) * (CI[i].eta * CI[i].etaPrev);
 }
 
-void Instrument::checkIfShouldExcite()
+void Instrument::checkIfShouldExciteRaisedCos()
 {
     for (auto res : resonators)
-        if (res->shouldExcite())
-            res->excite();
+        if (res->shouldExciteRaisedCos())
+            res->exciteRaisedCos();
 }
 
 void Instrument::mouseDown (const MouseEvent& e)
 {
     jassert (applicationState == normalState);
     sendChangeMessage(); // set instrument to active one (for adding modules)
-}
-
-void Instrument::mouseDrag (const MouseEvent& e)
-{
-    
 }
 
 void Instrument::mouseUp (const MouseEvent& e)
@@ -442,6 +444,14 @@ void Instrument::mouseUp (const MouseEvent& e)
 #endif
     if (applicationState == moveConnectionState)
         setApplicationState (editConnectionState);
+}
+
+void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+//    std::cout << wheel.deltaY << std::endl;
+    for (auto res : resonators)
+        if (res->getExcitationType() == bow)
+            res->getExciterModule()->setControlParameter (Global::limit(res->getExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
 }
 
 //void Instrument::mouseMove (const MouseEvent& e)
@@ -1038,8 +1048,8 @@ void Instrument::setConnectionType (ConnectionType c)
 void Instrument::addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, int loc)
 {
     CI.push_back (ConnectionInfo (connType, res, loc,                                             res->getResonatorModuleType(),
-                                  Global::defaultLinSpringCoeff,
-                                  Global::defaultNonLinSpringCoeff,
+                                  Global::defaultLinSpringCoeff * (connType == linearSpring ? 100 : 1),
+                                  connType == nonlinearSpring ? Global::defaultNonLinSpringCoeff : 0,
                                   Global::defaultConnDampCoeff));
 }
 

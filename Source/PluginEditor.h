@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "ControlPanel.h"
+#include "ExcitationPanel.h"
 #include "AddModuleWindow.h"
 //==============================================================================
 /**
@@ -52,7 +53,8 @@ private:
     
     std::vector<std::shared_ptr<Instrument>>* instruments;
     std::unique_ptr<ControlPanel> controlPanel;
-    
+    std::unique_ptr<ExcitationPanel> excitationPanel;
+
     std::unique_ptr<AddModuleWindow> addModuleWindow;
     
     ApplicationState applicationState;
