@@ -134,6 +134,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     // Add an instrument and make it visible
                     audioProcessor.addInstrument();
                     std::shared_ptr<Instrument> newInstrument = instruments[instruments.size()-1];
+                    currentlyActiveInstrument = newInstrument;
                     addAndMakeVisible (newInstrument.get());
                     newInstrument->addChangeListener (this);
                     newInstrument->resized();

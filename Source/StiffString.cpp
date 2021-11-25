@@ -171,20 +171,7 @@ void StiffString::paint (juce::Graphics& g)
     // Draw excitation module
     if (applicationState == normalState && isExcitationActive())
     {
-        switch (getExcitationType())
-        {
-            case pluck:
-                g.setColour (Colours::yellow);
-                g.fillEllipse (excitationLoc * getWidth() - 0.5 * Global::excitationVisualWidth,
-                               yLoc - 0.5 * Global::excitationVisualWidth,
-                               Global::excitationVisualWidth,
-                               Global::excitationVisualWidth);
-                break;
-                
-            case bow:
-                getExciterModule()->drawExciter (g);
-                break;
-        }
+        getExciterModule()->drawExciter (g);
     }
     // Draw inputs and outputs
     if ((applicationState == editInOutputsState && isChildOfHighlightedInstrument()) || Global::alwaysShowInOuts)
@@ -493,6 +480,14 @@ void StiffString::initialiseExciterModule()
     NamedValueSet parametersFromResonator;
     switch (getExcitationType())
     {
+        case pluck:
+            parametersFromResonator.set ("h", h);
+            parametersFromResonator.set ("k", k);
+            parametersFromResonator.set ("rho", rho);
+            parametersFromResonator.set ("A", A);
+            parametersFromResonator.set ("sig0", sig0);
+            parametersFromResonator.set ("connDivTerm", getConnectionDivisionTerm());
+            break;
         case bow:
             parametersFromResonator.set ("cSq", cSq);
             parametersFromResonator.set ("kappaSq", kappaSq);

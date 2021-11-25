@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "Global.h"
 #include "ExciterModule.h"
+#include "Pluck.h"
 #include "Bow.h"
 #include "InOutInfo.h"
 //==============================================================================

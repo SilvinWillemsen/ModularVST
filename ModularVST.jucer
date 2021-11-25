@@ -29,6 +29,8 @@
               file="Source/ExcitationPanel.h"/>
       </GROUP>
       <GROUP id="{6A154B47-B008-FD5D-EC8B-C1607BCDEF6D}" name="ExciterModules">
+        <FILE id="LTXMMq" name="Pluck.cpp" compile="1" resource="0" file="Source/Pluck.cpp"/>
+        <FILE id="aG2na5" name="Pluck.h" compile="0" resource="0" file="Source/Pluck.h"/>
         <FILE id="WZEkM5" name="Bow.cpp" compile="1" resource="0" file="Source/Bow.cpp"/>
         <FILE id="Q2htmX" name="Bow.h" compile="0" resource="0" file="Source/Bow.h"/>
         <FILE id="qFhD7f" name="ExciterModule.cpp" compile="1" resource="0"

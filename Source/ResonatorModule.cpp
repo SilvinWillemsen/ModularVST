@@ -90,6 +90,10 @@ void ResonatorModule::setExcitationType (ExcitationType e)
     excitationType = e;
     switch (e)
     {
+        case pluck:
+            exciterModule = std::make_shared<Pluck> (N);
+            initialiseExciterModule();
+            break;
         case bow:
             exciterModule = std::make_shared<Bow> (N);
             initialiseExciterModule();
