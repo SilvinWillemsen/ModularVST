@@ -29,35 +29,37 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     
+    // Callbacks
     void buttonClicked (Button* button) override;
-
     void timerCallback() override;
-    
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
 
+    // Refresh
     void refresh();
     
+    // Add module window
     void openAddModuleWindow();
     
-    void refreshControlPanel();
-
+    // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
-    
-//    void retrieveDlgModal();
-    
+        
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
+    // Reference to the audio processor
     ModularVSTAudioProcessor& audioProcessor;
-    TextButton addChannelButton;
-    
-    std::vector<std::shared_ptr<Instrument>>* instruments;
+
+    // Reference to the instruments
+    std::vector<std::shared_ptr<Instrument>>& instruments;
+    std::shared_ptr<Instrument> currentlyActiveInstrument = nullptr;
+
+    // Various GUI panels
     std::unique_ptr<ControlPanel> controlPanel;
     std::unique_ptr<ExcitationPanel> excitationPanel;
 
+    // Window for adding modules
     std::unique_ptr<AddModuleWindow> addModuleWindow;
-    
-    ApplicationState applicationState;
     DialogWindow* dlgWindow;
+
+    // State of the application
+    ApplicationState applicationState;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessorEditor)
 };

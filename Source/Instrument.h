@@ -30,7 +30,7 @@
 class Instrument  : public juce::Component, public ChangeBroadcaster, public ChangeListener
 {
 public:
-    Instrument (ChangeListener& audioProcessorEditor, int fs);
+    Instrument (int fs);
     ~Instrument() override;
     
     // Vector storing information about the connections. [0] resonator index, [1] location
@@ -132,7 +132,7 @@ public:
     // Add/remove a resonator module
     void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo& inOutInfo, bool advanced);
     void removeResonatorModule();
-    
+    void resetResonatorToRemove() { resonatorToRemove = nullptr; }; // just for visuals
     void resetResonatorIndices();
     
     // function called from within the addResonatorModule function
@@ -176,7 +176,11 @@ public:
     
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
     
-    void setHighlightedInstrument (bool h) { highlightedInstrument = h; };
+    void setHighlightedInstrument (bool h) {
+        highlightedInstrument = h;
+        for (auto res : resonators)
+            res->setChildOfHighlightedInstrument (h);
+    };
     void setConnectionType (ConnectionType c);
     
     // Have separate functions (and separate location) for presets
@@ -204,7 +208,7 @@ public:
     void setAction (Action a) { action = a; };
     
     void setExcitationType (ExcitationType e) { for (auto res : resonators) { res->setExcitationType (e); } };
-    
+        
 private:
     
     int fs;
@@ -229,7 +233,7 @@ private:
     double prevEnergy = 0;
     double totEnergy = 0;
     
-    int resonatorToRemoveID = -1;
+    std::shared_ptr<ResonatorModule> resonatorToRemove;
     int outputToRemove = -1;
     int inputToRemove = -1;
     bool shouldRemoveResonatorModule = false;

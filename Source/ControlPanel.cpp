@@ -27,7 +27,10 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     addResonatorModuleButton = std::make_shared<TextButton> ("Add Resonator Module");
     allButtons.push_back (addResonatorModuleButton);
 
-    removeResonatorModuleButton = std::make_shared<TextButton> ("Remove Resonator Module");
+    editResonatorModuleButton = std::make_shared<TextButton> ("Remove Resonator Module");
+    allButtons.push_back (editResonatorModuleButton);
+    
+    removeResonatorModuleButton = std::make_unique<TextButton> ("Remove");
     allButtons.push_back (removeResonatorModuleButton);
     
     editInOutputsButton = std::make_shared<TextButton> ("Edit In- Outputs");
@@ -104,6 +107,8 @@ void ControlPanel::paint (juce::Graphics& g)
     */
 
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
+    g.setColour (juce::Colours::grey);
+    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
 //    g.setColour (juce::Colours::grey);
 //    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
@@ -126,7 +131,7 @@ void ControlPanel::resized()
         {
             if (applicationState == normalState)
             {
-                if (i == 5)
+                if (allButtons[i] == savePresetButton)
                 {
                     allButtons[i]->setBounds (area.removeFromRight (100));
                 }
@@ -140,7 +145,7 @@ void ControlPanel::resized()
             else
             {
                 allButtons[i]->setBounds (area.removeFromRight (100));
-                if (i == 4 && allComboBoxes[0]->isVisible())
+                if (allButtons[i] == editConnectionButton && allComboBoxes[0]->isVisible())
                 {
                     area.removeFromRight (Global::margin);
                     allComboBoxes[0]->setBounds(area.removeFromRight (100));
@@ -170,18 +175,22 @@ void ControlPanel::buttonClicked (Button* button)
         action = addInstrumentAction;
     else if (button == addResonatorModuleButton.get())
         action = addResonatorModuleAction;
-    else if (button == removeResonatorModuleButton.get())
+    else if (button == editResonatorModuleButton.get())
     {
         if (applicationState == normalState)
         {
-            action = removeResonatorModuleAction;
-            removeResonatorModuleButton->setButtonText ("Remove");
+            action = editResonatorModulesAction;
+            editResonatorModuleButton->setButtonText ("Done");
         }
         else if (applicationState == removeResonatorModuleState)
         {
             action = cancelRemoveResonatorModuleAction;
-            removeResonatorModuleButton->setButtonText ("Remove Resonator Module");
+            editResonatorModuleButton->setButtonText ("Remove Resonator Module");
         }
+    }
+    else if (button == removeResonatorModuleButton.get())
+    {
+        action = removeResonatorModuleAction;
     }
     else if (button == editInOutputsButton.get())
     {
@@ -228,44 +237,52 @@ void ControlPanel::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 //    init = true;
 }
 
-void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instruments, int currentlyActiveInstrument)
+void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrument)
 {
-    std::vector<bool> activeButtons (allButtons.size(), false);
-    std::vector<bool> activeComboBoxes (allComboBoxes.size(), false);
-    std::vector<bool> activeSliders (allSliders.size(), false);
+    for (auto btn : allButtons)
+        btn->setVisible (false);
+    
+    for (auto cbb : allComboBoxes)
+        cbb->setVisible (false);
+
+    for (auto sl : allSliders)
+        sl->setVisible (false);
+
     bool instructionsActive = false;
     bool connectionInfoActive = false;
+    
     instructionsLabel1->setText ("", dontSendNotification);
     instructionsLabel2->setText ("", dontSendNotification);
 
-    if (currentlyActiveInstrument == -1)
+    if (currentlyActiveInstrument == nullptr)
     {
-        activeButtons[0] = true;
+        addInstrumentButton->setVisible (true);
     }
     else
     {
         switch (applicationState)
         {
             case normalState:
-                activeButtons[0] = true;
-                activeButtons[1] = true;
-                activeButtons[5] = true;
+                addInstrumentButton->setVisible (true);
+                addResonatorModuleButton->setVisible (true);
+                editInOutputsButton->setVisible (true);
+                savePresetButton->setVisible (true);
 
-                if (instruments[0][currentlyActiveInstrument]->getNumResonatorModules() != 0)
+                if (currentlyActiveInstrument->getNumResonatorModules() != 0)
                 {
-                    activeButtons[2] = true;
-                    activeButtons[3] = true;
+                    editResonatorModuleButton->setVisible (true);
                 }
-                if (instruments[0][currentlyActiveInstrument]->getNumResonatorModules() > 1)
+                if (currentlyActiveInstrument->getNumResonatorModules() > 1)
                 {
-                    activeButtons[4] = true;
+                    editConnectionButton->setVisible (true);
                 }
                 break;
             case removeResonatorModuleState:
-                activeButtons[2] = true;
+                editResonatorModuleButton->setVisible (true);
+                removeResonatorModuleButton->setVisible (true);
                 break;
             case editInOutputsState:
-                activeButtons[3] = true;
+                editInOutputsButton->setVisible (true);
                 setInstructionsText (Global::inOutInstructions);
 //                instructionsLabel->setText (Global::inOutInstructions, dontSendNotification);
                 instructionsActive = true;
@@ -280,27 +297,12 @@ void ControlPanel::refresh (std::vector<std::shared_ptr<Instrument>>* instrument
                     connectionInfoActive = true;
                 instructionsActive = true;
                 
-                activeButtons[4] = true;
-                activeComboBoxes[0] = true;
-                activeSliders[0] = true;
+                editConnectionButton->setVisible (true);
+                connectionTypeBox->setVisible (true);
                 break;
         }
     }
-    for (int i = 0; i < allButtons.size(); ++i)
-    {
-        allButtons[i]->setVisible (activeButtons[i]);
-    }
     
-    for (int i = 0; i < allComboBoxes.size(); ++i)
-    {
-        allComboBoxes[i]->setVisible (activeComboBoxes[i]);
-    }
-    
-    for (int i = 0; i < allSliders.size(); ++i)
-    {
-//        allSliders[i]->setVisible (activeSliders[i]);
-        allSliders[i]->setVisible (false); // do not use custom mass ratio for now
-    }
     instructionsLabel1->setVisible (instructionsActive);
     instructionsLabel2->setVisible (instructionsActive);
     connectionLabel->setVisible (connectionInfoActive);
@@ -336,7 +338,8 @@ void ControlPanel::setInstructionsText (StringArray& instructions)
 void ControlPanel::setCurrentlyActiveConnection (Instrument::ConnectionInfo* CI)
 {
     currentlyActiveConnection = CI;
-
+    if (currentlyActiveConnection == nullptr)
+        return;
     
     setComboBoxId (currentlyActiveConnection->connType);
     refreshConnectionLabel();
@@ -349,6 +352,7 @@ void ControlPanel::refreshConnectionLabel()
     
     auto params = currentlyActiveConnection->getParams();
     connectionLabel->setText (String ("K1 = " + String(params[0]) + " K3 = " + String(params[1]) + "\nR = " + String(params[2])), dontSendNotification);
+    
     resized();
 
 }

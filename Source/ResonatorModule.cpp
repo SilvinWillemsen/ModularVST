@@ -56,6 +56,7 @@ void ResonatorModule::initialiseModule()
     jassert (connectionDivisionTerm != -1); // connectionDivisionTerm must have been set in module inheriting from this class
 
     moduleIsReady = true;
+    justReady = true;
 }
 
 void ResonatorModule::setStatesToZero()

@@ -33,7 +33,7 @@ void Bow::drawExciter (Graphics& g)
     if (f == 0)
         return;
     
-    prop += getControlParameter() * 0.1;
+    prop += getControlParameter() * 0.5;
 //    std::cout << prop << std::endl;
     if (prop > 1)
         prop -= 1;

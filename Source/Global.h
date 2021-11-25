@@ -32,6 +32,7 @@ enum Action
     
     addResonatorModuleAction,
     addResonatorModuleFromWindowAction,
+    editResonatorModulesAction,
     removeResonatorModuleAction,
     cancelRemoveResonatorModuleAction,
     
@@ -50,6 +51,8 @@ enum Action
     
     exciteAction,
     changeExcitationAction,
+    
+    refreshEditorAction
     
 };
 
@@ -103,7 +106,7 @@ enum BoundaryCondition
     freeBC,
 };
 
-enum LoadPresetResult
+enum PresetResult
 {
     success,
     applicationIsNotEmpty,

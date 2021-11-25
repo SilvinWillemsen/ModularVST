@@ -31,7 +31,10 @@ public:
     void setStatesToZero();
     
     bool isModuleReady() { return moduleIsReady; };
+    bool isJustReady() { return justReady; };
+    void setNotJustReady() { justReady = false; };
     void unReadyModule() { moduleIsReady = false; }; // for module removal
+    void readyModule() { moduleIsReady = true; }; // for module removal
 
     // Scheme functions
     virtual void calculate() = 0;   // Calculate the FD scheme
@@ -115,6 +118,9 @@ public:
     
     long getCalcCounter() { return calcCounter; };
 
+    bool isChildOfHighlightedInstrument() { return childOfHighlightedInstrument; };
+    void setChildOfHighlightedInstrument (bool c) { childOfHighlightedInstrument = c; };
+    
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -162,6 +168,7 @@ protected:
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised
+    bool justReady = false; // Becomes true when the u vectors are initialised
     ResonatorModuleType resonatorModuleType; // what type of resonator is this
     bool is1D;
     int mouseLoc = -1;
@@ -177,5 +184,7 @@ private:
     ExcitationType excitationType = noExcitation;
     std::shared_ptr<ExciterModule> exciterModule;
     bool excitationActive = Global::bowAtStartup ? true : false;
+    
+    bool childOfHighlightedInstrument = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };

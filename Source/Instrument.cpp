@@ -12,11 +12,10 @@
 #include "Instrument.h"
 
 //==============================================================================
-Instrument::Instrument (ChangeListener& audioProcessor, int fs) : fs (fs)
+Instrument::Instrument (int fs) : fs (fs)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    addChangeListener (&audioProcessor);
     resonators.reserve (8);
     CI.reserve (16);
     setInterceptsMouseClicks (true, false);
@@ -186,10 +185,10 @@ void Instrument::paint (juce::Graphics& g)
         else
             g.drawDashedLine (line, dashPattern, 2, dashPattern[0], 0);
     }
-    if (applicationState == removeResonatorModuleState)
+    if (applicationState == removeResonatorModuleState && resonatorToRemove != nullptr)
     {
         g.setColour (Colours::red.withAlpha(0.5f));
-        g.fillRect (0, moduleHeight * resonatorToRemoveID,
+        g.fillRect (0, moduleHeight * resonatorToRemove->getID(),
                     getWidth(), moduleHeight);
     }
     
@@ -240,10 +239,10 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
 
 void Instrument::removeResonatorModule()
 {
-    if (currentlySelectedResonator == -1)
+    if (resonatorToRemove == nullptr)
         return;
     
-    resonators[currentlySelectedResonator]->unReadyModule();
+//    resonators[currentlySelectedResonator]->unReadyModule();
 
 //    for (int i = 0; i < inOutInfo.numInputs; ++i)
 //    {
@@ -262,13 +261,11 @@ void Instrument::removeResonatorModule()
 //            --i;
 //        }
 //    }
-//
-    // also remove connections
-    
+//    
     int i = 0;
     while (i < CI.size())
     {
-        if (CI[i].res1 == resonators[currentlySelectedResonator] || CI[i].res2 == resonators[currentlySelectedResonator])
+        if (CI[i].res1 == resonatorToRemove || CI[i].res2 == resonatorToRemove)
             CI.erase (CI.begin() + i);
         else
             ++i;
@@ -276,8 +273,9 @@ void Instrument::removeResonatorModule()
             
 //    resonators[currentlySelectedResonator]->setVisible (false);
 //    resonators[currentlySelectedResonator]->repaint();
-    resonators.erase (resonators.begin() + currentlySelectedResonator);
+    resonators.erase (resonators.begin() + resonatorToRemove->getID());
     currentlySelectedResonator = -1;
+    resonatorToRemove = nullptr;
     shouldRemoveResonatorModule = false;
 
     resetResonatorIndices();
@@ -300,8 +298,16 @@ void Instrument::initialise (int fs)
 bool Instrument::areModulesReady()
 {
    for (auto res : resonators)
+   {
+       if (res->isJustReady())
+       {
+           action = refreshEditorAction;
+           sendChangeMessage();
+           res->setNotJustReady();
+       }
        if (!res->isModuleReady())
            return false;
+   }
    return true;
 }
 
@@ -426,7 +432,11 @@ void Instrument::checkIfShouldExciteRaisedCos()
 
 void Instrument::mouseDown (const MouseEvent& e)
 {
-    jassert (applicationState == normalState);
+    if (applicationState != normalState)
+    {
+        DBG ("Probably clicked next to resonator component");
+        return;
+    };
     sendChangeMessage(); // set instrument to active one (for adding modules)
 }
 
@@ -476,14 +486,11 @@ void Instrument::setApplicationState (ApplicationState a)
         case normalState:
             setHighlightedInstrument (false);
             currentlyActiveConnection = nullptr;
-            setAlpha (1.0);
-            break;
-        case editConnectionState:
-        case editInOutputsState:
-            if (!highlightedInstrument)
-                setAlpha (0.2);
+            setAlpha (1);
             break;
         default:
+            if (!highlightedInstrument)
+                setAlpha (0.2);
             break;
     }
     for (auto res : resonators)
@@ -511,10 +518,8 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
         if (resonators[i].get() == changeBroadcaster)
             currentlySelectedResonator = i;
     
-    // do not edit connections if this is not the currently highlighted instrument
-    if (((applicationState == editConnectionState
-            || applicationState == moveConnectionState)
-            || applicationState == firstConnectionState) && !highlightedInstrument)
+    // do not edit if this is not the currently highlighted instrument
+    if (!highlightedInstrument)
         return;
     
     // do not edit in- and outputs if this is not the currently highlighted instrument
@@ -732,7 +737,10 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                 }
                 case removeResonatorModuleState:
                 {
-                    resonatorToRemoveID = res->getID();
+                    resonatorToRemove = res;
+                    for (auto reson : resonators)
+                        reson->readyModule();
+                    resonatorToRemove->unReadyModule();
                     break;
                 }
                 default:

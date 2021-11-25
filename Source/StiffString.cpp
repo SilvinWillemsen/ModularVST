@@ -155,10 +155,7 @@ void StiffString::initialise (int fs)
 
 void StiffString::paint (juce::Graphics& g)
 {
-//    // clear the background
-//    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-//    
-    // choose your favourite colour
+    // Draw the state
     switch (getResonatorModuleType()) {
         case stiffString:
             g.setColour (Colours::cyan);
@@ -169,11 +166,9 @@ void StiffString::paint (juce::Graphics& g)
         default:
             break;
     }
-    
-    // draw the state
     g.strokePath (visualiseState (g), PathStrokeType(2.0f));
     
-    // draw excitation
+    // Draw excitation module
     if (applicationState == normalState && isExcitationActive())
     {
         switch (getExcitationType())
@@ -191,8 +186,8 @@ void StiffString::paint (juce::Graphics& g)
                 break;
         }
     }
-    // draw inputs and outputs
-    if (applicationState == editInOutputsState || Global::alwaysShowInOuts)
+    // Draw inputs and outputs
+    if ((applicationState == editInOutputsState && isChildOfHighlightedInstrument()) || Global::alwaysShowInOuts)
     {
         for (int i = 0; i < inOutInfo.getNumOutputs(); ++i)
         {
@@ -211,7 +206,6 @@ void StiffString::paint (juce::Graphics& g)
 
             int xLoc = getWidth() * static_cast<float>(inOutInfo.getOutLocAt(i)) / N;
             int yLoc = 0.5 * getHeight();
-//            - curResonator->getStateAt (inOutInfo.outLocs[i], 1) * curResonator->getVisualScaling();
             g.drawArrow (Line<float>(xLoc, yLoc, xLoc, yLoc + std::min (Global::arrowHeight, static_cast<int> (0.5 * getHeight()))), 2.0, Global::inOutputWidth * 2.0, Global::inOutputWidth * 2.0);
         
         }
@@ -224,16 +218,16 @@ Path StiffString::visualiseState (Graphics& g)
     // String-boundaries are in the vertical middle of the component
     double stringBoundaries = getHeight() / 2.0;
     
-    // initialise path
+    // Initialise path
     Path stringPath;
     
-    // start path
+    // Start path
     stringPath.startNewSubPath (0, -u[1][0] * visualScaling + stringBoundaries);
     
     double spacing = getWidth() / static_cast<double>(N);
     double x = spacing;
     
-    for (int l = 1; l <= N; l++) // if you don't save the boundaries use l < N
+    for (int l = 1; l <= N; l++)
     {
         // Needs to be -u, because a positive u would visually go down
         float newY = -u[1][l] * visualScaling + stringBoundaries;
@@ -245,16 +239,12 @@ Path StiffString::visualiseState (Graphics& g)
         stringPath.lineTo (x, newY);
         x += spacing;
     }
-    // if you don't save the boundaries, and add a stringPath.lineTo (x, getWidth()) here to end the statedrawing
-
+    
     return stringPath;
 }
 
 void StiffString::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-
 }
 
 void StiffString::calculate()
@@ -408,7 +398,7 @@ void StiffString::mouseMove (const MouseEvent& e)
         return;
     
     getExciterModule()->setExcitationLoc (static_cast<float> (e.x) / getWidth());
-    getExciterModule()->setControlLoc (e.y);
+    getExciterModule()->setControlLoc (static_cast<float> (e.y) / getHeight());
     
 //    double lpCoeff = 0.99;
 //    double curLoc = static_cast<float> (e.y) / getHeight();

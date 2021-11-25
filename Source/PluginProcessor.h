@@ -17,7 +17,7 @@
 //==============================================================================
 /**
 */
-class ModularVSTAudioProcessor  : public juce::AudioProcessor, public ChangeListener
+class ModularVSTAudioProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
@@ -67,7 +67,7 @@ public:
     };
     
     // returns pointer of the instrument vector
-    std::vector<std::shared_ptr<Instrument>>* getInstrumentsPtr() { return &instruments; };
+    std::vector<std::shared_ptr<Instrument>>& getInstrumentsRef() { return instruments; };
     
     float outputLimit (float val)
     {
@@ -86,33 +86,29 @@ public:
 
     bool shouldRefreshEditor() { return refreshEditor; };
     void dontRefreshEditor() { refreshEditor = false; };
-    
-    void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
-    
-    int getCurrentlyActiveInstrument() { return currentlyActiveInstrument; };
+        
+    void setCurrentlyActiveInstrument (std::shared_ptr<Instrument> i) { currentlyActiveInstrument = i; }; 
         
     void setStatesToZero (bool s) { setToZero = s; };
     
     ApplicationState getApplicationState() { return applicationState; };
     void setApplicationState (ApplicationState a);
 
-    void highlightInstrument (int instrumentToHighlight);
-    void savePreset();
-    LoadPresetResult loadPreset();
+    // Function to highlight one instrument and reduce opacity of others. Used when editing
+    void highlightInstrument (std::shared_ptr<Instrument> instrumentToHighlight);
     
-    void setExcitationType (ExcitationType e) {
-        if (currentlyActiveInstrument != -1)
-            instruments[currentlyActiveInstrument]->setExcitationType (e);
-    };
-    
+    // Presets
+    PresetResult savePreset();
+    PresetResult loadPreset();
+        
 private:
     //==============================================================================
     int fs;
-    
+        
     std::vector<std::shared_ptr<Instrument>> instruments;
     bool refreshEditor = true;
     
-    int currentlyActiveInstrument = -1;
+    std::shared_ptr<Instrument> currentlyActiveInstrument = nullptr;
     bool setToZero = false;
     
     ApplicationState applicationState = normalState;

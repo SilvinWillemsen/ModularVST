@@ -38,17 +38,9 @@ public:
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
     
-    void refresh (std::vector<std::shared_ptr<Instrument>>* instruments, int currentlyActiveInstrument);
+    // Determine what buttons are visible (also depending on the currently active instrument)
+    void refresh (std::shared_ptr<Instrument> currentlyActiveInstrument);
     
-    void toggleAddResonatorButton (bool t) { addResonatorModuleButton->setEnabled (t); };
-    void toggleRemoveResonatorButton (bool t) { removeResonatorModuleButton->setEnabled (t); };
-    void toggleEditInOutputsButton (bool t) { editInOutputsButton->setEnabled (t); };
-    void toggleEditConnectionButton (bool t) { editConnectionButton->setEnabled (t); };
-    void toggleMassRatioSlider (bool t) { massRatioSlider->setEnabled (t); };
-
-    void toggleAddInstrumentButton (bool t) { addInstrumentButton->setEnabled (t); };
-    void toggleConnectionTypeBox (bool t) { connectionTypeBox->setEnabled (t); };
-
     void setApplicationState (ApplicationState a) { applicationState = a; };
     void setComboBoxId (ConnectionType c) { connectionTypeBox->setSelectedId (c); };
     
@@ -65,25 +57,27 @@ public:
     void setInstructionsText (StringArray& instructions);
     void setCurrentlyActiveConnection (Instrument::ConnectionInfo* CI);
     void refreshConnectionLabel(); 
-
+    
 private:
     
     // Collection of all buttons
     // 0 - Add Instrument
     // 1 - Add Resonator
-    // 2 - Remove Resonator
-    // 3 - Edit In- Outputs
-    // 4 - Edit Connections
-    // 5 - Save Preset
+    // 2 - Edit Resonator
+    // 3 - Remove Resonator
+    // 4 - Edit In- Outputs
+    // 5 - Edit Connections
+    // 6 - Save Preset
 
     std::vector<std::shared_ptr<TextButton>> allButtons;
     
-    std::shared_ptr<TextButton> addInstrumentButton;
-    std::shared_ptr<TextButton> addResonatorModuleButton;
-    std::shared_ptr<TextButton> removeResonatorModuleButton;
-    std::shared_ptr<TextButton> editInOutputsButton;
-    std::shared_ptr<TextButton> editConnectionButton;
-    std::shared_ptr<TextButton> savePresetButton;
+    std::shared_ptr<TextButton> addInstrumentButton;                // 0
+    std::shared_ptr<TextButton> addResonatorModuleButton;           // 1
+    std::shared_ptr<TextButton> editResonatorModuleButton;          // 2
+    std::shared_ptr<TextButton> removeResonatorModuleButton;        // 3
+    std::shared_ptr<TextButton> editInOutputsButton;                // 4
+    std::shared_ptr<TextButton> editConnectionButton;               // 5
+    std::shared_ptr<TextButton> savePresetButton;                   // 6
     
     std::shared_ptr<Label> instructionsLabel1;
     std::shared_ptr<Label> instructionsLabel2;
@@ -108,5 +102,6 @@ private:
     ConnectionType connectionType = rigid;
     
     Instrument::ConnectionInfo* currentlyActiveConnection = nullptr;
+        
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlPanel)
 };

@@ -103,7 +103,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     if (Global::loadPresetAtStartUp)
     {
-        LoadPresetResult res = loadPreset();
+        PresetResult res = loadPreset();
         switch (res) {
             case applicationIsNotEmpty:
                 DBG ("Application is not empty.");
@@ -196,7 +196,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     for (auto inst : instruments)
     {
         // check whether the instrument is ready
-        if (!inst->areModulesReady())
+        if (!inst->areModulesReady() || applicationState == removeResonatorModuleState)
             return;
         
         inst->checkIfShouldExciteRaisedCos();
@@ -278,39 +278,19 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void ModularVSTAudioProcessor::addInstrument()
 {
-    std::shared_ptr<Instrument> newInstrument = std::make_shared<Instrument> (*this, fs);
+    std::shared_ptr<Instrument> newInstrument = std::make_shared<Instrument> (fs);
     instruments.push_back (newInstrument);
-    currentlyActiveInstrument = static_cast<int> (instruments.size()-1);
+    currentlyActiveInstrument = newInstrument;
     
     refreshEditor = true;
 }
 
 void ModularVSTAudioProcessor::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo inOutInfo, bool advanced)
 {
-    jassert(currentlyActiveInstrument != -1);
-    jassert(currentlyActiveInstrument < instruments.size());
+    jassert(currentlyActiveInstrument != nullptr);
 
-    instruments[currentlyActiveInstrument]->addResonatorModule (rmt, parameters, inOutInfo, advanced);
+    currentlyActiveInstrument->addResonatorModule (rmt, parameters, inOutInfo, advanced);
     refreshEditor = true;
-}
-
-void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
-{
-    int i = 0;
-    for (auto inst : instruments)
-    {
-        if (changeBroadcaster == inst.get())
-        {
-            if (inst->getApplicationState() != normalState)
-            {
-                return;
-            }
-            currentlyActiveInstrument = i;
-            refreshEditor = true;
-            return;
-        }
-        ++i;
-    }
 }
 
 void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
@@ -336,6 +316,7 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
         case removeResonatorModuleState:
         {
             setStatesToZero (true);
+            highlightInstrument (currentlyActiveInstrument);
             break;
         }
     }
@@ -344,15 +325,15 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
     
 }
 
-void ModularVSTAudioProcessor::highlightInstrument (int instrumentToHighlight)
+void ModularVSTAudioProcessor::highlightInstrument (std::shared_ptr<Instrument> instrumentToHighlight)
 {
     for (auto inst : instruments)
         inst->setHighlightedInstrument (false);
-    instruments[instrumentToHighlight]->setHighlightedInstrument (true);
+    instrumentToHighlight->setHighlightedInstrument (true);
 
 }
 
-void ModularVSTAudioProcessor::savePreset()
+PresetResult ModularVSTAudioProcessor::savePreset()
 {
     std::ofstream file;
 
@@ -366,7 +347,7 @@ void ModularVSTAudioProcessor::savePreset()
 
         for (int r = 0; r < numResonators; ++r)
         {
-            ResonatorModule* curResonator =instruments[i]->getResonatorPtr(r).get();
+            ResonatorModule* curResonator = instruments[i]->getResonatorPtr(r).get();
             // type
 
             file << "\t " << "\t " << "<Resonator id=\"i" << i <<"_r"<< r << "\" type=\"";
@@ -491,9 +472,11 @@ void ModularVSTAudioProcessor::savePreset()
     }
     file << "</App" << ">" << "\n";
     file.close();
+    
+    return success;
 }
 
-LoadPresetResult ModularVSTAudioProcessor::loadPreset()
+PresetResult ModularVSTAudioProcessor::loadPreset()
 {
     // make sure that application is loaded from scratch
     if (instruments.size() != 0)
@@ -765,10 +748,10 @@ LoadPresetResult ModularVSTAudioProcessor::loadPreset()
                 else if (connType[i][c] == "nonlinear")
                     curConnType = nonlinearSpring;
                         
-                instruments[i]->addFirstConnection (instruments[i]->getResonatorPtr(resFromIdx),
+                instruments[i]->addFirstConnection (instruments[i]->getResonatorPtr (resFromIdx),
                                                     curConnType,
                                                     resFromLoc);
-                instruments[i]->addSecondConnection (instruments[i]->getResonatorPtr(resToIdx),
+                instruments[i]->addSecondConnection (instruments[i]->getResonatorPtr (resToIdx),
                                                      resToLoc);
                 instruments[i]->setCurrentlyActiveConnection (nullptr);
                 instruments[i]->setAction (noAction);
