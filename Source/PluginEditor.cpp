@@ -311,6 +311,10 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
     addAndMakeVisible (addModuleWindow.get());
     addModuleWindow->triggerComboBox(); // to prevent advanced parameters from appearing when non-advanced parameters should be shown
     dlgWindow->showDialog ("Add Resonator Module", addModuleWindow.get(), this, getLookAndFeel().findColour (ResizableWindow::backgroundColourId), true);
+}
+
+void ModularVSTAudioProcessorEditor::openSavePresetWindow()
+{
     addAndMakeVisible(savePresetWindow.get());
     dlgWindow->showDialog("Save Preset ", savePresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
 }
