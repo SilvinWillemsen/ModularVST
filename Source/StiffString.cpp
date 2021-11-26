@@ -85,7 +85,7 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
     // Calculate stiffness coefficient (squared)
     kappaSq = E * I / (rho * A);
 
-    visualScaling = 100000;
+    visualScaling = Global::stringVisualScaling;
         
     // Initialise paramters
     initialise (fs);
@@ -98,6 +98,12 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
         // something double here
         setExcitationType (bow);
         getExciterModule()->setExciterModuleType (bowExciter);
+        initialiseExciterModule();
+    }
+    else if (Global::pluckAtStartup)
+    {
+        setExcitationType (pluck);
+        getExciterModule()->setExciterModuleType (pluckExciter);
         initialiseExciterModule();
     }
     
@@ -350,6 +356,8 @@ void StiffString::mouseEnter (const MouseEvent& e)
 
     //    prevYLoc = e.y;
     switch (getExcitationType()) {
+        case pluck:
+            getExciterModule()->mouseEntered (e, getHeight());
         case bow:
             getExciterModule()->setForce (0.5);
             break;
@@ -366,6 +374,7 @@ void StiffString::mouseExit (const MouseEvent& e)
         return;
         
     getExciterModule()->stopTimer();
+    getExciterModule()->mouseExited();
 
     switch (getExcitationType()) {
         case bow:

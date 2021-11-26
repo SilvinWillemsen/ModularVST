@@ -27,13 +27,22 @@ public:
     void initialise (NamedValueSet& parameters) override;
     void calculate (std::vector<double*>& u) override;
     
-    void updateStates();
+    double getEnergy() override;
+
+    void updateStates() override;
     void hiResTimerCallback() override;
+    
+    void mouseEntered (const MouseEvent& e, int height) override;
+    void mouseExited() override;
+    
 private:
     // string variables still needed in the NR solve
     double rho, A, sig0, k, h;
     double connectionDivisionTerm;
 
+    double B1, B2, C1, Adiv;
+    double v1, v2, a11, a12, a21, a22, oOdet, solut1, solut2;
+    
     double uStar, wStar; // Intermediate state
     double uI, uIPrev; // Interpolated states
     double K, M, R;
@@ -42,11 +51,19 @@ private:
     double etaNext, eta, etaPrev, etaStar;
     double wNext, w, wPrev;
     
-    bool pickIsAbove = true;
+    bool pickIsAbove;
     bool plucked = false;
     int pluckedCounter = 0;
     int pluckedCounterLimit = 1000;
-    int pluckSgn = -1;
-    double forceLimit = 10;
+    int pluckSgn;
+    double forceLimit = 10000;
+    
+    double maxForce = 0.01 * Global::stringVisualScaling;
+    
+    double totDampEnergy = 0;
+    double totPowEnergy = 0;
+    double prevDampEnergy = 0;
+    double prevPowEnergy = 0;
+    double prevTotEnergy = 0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pluck)
 };

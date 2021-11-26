@@ -27,6 +27,8 @@ public:
     void initialise (NamedValueSet& parameters) override;
     void calculate (std::vector<double*>& u) override;
     
+    double getEnergy() override {};
+    
     void hiResTimerCallback() override;
 private:
     // string variables still needed in the NR solve

@@ -36,6 +36,8 @@ ExcitationPanel::ExcitationPanel (ChangeListener* audioProcessorEditor)
     
     if (Global::bowAtStartup)
         buttonClicked (toggleExcitationButton.get());
+    else if (Global::pluckAtStartup)
+        buttonClicked (toggleExcitationButton.get());
     
     addChangeListener (audioProcessorEditor);
 

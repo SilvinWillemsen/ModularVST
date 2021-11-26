@@ -10,7 +10,7 @@
 
 #pragma once
 //#define USE_EIGEN // use overlapping connections (and therefore the eigen library) or not
-//#define CALC_ENERGY // calculate (and print) energy or not
+#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
 
 #include <JuceHeader.h>
@@ -118,6 +118,7 @@ namespace Global
 {
     static const bool loadPresetAtStartUp = true;
     static const bool bowAtStartup = false;
+    static const bool pluckAtStartup = false;
 
     static const int margin = 10;
     static const int buttonHeight = 40;
@@ -134,6 +135,7 @@ namespace Global
     static const bool alwaysShowInOuts = false;
     static const double oneDOutputScaling = 1000.0;
     static const double twoDOutputScaling = 10000.0;
+    static const double stringVisualScaling = 100000.0;
 
     static const double excitationVisualWidth = 6;
 

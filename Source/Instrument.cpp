@@ -421,6 +421,7 @@ void Instrument::calcTotalEnergy()
     for (int i = 0; i < CI.size(); ++i)
         totEnergy += 0.125 * CI[i].K1 * (CI[i].eta + CI[i].etaPrev) * (CI[i].eta + CI[i].etaPrev)
             + 0.25 * CI[i].K3 * (CI[i].eta * CI[i].etaPrev) * (CI[i].eta * CI[i].etaPrev);
+    
 }
 
 void Instrument::checkIfShouldExciteRaisedCos()

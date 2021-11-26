@@ -72,6 +72,7 @@ void ResonatorModule::update()
     u[2] = u[1];
     u[1] = u[0];
     u[0] = uTmp;
+    exciterModule->updateStates();
 }
 
 double ResonatorModule::getStateAt (int idx, int time)

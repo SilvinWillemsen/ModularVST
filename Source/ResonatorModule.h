@@ -47,7 +47,11 @@ public:
 //    void addToStateAt (int idx);
     
     // energy
-    double getTotalEnergy() { return getKinEnergy() + getPotEnergy() + getDampEnergy() + getInputEnergy(); };
+    double getTotalEnergy() {
+        double resEnergy = getKinEnergy() + getPotEnergy() + getDampEnergy() + getInputEnergy();
+        double exciterEnergy = exciterModule->getEnergy();
+        return resEnergy + exciterEnergy;
+    };
     
     // Output
     virtual float getOutput (int idx) = 0;
@@ -184,7 +188,7 @@ private:
     
     ExcitationType excitationType = noExcitation;
     std::shared_ptr<ExciterModule> exciterModule;
-    bool excitationActive = Global::bowAtStartup ? true : false;
+    bool excitationActive = (Global::bowAtStartup || Global::pluckAtStartup) ? true : false;
     
     bool childOfHighlightedInstrument = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)

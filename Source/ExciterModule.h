@@ -25,10 +25,12 @@ public:
     void setExciterModuleType (ExciterModuleType e) { exciterModuleType = e; };
     
     virtual void drawExciter (Graphics& g) {};
-    
     virtual void initialise (NamedValueSet& parametersFromResonator) {};
     
     virtual void calculate (std::vector<double*>& u) {};
+    virtual void updateStates() {};
+    virtual double getEnergy() {};
+
     
 //    void setNumberOfIntervals (int n) { N = n; };
     
@@ -44,6 +46,11 @@ public:
     
     long getCalcCounter() { return calcCounter; };
     
+    virtual void mouseEntered (const MouseEvent& e, int height) {};
+    virtual void mouseExited () {};
+
+    bool isModuleReady() { return moduleIsReady; };
+    
 protected:
     ExciterModuleType exciterModuleType;
     double excitationLoc = 0.5;
@@ -54,5 +61,8 @@ protected:
     double controlParameter = 0; // parameter to be controlled by the application. Could be bow velocity fx.
     
     long calcCounter = 0;
+    bool moduleIsReady = false;
+    bool moduleIsCalculating = false;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExciterModule)
 };
