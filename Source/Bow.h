@@ -27,7 +27,7 @@ public:
     void initialise (NamedValueSet& parameters) override;
     void calculate (std::vector<double*>& u) override;
     
-    double getEnergy() override {};
+//    double getEnergy() override { return 0; };
     
     void hiResTimerCallback() override;
 private:
