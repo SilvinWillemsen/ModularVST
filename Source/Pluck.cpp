@@ -20,15 +20,14 @@ Pluck::Pluck (int N) : ExciterModule (N, pluckExciter)
     K = 1e4;
     M = 0.01;
     R = 1;
-    Kc = 1e2;
+    Kc = 1e8;
     KcOrig = Kc;
     alphaC = 1.3;
     
-    psiPrev = 0;
-    if (Global::pluckAtStartup)
+if (Global::pluckAtStartup)
     {
         wNext = 0;
-        w = -maxForce / K;
+        w = -maxForce / K; // might not work anymore
         wPrev = w;
         excitationLoc = 0.5;
         controlLoc = 0.25;
@@ -45,7 +44,7 @@ Pluck::~Pluck()
 void Pluck::drawExciter (Graphics& g)
 {
     Rectangle<int> bounds = g.getClipBounds();
-    
+    resHeight = bounds.getHeight();
     g.setColour(Colours::white.withAlpha(0.5f));
     g.drawEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth,
                    controlLoc * bounds.getHeight() - Global::excitationVisualWidth,
@@ -54,20 +53,20 @@ void Pluck::drawExciter (Graphics& g)
     
     g.setColour(Colours::yellow);
     g.fillEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
-                   (-w * 0.5 * K / maxForce + 0.5) * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
+                   -w * Global::stringVisualScaling + 0.5 * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
                    Global::excitationVisualWidth,
                    Global::excitationVisualWidth);
 }
 
 void Pluck::initialise (NamedValueSet& parametersFromResonator)
 {
-    h = *parametersFromResonator.getVarPointer("h");
-    rho = *parametersFromResonator.getVarPointer("rho");
-    A = *parametersFromResonator.getVarPointer("A");
-    k = *parametersFromResonator.getVarPointer("k");
-    sig0 = *parametersFromResonator.getVarPointer("sig0");
-    connectionDivisionTerm = *parametersFromResonator.getVarPointer("connDivTerm");
-
+    h = *parametersFromResonator.getVarPointer ("h");
+    rho = *parametersFromResonator.getVarPointer ("rho");
+    A = *parametersFromResonator.getVarPointer ("A");
+    k = *parametersFromResonator.getVarPointer ("k");
+    sig0 = *parametersFromResonator.getVarPointer ("sig0");
+    connectionDivisionTerm = *parametersFromResonator.getVarPointer ("connDivTerm");
+    resHeight = *parametersFromResonator.getVarPointer ("resHeight");
     B1 = 2.0 - k * k * K/M;
     B2 = k * k / M;
     C1 = -(1.0 - R * k / (2.0 * M));
@@ -84,12 +83,12 @@ void Pluck::initialise (NamedValueSet& parametersFromResonator)
 
 void Pluck::calculate (std::vector<double*>& u)
 {
-    f = maxForce * 2.0 * (-controlLoc + 0.5);
-
+    f = K * 0.5 * resHeight * 2.0 * (-controlLoc + 0.5) / (Global::stringVisualScaling);
+    
     int cloc = Global::limit (floor (excitationLoc * N), 3, N - 4);
     double alpha = excitationLoc * N - cloc;
     alpha = 0;
-//    alpha = 0;
+
     // Interpolation
     // (Note that MATLAB uses a distribution rather than interpolation)
     uI = Global::interpolation (u[1], cloc, alpha);
@@ -168,8 +167,9 @@ void Pluck::calculate (std::vector<double*>& u)
         pluckSgn = -pluckSgn;
         pickIsAbove = !pickIsAbove;
     }
-    
-    DBG (u[0][cloc] - wNext);
+
+    if (isnan(wNext))
+        DBG("wait");
     ++calcCounter;
     
 
@@ -177,6 +177,9 @@ void Pluck::calculate (std::vector<double*>& u)
 
 void Pluck::updateStates()
 {
+    if (!moduleIsCalculating)
+        return;
+    
     wPrev = w;
     w = wNext;
     
@@ -216,8 +219,8 @@ void Pluck::hiResTimerCallback()
 
 void Pluck::mouseEntered (const MouseEvent& e, int height)
 {
-    double yLoc = static_cast<double>(e.y) / height;
-    if (yLoc >= 0.5) // "above" is visually below
+    controlLoc = (static_cast<double>(e.y) / height);
+    if (controlLoc >= 0.5)
     {
         pickIsAbove = false;
         pluckSgn = 1;
@@ -225,7 +228,9 @@ void Pluck::mouseEntered (const MouseEvent& e, int height)
         pickIsAbove = true;
         pluckSgn = -1;
     }
-    wNext = -(yLoc - 0.5) / (0.5 * K / (maxForce));
+    
+    wNext = 0.5 * height * 2.0 * (-controlLoc + 0.5) / (Global::stringVisualScaling);
+//    wNext = -(yLoc - 0.5) / (0.5 * K / (M * maxForce));
     w = wNext;
     wPrev = w;
     prevDampEnergy = 0;

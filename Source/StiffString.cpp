@@ -238,6 +238,9 @@ Path StiffString::visualiseState (Graphics& g)
 
 void StiffString::resized()
 {
+//    if (getExciterModule()->getExciterModuleType() == pluck)
+//        exciterModule->setResHeight (getHeight());
+
 }
 
 void StiffString::calculate()
@@ -496,6 +499,7 @@ void StiffString::initialiseExciterModule()
             parametersFromResonator.set ("A", A);
             parametersFromResonator.set ("sig0", sig0);
             parametersFromResonator.set ("connDivTerm", getConnectionDivisionTerm());
+            parametersFromResonator.set ("resHeight", getHeight());
             break;
         case bow:
             parametersFromResonator.set ("cSq", cSq);

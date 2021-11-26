@@ -29,9 +29,8 @@ public:
     
     virtual void calculate (std::vector<double*>& u) {};
     virtual void updateStates() {};
-    virtual double getEnergy() {};
+    virtual double getEnergy() { return 0; };
 
-    
 //    void setNumberOfIntervals (int n) { N = n; };
     
     void setForce (double force) { f = force; };
