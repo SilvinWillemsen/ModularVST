@@ -9,6 +9,7 @@
       <FILE id="PsENVh" name="pugixml.cpp" compile="1" resource="0" file="../pugixml-1.11/src/pugixml.cpp"/>
       <FILE id="Zfwab2" name="pugixml.hpp" compile="0" resource="0" file="../pugixml-1.11/src/pugixml.hpp"/>
       <FILE id="YPcxjC" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
+<<<<<<< Updated upstream
       <FILE id="rylflo" name="CoefficientList.cpp" compile="1" resource="0"
             file="Source/CoefficientList.cpp"/>
       <FILE id="KCERjg" name="CoefficientList.h" compile="0" resource="0"
@@ -20,6 +21,36 @@
       <FILE id="XV88Cm" name="ControlPanel.cpp" compile="1" resource="0"
             file="Source/ControlPanel.cpp"/>
       <FILE id="GJmQNV" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
+=======
+      <GROUP id="{FC99E906-0480-E392-E69C-52C0A0F117E3}" name="GUI">
+        <FILE id="do5F3r" name="SavePresetWindow.h" compile="0" resource="0"
+              file="Source/SavePresetWindow.h"/>
+        <FILE id="RATJ00" name="SavePresetWindow.cpp" compile="1" resource="0"
+              file="Source/SavePresetWindow.cpp"/>
+        <FILE id="rylflo" name="CoefficientList.cpp" compile="1" resource="0"
+              file="Source/CoefficientList.cpp"/>
+        <FILE id="KCERjg" name="CoefficientList.h" compile="0" resource="0"
+              file="Source/CoefficientList.h"/>
+        <FILE id="qMHtOt" name="AddModuleWindow.cpp" compile="1" resource="0"
+              file="Source/AddModuleWindow.cpp"/>
+        <FILE id="esxtRs" name="AddModuleWindow.h" compile="0" resource="0"
+              file="Source/AddModuleWindow.h"/>
+        <FILE id="XV88Cm" name="ControlPanel.cpp" compile="1" resource="0"
+              file="Source/ControlPanel.cpp"/>
+        <FILE id="GJmQNV" name="ControlPanel.h" compile="0" resource="0" file="Source/ControlPanel.h"/>
+        <FILE id="SRdiAT" name="ExcitationPanel.cpp" compile="1" resource="0"
+              file="Source/ExcitationPanel.cpp"/>
+        <FILE id="e1guHB" name="ExcitationPanel.h" compile="0" resource="0"
+              file="Source/ExcitationPanel.h"/>
+      </GROUP>
+      <GROUP id="{6A154B47-B008-FD5D-EC8B-C1607BCDEF6D}" name="ExciterModules">
+        <FILE id="WZEkM5" name="Bow.cpp" compile="1" resource="0" file="Source/Bow.cpp"/>
+        <FILE id="Q2htmX" name="Bow.h" compile="0" resource="0" file="Source/Bow.h"/>
+        <FILE id="qFhD7f" name="ExciterModule.cpp" compile="1" resource="0"
+              file="Source/ExciterModule.cpp"/>
+        <FILE id="hePjv3" name="ExciterModule.h" compile="0" resource="0" file="Source/ExciterModule.h"/>
+      </GROUP>
+>>>>>>> Stashed changes
       <GROUP id="{007818EE-CDCF-C0BF-ED5B-F5D5EF34DC7E}" name="ResonatorModules">
         <FILE id="Ioj8p1" name="ThinPlate.cpp" compile="1" resource="0" file="Source/ThinPlate.cpp"/>
         <FILE id="AZaF3N" name="ThinPlate.h" compile="0" resource="0" file="Source/ThinPlate.h"/>

@@ -17,6 +17,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     controlPanel = std::make_unique<ControlPanel> (this);
     addAndMakeVisible (controlPanel.get());
     addModuleWindow = std::make_unique<AddModuleWindow> (this);
+    savePresetWindow = std::make_unique<SavePresetWindow>(this);
 //    addAndMakeVisible (addModuleWindow.get());
     
     addAndMakeVisible (addChannelButton);
@@ -148,6 +149,48 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     {
         addModuleWindow->setAction (noAction);
     }
+<<<<<<< Updated upstream
+=======
+    else if (changeBroadcaster == savePresetWindow.get())
+    {
+        if (savePresetWindow->getAction() == savePresetFromWindowAction)
+            if (savePresetWindow->getDlgSave() == 1)
+                audioProcessor.savePreset();
+
+        savePresetWindow->setDlgSave(-1);
+        savePresetWindow->setAction(noAction);
+    }
+    // If none of the above, the broadcaster has to be an an instrument
+    else
+    {
+       
+        for (auto inst : instruments)
+        {
+            if (applicationState == normalState)
+            {
+                currentlyActiveInstrument = inst;
+                audioProcessor.setCurrentlyActiveInstrument (inst);
+            }
+            if (changeBroadcaster == inst.get())
+                switch (inst->getAction())
+                {
+                    case changeActiveConnectionAction:
+                        controlPanel->setCurrentlyActiveConnection (inst->getCurrentlyActiveConnection()); // nullptr is handled inside funtion
+                        controlPanel->refresh (currentlyActiveInstrument);
+                        break;
+                    // when a module has just been added
+                    case refreshEditorAction:
+                        refresh();
+                        break;
+                    case noAction:
+                        break;
+                    default:
+                        DBG ("Action shouldn't come from instrument");
+                        break;
+                }
+            inst->setAction (noAction);
+        }
+>>>>>>> Stashed changes
 
     
 }
@@ -214,6 +257,12 @@ void ModularVSTAudioProcessorEditor::refreshControlPanel()
             }
         }
     }
+}
+
+void ModularVSTAudioProcessorEditor::openSavePresetWindow()
+{
+    addAndMakeVisible(savePresetWindow.get());
+    dlgWindow->showDialog("Save Preset ", savePresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
 }
 
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
