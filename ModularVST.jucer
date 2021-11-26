@@ -12,6 +12,10 @@
       </GROUP>
       <FILE id="YPcxjC" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
       <GROUP id="{FC99E906-0480-E392-E69C-52C0A0F117E3}" name="GUI">
+        <FILE id="iJzf8Y" name="SavePresetWindow.h" compile="0" resource="0"
+              file="Source/SavePresetWindow.h"/>
+        <FILE id="SHIg05" name="SavePresetWindow.cpp" compile="1" resource="0"
+              file="Source/SavePresetWindow.cpp"/>
         <FILE id="rylflo" name="CoefficientList.cpp" compile="1" resource="0"
               file="Source/CoefficientList.cpp"/>
         <FILE id="KCERjg" name="CoefficientList.h" compile="0" resource="0"

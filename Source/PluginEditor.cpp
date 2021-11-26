@@ -26,6 +26,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     
     // Window for adding modules
     addModuleWindow = std::make_unique<AddModuleWindow> (this);
+    savePresetWindow = std::make_unique<SavePresetWindow>(this);
 //    addAndMakeVisible (addModuleWindow.get());
     
     // Instruments
@@ -192,17 +193,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 }
                 case savePresetAction:
                 {
-                    PresetResult res = audioProcessor.savePreset();
-                    
-                    switch (res)
-                    {
-                        case success:
-                            DBG ("Preset successfully saved");
-                            break;
-                        default:
-                            DBG ("Something went wrong while saving the preset");
-                            break;
-                    }
+                    openSavePresetWindow();
                     break;
                 }
                     
@@ -258,6 +249,15 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         addModuleWindow->setDlgModal (-1);
         addModuleWindow->setAction (noAction);
     }
+    else if (changeBroadcaster == savePresetWindow.get())
+    {
+        if (savePresetWindow->getAction() == savePresetFromWindowAction)
+            if (savePresetWindow->getDlgModal() == 1)
+                audioProcessor.savePreset();
+
+        savePresetWindow->setDlgModal(-1);
+        savePresetWindow->setAction(noAction);
+    }
     // If none of the above, the broadcaster has to be an an instrument
     else
     {
@@ -311,6 +311,8 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
     addAndMakeVisible (addModuleWindow.get());
     addModuleWindow->triggerComboBox(); // to prevent advanced parameters from appearing when non-advanced parameters should be shown
     dlgWindow->showDialog ("Add Resonator Module", addModuleWindow.get(), this, getLookAndFeel().findColour (ResizableWindow::backgroundColourId), true);
+    addAndMakeVisible(savePresetWindow.get());
+    dlgWindow->showDialog("Save Preset ", savePresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
 }
 
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)

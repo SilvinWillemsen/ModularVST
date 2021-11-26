@@ -48,7 +48,7 @@ enum Action
     changeMassRatioAction,
     changeActiveConnectionAction,
     savePresetAction,
-    
+    savePresetFromWindowAction,
     exciteAction,
     changeExcitationAction,
     

@@ -13,6 +13,7 @@
 #include "ControlPanel.h"
 #include "ExcitationPanel.h"
 #include "AddModuleWindow.h"
+#include "SavePresetWindow.h"
 //==============================================================================
 /**
 */
@@ -39,6 +40,7 @@ public:
     
     // Add module window
     void openAddModuleWindow();
+    void openSavePresetWindow();
     
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
@@ -57,6 +59,7 @@ private:
 
     // Window for adding modules
     std::unique_ptr<AddModuleWindow> addModuleWindow;
+    std::unique_ptr<SavePresetWindow> savePresetWindow;
     DialogWindow* dlgWindow;
 
     // State of the application
