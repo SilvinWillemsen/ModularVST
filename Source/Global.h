@@ -30,36 +30,8 @@ enum Action
     
     addInstrumentAction,
     addResonatorModuleAction,
-<<<<<<< Updated upstream
     addConnectionAction,
     cancelConnectionAction
-=======
-    addResonatorModuleFromWindowAction,
-    editResonatorModulesAction,
-    removeResonatorModuleAction,
-    cancelRemoveResonatorModuleAction,
-    
-    editInOutputsAction,
-    cancelInOutputsAction,
-    
-    addConnectionAction, // only for presets
-    addInputAction,
-    addOutputAction,
-    editConnectionAction,
-    cancelConnectionAction,
-
-    changeMassRatioAction,
-    changeActiveConnectionAction,
-    
-    exciteAction,
-    changeExcitationAction,
-
-    savePresetAction,
-    savePresetFromWindowAction,
-    
-    refreshEditorAction
-    
->>>>>>> Stashed changes
 };
 
 enum ApplicationState

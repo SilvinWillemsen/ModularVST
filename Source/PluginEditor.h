@@ -12,7 +12,6 @@
 #include "PluginProcessor.h"
 #include "ControlPanel.h"
 #include "AddModuleWindow.h"
-#include "SavePresetWindow.h"
 //==============================================================================
 /**
 */
@@ -38,7 +37,6 @@ public:
     void refresh();
     
     void openAddModuleWindow();
-    void openSavePresetWindow();
     
     void refreshControlPanel();
 
@@ -54,14 +52,7 @@ private:
     std::unique_ptr<ControlPanel> controlPanel;
     
     std::unique_ptr<AddModuleWindow> addModuleWindow;
-<<<<<<< Updated upstream
     
-=======
-    std::unique_ptr<SavePresetWindow> savePresetWindow;
-    DialogWindow* dlgWindow;
-
-    // State of the application
->>>>>>> Stashed changes
     ApplicationState applicationState;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessorEditor)
