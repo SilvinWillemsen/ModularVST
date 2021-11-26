@@ -60,9 +60,9 @@ private:
     int pluckedCounter = 0;
     int pluckedCounterLimit = 1000;
     int pluckSgn;
-    double forceLimit = 100;
+    double forceLimit = 5;
     
-    double maxForce = 0.1;
+    double maxForce = 0.1; // not working
     
     double totDampEnergy = 0;
     double totPowEnergy = 0;

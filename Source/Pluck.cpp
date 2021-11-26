@@ -44,13 +44,12 @@ Pluck::~Pluck()
 void Pluck::drawExciter (Graphics& g)
 {
     Rectangle<int> bounds = g.getClipBounds();
-    resHeight = bounds.getHeight();
     g.setColour(Colours::white.withAlpha(0.5f));
     g.drawEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth,
                    controlLoc * bounds.getHeight() - Global::excitationVisualWidth,
                    Global::excitationVisualWidth * 2,
                    Global::excitationVisualWidth * 2, 1);
-    
+
     g.setColour(Colours::yellow);
     g.fillEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
                    -w * Global::stringVisualScaling + 0.5 * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
@@ -219,6 +218,7 @@ void Pluck::hiResTimerCallback()
 
 void Pluck::mouseEntered (const MouseEvent& e, int height)
 {
+    resHeight = height;
     controlLoc = (static_cast<double>(e.y) / height);
     if (controlLoc >= 0.5)
     {
