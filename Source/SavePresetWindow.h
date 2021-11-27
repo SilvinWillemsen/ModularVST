@@ -35,18 +35,18 @@ public:
 
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
 
-    int getDlgModal() { return dlgModal; };
-    void setDlgModal(int d) { dlgModal = d; };
+    int getDlgPreset() { return dlgPreset; };
+    void setDlgPreset(int d) { dlgPreset = d; };
 
 private:
-
+    std::string filename;
     std::unique_ptr<TextButton> savePresetButton;
 
     Action action = noAction;
 
-    std::unique_ptr<TextEditor> valueEditor;
+    std::unique_ptr<TextEditor> filenameEditor;
 
-    int dlgModal = -1;
+    int dlgPreset = -1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SavePresetWindow)
 };

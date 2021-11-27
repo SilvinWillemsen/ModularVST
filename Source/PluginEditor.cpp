@@ -252,10 +252,10 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     else if (changeBroadcaster == savePresetWindow.get())
     {
         if (savePresetWindow->getAction() == savePresetFromWindowAction)
-            if (savePresetWindow->getDlgModal() == 1)
+            if (savePresetWindow->getDlgPreset() == 1)
                 audioProcessor.savePreset();
 
-        savePresetWindow->setDlgModal(-1);
+        savePresetWindow->setDlgPreset(-1);
         savePresetWindow->setAction(noAction);
     }
     // If none of the above, the broadcaster has to be an an instrument
@@ -316,7 +316,7 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
 void ModularVSTAudioProcessorEditor::openSavePresetWindow()
 {
     addAndMakeVisible(savePresetWindow.get());
-    dlgWindow->showDialog("Save Preset ", savePresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
+    dlgWindow->showDialog("Save Preset", savePresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
 }
 
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)

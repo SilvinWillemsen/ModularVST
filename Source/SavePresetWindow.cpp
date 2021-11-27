@@ -7,7 +7,9 @@
 */
 
 #include "SavePresetWindow.h"
+#include "PluginProcessor.h"
 #include <JuceHeader.h>
+#include <sys/stat.h>
 
 //==============================================================================
 SavePresetWindow::SavePresetWindow(ChangeListener* audioProcessorEditor)
@@ -20,11 +22,11 @@ SavePresetWindow::SavePresetWindow(ChangeListener* audioProcessorEditor)
 
    // addChangeListener (audioProcessorEditor);
 
-    valueEditor = std::make_unique<TextEditor>();
-    valueEditor->addListener (this);
-    valueEditor->setInputRestrictions (0, "0123456789.eE-");
+    filenameEditor = std::make_unique<TextEditor>();
+    filenameEditor->addListener (this);
+    filenameEditor->setInputRestrictions (0, "qwertyuiopasdfghjklzxcvbnm1234567890_QWERTYUIOPASDFGHJKLZXCVBNM");
 
-    addAndMakeVisible (valueEditor.get());
+    addAndMakeVisible (filenameEditor.get());
 
     // initialise to string
 
@@ -34,6 +36,8 @@ SavePresetWindow::SavePresetWindow(ChangeListener* audioProcessorEditor)
 SavePresetWindow::~SavePresetWindow()
 {
 }
+
+
 
 void SavePresetWindow::paint (juce::Graphics& g)
 {
@@ -60,20 +64,38 @@ void SavePresetWindow::resized()
 
     Rectangle<int> labelArea = totalArea.removeFromTop (Global::buttonHeight);
     totalArea.removeFromLeft (Global::margin);
-    valueEditor->setBounds (totalArea.removeFromTop (Global::buttonHeight));
+    filenameEditor->setBounds (totalArea.removeFromTop (Global::buttonHeight));
 }
 
 void SavePresetWindow::buttonClicked (Button* button)
 {
     if (button == savePresetButton.get())
     {
+        ModularVSTAudioProcessor proces;
         action = savePresetAction;
         DialogWindow* dw = this->findParentComponentOfClass<DialogWindow>();
         std::cout << "Saving Preset" << std::endl;
-        dlgModal = 1;
+        dlgPreset = 1;
         dw->exitModalState(1);
         action = savePresetFromWindowAction;
         sendChangeMessage();
+        String name = proces.getPresetPath() + filename + ".xml";
+        const char* c = name.toUTF8();
+
+        struct stat buffer;
+        auto status(stat(c, &buffer) == 0);
+        if (status) 
+        {
+            String message = "File with a name \"" + filename + ".xml\" already exists, use different name.";
+            //AlertWindow("File with this name exists", message, "QuestionIcon");
+            NativeMessageBox::showMessageBox(AlertWindow::AlertIconType::QuestionIcon, "File with this name exists", message, nullptr);
+        }
+        else {
+            String message = "Preset \"" + filename + "\" has been saved";
+            //AlertWindow("File with this name exists", message, "QuestionIcon");
+            NativeMessageBox::showMessageBox(AlertWindow::AlertIconType::QuestionIcon, "Saved", message, nullptr);
+        }
+        juce::Logger::getCurrentLogger()->outputDebugString("Debug");
     }
 }
 
@@ -81,12 +103,14 @@ void SavePresetWindow::textEditorTextChanged (TextEditor& TE)
 {
     // save the name as a string for filename
     // coefficientList->repaintAndUpdate();
+    auto value = TE.getTextValue().toString();
+     
+    filename = value.String::toStdString();
 }
 
 void SavePresetWindow::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
-    valueEditor->setVisible (true);
-
-    valueEditor->setText ("lastSavedPreset");
+    filenameEditor->setVisible (true);
+    filenameEditor->setText ("lastSavedPreset");
 
 }
