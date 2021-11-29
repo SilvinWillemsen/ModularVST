@@ -19,7 +19,7 @@
 class Bow  : public ExciterModule
 {
 public:
-    Bow (int N);
+    Bow (int ID, int N);
     ~Bow() override;
     
     void drawExciter (Graphics& g) override;

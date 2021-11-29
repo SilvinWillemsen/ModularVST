@@ -12,7 +12,7 @@
 #include "Pluck.h"
 
 //==============================================================================
-Pluck::Pluck (int N) : ExciterModule (N, pluckExciter)
+Pluck::Pluck (int ID, int N) : ExciterModule (ID, N, pluckExciter)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -76,7 +76,7 @@ void Pluck::initialise (NamedValueSet& parametersFromResonator)
     B2 *= Adiv;
     C1 *= Adiv;
     
-    Jterm = k * k / (rho * A * h * (1.0 + sig0 * k)); // might be the same as connection division term
+    Jterm = k * k / (rho * A * (1.0 + sig0 * k)); // might be the same as connection division term
     moduleIsReady = true;
 }
 
@@ -86,8 +86,11 @@ void Pluck::calculate (std::vector<double*>& u)
     
     int cloc = Global::limit (floor (excitationLoc * N), 3, N - 4);
     double alpha = excitationLoc * N - cloc;
-    alpha = 0;
-
+//    alpha = 0;
+    std::vector<double> dummy = {0, 0, 0, 0};
+    Global::extrapolation(&dummy[0], 1, alpha, 1.0 / h);
+    double IJ = Global::interpolation (&dummy[0], 1, alpha);
+    
     // Interpolation
     // (Note that MATLAB uses a distribution rather than interpolation)
     uI = Global::interpolation (u[1], cloc, alpha);
@@ -124,11 +127,11 @@ void Pluck::calculate (std::vector<double*>& u)
         g = kappaG * sqrt (Kc * (alphaC + 1.0) / 2.0) * pow(eta, (alphaC - 1.0) / 2.0);
     }
     
-    v1 = uStar + pluckSgn * Jterm * (-g * g * 0.25 * etaPrev + psiPrev * g);
+    v1 = uStar + pluckSgn * Jterm * IJ * (-g * g * 0.25 * etaPrev + psiPrev * g);
     v2 = wStar - pluckSgn * k * k / (M * (1 + R * k / (2 * M))) * (-g * g * 0.25 * etaPrev + psiPrev * g);
     
-    a11 = 1.0 + Jterm * g * g * 0.25;
-    a12 = -Jterm * g * g * 0.25;
+    a11 = 1.0 + Jterm * IJ * g * g * 0.25;
+    a12 = -Jterm * IJ * g * g * 0.25;
     a21 = -g * g * k * k / (4.0 * M * (1.0 + R * k / (2.0 * M)));
     a22 = 1.0 + g * g * k * k / (4.0 * M * (1.0 + R * k / (2.0 * M)));
     
@@ -140,15 +143,19 @@ void Pluck::calculate (std::vector<double*>& u)
     if (pickIsAbove)
         etaNext = -etaNext;
     
-    double val = pluckSgn * Jterm * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
+    // Apply to states
+    double val = pluckSgn * connectionDivisionTerm * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
     Global::extrapolation (u[0], cloc, alpha, val);
     wNext = wNext - pluckSgn * k * k / (M * (1.0 + R * k / (2.0 * M))) * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
     
     psi = psiPrev + g * 0.5 * (etaNext - etaPrev);
     
     double force = 0.5 * (psi + psiPrev) * g;
-    if (force > forceLimit && !plucked)
+    if (force * N > forceLimitN && !plucked)
     {
+        if (force > 20)
+            DBG("wait");
+        std::cout << getID() << ": " << force << std::endl;
         Kc = 0;
         plucked = true;
         DBG("plucked!");
@@ -163,8 +170,18 @@ void Pluck::calculate (std::vector<double*>& u)
         pluckedCounter = 0;
         plucked = false;
         psi = 0;
-        pluckSgn = -pluckSgn;
-        pickIsAbove = !pickIsAbove;
+        psiPrev = 0;
+        if (w - uI < 0)
+        {
+            pickIsAbove = false;
+            pluckSgn = 1;
+        }
+        else
+        {
+            pickIsAbove = true;
+            pluckSgn = -1;
+
+        }
     }
 
     if (isnan(wNext))

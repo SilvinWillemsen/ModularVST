@@ -10,7 +10,7 @@
 
 #pragma once
 //#define USE_EIGEN // use overlapping connections (and therefore the eigen library) or not
-//#define CALC_ENERGY // calculate (and print) energy or not
+#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
 
 #include <JuceHeader.h>

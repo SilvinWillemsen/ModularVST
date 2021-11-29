@@ -22,7 +22,7 @@ ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parame
         is1D = false;
     addChangeListener (instrument);
     
-    exciterModule = std::make_shared<ExciterModule>();
+    exciterModule = std::make_shared<ExciterModule> (getID());
 }
 
 ResonatorModule::~ResonatorModule()
@@ -92,11 +92,11 @@ void ResonatorModule::setExcitationType (ExcitationType e)
     switch (e)
     {
         case pluck:
-            exciterModule = std::make_shared<Pluck> (N);
+            exciterModule = std::make_shared<Pluck> (getID(), N);
             initialiseExciterModule();
             break;
         case bow:
-            exciterModule = std::make_shared<Bow> (N);
+            exciterModule = std::make_shared<Bow> (getID(), N);
             initialiseExciterModule();
             exciterModule->setControlParameter (0.2);
             break;

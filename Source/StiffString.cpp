@@ -331,6 +331,8 @@ void StiffString::mouseDown (const MouseEvent& e)
         // excite
         case normalState:
         {
+            if (isExcitationActive())
+                return;
             excitationLoc = static_cast<float>(e.x) / static_cast<float>(getWidth());
             rcExcitationFlag = true;
             this->findParentComponentOfClass<Component>()->mouseDown(e);

@@ -18,7 +18,7 @@
 class ExciterModule : public HighResolutionTimer
 {
 public:
-    ExciterModule (int N = 0, ExciterModuleType exciterModuleType = noExciter);
+    ExciterModule (int ID, int N = 0, ExciterModuleType exciterModuleType = noExciter);
     virtual ~ExciterModule();
 
     ExciterModuleType getExciterModuleType() { return exciterModuleType; };
@@ -32,7 +32,7 @@ public:
     virtual double getEnergy() { return 0; };
 
 //    void setNumberOfIntervals (int n) { N = n; };
-    
+    int getID() { return ID; };
     void setForce (double force) { f = force; };
     
     double getControlParameter() { return controlParameter; };
@@ -63,5 +63,7 @@ protected:
     bool moduleIsReady = false;
     bool moduleIsCalculating = false;
     
+private:
+    int ID = -1;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExciterModule)
 };

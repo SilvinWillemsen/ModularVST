@@ -19,7 +19,7 @@
 class Pluck  :  public ExciterModule
 {
 public:
-    Pluck (int N);
+    Pluck (int ID, int N);
     ~Pluck() override;
     
     void drawExciter (Graphics& g) override;
@@ -60,7 +60,7 @@ private:
     int pluckedCounter = 0;
     int pluckedCounterLimit = 1000;
     int pluckSgn;
-    double forceLimit = 5;
+    double forceLimitN = 100;
     
     double maxForce = 0.1; // not working
     
