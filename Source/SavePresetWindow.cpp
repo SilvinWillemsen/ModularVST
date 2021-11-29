@@ -24,7 +24,9 @@ SavePresetWindow::SavePresetWindow(ChangeListener* audioProcessorEditor)
 
     filenameEditor = std::make_unique<TextEditor>();
     filenameEditor->addListener (this);
-    filenameEditor->setInputRestrictions (0, "qwertyuiopasdfghjklzxcvbnm1234567890_QWERTYUIOPASDFGHJKLZXCVBNM");
+    filenameEditor->setInputRestrictions (100, "qwertyuiopasdfghjklzxcvbnm1234567890_QWERTYUIOPASDFGHJKLZXCVBNM");
+    filenameEditor->setMultiLine(true, true);
+    
 
     addAndMakeVisible (filenameEditor.get());
     
