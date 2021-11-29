@@ -38,13 +38,15 @@ public:
     // Refresh
     void refresh();
     
-    // Add module window
+    // Windows
     void openAddModuleWindow();
     void openSavePresetWindow();
-    
+    void openLoadPresetWindow();
+
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
         
+//    std::function<void (const FileChooser&)> loadPresetCallBack (FileChooser& fileChooser);
 private:
     // Reference to the audio processor
     ModularVSTAudioProcessor& audioProcessor;
@@ -52,7 +54,7 @@ private:
     // Reference to the instruments
     std::vector<std::shared_ptr<Instrument>>& instruments;
     std::shared_ptr<Instrument> currentlyActiveInstrument = nullptr;
-
+    
     // Various GUI panels
     std::unique_ptr<ControlPanel> controlPanel;
     std::unique_ptr<ExcitationPanel> excitationPanel;
@@ -61,6 +63,7 @@ private:
     std::unique_ptr<AddModuleWindow> addModuleWindow;
     std::unique_ptr<SavePresetWindow> savePresetWindow;
     DialogWindow* dlgWindow;
+    std::unique_ptr<FileChooser> loadPresetWindow;
 
     // State of the application
     ApplicationState applicationState;

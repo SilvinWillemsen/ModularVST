@@ -98,8 +98,8 @@ public:
     void highlightInstrument (std::shared_ptr<Instrument> instrumentToHighlight);
     
     // Presets
-    PresetResult savePreset();
-    PresetResult loadPreset();
+    PresetResult savePreset (String& fileName);
+    PresetResult loadPreset (String& fileName);
     String getPresetPath()
     {
         return presetPath;

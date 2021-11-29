@@ -103,7 +103,8 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     if (Global::loadPresetAtStartUp)
     {
-        PresetResult res = loadPreset();
+        String fileName = "lastSavedPreset.xml";
+        PresetResult res = loadPreset (fileName);
         switch (res) {
             case applicationIsNotEmpty:
                 DBG ("Application is not empty.");
@@ -333,11 +334,11 @@ void ModularVSTAudioProcessor::highlightInstrument (std::shared_ptr<Instrument> 
 
 }
 
-PresetResult ModularVSTAudioProcessor::savePreset()
+PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
 {
     std::ofstream file;
 
-    const char* pathToUse = String (presetPath + "lastSavedPreset.xml").getCharPointer();
+    const char* pathToUse = String (presetPath + fileName + ".xml").getCharPointer();
     file.open (pathToUse);
     file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
@@ -476,14 +477,23 @@ PresetResult ModularVSTAudioProcessor::savePreset()
     return success;
 }
 
-PresetResult ModularVSTAudioProcessor::loadPreset()
+PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
 {
     // make sure that application is loaded from scratch
     if (instruments.size() != 0)
-        return applicationIsNotEmpty;
+    {
+        for (auto inst : instruments)
+        {
+            inst->removeAllResonators();
+        }
+        while (instruments.size() > 0)
+            instruments.erase(instruments.begin() + instruments.size() - 1);
+        
+//            return applicationIsNotEmpty;
+    }
     
     pugi::xml_document doc;
-    const char* pathToUse = String (presetPath + "lastSavedPreset.xml").getCharPointer();
+    const char* pathToUse = String (presetPath + fileName).getCharPointer();
     pugi::xml_parse_result result = doc.load_file (pathToUse);
     if (result.status != pugi::status_ok)
     {
@@ -506,6 +516,9 @@ PresetResult ModularVSTAudioProcessor::loadPreset()
     std::vector<std::vector<String>> connType;
 //    std::vector<int> resoNum;
 //    std::vector<int> connNum;
+    
+    initActions.clear();
+    initModuleTypes.clear();
     
     InOutInfo IOinfo (false); // for presets we do not want to do a default initialisation of the in- and outputs
     

@@ -40,6 +40,7 @@ void Instrument::paint (juce::Graphics& g)
         g.setColour (Colours::white);
         g.drawText ("Click on \"Add Resonator Module\" to add a module to this instrument!", getLocalBounds(), Justification::centred);
         g.drawRect (getLocalBounds().reduced(Global::margin, Global::margin), 1.0f);
+        return;
     }
 
     int moduleHeight = static_cast<float>(getHeight()) / resonators.size();
@@ -280,6 +281,18 @@ void Instrument::removeResonatorModule()
 
     resetResonatorIndices();
     resetTotalGridPoints();
+}
+
+void Instrument::removeAllResonators()
+{
+    for (auto res : resonators)
+        res->unReadyModule();
+    
+    resonators.clear();
+
+    currentlySelectedResonator = -1;
+    resonatorToRemove = nullptr;
+
 }
 
 void Instrument::resetResonatorIndices()

@@ -68,6 +68,7 @@ private:
     // 4 - Edit In- Outputs
     // 5 - Edit Connections
     // 6 - Save Preset
+    // 6 - Load Preset
 
     std::vector<std::shared_ptr<TextButton>> allButtons;
     
@@ -78,7 +79,8 @@ private:
     std::shared_ptr<TextButton> editInOutputsButton;                // 4
     std::shared_ptr<TextButton> editConnectionButton;               // 5
     std::shared_ptr<TextButton> savePresetButton;                   // 6
-    
+    std::shared_ptr<TextButton> loadPresetButton;                   // 7
+
     std::shared_ptr<Label> instructionsLabel1;
     std::shared_ptr<Label> instructionsLabel2;
     std::shared_ptr<Label> connectionLabel;

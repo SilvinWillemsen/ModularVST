@@ -41,6 +41,9 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
 
     savePresetButton = std::make_unique<TextButton> ("Save Preset");
     allButtons.push_back (savePresetButton);
+   
+    loadPresetButton = std::make_unique<TextButton> ("Load Preset");
+    allButtons.push_back (loadPresetButton);
 
     for (int i = 0; i < allButtons.size(); ++i)
     {
@@ -134,12 +137,19 @@ void ControlPanel::resized()
                 if (allButtons[i] == savePresetButton)
                 {
                     allButtons[i]->setBounds (area.removeFromRight (100));
+                    area.removeFromRight (Global::margin);
+
                 }
-                 else
+                else if (allButtons[i] == loadPresetButton)
+                {
+                    allButtons[i]->setBounds (area.removeFromRight (100));
+                    area.removeFromRight (Global::margin);
+                }
+                else
                 {
                     allButtons[i]->setBounds (area.removeFromLeft (100));
+                    area.removeFromLeft (Global::margin);
                 }
-                area.removeFromLeft (Global::margin);
 
             }
             else
@@ -222,6 +232,11 @@ void ControlPanel::buttonClicked (Button* button)
     {
         action = savePresetAction;
     }
+    else if (button == loadPresetButton.get())
+    {
+        action = loadPresetAction;
+    }
+
     sendChangeMessage();
 }
 
@@ -267,6 +282,7 @@ void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrumen
                 addResonatorModuleButton->setVisible (true);
                 editInOutputsButton->setVisible (true);
                 savePresetButton->setVisible (true);
+                loadPresetButton->setVisible (true);
 
                 if (currentlyActiveInstrument->getNumResonatorModules() != 0)
                 {

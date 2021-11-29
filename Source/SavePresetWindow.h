@@ -38,8 +38,9 @@ public:
     int getDlgPreset() { return dlgPreset; };
     void setDlgPreset(int d) { dlgPreset = d; };
 
+    String& getFileName() { return filename; };
 private:
-    std::string filename;
+    String filename;
     std::unique_ptr<TextButton> savePresetButton;
 
     Action action = noAction;

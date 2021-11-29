@@ -132,8 +132,10 @@ public:
     // Add/remove a resonator module
     void addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo& inOutInfo, bool advanced);
     void removeResonatorModule();
+    void removeAllResonators();
     void resetResonatorToRemove() { resonatorToRemove = nullptr; }; // just for visuals
     void resetResonatorIndices();
+    
     
     // function called from within the addResonatorModule function
     void resetTotalGridPoints();

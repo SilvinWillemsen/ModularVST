@@ -27,6 +27,8 @@ SavePresetWindow::SavePresetWindow(ChangeListener* audioProcessorEditor)
     filenameEditor->setInputRestrictions (0, "qwertyuiopasdfghjklzxcvbnm1234567890_QWERTYUIOPASDFGHJKLZXCVBNM");
 
     addAndMakeVisible (filenameEditor.get());
+    
+    addChangeListener (audioProcessorEditor);
 
     // initialise to string
 
@@ -77,23 +79,34 @@ void SavePresetWindow::buttonClicked (Button* button)
         std::cout << "Saving Preset" << std::endl;
         dlgPreset = 1;
         dw->exitModalState(1);
-        action = savePresetFromWindowAction;
-        sendChangeMessage();
         String name = proces.getPresetPath() + filename + ".xml";
         const char* c = name.toUTF8();
 
         struct stat buffer;
         auto status(stat(c, &buffer) == 0);
+        // If file with this name already exists...
         if (status) 
         {
-            String message = "File with a name \"" + filename + ".xml\" already exists, use different name.";
+            String message = "File with a name \"" + filename + ".xml\" already exists, would you like to overwrite existing preset?";
             //AlertWindow("File with this name exists", message, "QuestionIcon");
-            NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "File with this name exists", message, nullptr);
+            NativeMessageBox::showOkCancelBox (AlertWindow::AlertIconType::QuestionIcon, "File with this name exists", message, this, ModalCallbackFunction::create ([&] (int r)                                                         {
+                            if (r == 0)
+                            {
+                                String message = "Preset has not been saved";
+                                NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Preset not saved", message, nullptr);
+                            } else if (r == 1)
+                            {
+                                action = savePresetFromWindowAction;
+                                sendChangeMessage();
+                            }
+                                
+            }));
         }
-        else {
-            String message = "Preset \"" + filename + "\" has been saved";
-            //AlertWindow("File with this name exists", message, "QuestionIcon");
-            NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Saved", message, nullptr);
+        else
+        // Otherwise, save preset
+        {
+            action = savePresetFromWindowAction;
+            sendChangeMessage();
         }
         juce::Logger::getCurrentLogger()->outputDebugString("Debug");
     }

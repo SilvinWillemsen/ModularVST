@@ -331,11 +331,11 @@ void StiffString::mouseDown (const MouseEvent& e)
         // excite
         case normalState:
         {
+            this->findParentComponentOfClass<Component>()->mouseDown(e);
             if (isExcitationActive())
                 return;
             excitationLoc = static_cast<float>(e.x) / static_cast<float>(getWidth());
             rcExcitationFlag = true;
-            this->findParentComponentOfClass<Component>()->mouseDown(e);
             break;
         }
         case editInOutputsState: {}
@@ -365,7 +365,7 @@ void StiffString::mouseEnter (const MouseEvent& e)
             getExciterModule()->mouseEntered (e, getHeight());
             break;
         case bow:
-            getExciterModule()->setForce (0.5);
+            getExciterModule()->setForce (0.25);
             break;
             
         default:
