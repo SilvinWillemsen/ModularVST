@@ -100,7 +100,10 @@ public:
     // Presets
     PresetResult savePreset();
     PresetResult loadPreset();
-        
+    String getPresetPath()
+    {
+        return presetPath;
+    }
 private:
     //==============================================================================
     int fs;
