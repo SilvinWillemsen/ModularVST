@@ -85,7 +85,7 @@ void Pluck::calculate (std::vector<double*>& u)
     f = K * 0.5 * resHeight * 2.0 * (-controlLoc + 0.5) / (Global::stringVisualScaling);
     
     int cloc = Global::limit (floor (excitationLoc * N), 3, N - 4);
-    double alpha = excitationLoc * N - cloc;
+    double alpha = Global::limit (excitationLoc * N, 3, N - 4) - cloc;
 //    alpha = 0;
     std::vector<double> dummy = {0, 0, 0, 0};
     Global::extrapolation(&dummy[0], 1, alpha, 1.0 / h);
@@ -119,7 +119,7 @@ void Pluck::calculate (std::vector<double*>& u)
         if (pickIsAbove)
             etaStar = -etaStar;
     
-        if (etaStar - etaPrev == 0)
+        if (floor(100000000 * (etaStar - etaPrev)) == 0)
             g = 0;
         else
             g = -2 * psiPrev / (etaStar - etaPrev);
@@ -151,9 +151,19 @@ void Pluck::calculate (std::vector<double*>& u)
     psi = psiPrev + g * 0.5 * (etaNext - etaPrev);
     
     double force = 0.5 * (psi + psiPrev) * g;
+    if (force > 100)
+    {
+        wNext = 0;
+        w = 0;
+        wPrev = 0;
+        psi = 0;
+        psiPrev = 0;
+        std::cout << "States are set to zero" << std::endl;
+        setStatesToZero();
+    }
     if (force * N > forceLimitN && !plucked)
     {
-        if (force > 20)
+        if (force > 100)
             DBG("wait");
         std::cout << getID() << ": " << force << std::endl;
         Kc = 0;

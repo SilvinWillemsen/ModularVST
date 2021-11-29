@@ -22,7 +22,7 @@
     -initialise module
 */
 
-class ResonatorModule  : public juce::Component, public ChangeBroadcaster//, public Timer
+class ResonatorModule  : public juce::Component, public ChangeBroadcaster, public ChangeListener//, public Timer
 {
 public:
     ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, bool advanced, int fs, int ID, ChangeListener* instrument, InOutInfo inOutInfo = InOutInfo(), BoundaryCondition bc = clampedBC);
@@ -126,6 +126,12 @@ public:
     bool isChildOfHighlightedInstrument() { return childOfHighlightedInstrument; };
     void setChildOfHighlightedInstrument (bool c) { childOfHighlightedInstrument = c; };
     
+    void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
+    
+    Action getAction() { return action; };
+    void setAction (Action a) { action = a; };
+
+    
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -178,6 +184,8 @@ private:
     bool is1D;
     int mouseLoc = -1;
 
+    Action action = noAction;
+    
     double connectionDivisionTerm = -1;
     ModifierKeys modifier; // modifier for connections (left / right mouse click + click-n-drag with ctrl)
     

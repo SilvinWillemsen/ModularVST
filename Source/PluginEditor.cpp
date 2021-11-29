@@ -280,6 +280,9 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     case refreshEditorAction:
                         refresh();
                         break;
+                    case setStatesToZeroAction:
+                        audioProcessor.setStatesToZero (true);
+                        break;
                     case noAction:
                         break;
                     default:

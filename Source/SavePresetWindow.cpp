@@ -88,12 +88,12 @@ void SavePresetWindow::buttonClicked (Button* button)
         {
             String message = "File with a name \"" + filename + ".xml\" already exists, use different name.";
             //AlertWindow("File with this name exists", message, "QuestionIcon");
-            NativeMessageBox::showMessageBox(AlertWindow::AlertIconType::QuestionIcon, "File with this name exists", message, nullptr);
+            NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "File with this name exists", message, nullptr);
         }
         else {
             String message = "Preset \"" + filename + "\" has been saved";
             //AlertWindow("File with this name exists", message, "QuestionIcon");
-            NativeMessageBox::showMessageBox(AlertWindow::AlertIconType::QuestionIcon, "Saved", message, nullptr);
+            NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Saved", message, nullptr);
         }
         juce::Logger::getCurrentLogger()->outputDebugString("Debug");
     }

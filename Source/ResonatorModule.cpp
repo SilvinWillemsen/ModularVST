@@ -23,6 +23,8 @@ ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parame
     addChangeListener (instrument);
     
     exciterModule = std::make_shared<ExciterModule> (getID());
+    exciterModule->addChangeListener (this);
+
 }
 
 ResonatorModule::~ResonatorModule()
@@ -100,10 +102,17 @@ void ResonatorModule::setExcitationType (ExcitationType e)
             initialiseExciterModule();
             exciterModule->setControlParameter (0.2);
             break;
-    }    
+    }
+    exciterModule->addChangeListener (this);
+
 }
 
-//void ResonatorModule::timerCallback()
-//{
-//    
-//}
+void ResonatorModule::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
+{
+    if (changeBroadcaster == exciterModule.get())
+        if (exciterModule->getAction() == setStatesToZeroAction)
+        {
+            sendChangeMessage();
+            exciterModule->setAction (noAction);
+        }
+}

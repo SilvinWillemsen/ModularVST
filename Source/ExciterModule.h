@@ -15,7 +15,7 @@
 //==============================================================================
 /*
 */
-class ExciterModule : public HighResolutionTimer
+class ExciterModule : public HighResolutionTimer, public ChangeBroadcaster
 {
 public:
     ExciterModule (int ID, int N = 0, ExciterModuleType exciterModuleType = noExciter);
@@ -50,6 +50,10 @@ public:
 
     bool isModuleReady() { return moduleIsReady; };
     
+    void setStatesToZero() { action = setStatesToZeroAction; sendChangeMessage(); };
+    Action getAction() { return action; };
+    void setAction (Action a) { action = a; };
+    
 protected:
     ExciterModuleType exciterModuleType;
     double excitationLoc = 0.5;
@@ -65,5 +69,7 @@ protected:
     
 private:
     int ID = -1;
+    Action action = noAction;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExciterModule)
 };

@@ -532,6 +532,16 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
         if (res.get() == changeBroadcaster)
         {
             switch (applicationState) {
+                case normalState:
+                {
+                    if (res->getAction() == setStatesToZeroAction)
+                    {
+                        action = setStatesToZeroAction;
+                        sendChangeMessage();
+                        res->setAction (noAction);
+                    }
+                    break;
+                }
                 case moveConnectionState:
                 {
                     if (connectionToMoveIsFirst)

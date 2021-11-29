@@ -52,7 +52,8 @@ enum Action
     exciteAction,
     changeExcitationAction,
     
-    refreshEditorAction
+    refreshEditorAction,
+    setStatesToZeroAction
     
 };
 
