@@ -54,6 +54,8 @@ public:
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
     
+    virtual void saveOutput() {};
+    
 protected:
     ExciterModuleType exciterModuleType;
     double excitationLoc = 0.5;
@@ -61,7 +63,7 @@ protected:
 
     int N = 0;
     double f = 1;
-    double controlParameter = 0; // parameter to be controlled by the application. Could be bow velocity fx.
+    double controlParameter = 6; // parameter to be controlled by the application. Could be bow velocity fx.
     
     long calcCounter = 0;
     bool moduleIsReady = false;

@@ -272,6 +272,8 @@ void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrumen
     if (currentlyActiveInstrument == nullptr)
     {
         addInstrumentButton->setVisible (true);
+        savePresetButton->setVisible (true);
+        loadPresetButton->setVisible (true);
     }
     else
     {
@@ -280,13 +282,13 @@ void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrumen
             case normalState:
                 addInstrumentButton->setVisible (true);
                 addResonatorModuleButton->setVisible (true);
-                editInOutputsButton->setVisible (true);
                 savePresetButton->setVisible (true);
                 loadPresetButton->setVisible (true);
 
                 if (currentlyActiveInstrument->getNumResonatorModules() != 0)
                 {
                     editResonatorModuleButton->setVisible (true);
+                    editInOutputsButton->setVisible (true);
                 }
                 if (currentlyActiveInstrument->getNumResonatorModules() > 1)
                 {

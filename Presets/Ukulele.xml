@@ -1,0 +1,16 @@
+<App>
+	 <Instrument id="i0">
+	 	 <Resonator id="i0_r0" type="Stiff_String">
+	 	 	 <PARAM id="i0_r0_L" value="0.6604"/>
+	 	 	 <PARAM id="i0_r0_T" value="100"/>
+	 	 	 <PARAM id="i0_r0_rho" value="1140"/>
+	 	 	 <PARAM id="i0_r0_A" value="1.2668e-06"/>
+	 	 	 <PARAM id="i0_r0_E" value="1e+09"/>
+	 	 	 <PARAM id="i0_r0_I" value="1.277e-13"/>
+	 	 	 <PARAM id="i0_r0_sig0" value="1"/>
+	 	 	 <PARAM id="i0_r0_sig1" value="0.005"/>
+	 	 	 <Output id="i0_r0_o0" channel="2" loc="4"/>
+	 	 	 <Output id="i0_r0_o1" channel="2" loc="99"/>
+	 	 </Resonator>
+	 </Instrument>
+</App>

@@ -100,7 +100,8 @@ public:
     ModifierKeys getModifier() { return modifier; };
 
     NamedValueSet& getParameters() { return parameters; }; // for presets
-    
+    NamedValueSet getNonAdvancedParameters() { return nonAdvancedParameters; };
+
     void changeTotInputs (bool increment) { if (increment) ++totInputs; else --totInputs; };
     void changeTotOutputs (bool increment) { if (increment) ++totOutputs; else --totOutputs; };
 
@@ -131,7 +132,14 @@ public:
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
 
-    
+    virtual void saveOutput() {};
+    bool isDoneRecording() {
+        if (doneRecording)
+            std::cout << "donerecording = true" << std::endl;
+        std::cout << "Done recording? (within res) " << doneRecording << std::endl;
+        return doneRecording;
+ };
+
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -175,7 +183,9 @@ protected:
     bool alreadyExcited = false; // for hover excitation
     
     long calcCounter = 0;
-    
+    NamedValueSet nonAdvancedParameters;
+    bool doneRecording = false;
+
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised
@@ -190,7 +200,7 @@ private:
     ModifierKeys modifier; // modifier for connections (left / right mouse click + click-n-drag with ctrl)
     
     NamedValueSet parameters;
-
+    
     int totInputs = 0;
     int totOutputs = 0;
     
@@ -199,5 +209,6 @@ private:
     bool excitationActive = (Global::bowAtStartup || Global::pluckAtStartup) ? true : false;
     
     bool childOfHighlightedInstrument = false;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };

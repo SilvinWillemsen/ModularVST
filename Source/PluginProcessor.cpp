@@ -103,7 +103,14 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     if (Global::loadPresetAtStartUp)
     {
-        String fileName = "lastSavedPreset.xml";
+        File lastSavedPresetFile (presetPath + "lastPreset.txt");
+        if (!lastSavedPresetFile.exists())
+        {
+            DBG("There is no last saved preset!");
+            return;
+        }
+//        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
+        String fileName = lastSavedPresetFile.loadFileAsString();
         PresetResult res = loadPreset (fileName);
         switch (res) {
             case applicationIsNotEmpty:
@@ -191,6 +198,8 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     {
         for (auto inst : instruments)
             inst->setStatesToZero();
+        if (applicationState == normalState)
+            setToZero = false;
         return;
     }
     
@@ -215,9 +224,18 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 #ifdef CALC_ENERGY
             inst->calcTotalEnergy();
 //#ifdef CALC_ENERGY
-            std::cout << "Energy: " << inst->getTotalEnergy() << std::endl;
+            std::cout << "Energy change: " << inst->getTotalEnergy() << std::endl;
 //#endif
 
+#endif
+#ifdef SAVE_OUTPUT
+            inst->saveOutput();
+            if (inst == instruments[0])
+                ++counter;
+//            if (counter > Global::samplesToRecord + buffer.getNumSamples())
+//            {
+//                exit(0);
+//            }
 #endif
             inst->update();
 
@@ -337,7 +355,6 @@ void ModularVSTAudioProcessor::highlightInstrument (std::shared_ptr<Instrument> 
 PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
 {
     std::ofstream file;
-
     const char* pathToUse = String (presetPath + fileName + ".xml").getCharPointer();
     file.open (pathToUse);
     file << "<App" << ">" << "\n";
@@ -473,6 +490,12 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
     }
     file << "</App" << ">" << "\n";
     file.close();
+    
+    // save path of last saved preset
+    std::ofstream lastSavedPreset;
+    lastSavedPreset.open (String (presetPath + "lastPreset.txt").getCharPointer());
+    lastSavedPreset << String (fileName + ".xml");
+    lastSavedPreset.close();
     
     return success;
 }
@@ -782,5 +805,10 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
                 break;
         }
     }
+    // save path of last loaded preset
+    std::ofstream lastLoadedPreset;
+    lastLoadedPreset.open (String (presetPath + "lastPreset.txt").getCharPointer());
+    lastLoadedPreset << String (fileName);
+    lastLoadedPreset.close();
     return success;
 }

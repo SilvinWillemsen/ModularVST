@@ -20,21 +20,27 @@ Pluck::Pluck (int ID, int N) : ExciterModule (ID, N, pluckExciter)
     K = 1e4;
     M = 0.01;
     R = 1;
-    Kc = 1e8;
+    Kc = 1e6;
     KcOrig = Kc;
     alphaC = 1.3;
     
 if (Global::pluckAtStartup)
     {
-        wNext = 0;
-        w = -maxForce / K; // might not work anymore
+        double extForce = 1;
+        wNext = -extForce / K;
+        w = -extForce / K;
         wPrev = w;
         excitationLoc = 0.5;
-        controlLoc = 0.25;
+        controlLoc = 0;
+        resHeight = extForce * (Global::stringVisualScaling) / (K * (-controlLoc + 0.5));
         pluckSgn = 1;
         pickIsAbove = false;
         moduleIsCalculating = true;
     }
+#ifdef SAVE_OUTPUT
+    statesSave.open ("statesSavePluck.csv");
+#endif
+
 }
 
 Pluck::~Pluck()
@@ -45,16 +51,34 @@ void Pluck::drawExciter (Graphics& g)
 {
     Rectangle<int> bounds = g.getClipBounds();
     g.setColour(Colours::white.withAlpha(0.5f));
-    g.drawEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth,
+    float startLoc = excitationLoc * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / N * getControlParameter() * 0.5;
+    float pickWidth = getControlParameter() * static_cast<float>(bounds.getWidth()) / N;
+    
+    g.drawEllipse (startLoc - Global::excitationVisualWidth,
                    controlLoc * bounds.getHeight() - Global::excitationVisualWidth,
-                   Global::excitationVisualWidth * 2,
+                   pickWidth + 2.0 * Global::excitationVisualWidth,
                    Global::excitationVisualWidth * 2, 1);
 
-    g.setColour(Colours::yellow);
-    g.fillEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
-                   -w * Global::stringVisualScaling + 0.5 * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
-                   Global::excitationVisualWidth,
-                   Global::excitationVisualWidth);
+    ColourGradient cg (Colours::yellow.withAlpha(0.0f), startLoc, 0.0f,
+                       Colours::yellow.withAlpha(0.0f), startLoc + pickWidth, 0.0f, false);
+    cg.addColour(0.5, Colours::yellow.withAlpha(0.8f));
+    g.setGradientFill (cg);
+
+    g.fillRoundedRectangle(excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
+                           -w * Global::stringVisualScaling * bounds.getHeight() + 0.5 * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
+                           Global::excitationVisualWidth,
+                           Global::excitationVisualWidth, Global::excitationVisualWidth);
+//    g.setColour(Colours::white);
+//    Path cosine;
+//    cosine.startNewSubPath ((cLoc + alpha - 0.5 * getControlParameter()) / N * bounds.getWidth(), bounds.getHeight() - ItoDraw[0] * 500);
+//    for (int i = 1; i < ItoDraw.size(); ++i)
+//        cosine.lineTo ((cLoc + alpha + i - 0.5 * getControlParameter()) / N * bounds.getWidth(), bounds.getHeight() - ItoDraw[i] * 500);
+//    g.strokePath(cosine, PathStrokeType(2.0f));
+//    g.fillEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
+//                   -w * Global::stringVisualScaling + 0.5 * bounds.getHeight()
+//                   - static_cast<float>(bounds.getWidth()) / N * getControlParameter() * 0.5,
+//                   getControlParameter() * static_cast<float>(bounds.getWidth()) / N,
+//                   Global::excitationVisualWidth);
 }
 
 void Pluck::initialise (NamedValueSet& parametersFromResonator)
@@ -65,7 +89,8 @@ void Pluck::initialise (NamedValueSet& parametersFromResonator)
     k = *parametersFromResonator.getVarPointer ("k");
     sig0 = *parametersFromResonator.getVarPointer ("sig0");
     connectionDivisionTerm = *parametersFromResonator.getVarPointer ("connDivTerm");
-    resHeight = *parametersFromResonator.getVarPointer ("resHeight");
+    if (!Global::pluckAtStartup)
+        resHeight = *parametersFromResonator.getVarPointer ("resHeight");
     B1 = 2.0 - k * k * K/M;
     B2 = k * k / M;
     C1 = -(1.0 - R * k / (2.0 * M));
@@ -76,29 +101,71 @@ void Pluck::initialise (NamedValueSet& parametersFromResonator)
     B2 *= Adiv;
     C1 *= Adiv;
     
-    Jterm = k * k / (rho * A * (1.0 + sig0 * k)); // might be the same as connection division term
+    Jterm = k * k / (rho * A * (1.0 + sig0 * k)); // connection division term without division by h
+    
+    controlParameter = 6;
+    
     moduleIsReady = true;
 }
 
 void Pluck::calculate (std::vector<double*>& u)
 {
-    f = K * 0.5 * resHeight * 2.0 * (-controlLoc + 0.5) / (Global::stringVisualScaling);
+    f = K * (-controlLoc + 0.5) / (Global::stringVisualScaling);
     
-    int cloc = Global::limit (floor (excitationLoc * N), 3, N - 4);
-    double alpha = Global::limit (excitationLoc * N, 3, N - 4) - cloc;
-//    alpha = 0;
-    std::vector<double> dummy = {0, 0, 0, 0};
-    Global::extrapolation(&dummy[0], 1, alpha, 1.0 / h);
-    double IJ = Global::interpolation (&dummy[0], 1, alpha);
+    cLoc = 0;
+    alpha = 0;
+    double IJ = 0;
+    width = getControlParameter();
+    singlePoint = width < 2.0;
+    if (singlePoint)
+    {
+        cLoc = Global::limit (floor (excitationLoc * N), 3, N - 4);
+        alpha = Global::limit (excitationLoc * N, 3, N - 4) - cLoc;
+        std::vector<double> dummy = {0, 0, 0, 0};
+        Global::extrapolation(&dummy[0], 1, alpha, 1.0 / h);
+        IJ = Global::interpolation (&dummy[0], 1, alpha);
+        
+        // Interpolation
+        // (Note that MATLAB uses a distribution rather than interpolation)
+        uStar = Global::interpolation (u[0], cLoc, alpha);
+        uI = Global::interpolation (u[1], cLoc, alpha);
+        uIPrev = Global::interpolation (u[2], cLoc, alpha);
+    } else {
+        cLoc = Global::limit (floor (excitationLoc * N), ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1);
+        alpha = Global::limit (excitationLoc * N, ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1) - cLoc;
+
+        I.resize (width + (alpha == 0 ? 1 : 0), 0);
+
+        uStar = 0;
+        uI = 0;
+        uIPrev = 0;
+        double totI = 0;
+        for (int i = 0; i < I.size(); ++i)
+        {
+//            I[i] = 1;
+            I[i] = 0.5 * (1 - cos(2.0 * double_Pi * (i+alpha) / width)); // check eq here
+            totI += I[i];
+        }
+        // normalise
+        for (int i = 0; i < I.size(); ++i)
+        {
+            I[i] /= totI;
+        }
+        ItoDraw = I;
+        for (int i = 0; i < I.size(); ++i)
+        {
+            IJ += I[i] * I[i] / h;
+            int idx = cLoc + i - floor(width) * 0.5;
+            uStar += I[i] * u[0][idx];
+            uI += I[i] * u[1][idx];
+            uIPrev += I[i] * u[2][idx];
+        }
+//        std::cout << std::endl;
+    }
     
-    // Interpolation
-    // (Note that MATLAB uses a distribution rather than interpolation)
-    uI = Global::interpolation (u[1], cloc, alpha);
-    uIPrev = Global::interpolation (u[2], cloc, alpha);
     eta = w - uI;
     etaPrev = wPrev - uIPrev;
 
-    uStar = Global::interpolation (u[0], cloc, alpha);
     wNext = B1 * w + C1 * wPrev + B2 * f;
     wStar = wNext;
       
@@ -119,14 +186,14 @@ void Pluck::calculate (std::vector<double*>& u)
         if (pickIsAbove)
             etaStar = -etaStar;
     
-        if (floor(100000000 * (etaStar - etaPrev)) == 0)
+        if (floor(1000000000 * (etaStar - etaPrev)) == 0)
             g = 0;
         else
             g = -2 * psiPrev / (etaStar - etaPrev);
     } else {
         g = kappaG * sqrt (Kc * (alphaC + 1.0) / 2.0) * pow(eta, (alphaC - 1.0) / 2.0);
     }
-    
+
     v1 = uStar + pluckSgn * Jterm * IJ * (-g * g * 0.25 * etaPrev + psiPrev * g);
     v2 = wStar - pluckSgn * k * k / (M * (1 + R * k / (2 * M))) * (-g * g * 0.25 * etaPrev + psiPrev * g);
     
@@ -138,19 +205,29 @@ void Pluck::calculate (std::vector<double*>& u)
     oOdet = 1.0 / (a11 * a22 - a12 * a21);
     solut1 = (v1 * a22 - v2 * a12) * oOdet;
     solut2 = (-v1 * a21 + v2 * a11) * oOdet;
-
+    
     etaNext = solut2 - solut1;
     if (pickIsAbove)
         etaNext = -etaNext;
     
     // Apply to states
     double val = pluckSgn * connectionDivisionTerm * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
-    Global::extrapolation (u[0], cloc, alpha, val);
+    
+    if (singlePoint)
+    {
+        Global::extrapolation (u[0], cLoc, alpha, val);
+    } else {
+        for (int i = 0; i < I.size(); ++i)
+        {
+            int idx = cLoc + i - floor(width) * 0.5;
+            u[0][idx] += pluckSgn * connectionDivisionTerm * I[i] * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
+        }
+    }
     wNext = wNext - pluckSgn * k * k / (M * (1.0 + R * k / (2.0 * M))) * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
     
     psi = psiPrev + g * 0.5 * (etaNext - etaPrev);
-    
     double force = 0.5 * (psi + psiPrev) * g;
+
     if (force > 100)
     {
         wNext = 0;
@@ -161,10 +238,8 @@ void Pluck::calculate (std::vector<double*>& u)
         std::cout << "States are set to zero" << std::endl;
         setStatesToZero();
     }
-    if (force * N > forceLimitN && !plucked)
+    if (force / h > forceLimitOh && !plucked)
     {
-        if (force > 100)
-            DBG("wait");
         std::cout << getID() << ": " << force << std::endl;
         Kc = 0;
         plucked = true;
@@ -256,7 +331,7 @@ void Pluck::mouseEntered (const MouseEvent& e, int height)
         pluckSgn = -1;
     }
     
-    wNext = 0.5 * height * 2.0 * (-controlLoc + 0.5) / (Global::stringVisualScaling);
+    wNext = (-controlLoc + 0.5) / (Global::stringVisualScaling);
 //    wNext = -(yLoc - 0.5) / (0.5 * K / (M * maxForce));
     w = wNext;
     wPrev = w;
@@ -272,4 +347,14 @@ void Pluck::mouseEntered (const MouseEvent& e, int height)
 void Pluck::mouseExited()
 {
     moduleIsCalculating = false;
+}
+
+void Pluck::saveOutput()
+{
+#ifdef SAVE_OUTPUT
+    statesSave << wNext << ", " << w << ", " << wPrev << ", " << psi << ", " << psiPrev << ", " << g << ";\n";
+    ++counter;
+    if (counter >= Global::samplesToRecord)
+        statesSave.close();
+#endif
 }

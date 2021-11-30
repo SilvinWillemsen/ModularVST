@@ -38,7 +38,7 @@ public:
     
     int getNumPoints() override;
     int getNumIntervals() override { return N; } ;
-    
+        
     // interaction
     void mouseEnter (const MouseEvent& e) override;
     void mouseExit (const MouseEvent& e) override;
@@ -56,6 +56,8 @@ public:
     
     void initialiseExciterModule() override;
     
+    void saveOutput() override;
+    
 private:
     
     // Model parameters
@@ -72,6 +74,12 @@ private:
     double prevLoc = 0;
     float excitationLoc = 0.5;
     float yLoc = 0;
+    
+#ifdef SAVE_OUTPUT
+    std::ofstream statesSave;
+    int counter = 0;
+    bool doneRecording = false;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StiffString)
 };

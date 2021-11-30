@@ -56,7 +56,7 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
     D = E * H * H * H / (12.0 * (1 - nu * nu));
     kappaSq =  D / (rho * H);
 
-    visualScaling = 100;
+    visualScaling = 10000;
         
     // Initialise paramters
     initialise (fs);

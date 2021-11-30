@@ -38,6 +38,7 @@ public:
     NamedValueSet& getParameters() { return coefficientList->getParameters(); };
     
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    CoefficientList* getCoefficientList() { return coefficientList.get(); };
     
     // Texteditor
     void textEditorTextChanged (TextEditor&) override;

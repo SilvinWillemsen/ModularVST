@@ -71,6 +71,9 @@ void Bow::initialise (NamedValueSet& parametersFromResonator)
     b1 = 2.0 / (k * k);
     b2 = (2.0 * sig1) / (k * h * h);
     prevVb = 0;
+    
+    controlParameter = 0.2;
+
 
 }
 
