@@ -77,11 +77,11 @@ protected:
 
     int excitationWidth = 5;
     
-//#ifdef SAVE_OUTPUT
+#ifdef SAVE_OUTPUT
     std::ofstream statesSave;
     int samplesToRecord = 100;
     int counter = 0;
-//#endif
+#endif
 //    typedef void (StiffMembrane::*updateEq)();
 //    updateEq test;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StiffMembrane)

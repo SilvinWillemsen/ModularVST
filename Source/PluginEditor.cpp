@@ -42,7 +42,6 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         
     // At what rate to refresh the states of the system
     startTimerHz (15);
-    
     // What is the size of the editor
     setSize (1200, 600);
 }
@@ -336,6 +335,16 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
 {
     addAndMakeVisible (addModuleWindow.get());
     addModuleWindow->triggerComboBox(); // to prevent advanced parameters from appearing when non-advanced parameters should be shown
+    if (currentlyActiveInstrument->getCurrentlySelectedResonator() != nullptr)
+    {
+        if (addModuleWindow->isAdvanced())
+        {
+            addModuleWindow->getCoefficientList()->setParameters (currentlyActiveInstrument->getCurrentlySelectedResonator()->getParameters());
+        } else {
+            const NamedValueSet nonAdvancedParameters = currentlyActiveInstrument->getCurrentlySelectedResonator()->getNonAdvancedParameters();
+            addModuleWindow->getCoefficientList()->setParameters (nonAdvancedParameters);
+        }
+    }
     dlgWindow->showDialog ("Add Resonator Module", addModuleWindow.get(), this, getLookAndFeel().findColour (ResizableWindow::backgroundColourId), true);
 }
 

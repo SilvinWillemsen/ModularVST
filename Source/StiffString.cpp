@@ -31,7 +31,12 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
         I = *parameters.getVarPointer ("I");
         sig0 = *parameters.getVarPointer ("sig0");
         sig1 = *parameters.getVarPointer ("sig1");
+        
+        nonAdvancedParameters.set("f0", sqrt(T / (rho * A) / (2 * L)));
+        nonAdvancedParameters.set("r", sqrt(A / double_Pi));
+        
     } else {
+        nonAdvancedParameters = parameters;
         // CALCULATE PARAMETERS FROM SIMPLE PARAMETERS
         if (rmt == stiffString)
         {
@@ -106,6 +111,10 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
         getExciterModule()->setExciterModuleType (pluckExciter);
         initialiseExciterModule();
     }
+    
+#ifdef SAVE_OUTPUT
+    statesSave.open ("statesSaveString.csv");
+#endif
     
 //    excite(); // start by exciting
 }
@@ -215,7 +224,7 @@ Path StiffString::visualiseState (Graphics& g)
     Path stringPath;
     
     // Start path
-    stringPath.startNewSubPath (0, -u[1][0] * visualScaling + stringBoundaries);
+    stringPath.startNewSubPath (0, -u[1][0] * visualScaling * getHeight() + stringBoundaries);
     
     double spacing = getWidth() / static_cast<double>(N);
     double x = spacing;
@@ -223,7 +232,7 @@ Path StiffString::visualiseState (Graphics& g)
     for (int l = 1; l <= N; l++)
     {
         // Needs to be -u, because a positive u would visually go down
-        float newY = -u[1][l] * visualScaling + stringBoundaries;
+        float newY = -u[1][l] * visualScaling * getHeight() + stringBoundaries;
         
         // if we get NAN values, make sure that we don't get an exception
         if (isnan(newY))
@@ -246,8 +255,10 @@ void StiffString::resized()
 void StiffString::calculate()
 {
     for (int l = 2; l < N-1; ++l) // clamped boundaries
+    {
         u[0][l] = B0 * u[1][l] + B1 * (u[1][l + 1] + u[1][l - 1]) + B2 * (u[1][l + 2] + u[1][l - 2])
                 + C0 * u[2][l] + C1 * (u[2][l + 1] + u[2][l - 1]);
+    }
     
     // simply supported boundary conditions
     if (bc == simplySupportedBC)
@@ -255,7 +266,7 @@ void StiffString::calculate()
         u[0][1] = Bss * u[1][1] + B1 * u[1][2] + B2 * u[1][3] + C0 * u[2][1] + C1 * u[2][2];
         u[0][N-1] = Bss * u[1][N-1] + B1 * u[1][N-2] + B2 * u[1][N-3] + C0 * u[2][N-1] + C1 * u[2][N-2];
     }
-    
+
 //    if (getExcitationType() == bow)
 //    {
 //        double loc = Global::limit (excitationLoc * N, clampedBC ? 3 : 2, clampedBC ? N-4 : N-5);
@@ -365,7 +376,7 @@ void StiffString::mouseEnter (const MouseEvent& e)
             getExciterModule()->mouseEntered (e, getHeight());
             break;
         case bow:
-            getExciterModule()->setForce (0.25);
+            getExciterModule()->setForce (40.0 * (rho * A));
             break;
             
         default:
@@ -518,4 +529,21 @@ void StiffString::initialiseExciterModule()
             
     }
     getExciterModule()->initialise (parametersFromResonator);
+}
+
+void StiffString::saveOutput()
+{
+#ifdef SAVE_OUTPUT
+    for (int l = 0; l <= N; ++l)
+        statesSave << u[0][l] << ", ";
+    
+    statesSave << "\n";
+    ++counter;
+    getExciterModule()->saveOutput();
+    if (counter >= Global::samplesToRecord)
+    {
+        statesSave.close();
+        doneRecording = true;
+    }
+#endif
 }

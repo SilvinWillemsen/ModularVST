@@ -71,7 +71,7 @@ void Instrument::paint (juce::Graphics& g)
         {
             xLoc1 = getWidth() * static_cast<float>(CI[i].loc1) / CI[i].res1->getNumIntervals();
             yLoc1 = (0.5 + CI[i].res1->getID()) * moduleHeight
-                - CI[i].res1->getStateAt (CI[i].loc1, 1) * CI[i].res1->getVisualScaling();
+                - CI[i].res1->getStateAt (CI[i].loc1, 1) * CI[i].res1->getVisualScaling() * moduleHeight;
             g.drawEllipse (xLoc1 - Global::connRadius, yLoc1 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
             if (&CI[i] == currentlyActiveConnection  && applicationState != normalState)
@@ -122,7 +122,7 @@ void Instrument::paint (juce::Graphics& g)
         {
             xLoc2 = getWidth() * static_cast<float>(CI[i].loc2) / CI[i].res2->getNumIntervals();
             yLoc2 = (0.5 + CI[i].res2->getID()) * moduleHeight
-                - CI[i].res2->getStateAt (CI[i].loc2, 1) * CI[i].res2->getVisualScaling();
+                - CI[i].res2->getStateAt (CI[i].loc2, 1) * CI[i].res2->getVisualScaling() * moduleHeight;
             g.drawEllipse (xLoc2 - Global::connRadius, yLoc2 - Global::connRadius,
                2.0 * Global::connRadius, 2.0 * Global::connRadius, 2.0);
             
@@ -235,6 +235,8 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
 
     resonators.push_back (newResonatorModule);
     addAndMakeVisible (resonators[resonators.size()-1].get(), 0);
+    currentlySelectedResonator = newResonatorModule;
+    newResonatorModule->setExcitationType (excitationType);
     resetTotalGridPoints();
 }
 
@@ -275,7 +277,7 @@ void Instrument::removeResonatorModule()
 //    resonators[currentlySelectedResonator]->setVisible (false);
 //    resonators[currentlySelectedResonator]->repaint();
     resonators.erase (resonators.begin() + resonatorToRemove->getID());
-    currentlySelectedResonator = -1;
+    currentlySelectedResonator = nullptr;
     resonatorToRemove = nullptr;
     shouldRemoveResonatorModule = false;
 
@@ -290,7 +292,7 @@ void Instrument::removeAllResonators()
     
     resonators.clear();
 
-    currentlySelectedResonator = -1;
+    currentlySelectedResonator = nullptr;
     resonatorToRemove = nullptr;
 
 }
@@ -474,8 +476,18 @@ void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& w
 {
 //    std::cout << wheel.deltaY << std::endl;
     for (auto res : resonators)
-        if (res->getExcitationType() == bow)
-            res->getExciterModule()->setControlParameter (Global::limit (res->getExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
+    {
+        switch (res->getExcitationType()) {
+            case bow:
+                res->getExciterModule()->setControlParameter (Global::limit (res->getExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
+                break;
+            case pluck:
+                res->getExciterModule()->setControlParameter (Global::limit (res->getExciterModule()->getControlParameter() - wheel.deltaY, 1, 10));
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 //void Instrument::mouseMove (const MouseEvent& e)
@@ -495,6 +507,9 @@ void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& w
 
 void Instrument::setApplicationState (ApplicationState a)
 {
+    // if going back to the normal state without having finished making the connection
+    if (applicationState == firstConnectionState && a == normalState)
+        CI.pop_back();
     applicationState = a;
     switch (a) {
         case normalState:
@@ -528,10 +543,18 @@ void Instrument::setApplicationState (ApplicationState a)
 
 void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
-    for (int i = 0; i < resonators.size(); ++i)
-        if (resonators[i].get() == changeBroadcaster)
-            currentlySelectedResonator = i;
-    
+    for (auto res : resonators)
+        if (res.get() == changeBroadcaster)
+        {
+            currentlySelectedResonator = res;
+            if (res->getAction() == setStatesToZeroAction)
+            {
+                action = setStatesToZeroAction;
+                sendChangeMessage();
+                res->setAction (noAction);
+            }
+            break;
+        }
     // do not edit if this is not the currently highlighted instrument
     if (!highlightedInstrument)
         return;
@@ -545,16 +568,6 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
         if (res.get() == changeBroadcaster)
         {
             switch (applicationState) {
-                case normalState:
-                {
-                    if (res->getAction() == setStatesToZeroAction)
-                    {
-                        action = setStatesToZeroAction;
-                        sendChangeMessage();
-                        res->setAction (noAction);
-                    }
-                    break;
-                }
                 case moveConnectionState:
                 {
                     if (connectionToMoveIsFirst)
@@ -1027,8 +1040,8 @@ void Instrument::solveOverlappingConnections (std::vector<ConnectionInfo*>& CIO)
 //        std::cout << "wait" << std::endl;
     for (int i = 0; i < CIO.size(); ++i)
     {
-        CIO[i]->res1->addForce (-forces[i], CIO[i]->loc1);
-        CIO[i]->res2->addForce (forces[i], CIO[i]->loc2);
+        CIO[i]->res1->addForce (-forces[i], CIO[i]->loc1, 1);
+        CIO[i]->res2->addForce (forces[i], CIO[i]->loc2, 1);
     }
 
 
@@ -1050,13 +1063,13 @@ void Instrument::removeInOrOutput()
 {
     if (inputToRemove != -1)
     {
-        resonators[currentlySelectedResonator]->getInOutInfo()->removeInput (inputToRemove);
+        currentlySelectedResonator->getInOutInfo()->removeInput (inputToRemove);
         inputToRemove = -1;
     }
     
     if (outputToRemove != -1)
     {
-        resonators[currentlySelectedResonator]->getInOutInfo()->removeOutput (outputToRemove);
+        currentlySelectedResonator->getInOutInfo()->removeOutput (outputToRemove);
         outputToRemove = -1;
         
     }
@@ -1089,4 +1102,11 @@ void Instrument::addSecondConnection (std::shared_ptr<ResonatorModule> res, int 
 {
     CI[CI.size()-1].setSecondResonatorParams (res, loc, res->getResonatorModuleType());
     setCurrentlyActiveConnection (&CI[CI.size()-1]);
+}
+
+void Instrument::saveOutput()
+{
+    for (auto res : resonators)
+        res->saveOutput();
+    
 }

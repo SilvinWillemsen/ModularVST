@@ -112,6 +112,7 @@ void ResonatorModule::changeListenerCallback (ChangeBroadcaster* changeBroadcast
     if (changeBroadcaster == exciterModule.get())
         if (exciterModule->getAction() == setStatesToZeroAction)
         {
+            action = setStatesToZeroAction;
             sendChangeMessage();
             exciterModule->setAction (noAction);
         }

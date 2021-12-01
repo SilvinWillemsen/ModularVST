@@ -41,7 +41,7 @@ public:
     void printParameterNames();
     
     NamedValueSet& getParameters() { return parameters; };
-    void setParameters (NamedValueSet& p) { parameters = p; };
+    void setParameters (const NamedValueSet& p) { parameters = p; };
     void setParameter (double p) { parameters.set (parameters.getName (getSelectedRow()), p); };
     int getSelectedRow() { return list.getSelectedRow(); };
     

@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="mNMeLw" name="ModularVST" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginFormats="buildAU,buildStandalone,buildUnity">
+              pluginFormats="buildAU,buildStandalone,buildUnity" pluginChannelConfigs="{0, 2}">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
       <GROUP id="{671C00D5-9279-8FA7-65F1-1A317725E8BF}" name="Pugi">
@@ -62,6 +62,10 @@
       </GROUP>
       <FILE id="U9k5PH" name="Instrument.cpp" compile="1" resource="0" file="Source/Instrument.cpp"/>
       <FILE id="epGSvN" name="Instrument.h" compile="0" resource="0" file="Source/Instrument.h"/>
+      <FILE id="gKABEc" name="MyAudioParameterFloat.cpp" compile="1" resource="0"
+            file="Source/MyAudioParameterFloat.cpp"/>
+      <FILE id="p6PQ8D" name="MyAudioParameterFloat.h" compile="0" resource="0"
+            file="Source/MyAudioParameterFloat.h"/>
       <FILE id="oqaJMx" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="G5Wvg7" name="PluginProcessor.h" compile="0" resource="0"

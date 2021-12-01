@@ -37,6 +37,7 @@ public:
     
     void setResHeight (int r) { resHeight = r; };
     
+    void saveOutput() override;
 private:
     // string variables still needed in the NR solve
     double rho, A, sig0, k, h;
@@ -55,15 +56,16 @@ private:
     double etaNext, eta, etaPrev, etaStar;
     double wNext, w, wPrev;
     
+    int cLoc;
+    double alpha;
+    
     bool pickIsAbove;
     bool plucked = false;
     int pluckedCounter = 0;
     int pluckedCounterLimit = 1000;
     int pluckSgn;
-    double forceLimitN = 100;
-    
-    double maxForce = 0.1; // not working
-    
+    double forceLimitOh = 500;
+        
     double totDampEnergy = 0;
     double totPowEnergy = 0;
     double prevDampEnergy = 0;
@@ -71,5 +73,15 @@ private:
     double prevTotEnergy = 0;
     
     double resHeight = 100;
+    bool singlePoint = false;
+    double width = 0;
+    
+    std::vector<double> I, ItoDraw;
+    
+#ifdef SAVE_OUTPUT
+    std::ofstream statesSave;
+    int counter = 0;
+#endif
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pluck)
 };

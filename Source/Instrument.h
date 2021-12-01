@@ -199,6 +199,8 @@ public:
     
     std::vector<ConnectionInfo>* getConnectionInfo() { return &CI; }; // for presets
         
+    std::shared_ptr<ResonatorModule> getCurrentlySelectedResonator() { return currentlySelectedResonator; };
+    
     bool shouldRemoveInOrOutput() { return (inputToRemove != -1 || outputToRemove != -1); };
     void removeInOrOutput();
     
@@ -209,8 +211,11 @@ public:
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
     
-    void setExcitationType (ExcitationType e) { for (auto res : resonators) { res->setExcitationType (e); } };
+    void setExcitationType (ExcitationType e) { excitationType = e; for (auto res : resonators) { res->setExcitationType (e); } };
         
+    void saveOutput();
+    
+    bool isDoneRecording() { return resonators[0]->isDoneRecording(); };
 private:
     
     int fs;
@@ -236,6 +241,8 @@ private:
     double totEnergy = 0;
     
     std::shared_ptr<ResonatorModule> resonatorToRemove;
+    std::shared_ptr<ResonatorModule> currentlySelectedResonator = nullptr;
+
     int outputToRemove = -1;
     int inputToRemove = -1;
     bool shouldRemoveResonatorModule = false;
@@ -244,11 +251,11 @@ private:
 //    Eigen::SparseMatrix<double> IJminP, I, J, IJ, Pmat;
 #endif
     
-    int currentlySelectedResonator = -1;
     int connectionToMoveIdx;
     bool connectionToMoveIsFirst;
     int prevMouseLoc; // to prevent overlap
     
     Action action = noAction;
+    ExcitationType excitationType = noExcitation;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };
