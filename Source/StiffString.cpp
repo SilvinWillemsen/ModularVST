@@ -376,7 +376,7 @@ void StiffString::mouseEnter (const MouseEvent& e)
             getExciterModule()->mouseEntered (e, getHeight());
             break;
         case bow:
-            getExciterModule()->setForce (30.0 * (rho * A));
+            getExciterModule()->setForce (40.0 * (rho * A));
             break;
             
         default:

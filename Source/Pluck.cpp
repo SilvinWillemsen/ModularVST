@@ -186,7 +186,7 @@ void Pluck::calculate (std::vector<double*>& u)
         if (pickIsAbove)
             etaStar = -etaStar;
     
-        if (floor(1000000000 * (etaStar - etaPrev)) == 0)
+        if (floor(100000000 * (etaStar - etaPrev)) == 0)
             g = 0;
         else
             g = -2 * psiPrev / (etaStar - etaPrev);
@@ -230,6 +230,7 @@ void Pluck::calculate (std::vector<double*>& u)
 
     if (force > 100)
     {
+        std::cout << "Details: " << "etaStar - etaPrev: " << etaStar - etaPrev << " g: " << g << std::endl;
         wNext = 0;
         w = 0;
         wPrev = 0;
