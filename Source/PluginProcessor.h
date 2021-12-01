@@ -106,7 +106,7 @@ public:
         return presetPath;
     }
     
-    
+//# ifdef NO_EDITOR
     class MyAudioParameterFloat  : public AudioParameterFloat
     {
     public:
@@ -116,6 +116,15 @@ public:
                                float minValue,
                                float maxValue,
                                float defaultValue);
+        
+        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
+                               String parameterID,
+                               String parameterName,
+                               float minValue,
+                               float maxValue,
+                               float stepSize,
+                               float defaultValue);
+
         ~MyAudioParameterFloat() override {};
 
         void valueChanged (float value) override { audioProcessor->myAudioParameterFloatValueChanged (this); };
@@ -125,7 +134,16 @@ public:
     };
     
     void myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter);
-
+#ifdef EDITOR_AND_SLIDERS
+    void myAudioParameterFloatValueChanged (Slider* mySlider);
+#endif
+    
+//#endif
+    
+#ifdef EDITOR_AND_SLIDERS
+    std::vector<MyAudioParameterFloat*>& getMyParameters() { return allParameters; };
+    void setEditorSliders (std::vector<std::shared_ptr<Slider>>* s) { editorSliders = s; };
+#endif
     
 private:
     //==============================================================================
@@ -150,9 +168,15 @@ private:
     
     long counter = 0;
     
-#ifdef NO_EDITOR
+//#ifdef NO_EDITOR
     MyAudioParameterFloat* mouseX;
     MyAudioParameterFloat* mouseY;
+    MyAudioParameterFloat* excite;
+    MyAudioParameterFloat* excitationType;
+    std::vector<MyAudioParameterFloat*> allParameters;
+//#endif
+#ifdef EDITOR_AND_SLIDERS
+    std::vector<std::shared_ptr<Slider>>* editorSliders;
 #endif
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     

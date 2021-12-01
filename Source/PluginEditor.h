@@ -21,6 +21,9 @@ class ModularVSTAudioProcessorEditor  : public juce::AudioProcessorEditor,
                                         public Button::Listener,
                                         public Timer,
                                         public ChangeListener
+#ifdef EDITOR_AND_SLIDERS
+                                      , public Slider::Listener
+#endif
 {
 public:
     ModularVSTAudioProcessorEditor (ModularVSTAudioProcessor&);
@@ -46,7 +49,10 @@ public:
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
         
-//    std::function<void (const FileChooser&)> loadPresetCallBack (FileChooser& fileChooser);
+#ifdef EDITOR_AND_SLIDERS
+    void sliderValueChanged (Slider* slider) override;
+#endif
+    
 private:
     // Reference to the audio processor
     ModularVSTAudioProcessor& audioProcessor;
@@ -67,5 +73,10 @@ private:
 
     // State of the application
     ApplicationState applicationState;
+    
+#ifdef EDITOR_AND_SLIDERS
+    std::vector<std::shared_ptr<Slider>> parameters;
+    std::vector<std::shared_ptr<Label>> parameterLabels;
+#endif
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessorEditor)
 };

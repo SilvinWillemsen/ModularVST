@@ -216,6 +216,9 @@ public:
     void saveOutput();
     
     bool isDoneRecording() { return resonators[0]->isDoneRecording(); };
+    
+    void virtualMouseMove (const double x, double y);
+    void resetPrevMouseMoveResonator() { prevMouseMoveResonator = -1; };
 private:
     
     int fs;
@@ -257,5 +260,7 @@ private:
     
     Action action = noAction;
     ExcitationType excitationType = noExcitation;
+    
+    int prevMouseMoveResonator = -1;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

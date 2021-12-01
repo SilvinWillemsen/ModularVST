@@ -42,8 +42,37 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         
     // At what rate to refresh the states of the system
     startTimerHz (15);
+    
+    
+#ifdef EDITOR_AND_SLIDERS
+    parameters.reserve (8);
+    parameterLabels.reserve (8);
+    for (auto s : audioProcessor.getMyParameters())
+    {
+        std::shared_ptr<Slider> newSlider = std::make_shared<Slider> (Slider::SliderStyle::LinearHorizontal, Slider::TextBoxRight);
+        newSlider->setName (s->paramID);
+        newSlider->setRange (s->getNormalisableRange().start, s->getNormalisableRange().end, s->getNormalisableRange().interval);
+        newSlider->setValue(s->get());
+        newSlider->addListener (this);
+        
+        std::shared_ptr<Label> newLabel = std::make_shared<Label> (s->name, s->name);
+        newLabel->setColour(Label::backgroundColourId, Colours::transparentBlack);
+        newLabel->setColour(Label::textColourId, Colours::white);
+        
+        addAndMakeVisible (newSlider.get());
+        addAndMakeVisible (newLabel.get());
+
+        parameters.push_back (newSlider);
+        parameterLabels.push_back (newLabel);
+        
+        audioProcessor.setEditorSliders (&parameters);
+    }
+    setSize (1500, 600);
+#else
     // What is the size of the editor
     setSize (1200, 600);
+#endif
+    
 }
 
 ModularVSTAudioProcessorEditor::~ModularVSTAudioProcessorEditor()
@@ -73,6 +102,15 @@ void ModularVSTAudioProcessorEditor::resized()
 
     Rectangle<int> totalArea = getLocalBounds();
     
+#ifdef EDITOR_AND_SLIDERS
+    Rectangle<int> sliderArea = totalArea.removeFromRight (300);
+    for (int i = 0; i < parameters.size(); ++i )
+    {
+        Rectangle<int> curSliderArea = sliderArea.removeFromTop (Global::buttonHeight);
+        parameterLabels[i]->setBounds (curSliderArea.removeFromLeft(curSliderArea.getWidth() * 0.33));
+        parameters[i]->setBounds (curSliderArea);
+    }
+#endif
     // Panels
     controlPanel->setBounds (totalArea.removeFromBottom (Global::buttonHeight + 2.0 * Global::margin));
     excitationPanel->setBounds (totalArea.removeFromRight (Global::buttonWidth + 2.0 * Global::margin));
@@ -406,3 +444,13 @@ void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
     audioProcessor.setApplicationState (a);
 }
 
+#ifdef EDITOR_AND_SLIDERS
+void ModularVSTAudioProcessorEditor::sliderValueChanged (Slider* slider)
+{
+    for (int i = 0; i < parameters.size(); ++i)
+    {
+        if (parameters[i].get() == slider)
+            audioProcessor.myAudioParameterFloatValueChanged (slider);
+    }
+}
+#endif

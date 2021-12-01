@@ -23,9 +23,18 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
                        )
 #endif
 {
-#ifdef NO_EDITOR
-    addParameter (mouseX = new MyAudioParameterFloat (this, "mouseX", "mouseX", 0, 1, 0) );
-    addParameter (mouseY = new MyAudioParameterFloat (this, "mouseY", "mouseY", 0, 1, 0) );
+//#ifdef NO_EDITOR
+    addParameter (mouseX = new MyAudioParameterFloat (this, "mouseX", "Mouse X", 0, 0.99, 0) );
+    addParameter (mouseY = new MyAudioParameterFloat (this, "mouseY", "Mouse Y", 0, 0.99, 0) );
+    addParameter (excite = new MyAudioParameterFloat (this, "excite", "Excite", 0, 1, 1, 0) );
+    addParameter (excitationType = new MyAudioParameterFloat (this, "excitationType", "Excitation Type", 0, 2, 1, 0) );
+//#endif
+#ifdef EDITOR_AND_SLIDERS
+    allParameters.reserve(8);
+    allParameters.push_back (mouseX);
+    allParameters.push_back (mouseY);
+    allParameters.push_back (excite);
+    allParameters.push_back (excitationType);
 #endif
 }
 
@@ -821,10 +830,71 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     return success;
 }
 
+//# ifdef NO_EDITOR
 void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter)
 {
-    std::cout << myAudioParameter->get() << std::endl;
+    if ((myAudioParameter == mouseX || myAudioParameter == mouseY) && *excite >= 0.5)
+        currentlyActiveInstrument->virtualMouseMove (*mouseX, *mouseY);
+
+    if (myAudioParameter == excite || myAudioParameter == excitationType)
+    {
+        if (*excite >= 0.5)
+        {
+            switch (static_cast<int> (*excitationType))
+            {
+                case 0:
+                    currentlyActiveInstrument->setExcitationType (pluck);
+                    break;
+                case 1:
+                    currentlyActiveInstrument->setExcitationType (hammer);
+                    break;
+                case 2:
+                    currentlyActiveInstrument->setExcitationType (bow);
+                    break;
+            }
+
+        } else {
+            currentlyActiveInstrument->setExcitationType (noExcitation);
+            currentlyActiveInstrument->resetPrevMouseMoveResonator();
+        }
+        currentlyActiveInstrument->virtualMouseMove (*mouseX, *mouseY);
+
+    }
 }
+
+#ifdef EDITOR_AND_SLIDERS
+// !!! Content should correspond to the previous myAudioParameterFloatValueChanged function !!!
+void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (Slider* mySlider)
+{
+    if ((mySlider->getName() == "mouseX" || mySlider->getName() == "mouseY") && (*editorSliders)[2]->getValue() >= 0.5)
+        currentlyActiveInstrument->virtualMouseMove ((*editorSliders)[0]->getValue(), (*editorSliders)[1]->getValue());
+
+    if (mySlider->getName() == "excite" || mySlider->getName() == "excitationType")
+    {
+        if ((*editorSliders)[2]->getValue() >= 0.5)
+        {
+            switch (static_cast<int> ((*editorSliders)[3]->getValue()))
+            {
+                case 0:
+                    currentlyActiveInstrument->setExcitationType (pluck);
+                    break;
+                case 1:
+                    currentlyActiveInstrument->setExcitationType (hammer);
+                    break;
+                case 2:
+                    currentlyActiveInstrument->setExcitationType (bow);
+                    break;
+            }
+
+        } else {
+            currentlyActiveInstrument->setExcitationType (noExcitation);
+            currentlyActiveInstrument->resetPrevMouseMoveResonator();
+        }
+        currentlyActiveInstrument->virtualMouseMove ((*editorSliders)[0]->getValue(), (*editorSliders)[1]->getValue());
+
+    }
+}
+#endif
 
 ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
                                             ModularVSTAudioProcessor* audioProcessor,
@@ -841,3 +911,21 @@ ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
 {
     
 }
+
+ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
+                                            ModularVSTAudioProcessor* audioProcessor,
+                                            String parameterID,
+                                            String parameterName,
+                                            float minValue,
+                                            float maxValue,
+                                            float stepSize,
+                                            float defaultValue) : AudioParameterFloat (parameterID,
+                                                                                       parameterName,
+                                                                                       {minValue, maxValue, stepSize},
+                                                                                       defaultValue),
+                                                                  audioProcessor (audioProcessor)
+{
+    
+}
+
+//#endif

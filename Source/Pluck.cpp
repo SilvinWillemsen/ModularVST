@@ -162,7 +162,8 @@ void Pluck::calculate (std::vector<double*>& u)
         }
 //        std::cout << std::endl;
     }
-    
+    if (isnan(IJ))
+        DBG("wait what?");
     eta = w - uI;
     etaPrev = wPrev - uIPrev;
 
@@ -319,10 +320,10 @@ void Pluck::hiResTimerCallback()
     double lpCoeff = 0.99;
 }
 
-void Pluck::mouseEntered (const MouseEvent& e, int height)
+void Pluck::mouseEntered (const double x, const double y, int height)
 {
     resHeight = height;
-    controlLoc = (static_cast<double>(e.y) / height);
+    controlLoc = (static_cast<double>(y) / height);
     if (controlLoc >= 0.5)
     {
         pickIsAbove = false;

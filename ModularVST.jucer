@@ -62,10 +62,6 @@
       </GROUP>
       <FILE id="U9k5PH" name="Instrument.cpp" compile="1" resource="0" file="Source/Instrument.cpp"/>
       <FILE id="epGSvN" name="Instrument.h" compile="0" resource="0" file="Source/Instrument.h"/>
-      <FILE id="gKABEc" name="MyAudioParameterFloat.cpp" compile="1" resource="0"
-            file="Source/MyAudioParameterFloat.cpp"/>
-      <FILE id="p6PQ8D" name="MyAudioParameterFloat.h" compile="0" resource="0"
-            file="Source/MyAudioParameterFloat.h"/>
       <FILE id="oqaJMx" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="G5Wvg7" name="PluginProcessor.h" compile="0" resource="0"

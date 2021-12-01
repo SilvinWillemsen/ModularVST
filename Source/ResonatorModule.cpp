@@ -90,6 +90,8 @@ void ResonatorModule::addForce (double force, int idx, double customMassRatio)
 
 void ResonatorModule::setExcitationType (ExcitationType e)
 {
+    if (excitationType == e)
+        return;
     excitationType = e;
     switch (e)
     {

@@ -32,7 +32,7 @@ public:
     void updateStates() override;
     void hiResTimerCallback() override;
     
-    void mouseEntered (const MouseEvent& e, int height) override;
+    void mouseEntered (const double x, const double y, int height) override;
     void mouseExited() override;
     
     void setResHeight (int r) { resHeight = r; };

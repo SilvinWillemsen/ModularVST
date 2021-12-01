@@ -39,14 +39,21 @@ public:
     int getNumPoints() override;
     int getNumIntervals() override { return N; } ;
         
+#ifndef EDITOR_AND_SLIDERS
     // interaction
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
+    void mouseEnter (const MouseEvent& e) override { myMouseEnter (e.x, e.y, true); };
+    void mouseExit (const MouseEvent& e) override { myMouseExit (e.x, e.y, true); };
+    void mouseMove (const MouseEvent& e) override { myMouseMove (e.x, e.y, true); };
+    // for now uses the mouse event and calls instrument so can't have custom mouse funtions
     void mouseDown (const MouseEvent& e) override;
-    void mouseMove (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
-        
+#endif
+    
+    void myMouseEnter (const double x, const double y, bool triggeredByMouse) override;
+    void myMouseExit (const double x, const double y, bool triggeredByMouse) override;
+    void myMouseMove (const double x, const double y, bool triggeredByMouse) override;
+
     double getKinEnergy() override;
     double getPotEnergy() override;
     double getDampEnergy() override;

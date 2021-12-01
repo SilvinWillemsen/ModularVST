@@ -1110,3 +1110,23 @@ void Instrument::saveOutput()
         res->saveOutput();
     
 }
+
+void Instrument::virtualMouseMove (const double x, const double y)
+{
+    int curMouseMoveResonator = floor (y * getNumResonatorModules());
+
+    double yRes = y * getNumResonatorModules() - curMouseMoveResonator;
+    
+    if (prevMouseMoveResonator == -1)
+        resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
+
+    if (prevMouseMoveResonator != curMouseMoveResonator)
+    {
+        if (prevMouseMoveResonator != -1)
+            resonators[prevMouseMoveResonator]->myMouseExit (x, yRes, false);
+        resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
+    }
+    prevMouseMoveResonator = curMouseMoveResonator;
+                                    
+    resonators[curMouseMoveResonator]->myMouseMove (x, yRes, false);
+}

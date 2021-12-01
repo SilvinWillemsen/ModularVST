@@ -45,7 +45,7 @@ public:
     
     long getCalcCounter() { return calcCounter; };
     
-    virtual void mouseEntered (const MouseEvent& e, int height) {};
+    virtual void mouseEntered (const double x, const double y, int height) {};
     virtual void mouseExited () {};
 
     bool isModuleReady() { return moduleIsReady; };

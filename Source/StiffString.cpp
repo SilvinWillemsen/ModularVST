@@ -333,6 +333,71 @@ int StiffString::getNumPoints()
     return N + 1;
 }
 
+void StiffString::myMouseEnter (const double x, const double y, bool triggeredByMouse)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+    
+    getExciterModule()->startTimer (1.0 / 150.0);
+
+    //    prevYLoc = e.y;
+    switch (getExcitationType()) {
+        case pluck:
+            getExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
+            break;
+        case bow:
+            getExciterModule()->setForce (40.0 * (rho * A));
+            break;
+            
+        default:
+            break;
+    }
+    setExcitationActive (true);
+}
+
+void StiffString::myMouseExit (const double x, const double y, bool triggeredByMouse)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+        
+    getExciterModule()->stopTimer();
+    getExciterModule()->mouseExited();
+
+    switch (getExcitationType()) {
+        case bow:
+            getExciterModule()->setForce (0.0);
+            break;
+            
+        default:
+            break;
+    }
+    setExcitationActive (false);
+
+}
+
+void StiffString::myMouseMove (const double x, const double y, bool triggeredByMouse)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+    
+    getExciterModule()->setExcitationLoc (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));
+    getExciterModule()->setControlLoc (static_cast<float> (y) / (triggeredByMouse ? getHeight() : 1));
+    
+//    double lpCoeff = 0.99;
+//    double curLoc = static_cast<float> (e.y) / getHeight();
+//    double locUse = (1.0 - lpCoeff) * curLoc + lpCoeff * prevLoc;
+//    Time t;
+//    double curTime = t.currentTimeMillis();
+//    vB = (locUse - prevLoc) / (0.001 * (curTime - prevTime));
+//    std::cout << locUse << std::endl;
+//    prevLoc = locUse;
+//    prevTime = curTime;
+
+    
+//    std::cout << getID() << " " << e.y << std::endl;
+}
+
+#ifndef EDITOR_AND_SLIDERS
 void StiffString::mouseDown (const MouseEvent& e)
 {
     setModifier (e.mods);
@@ -363,70 +428,6 @@ void StiffString::mouseDown (const MouseEvent& e)
     sendChangeMessage();
 }
 
-void StiffString::mouseEnter (const MouseEvent& e)
-{
-    if (getExcitationType() == noExcitation)
-        return;
-    
-    getExciterModule()->startTimer (1.0 / 150.0);
-
-    //    prevYLoc = e.y;
-    switch (getExcitationType()) {
-        case pluck:
-            getExciterModule()->mouseEntered (e, getHeight());
-            break;
-        case bow:
-            getExciterModule()->setForce (40.0 * (rho * A));
-            break;
-            
-        default:
-            break;
-    }
-    setExcitationActive (true);
-}
-
-void StiffString::mouseExit (const MouseEvent& e)
-{
-    if (getExcitationType() == noExcitation)
-        return;
-        
-    getExciterModule()->stopTimer();
-    getExciterModule()->mouseExited();
-
-    switch (getExcitationType()) {
-        case bow:
-            getExciterModule()->setForce (0.0);
-            break;
-            
-        default:
-            break;
-    }
-    setExcitationActive (false);
-
-}
-
-void StiffString::mouseMove (const MouseEvent& e)
-{
-    if (getExcitationType() == noExcitation)
-        return;
-    
-    getExciterModule()->setExcitationLoc (static_cast<float> (e.x) / getWidth());
-    getExciterModule()->setControlLoc (static_cast<float> (e.y) / getHeight());
-    
-//    double lpCoeff = 0.99;
-//    double curLoc = static_cast<float> (e.y) / getHeight();
-//    double locUse = (1.0 - lpCoeff) * curLoc + lpCoeff * prevLoc;
-//    Time t;
-//    double curTime = t.currentTimeMillis();
-//    vB = (locUse - prevLoc) / (0.001 * (curTime - prevTime));
-//    std::cout << locUse << std::endl;
-//    prevLoc = locUse;
-//    prevTime = curTime;
-
-    
-//    std::cout << getID() << " " << e.y << std::endl;
-}
-
 void StiffString::mouseDrag (const MouseEvent& e)
 {
     if (e.mods == ModifierKeys::leftButtonModifier && applicationState == moveConnectionState)
@@ -452,7 +453,7 @@ void StiffString::mouseUp (const MouseEvent& e)
     
     alreadyExcited = false;
 }
-
+#endif
 
 double StiffString::getKinEnergy()
 {

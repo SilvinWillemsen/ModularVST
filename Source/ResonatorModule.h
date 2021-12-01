@@ -67,7 +67,12 @@ public:
     
     int getMouseLoc() { return mouseLoc; };
     void setMouseLoc (int m) { mouseLoc = m; };
-        
+      
+    // custom mouse functions
+    virtual void myMouseEnter (const double x, const double y, bool triggeredByMouse) {};
+    virtual void myMouseExit (const double x, const double y, bool triggeredByMouse) {};
+    virtual void myMouseMove (const double x, const double y, bool triggeredByMouse) {};
+
     // ID
     int getID() { return ID; };
     void setID (int I) { ID = I; } // only to be called when index of resonator in vector changes
