@@ -185,7 +185,7 @@ void Pluck::calculate (std::vector<double*>& u)
         etaStar = wStar - uStar;
         if (pickIsAbove)
             etaStar = -etaStar;
-    
+//        if (etaStar - etaPrev == 0)
         if (floor(100000000 * (etaStar - etaPrev)) == 0)
             g = 0;
         else
@@ -335,7 +335,7 @@ void Pluck::mouseEntered (const MouseEvent& e, int height)
     wNext = (-controlLoc + 0.5) / (Global::stringVisualScaling);
 //    wNext = -(yLoc - 0.5) / (0.5 * K / (M * maxForce));
     w = wNext;
-    wPrev = w;
+    wPrev = w - k * static_cast<float> (pluckSgn) / (Global::stringVisualScaling); // to prevent etaStar and etaPrev from being too close to each other
     prevDampEnergy = 0;
     prevPowEnergy = 0;
     totDampEnergy = 0;
