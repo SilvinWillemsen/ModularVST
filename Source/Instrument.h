@@ -211,7 +211,7 @@ public:
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
     
-    void setExcitationType (ExcitationType e) { for (auto res : resonators) { res->setExcitationType (e); } };
+    void setExcitationType (ExcitationType e) { excitationType = e; for (auto res : resonators) { res->setExcitationType (e); } };
         
     void saveOutput();
     
@@ -256,5 +256,6 @@ private:
     int prevMouseLoc; // to prevent overlap
     
     Action action = noAction;
+    ExcitationType excitationType = noExcitation;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

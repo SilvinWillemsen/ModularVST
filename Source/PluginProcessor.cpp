@@ -23,6 +23,10 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
                        )
 #endif
 {
+#ifdef NO_EDITOR
+    addParameter (mouseX = new MyAudioParameterFloat (this, "mouseX", "mouseX", 0, 1, 0) );
+    addParameter (mouseY = new MyAudioParameterFloat (this, "mouseY", "mouseY", 0, 1, 0) );
+#endif
 }
 
 ModularVSTAudioProcessor::~ModularVSTAudioProcessor()
@@ -266,7 +270,11 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 //==============================================================================
 bool ModularVSTAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+#ifdef NO_EDITOR
+    return false; // (change this to false if you choose to not supply an editor)
+#else
+    return true;
+#endif
 }
 
 juce::AudioProcessorEditor* ModularVSTAudioProcessor::createEditor()
@@ -811,4 +819,25 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     lastLoadedPreset << String (fileName);
     lastLoadedPreset.close();
     return success;
+}
+
+void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter)
+{
+    std::cout << myAudioParameter->get() << std::endl;
+}
+
+ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
+                                            ModularVSTAudioProcessor* audioProcessor,
+                                            String parameterID,
+                                            String parameterName,
+                                            float minValue,
+                                            float maxValue,
+                                            float defaultValue) : AudioParameterFloat (parameterID,
+                                                                                       parameterName,
+                                                                                       minValue,
+                                                                                       maxValue,
+                                                                                       defaultValue),
+                                                                  audioProcessor (audioProcessor)
+{
+    
 }

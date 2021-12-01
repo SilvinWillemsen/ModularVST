@@ -1,1 +1,1 @@
-GuitarWithoutBody.xml
+guitar.xml

@@ -236,6 +236,7 @@ void Instrument::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& par
     resonators.push_back (newResonatorModule);
     addAndMakeVisible (resonators[resonators.size()-1].get(), 0);
     currentlySelectedResonator = newResonatorModule;
+    newResonatorModule->setExcitationType (excitationType);
     resetTotalGridPoints();
 }
 

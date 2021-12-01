@@ -13,6 +13,7 @@
 
 #include <fstream>
 #include <iostream>
+//#include "MyAudioParameterFloat.h"
 
 //==============================================================================
 /**
@@ -104,6 +105,28 @@ public:
     {
         return presetPath;
     }
+    
+    
+    class MyAudioParameterFloat  : public AudioParameterFloat
+    {
+    public:
+        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
+                               String parameterID,
+                               String parameterName,
+                               float minValue,
+                               float maxValue,
+                               float defaultValue);
+        ~MyAudioParameterFloat() override {};
+
+        void valueChanged (float value) override { audioProcessor->myAudioParameterFloatValueChanged (this); };
+
+    private:
+        ModularVSTAudioProcessor* audioProcessor;
+    };
+    
+    void myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter);
+
+    
 private:
     //==============================================================================
     int fs;
@@ -126,6 +149,11 @@ private:
 #endif
     
     long counter = 0;
+    
+#ifdef NO_EDITOR
+    MyAudioParameterFloat* mouseX;
+    MyAudioParameterFloat* mouseY;
+#endif
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };
