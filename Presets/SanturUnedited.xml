@@ -1,0 +1,184 @@
+<App>
+	 <Instrument id="i0">
+	 	 <Resonator id="i0_r0" type="Stiff_String">
+	 	 	 <PARAM id="i0_r0_L" value="0.73"/>
+	 	 	 <PARAM id="i0_r0_T" value="11800"/>
+			 <PARAM id="i0_r0_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r0_A" value="1.468729e-05"/>
+	 	 	 <PARAM id="i0_r0_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r0_I" value="1.717487e-11"/>
+	 	 	 <PARAM id="i0_r0_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r0_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r1" type="Stiff_String">
+	 	 	 <PARAM id="i0_r1_L" value="0.53"/>
+	 	 	 <PARAM id="i0_r1_T" value="39003"/>
+	 	 	 <PARAM id="i0_r1_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r1_A" value="1.539445e-05"/>
+	 	 	 <PARAM id="i0_r1_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r1_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r1_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r1_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r2" type="Stiff_String">
+	 	 	 <PARAM id="i0_r2_L" value="0.69"/>
+	 	 	 <PARAM id="i0_r0_T" value="16079"/>
+			 <PARAM id="i0_r0_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r2_A" value="1.620527e-05"/>
+	 	 	 <PARAM id="i0_r2_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r2_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r2_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r2_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r3" type="Stiff_String">
+	 	 	 <PARAM id="i0_r3_L" value="0.5"/>
+	 	 	 <PARAM id="i0_r3_T" value="68503"/>
+	 	 	 <PARAM id="i0_r3_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r3_A" value="1.924705e-05"/>
+	 	 	 <PARAM id="i0_r3_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r3_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r3_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r3_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r4" type="Stiff_String">
+	 	 	 <PARAM id="i0_r4_L" value="0.64"/>
+	 	 	 <PARAM id="i0_r0_T" value="22079"/>
+			 <PARAM id="i0_r0_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r4_A" value="1.761357e-05"/>
+	 	 	 <PARAM id="i0_r4_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r4_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r4_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r4_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r5" type="Stiff_String">
+	 	 	 <PARAM id="i0_r5_L" value="0.48"/>
+	 	 	 <PARAM id="i0_r5_T" value="98926"/>
+	 	 	 <PARAM id="i0_r5_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r5_A" value="2.220424e-05"/>
+	 	 	 <PARAM id="i0_r5_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r5_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r5_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r5_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r6" type="Stiff_String">
+	 	 	 <PARAM id="i0_r6_L" value="0.59"/>
+	 	 	 <PARAM id="i0_r0_T" value="29772"/>
+			 <PARAM id="i0_r0_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r6_A" value="1.885531e-05"/>
+	 	 	 <PARAM id="i0_r6_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r6_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r6_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r6_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r7" type="Stiff_String">
+	 	 	 <PARAM id="i0_r7_L" value="0.45"/>
+	 	 	 <PARAM id="i0_r7_T" value="138692"/>
+	 	 	 <PARAM id="i0_r7_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r7_A" value="2.464777e-05"/>
+	 	 	 <PARAM id="i0_r7_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r7_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r7_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r7_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r8" type="Stiff_String">
+	 	 	 <PARAM id="i0_r8_L" value="0.54"/>
+	 	 	 <PARAM id="i0_r0_T" value="31010"/>
+			 <PARAM id="i0_r0_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r8_A" value="1.761256e-05"/>
+	 	 	 <PARAM id="i0_r8_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r8_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r8_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r8_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r9" type="Stiff_String">
+	 	 	 <PARAM id="i0_r9_L" value="0.42"/>
+	 	 	 <PARAM id="i0_r0_T" value="147464"/>
+			 <PARAM id="i0_r0_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r9_A" value="2.372093e-05"/>
+	 	 	 <PARAM id="i0_r9_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r9_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r9_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r9_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r10" type="Stiff_String">
+	 	 	 <PARAM id="i0_r10_L" value="0.5"/>
+	 	 	 <PARAM id="i0_r0_T" value="42466"/>
+			 <PARAM id="i0_r0_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r10_A" value="1.908396e-05"/>
+	 	 	 <PARAM id="i0_r10_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r10_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r10_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r10_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r11" type="Stiff_String">
+	 	 	 <PARAM id="i0_r11_L" value="0.39"/>
+	 	 	 <PARAM id="i0_r11_T" value="200700"/>
+	 	 	 <PARAM id="i0_r11_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r11_A" value="2.569672e-05"/>
+	 	 	 <PARAM id="i0_r11_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r11_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r11_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r11_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r12" type="Stiff_String">
+	 	 	 <PARAM id="i0_r12_L" value="0.45"/>
+	 	 	 <PARAM id="i0_r12_T" value="54010"/>
+	 	 	 <PARAM id="i0_r12_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r12_A" value="1.936990e-05"/>
+	 	 	 <PARAM id="i0_r12_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r12_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r12_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r12_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r13" type="Stiff_String">
+	 	 	 <PARAM id="i0_r13_L" value="0.36"/>
+	 	 	 <PARAM id="i0_r13_T" value="263315"/>
+	 	 	 <PARAM id="i0_r13_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r13_A" value="2.716938e-05"/>
+	 	 	 <PARAM id="i0_r13_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r13_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r13_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r13_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r14" type="Stiff_String">
+	 	 	 <PARAM id="i0_r14_L" value="0.4"/>
+	 	 	 <PARAM id="i0_r14_T" value="53351"/>
+	 	 	 <PARAM id="i0_r14_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r14_A" value="1.711232e-05"/>
+	 	 	 <PARAM id="i0_r14_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r14_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r14_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r14_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r15" type="Stiff_String">
+	 	 	 <PARAM id="i0_r15_L" value="0.33"/>
+	 	 	 <PARAM id="i0_r15_T" value="273722"/>
+	 	 	 <PARAM id="i0_r15_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r15_A" value="2.539266e-05"/>
+	 	 	 <PARAM id="i0_r15_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r15_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r15_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r15_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r16" type="Stiff_String">
+	 	 	 <PARAM id="i0_r16_L" value="0.34"/>
+	 	 	 <PARAM id="i0_r16_T" value="60384"/>
+	 	 	 <PARAM id="i0_r16_rho" value="8400"/>
+	 	 	 <PARAM id="i0_r16_A" value="1.547453e-05"/>
+	 	 	 <PARAM id="i0_r16_E" value="1.135e+11"/>
+	 	 	 <PARAM id="i0_r16_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r16_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r16_sig1" value="0.0006"/>
+	 	 </Resonator>
+		 <Resonator id="i0_r17" type="Stiff_String">
+	 	 	 <PARAM id="i0_r17_L" value="0.3"/>
+	 	 	 <PARAM id="i0_r17_T" value="352863"/>
+	 	 	 <PARAM id="i0_r17_rho" value="7700"/>
+	 	 	 <PARAM id="i0_r17_A" value="2.620980e-05"/>
+	 	 	 <PARAM id="i0_r17_E" value="1.8e+11"/>
+	 	 	 <PARAM id="i0_r17_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r17_sig0" value="1.14"/>
+	 	 	 <PARAM id="i0_r17_sig1" value="0.0006"/>
+	 	 </Resonator>
+	 </Instrument>
+</App>
