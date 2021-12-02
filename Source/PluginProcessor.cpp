@@ -831,6 +831,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     lastLoadedPreset.open (String (presetPath + "lastPreset.txt").getCharPointer());
     lastLoadedPreset << String (fileName);
     lastLoadedPreset.close();
+    
     return success;
 }
 

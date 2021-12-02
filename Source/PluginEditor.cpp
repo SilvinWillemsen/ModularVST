@@ -410,19 +410,19 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
             res = audioProcessor.loadPreset (fileName);
             switch (res) {
                 case applicationIsNotEmpty:
-                    DBG ("Application is not empty.");
+                    Logger::getCurrentLogger()->outputDebugString ("Application is not empty.");
                     break;
                 case fileNotFound:
-                    DBG ("Presetfile not found");
+                    Logger::getCurrentLogger()->outputDebugString ("Presetfile not found");
                     break;
                 case presetNotLoaded:
-                    DBG ("For whatever reason, the preset was not loaded.");
+                    Logger::getCurrentLogger()->outputDebugString ("For whatever reason, the preset was not loaded.");
                     break;
                 case loadingCancelled:
-                    DBG ("Loading was cancelled.");
+                    Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
                     break;
                 case success:
-                    DBG ("Preset loaded successfully.");
+                    Logger::getCurrentLogger()->outputDebugString ("Preset loaded successfully.");
                     break;
 
                 default:
@@ -430,7 +430,7 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
             }
         } else {
             res = loadingCancelled;
-            DBG ("Loading was cancelled.");
+            Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
         }
         if (res != success)
             for (auto inst : instruments)
