@@ -317,6 +317,7 @@ void ModularVSTAudioProcessor::addInstrument()
 {
     std::shared_ptr<Instrument> newInstrument = std::make_shared<Instrument> (fs);
     instruments.push_back (newInstrument);
+    newInstrument->setExcitationType (curExcitationType);
     currentlyActiveInstrument = newInstrument;
     
     refreshEditor = true;
@@ -823,6 +824,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
                 break;
         }
     }
+    
     // save path of last loaded preset
     std::ofstream lastLoadedPreset;
     lastLoadedPreset.open (String (presetPath + "lastPreset.txt").getCharPointer());
@@ -846,19 +848,21 @@ void ModularVSTAudioProcessor::genericAudioParameterFloatValueChanged (String na
             switch (static_cast<int> (sliderValues[excitationTypeID]))
             {
                 case 0:
-                    currentlyActiveInstrument->setExcitationType (pluck);
+                    curExcitationType = pluck;
                     break;
                 case 1:
-                    currentlyActiveInstrument->setExcitationType (hammer);
+                    curExcitationType = hammer;
                     break;
                 case 2:
-                    currentlyActiveInstrument->setExcitationType (bow);
+                    curExcitationType = bow;
                     break;
             }
+            currentlyActiveInstrument->setExcitationType (curExcitationType);
             currentlyActiveInstrument->resetPrevMouseMoveResonator();
             currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
         } else {
-            currentlyActiveInstrument->setExcitationType (noExcitation);
+            curExcitationType = noExcitation;
+            currentlyActiveInstrument->setExcitationType (curExcitationType);
         }
         currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
 

@@ -99,6 +99,8 @@ public:
     // Function to highlight one instrument and reduce opacity of others. Used when editing
     void highlightInstrument (std::shared_ptr<Instrument> instrumentToHighlight);
     
+    void setExcitationType (ExcitationType e) { curExcitationType = e; };
+
     // Presets
     PresetResult savePreset (String& fileName);
     PresetResult loadPreset (String& fileName);
@@ -164,6 +166,8 @@ private:
     bool setToZero = false;
     
     ApplicationState applicationState = normalState;
+    
+    ExcitationType curExcitationType = noExcitation;
     
     std::vector<Action> initActions;
     std::vector<ResonatorModuleType> initModuleTypes;

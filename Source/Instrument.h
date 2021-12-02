@@ -219,6 +219,9 @@ public:
     
     void virtualMouseMove (const double x, double y);
     void resetPrevMouseMoveResonator() { prevMouseMoveResonator = -1; };
+    
+    void unReadyAllModules() { for (auto res : resonators) res->unReadyModule(); };
+    void reReadyAllModules() { for (auto res : resonators) res->readyModule(); };
 private:
     
     int fs;

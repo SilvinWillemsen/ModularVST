@@ -263,6 +263,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 {
                     for (auto inst : instruments)
                         inst->setExcitationType (excitationPanel->getExcitationType());
+                    audioProcessor.setExcitationType (excitationPanel->getExcitationType());
                 }
                 else
                 {
@@ -270,6 +271,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 // Otherwise disable excitation using exciter modules
                     for (auto inst : instruments)
                         inst->setExcitationType (noExcitation);
+                    audioProcessor.setExcitationType (noExcitation);
                 }
                 break;
             case noAction:
@@ -395,14 +397,17 @@ void ModularVSTAudioProcessorEditor::openSavePresetWindow()
 void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
 {
     stopTimer();
+    for (auto inst : instruments)
+        inst->unReadyAllModules();
+    
     loadPresetWindow = std::make_unique<FileChooser> ("Load Preset", audioProcessor.getPresetPath(), "*.xml", true, true);
-    String resultingFile;
     loadPresetWindow->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles,
        [this] (const FileChooser& fileChooser) {
+        PresetResult res;
         if (fileChooser.getResult().exists())
         {
             String fileName = fileChooser.getResult().getFileName();
-            PresetResult res = audioProcessor.loadPreset (fileName);
+            res = audioProcessor.loadPreset (fileName);
             switch (res) {
                 case applicationIsNotEmpty:
                     DBG ("Application is not empty.");
@@ -413,6 +418,9 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
                 case presetNotLoaded:
                     DBG ("For whatever reason, the preset was not loaded.");
                     break;
+                case loadingCancelled:
+                    DBG ("Loading was cancelled.");
+                    break;
                 case success:
                     DBG ("Preset loaded successfully.");
                     break;
@@ -420,8 +428,13 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
                 default:
                     break;
             }
-            
+        } else {
+            res = loadingCancelled;
+            DBG ("Loading was cancelled.");
         }
+        if (res != success)
+            for (auto inst : instruments)
+                inst->reReadyAllModules();
         startTimerHz (15);
         refresh();
         
