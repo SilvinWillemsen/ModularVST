@@ -24,18 +24,19 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 #endif
 {
 //#ifdef NO_EDITOR
-    addParameter (mouseX = new MyAudioParameterFloat (this, "mouseX", "Mouse X", 0, 0.99, 0) );
-    addParameter (mouseY = new MyAudioParameterFloat (this, "mouseY", "Mouse Y", 0, 0.99, 0) );
+    addParameter (mouseX = new MyAudioParameterFloat (this, "mouseX", "Mouse X", 0, 0.99, 0.5) );
+    addParameter (mouseY = new MyAudioParameterFloat (this, "mouseY", "Mouse Y", 0, 0.99, 0.5) );
     addParameter (excite = new MyAudioParameterFloat (this, "excite", "Excite", 0, 1, 1, 0) );
     addParameter (excitationType = new MyAudioParameterFloat (this, "excitationType", "Excitation Type", 0, 2, 1, 0) );
 //#endif
-#ifdef EDITOR_AND_SLIDERS
+//#ifdef EDITOR_AND_SLIDERS
     allParameters.reserve(8);
     allParameters.push_back (mouseX);
     allParameters.push_back (mouseY);
     allParameters.push_back (excite);
     allParameters.push_back (excitationType);
-#endif
+//#endif
+    sliderValues.resize (allParameters.size());
 }
 
 ModularVSTAudioProcessor::~ModularVSTAudioProcessor()
@@ -830,17 +831,19 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     return success;
 }
 
-//# ifdef NO_EDITOR
-void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter)
-{
-    if ((myAudioParameter == mouseX || myAudioParameter == mouseY) && *excite >= 0.5)
-        currentlyActiveInstrument->virtualMouseMove (*mouseX, *mouseY);
 
-    if (myAudioParameter == excite || myAudioParameter == excitationType)
+//# ifdef NO_EDITOR
+
+void ModularVSTAudioProcessor::genericAudioParameterFloatValueChanged (String name, float value)
+{
+    if ((name == "mouseX" || name == "mouseY") && (sliderValues[exciteID] >= 0.5))
+        currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
+
+    if (name == "excite" || name == "excitationType")
     {
-        if (*excite >= 0.5)
+        if (sliderValues[exciteID] >= 0.5)
         {
-            switch (static_cast<int> (*excitationType))
+            switch (static_cast<int> (sliderValues[excitationTypeID]))
             {
                 case 0:
                     currentlyActiveInstrument->setExcitationType (pluck);
@@ -852,47 +855,32 @@ void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (MyAudioParamet
                     currentlyActiveInstrument->setExcitationType (bow);
                     break;
             }
-
+            currentlyActiveInstrument->resetPrevMouseMoveResonator();
+            currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
         } else {
             currentlyActiveInstrument->setExcitationType (noExcitation);
-            currentlyActiveInstrument->resetPrevMouseMoveResonator();
         }
-        currentlyActiveInstrument->virtualMouseMove (*mouseX, *mouseY);
+        currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
 
     }
 }
+void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter)
+{
+    for (int i = 0; i < allParameters.size(); ++i)
+        if (myAudioParameter == allParameters[i])
+            sliderValues[i] = *myAudioParameter;
+
+    genericAudioParameterFloatValueChanged (myAudioParameter->paramID, *myAudioParameter);
+}
 
 #ifdef EDITOR_AND_SLIDERS
-// !!! Content should correspond to the previous myAudioParameterFloatValueChanged function !!!
 void ModularVSTAudioProcessor::myAudioParameterFloatValueChanged (Slider* mySlider)
 {
-    if ((mySlider->getName() == "mouseX" || mySlider->getName() == "mouseY") && (*editorSliders)[2]->getValue() >= 0.5)
-        currentlyActiveInstrument->virtualMouseMove ((*editorSliders)[0]->getValue(), (*editorSliders)[1]->getValue());
-
-    if (mySlider->getName() == "excite" || mySlider->getName() == "excitationType")
-    {
-        if ((*editorSliders)[2]->getValue() >= 0.5)
-        {
-            switch (static_cast<int> ((*editorSliders)[3]->getValue()))
-            {
-                case 0:
-                    currentlyActiveInstrument->setExcitationType (pluck);
-                    break;
-                case 1:
-                    currentlyActiveInstrument->setExcitationType (hammer);
-                    break;
-                case 2:
-                    currentlyActiveInstrument->setExcitationType (bow);
-                    break;
-            }
-
-        } else {
-            currentlyActiveInstrument->setExcitationType (noExcitation);
-            currentlyActiveInstrument->resetPrevMouseMoveResonator();
-        }
-        currentlyActiveInstrument->virtualMouseMove ((*editorSliders)[0]->getValue(), (*editorSliders)[1]->getValue());
-
-    }
+    for (int i = 0; i < editorSliders->size(); ++i)
+        if (mySlider == (*editorSliders)[i].get())
+            sliderValues[i] = mySlider->getValue();
+    
+    genericAudioParameterFloatValueChanged (mySlider->getName(), mySlider->getValue());
 }
 #endif
 

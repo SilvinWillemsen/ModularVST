@@ -61,7 +61,7 @@ public:
 
     void setAlreadyExcited (bool a) { alreadyExcited = a; };
     
-    void initialiseExciterModule() override;
+    void initialiseExciterModule (std::shared_ptr<ExciterModule> exciterModule) override;
     
     void saveOutput() override;
     

@@ -12,7 +12,7 @@
 #include "Bow.h"
 
 //==============================================================================
-Bow::Bow (int ID, int N) : ExciterModule (ID, N, bowExciter)
+Bow::Bow (int ID, int N) : ExciterModule (ID, N, bow)
 {
     tol = 1e-7;
     a = 100; // Free parameter

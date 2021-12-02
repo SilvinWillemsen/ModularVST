@@ -18,11 +18,11 @@
 class ExciterModule : public HighResolutionTimer, public ChangeBroadcaster
 {
 public:
-    ExciterModule (int ID, int N = 0, ExciterModuleType exciterModuleType = noExciter);
+    ExciterModule (int ID, int N = 0, ExcitationType excitationType = noExcitation);
     virtual ~ExciterModule();
 
-    ExciterModuleType getExciterModuleType() { return exciterModuleType; };
-    void setExciterModuleType (ExciterModuleType e) { exciterModuleType = e; };
+    ExcitationType getExcitationType() { return excitationType; };
+    void setExcitationType (ExcitationType e) { excitationType = e; };
     
     virtual void drawExciter (Graphics& g) {};
     virtual void initialise (NamedValueSet& parametersFromResonator) {};
@@ -57,7 +57,7 @@ public:
     virtual void saveOutput() {};
     
 protected:
-    ExciterModuleType exciterModuleType;
+    ExcitationType excitationType;
     double excitationLoc = 0.5;
     double controlLoc = 0;
 

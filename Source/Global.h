@@ -82,14 +82,6 @@ enum ResonatorModuleType
     stiffMembrane,
 };
 
-enum ExciterModuleType
-{
-    noExciter = 0,
-    pluckExciter,
-    hammerExciter,
-    bowExciter
-};
-
 enum ConnectionType
 {
     rigid = 1, // set to 1 for the combo box options

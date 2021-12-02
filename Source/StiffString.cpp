@@ -102,14 +102,10 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
     {
         // something double here
         setExcitationType (bow);
-        getExciterModule()->setExciterModuleType (bowExciter);
-        initialiseExciterModule();
     }
     else if (Global::pluckAtStartup)
     {
         setExcitationType (pluck);
-        getExciterModule()->setExciterModuleType (pluckExciter);
-        initialiseExciterModule();
     }
     
 #ifdef SAVE_OUTPUT
@@ -186,7 +182,7 @@ void StiffString::paint (juce::Graphics& g)
     // Draw excitation module
     if (applicationState == normalState && isExcitationActive())
     {
-        getExciterModule()->drawExciter (g);
+        getCurExciterModule()->drawExciter (g);
     }
     // Draw inputs and outputs
     if ((applicationState == editInOutputsState && isChildOfHighlightedInstrument()) || Global::alwaysShowInOuts)
@@ -338,15 +334,15 @@ void StiffString::myMouseEnter (const double x, const double y, bool triggeredBy
     if (getExcitationType() == noExcitation)
         return;
     
-    getExciterModule()->startTimer (1.0 / 150.0);
+    getCurExciterModule()->startTimer (1.0 / 150.0);
 
     //    prevYLoc = e.y;
     switch (getExcitationType()) {
         case pluck:
-            getExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
+            getCurExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
             break;
         case bow:
-            getExciterModule()->setForce (40.0 * (rho * A));
+            getCurExciterModule()->setForce (40.0 * (rho * A));
             break;
             
         default:
@@ -360,12 +356,12 @@ void StiffString::myMouseExit (const double x, const double y, bool triggeredByM
     if (getExcitationType() == noExcitation)
         return;
         
-    getExciterModule()->stopTimer();
-    getExciterModule()->mouseExited();
+    getCurExciterModule()->stopTimer();
+    getCurExciterModule()->mouseExited();
 
     switch (getExcitationType()) {
         case bow:
-            getExciterModule()->setForce (0.0);
+            getCurExciterModule()->setForce (0.0);
             break;
             
         default:
@@ -380,8 +376,8 @@ void StiffString::myMouseMove (const double x, const double y, bool triggeredByM
     if (getExcitationType() == noExcitation)
         return;
     
-    getExciterModule()->setExcitationLoc (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));
-    getExciterModule()->setControlLoc (static_cast<float> (y) / (triggeredByMouse ? getHeight() : 1));
+    getCurExciterModule()->setExcitationLoc (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));
+    getCurExciterModule()->setControlLoc (static_cast<float> (y) / (triggeredByMouse ? getHeight() : 1));
     
 //    double lpCoeff = 0.99;
 //    double curLoc = static_cast<float> (e.y) / getHeight();
@@ -501,11 +497,11 @@ double StiffString::getInputEnergy()
     return 0;
 }
 
-void StiffString::initialiseExciterModule()
+void StiffString::initialiseExciterModule (std::shared_ptr<ExciterModule> exciterModule)
 {
     
     NamedValueSet parametersFromResonator;
-    switch (getExcitationType())
+    switch (exciterModule->getExcitationType())
     {
         case pluck:
             parametersFromResonator.set ("h", h);
@@ -529,7 +525,7 @@ void StiffString::initialiseExciterModule()
             break;
             
     }
-    getExciterModule()->initialise (parametersFromResonator);
+    exciterModule->initialise (parametersFromResonator);
 }
 
 void StiffString::saveOutput()

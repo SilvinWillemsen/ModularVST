@@ -17,7 +17,8 @@
 
 //==============================================================================
 /**
-*/
+ 
+ */
 class ModularVSTAudioProcessor  : public juce::AudioProcessor
 {
 public:
@@ -107,9 +108,19 @@ public:
     }
     
 //# ifdef NO_EDITOR
+    enum ParameterNameIdx
+    {
+        mouseXID = 0,
+        mouseYID,
+        exciteID,
+        excitationTypeID
+    };
+    
     class MyAudioParameterFloat  : public AudioParameterFloat
     {
     public:
+        
+        
         MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
                                String parameterID,
                                String parameterName,
@@ -134,13 +145,10 @@ public:
     };
     
     void myAudioParameterFloatValueChanged (MyAudioParameterFloat* myAudioParameter);
+    void genericAudioParameterFloatValueChanged (String name, float value);
+    
 #ifdef EDITOR_AND_SLIDERS
     void myAudioParameterFloatValueChanged (Slider* mySlider);
-#endif
-    
-//#endif
-    
-#ifdef EDITOR_AND_SLIDERS
     std::vector<MyAudioParameterFloat*>& getMyParameters() { return allParameters; };
     void setEditorSliders (std::vector<std::shared_ptr<Slider>>* s) { editorSliders = s; };
 #endif
@@ -174,6 +182,7 @@ private:
     MyAudioParameterFloat* excite;
     MyAudioParameterFloat* excitationType;
     std::vector<MyAudioParameterFloat*> allParameters;
+    std::vector<float> sliderValues;
 //#endif
 #ifdef EDITOR_AND_SLIDERS
     std::vector<std::shared_ptr<Slider>>* editorSliders;

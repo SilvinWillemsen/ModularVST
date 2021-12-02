@@ -21,10 +21,6 @@ ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parame
     else
         is1D = false;
     addChangeListener (instrument);
-    
-    exciterModule = std::make_shared<ExciterModule> (getID());
-    exciterModule->addChangeListener (this);
-
 }
 
 ResonatorModule::~ResonatorModule()
@@ -57,6 +53,17 @@ void ResonatorModule::initialiseModule()
     
     jassert (connectionDivisionTerm != -1); // connectionDivisionTerm must have been set in module inheriting from this class
 
+    bowModule = std::make_shared<Bow>(getID(), N);
+    bowModule->addChangeListener (this);
+    initialiseExciterModule (bowModule);
+    
+    pluckModule = std::make_shared<Pluck>(getID(), N);
+    pluckModule->addChangeListener (this);
+    initialiseExciterModule (pluckModule);
+
+    curExciterModule = nullptr;
+    setExcitationType (noExcitation);
+
     moduleIsReady = true;
     justReady = true;
 }
@@ -74,7 +81,9 @@ void ResonatorModule::update()
     u[2] = u[1];
     u[1] = u[0];
     u[0] = uTmp;
-    exciterModule->updateStates();
+    
+    if (curExciterModule != nullptr)
+        curExciterModule->updateStates();
 }
 
 double ResonatorModule::getStateAt (int idx, int time)
@@ -96,26 +105,23 @@ void ResonatorModule::setExcitationType (ExcitationType e)
     switch (e)
     {
         case pluck:
-            exciterModule = std::make_shared<Pluck> (getID(), N);
-            initialiseExciterModule();
+            curExciterModule = pluckModule;
             break;
         case bow:
-            exciterModule = std::make_shared<Bow> (getID(), N);
-            initialiseExciterModule();
-            exciterModule->setControlParameter (0.2);
+            curExciterModule = bowModule;
+            curExciterModule->setControlParameter (0.2);
             break;
     }
-    exciterModule->addChangeListener (this);
 
 }
 
 void ResonatorModule::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
-    if (changeBroadcaster == exciterModule.get())
-        if (exciterModule->getAction() == setStatesToZeroAction)
+    if (changeBroadcaster == curExciterModule.get())
+        if (curExciterModule->getAction() == setStatesToZeroAction)
         {
             action = setStatesToZeroAction;
             sendChangeMessage();
-            exciterModule->setAction (noAction);
+            curExciterModule->setAction (noAction);
         }
 }

@@ -479,10 +479,10 @@ void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& w
     {
         switch (res->getExcitationType()) {
             case bow:
-                res->getExciterModule()->setControlParameter (Global::limit (res->getExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
+                res->getCurExciterModule()->setControlParameter (Global::limit (res->getCurExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
                 break;
             case pluck:
-                res->getExciterModule()->setControlParameter (Global::limit (res->getExciterModule()->getControlParameter() - wheel.deltaY, 1, 10));
+                res->getCurExciterModule()->setControlParameter (Global::limit (res->getCurExciterModule()->getControlParameter() - wheel.deltaY, 1, 10));
                 break;
             default:
                 break;
@@ -1119,11 +1119,9 @@ void Instrument::virtualMouseMove (const double x, const double y)
     
     if (prevMouseMoveResonator == -1)
         resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
-
-    if (prevMouseMoveResonator != curMouseMoveResonator)
+    else if (prevMouseMoveResonator != curMouseMoveResonator)
     {
-        if (prevMouseMoveResonator != -1)
-            resonators[prevMouseMoveResonator]->myMouseExit (x, yRes, false);
+        resonators[prevMouseMoveResonator]->myMouseExit (x, yRes, false);
         resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
     }
     prevMouseMoveResonator = curMouseMoveResonator;

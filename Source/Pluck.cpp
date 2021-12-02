@@ -12,7 +12,7 @@
 #include "Pluck.h"
 
 //==============================================================================
-Pluck::Pluck (int ID, int N) : ExciterModule (ID, N, pluckExciter)
+Pluck::Pluck (int ID, int N) : ExciterModule (ID, N, pluck)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -114,7 +114,7 @@ void Pluck::calculate (std::vector<double*>& u)
     
     cLoc = 0;
     alpha = 0;
-    double IJ = 0;
+    IJ = 0;
     width = getControlParameter();
     singlePoint = width < 2.0;
     if (singlePoint)

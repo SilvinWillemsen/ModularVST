@@ -77,6 +77,7 @@ private:
     double width = 0;
     
     std::vector<double> I, ItoDraw;
+    double IJ = 0;
     
 #ifdef SAVE_OUTPUT
     std::ofstream statesSave;

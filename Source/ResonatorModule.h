@@ -49,7 +49,7 @@ public:
     // energy
     double getTotalEnergy() {
         double resEnergy = getKinEnergy() + getPotEnergy() + getDampEnergy() + getInputEnergy();
-        double exciterEnergy = exciterModule->getEnergy();
+        double exciterEnergy = getCurExciterModule()->getEnergy();
         return resEnergy + exciterEnergy;
     };
     
@@ -61,7 +61,7 @@ public:
     virtual void exciteRaisedCos() {};
     
     // Excite using excitation module
-    void excite() { if (excitationActive) getExciterModule()->calculate (u); };
+    void excite() { if (excitationActive) getCurExciterModule()->calculate (u); };
 
     void setApplicationState (ApplicationState a) { applicationState = a; };
     
@@ -124,8 +124,8 @@ public:
     bool isExcitationActive() { return excitationActive; };
     void setExcitationActive (bool a) { excitationActive = a; };
     
-    std::shared_ptr<ExciterModule> getExciterModule() { return exciterModule; };
-    virtual void initialiseExciterModule() {};
+    std::shared_ptr<ExciterModule> getCurExciterModule() { return curExciterModule; };
+    virtual void initialiseExciterModule (std::shared_ptr<ExciterModule>) {};
     
     long getCalcCounter() { return calcCounter; };
 
@@ -210,7 +210,11 @@ private:
     int totOutputs = 0;
     
     ExcitationType excitationType = noExcitation;
-    std::shared_ptr<ExciterModule> exciterModule;
+    std::shared_ptr<ExciterModule> curExciterModule;
+    
+    std::shared_ptr<Pluck> pluckModule;
+    std::shared_ptr<Bow> bowModule;
+
     bool excitationActive = (Global::bowAtStartup || Global::pluckAtStartup) ? true : false;
     
     bool childOfHighlightedInstrument = false;

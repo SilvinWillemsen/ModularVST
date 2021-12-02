@@ -12,7 +12,7 @@
 #include "ExciterModule.h"
 
 //==============================================================================
-ExciterModule::ExciterModule (int ID, int N, ExciterModuleType exciterModuleType) : ID (ID), N (N), exciterModuleType (exciterModuleType)
+ExciterModule::ExciterModule (int ID, int N, ExcitationType excitationType) : ID (ID), N (N), excitationType (excitationType)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
