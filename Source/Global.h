@@ -13,7 +13,7 @@
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
 //#define NO_EDITOR
-//#define EDITOR_AND_SLIDERS
+#define EDITOR_AND_SLIDERS
 
 #include <JuceHeader.h>
 
