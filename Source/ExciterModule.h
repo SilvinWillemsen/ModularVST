@@ -56,6 +56,7 @@ public:
     
     virtual void saveOutput() {};
     
+    void triggerExciterModule() { trigger = true; };
 protected:
     ExcitationType excitationType;
     double excitationLoc = 0.5;
@@ -64,6 +65,7 @@ protected:
     int N = 0;
     double f = 1;
     double controlParameter = 6; // parameter to be controlled by the application. Could be bow velocity fx.
+    bool trigger = false;
     
     long calcCounter = 0;
     bool moduleIsReady = false;

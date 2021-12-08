@@ -341,6 +341,9 @@ void StiffString::myMouseEnter (const double x, const double y, bool triggeredBy
         case pluck:
             getCurExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
             break;
+        case hammer:
+            getCurExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
+            break;
         case bow:
             getCurExciterModule()->setForce (40.0 * (rho * A));
             break;
@@ -404,6 +407,8 @@ void StiffString::mouseDown (const MouseEvent& e)
         case normalState:
         {
             this->findParentComponentOfClass<Component>()->mouseDown(e);
+            if (getExcitationType() == hammer)
+                getCurExciterModule()->triggerExciterModule();
             if (isExcitationActive())
                 return;
             excitationLoc = static_cast<float>(e.x) / static_cast<float>(getWidth());
@@ -504,6 +509,7 @@ void StiffString::initialiseExciterModule (std::shared_ptr<ExciterModule> excite
     switch (exciterModule->getExcitationType())
     {
         case pluck:
+        case hammer:
             parametersFromResonator.set ("h", h);
             parametersFromResonator.set ("k", k);
             parametersFromResonator.set ("rho", rho);

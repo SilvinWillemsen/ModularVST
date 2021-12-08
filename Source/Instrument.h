@@ -222,6 +222,11 @@ public:
     
     void unReadyAllModules() { for (auto res : resonators) res->unReadyModule(); };
     void reReadyAllModules() { for (auto res : resonators) res->readyModule(); };
+    
+    void setExciterForce (float f) { for (auto res : resonators) res->setExciterForce (f); };
+    void setExciterControlParameter (float c) { for (auto res : resonators) res->setExciterControlParameter (c); };
+    ExcitationType getExcitationType() { if (resonators.size() != 0) return resonators[0]->getExcitationType(); else return noExcitation; };
+    
 private:
     
     int fs;

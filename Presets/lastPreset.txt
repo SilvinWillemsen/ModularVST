@@ -1,1 +1,1 @@
-SimpleString.xml
+TwoStrings.xml

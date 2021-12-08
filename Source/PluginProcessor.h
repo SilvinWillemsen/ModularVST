@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "../SenselWrapper/SenselWrapper.h"
 #include "Instrument.h"
 
 #include <fstream>
@@ -19,7 +20,7 @@
 /**
  
  */
-class ModularVSTAudioProcessor  : public juce::AudioProcessor
+class ModularVSTAudioProcessor  : public juce::AudioProcessor, public HighResolutionTimer
 {
 public:
     //==============================================================================
@@ -117,34 +118,6 @@ public:
         exciteID,
         excitationTypeID
     };
-//
-//    class MyAudioParameterFloat  : public AudioParameterFloat
-//    {
-//    public:
-//
-//
-//        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
-//                               String parameterID,
-//                               String parameterName,
-//                               float minValue,
-//                               float maxValue,
-//                               float defaultValue);
-//
-//        MyAudioParameterFloat (ModularVSTAudioProcessor* audioProcessor,
-//                               String parameterID,
-//                               String parameterName,
-//                               float minValue,
-//                               float maxValue,
-//                               float stepSize,
-//                               float defaultValue);
-//
-//        ~MyAudioParameterFloat() override {};
-//
-//        void valueChanged (float value) override { audioProcessor->myAudioParameterFloatValueChanged (this); };
-//
-//    private:
-//        ModularVSTAudioProcessor* audioProcessor;
-//    };
     
     void myRangedAudioParameterChanged (RangedAudioParameter* myAudioParameter);
     void genericAudioParameterValueChanged (String name, float value);
@@ -154,6 +127,8 @@ public:
     std::vector<RangedAudioParameter*>& getMyParameters() { return allParameters; };
     void setEditorSliders (std::vector<std::shared_ptr<Slider>>* s) { editorSliders = s; };
 #endif
+    
+    void hiResTimerCallback() override;
     
 private:
     //==============================================================================
@@ -193,6 +168,10 @@ private:
 #ifdef EDITOR_AND_SLIDERS
     std::vector<std::shared_ptr<Slider>>* editorSliders;
 #endif
+    
+    OwnedArray<Sensel> sensels;
+    int amountOfSensels = 1;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };

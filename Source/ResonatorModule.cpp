@@ -53,13 +53,18 @@ void ResonatorModule::initialiseModule()
     
     jassert (connectionDivisionTerm != -1); // connectionDivisionTerm must have been set in module inheriting from this class
 
+    pluckModule = std::make_shared<Pluck>(getID(), N);
+    pluckModule->addChangeListener (this);
+    initialiseExciterModule (pluckModule);
+
+    hammerModule = std::make_shared<Hammer>(getID(), N);
+    hammerModule->addChangeListener (this);
+    initialiseExciterModule (hammerModule);
+
     bowModule = std::make_shared<Bow>(getID(), N);
     bowModule->addChangeListener (this);
     initialiseExciterModule (bowModule);
     
-    pluckModule = std::make_shared<Pluck>(getID(), N);
-    pluckModule->addChangeListener (this);
-    initialiseExciterModule (pluckModule);
 
     curExciterModule = nullptr;
     setExcitationType (noExcitation);
@@ -106,6 +111,9 @@ void ResonatorModule::setExcitationType (ExcitationType e)
     {
         case pluck:
             curExciterModule = pluckModule;
+            break;
+        case hammer:
+            curExciterModule = hammerModule;
             break;
         case bow:
             curExciterModule = bowModule;

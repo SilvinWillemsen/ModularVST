@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    Pluck.h
+    Hammer.h
     Created: 25 Nov 2021 2:42:09pm
     Author:  Silvin Willemsen
 
@@ -16,11 +16,11 @@
 //==============================================================================
 /*
 */
-class Pluck  :  public ExciterModule
+class Hammer  :  public ExciterModule
 {
 public:
-    Pluck (int ID, int N);
-    ~Pluck() override;
+    Hammer (int ID, int N);
+    ~Hammer() override;
     
     void drawExciter (Graphics& g) override;
     
@@ -38,11 +38,14 @@ public:
     void setResHeight (int r) { resHeight = r; };
     
     void saveOutput() override;
+    
+    void setHammerActive (bool h) { hammerIsActive = h; };
 private:
     // string variables still needed in the NR solve
     double rho, A, sig0, k, h;
     double connectionDivisionTerm;
     double force;
+    
     double B1, B2, C1, Adiv;
     double v1, v2, a11, a12, a21, a22, oOdet, solut1, solut2;
     
@@ -58,14 +61,12 @@ private:
     
     int cLoc;
     double alpha;
-    
-    bool pickIsAbove;
-    bool plucked = false;
-    int pluckedCounter = 0;
-    int pluckedCounterLimit = 1000;
-    int pluckSgn;
-    double forceLimitOh = 500;
-    
+         
+    bool forceIsZero = false;
+    bool hammerIsAbove;
+    int hammerSgn;
+    bool hammerIsActive = false;
+
     double totDampEnergy = 0;
     double totPowEnergy = 0;
     double prevDampEnergy = 0;
@@ -84,5 +85,5 @@ private:
     int counter = 0;
 #endif
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pluck)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Hammer)
 };

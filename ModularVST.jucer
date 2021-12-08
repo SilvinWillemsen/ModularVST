@@ -4,6 +4,32 @@
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
               pluginFormats="buildAU,buildStandalone,buildUnity">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
+    <GROUP id="{4B2749B4-BD26-0801-4218-F77B211B9B79}" name="SenselWrapper">
+      <GROUP id="{D5BFAB12-62A1-B1B6-0553-AEA15856F137}" name="lib">
+        <FILE id="ETh4T9" name="sensel.c" compile="1" resource="0" file="SenselWrapper/lib/sensel.c"/>
+        <FILE id="IpwXZW" name="sensel.h" compile="0" resource="0" file="SenselWrapper/lib/sensel.h"/>
+        <FILE id="owIMYA" name="sensel_device.h" compile="0" resource="0" file="SenselWrapper/lib/sensel_device.h"/>
+        <FILE id="komvOM" name="sensel_device_vidpid.h" compile="0" resource="0"
+              file="SenselWrapper/lib/sensel_device_vidpid.h"/>
+        <FILE id="qhzTqL" name="sensel_protocol.h" compile="0" resource="0"
+              file="SenselWrapper/lib/sensel_protocol.h"/>
+        <FILE id="t327xH" name="sensel_register.c" compile="1" resource="0"
+              file="SenselWrapper/lib/sensel_register.c"/>
+        <FILE id="Prz9Z3" name="sensel_register.h" compile="0" resource="0"
+              file="SenselWrapper/lib/sensel_register.h"/>
+        <FILE id="dScZe7" name="sensel_register_map.h" compile="0" resource="0"
+              file="SenselWrapper/lib/sensel_register_map.h"/>
+        <FILE id="iUxNJD" name="sensel_serial.h" compile="0" resource="0" file="SenselWrapper/lib/sensel_serial.h"/>
+        <FILE id="ucMGi3" name="sensel_serial_linux.c" compile="1" resource="0"
+              file="SenselWrapper/lib/sensel_serial_linux.c"/>
+        <FILE id="xvBHOZ" name="sensel_serial_win.c" compile="1" resource="0"
+              file="SenselWrapper/lib/sensel_serial_win.c"/>
+        <FILE id="ioAS21" name="sensel_types.h" compile="0" resource="0" file="SenselWrapper/lib/sensel_types.h"/>
+      </GROUP>
+      <FILE id="Lgz53x" name="LICENSE" compile="0" resource="1" file="SenselWrapper/LICENSE"/>
+      <FILE id="nmr2IT" name="README.md" compile="0" resource="1" file="SenselWrapper/README.md"/>
+      <FILE id="MhelAl" name="SenselWrapper.h" compile="0" resource="0" file="SenselWrapper/SenselWrapper.h"/>
+    </GROUP>
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
       <GROUP id="{671C00D5-9279-8FA7-65F1-1A317725E8BF}" name="Pugi">
         <FILE id="tyhv6E" name="pugiconfig.hpp" compile="0" resource="0" file="Source/pugiconfig.hpp"/>
@@ -35,6 +61,8 @@
       <GROUP id="{6A154B47-B008-FD5D-EC8B-C1607BCDEF6D}" name="ExciterModules">
         <FILE id="LTXMMq" name="Pluck.cpp" compile="1" resource="0" file="Source/Pluck.cpp"/>
         <FILE id="aG2na5" name="Pluck.h" compile="0" resource="0" file="Source/Pluck.h"/>
+        <FILE id="IUv8Fv" name="Hammer.cpp" compile="1" resource="0" file="Source/Hammer.cpp"/>
+        <FILE id="CyKMMI" name="Hammer.h" compile="0" resource="0" file="Source/Hammer.h"/>
         <FILE id="WZEkM5" name="Bow.cpp" compile="1" resource="0" file="Source/Bow.cpp"/>
         <FILE id="Q2htmX" name="Bow.h" compile="0" resource="0" file="Source/Bow.h"/>
         <FILE id="qFhD7f" name="ExciterModule.cpp" compile="1" resource="0"

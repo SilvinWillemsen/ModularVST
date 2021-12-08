@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    Pluck.cpp
+    Hammer.cpp
     Created: 25 Nov 2021 2:42:09pm
     Author:  Silvin Willemsen
 
@@ -9,10 +9,10 @@
 */
 
 #include <JuceHeader.h>
-#include "Pluck.h"
+#include "Hammer.h"
 
 //==============================================================================
-Pluck::Pluck (int ID, int N) : ExciterModule (ID, N, pluck)
+Hammer::Hammer (int ID, int N) : ExciterModule (ID, N, hammer)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -33,8 +33,8 @@ if (Global::pluckAtStartup)
         excitationLoc = 0.5;
         controlLoc = 0;
         resHeight = extForce * (Global::stringVisualScaling) / (K * (-controlLoc + 0.5));
-        pluckSgn = 1;
-        pickIsAbove = false;
+//        hammerSgn = 1;
+//        hammerIsAbove = false;
         moduleIsCalculating = true;
     }
 #ifdef SAVE_OUTPUT
@@ -43,11 +43,11 @@ if (Global::pluckAtStartup)
 
 }
 
-Pluck::~Pluck()
+Hammer::~Hammer()
 {
 }
 
-void Pluck::drawExciter (Graphics& g)
+void Hammer::drawExciter (Graphics& g)
 {
     Rectangle<int> bounds = g.getClipBounds();
     g.setColour(Colours::white.withAlpha(0.5f));
@@ -81,7 +81,7 @@ void Pluck::drawExciter (Graphics& g)
 //                   Global::excitationVisualWidth);
 }
 
-void Pluck::initialise (NamedValueSet& parametersFromResonator)
+void Hammer::initialise (NamedValueSet& parametersFromResonator)
 {
     h = *parametersFromResonator.getVarPointer ("h");
     rho = *parametersFromResonator.getVarPointer ("rho");
@@ -108,9 +108,11 @@ void Pluck::initialise (NamedValueSet& parametersFromResonator)
     moduleIsReady = true;
 }
 
-void Pluck::calculate (std::vector<double*>& u)
+void Hammer::calculate (std::vector<double*>& u)
 {
-    force = K * (-controlLoc + 0.5) / (Global::stringVisualScaling);
+    force = (forceIsZero ? 0 : 1) * (trigger ? -1 : 1) * K * (-controlLoc + 0.5) / (Global::stringVisualScaling);
+    
+    Kc = trigger ? KcOrig : 0;
     
     cLoc = 0;
     alpha = 0;
@@ -170,7 +172,7 @@ void Pluck::calculate (std::vector<double*>& u)
     wNext = B1 * w + C1 * wPrev + B2 * force;
     wStar = wNext;
       
-    if (pickIsAbove)
+    if (hammerIsAbove)
     {
         eta = -eta;
         etaPrev = -etaPrev;
@@ -184,7 +186,7 @@ void Pluck::calculate (std::vector<double*>& u)
     if (eta < 0)
     {
         etaStar = wStar - uStar;
-        if (pickIsAbove)
+        if (hammerIsAbove)
             etaStar = -etaStar;
 //        if (etaStar - etaPrev == 0)
         if (floor(100000000 * (etaStar - etaPrev)) == 0)
@@ -195,8 +197,8 @@ void Pluck::calculate (std::vector<double*>& u)
         g = kappaG * sqrt (Kc * (alphaC + 1.0) / 2.0) * pow(eta, (alphaC - 1.0) / 2.0);
     }
 
-    v1 = uStar + pluckSgn * Jterm * IJ * (-g * g * 0.25 * etaPrev + psiPrev * g);
-    v2 = wStar - pluckSgn * k * k / (M * (1 + R * k / (2 * M))) * (-g * g * 0.25 * etaPrev + psiPrev * g);
+    v1 = uStar + hammerSgn * Jterm * IJ * (-g * g * 0.25 * etaPrev + psiPrev * g);
+    v2 = wStar - hammerSgn * k * k / (M * (1 + R * k / (2 * M))) * (-g * g * 0.25 * etaPrev + psiPrev * g);
     
     a11 = 1.0 + Jterm * IJ * g * g * 0.25;
     a12 = -Jterm * IJ * g * g * 0.25;
@@ -208,11 +210,11 @@ void Pluck::calculate (std::vector<double*>& u)
     solut2 = (-v1 * a21 + v2 * a11) * oOdet;
     
     etaNext = solut2 - solut1;
-    if (pickIsAbove)
+    if (hammerIsAbove)
         etaNext = -etaNext;
     
     // Apply to states
-    double val = pluckSgn * connectionDivisionTerm * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
+    double val = hammerSgn * connectionDivisionTerm * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
     
     if (singlePoint)
     {
@@ -221,14 +223,23 @@ void Pluck::calculate (std::vector<double*>& u)
         for (int i = 0; i < I.size(); ++i)
         {
             int idx = cLoc + i - floor(width) * 0.5;
-            u[0][idx] += pluckSgn * connectionDivisionTerm * I[i] * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
+            u[0][idx] += hammerSgn * connectionDivisionTerm * I[i] * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
         }
     }
-    wNext = wNext - pluckSgn * k * k / (M * (1.0 + R * k / (2.0 * M))) * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
+    wNext = wNext - hammerSgn * k * k / (M * (1.0 + R * k / (2.0 * M))) * (g * g * 0.25 * (etaNext - etaPrev) + psiPrev * g);
     
     psi = psiPrev + g * 0.5 * (etaNext - etaPrev);
     double force = 0.5 * (psi + psiPrev) * g;
-
+    
+    if (forceIsZero && ((!hammerIsAbove && wNext < 0) || (hammerIsAbove && wNext > 0)))
+    {
+        forceIsZero = false;
+        trigger = false;
+    }
+    float velocity = abs((wNext - wPrev) / (2.0 * k));
+    if (abs((wNext - wPrev) / (2.0 * k)) < 1.0 / Global::stringVisualScaling && trigger)
+        forceIsZero = true;
+    
     if (force > 100)
     {
         std::cout << "Details: " << "etaStar - etaPrev: " << etaStar - etaPrev << " g: " << g << std::endl;
@@ -240,36 +251,7 @@ void Pluck::calculate (std::vector<double*>& u)
         std::cout << "States are set to zero" << std::endl;
         setStatesToZero();
     }
-    if (force / h > f * forceLimitOh && !plucked)
-    {
-        std::cout << getID() << ": " << force << std::endl;
-        Kc = 0;
-        plucked = true;
-        DBG("plucked!");
-    }
     
-    if (plucked)
-        ++pluckedCounter;
-    
-    if (pluckedCounter > pluckedCounterLimit && plucked)
-    {
-        Kc = KcOrig;
-        pluckedCounter = 0;
-        plucked = false;
-        psi = 0;
-        psiPrev = 0;
-        if (w - uI < 0)
-        {
-            pickIsAbove = false;
-            pluckSgn = 1;
-        }
-        else
-        {
-            pickIsAbove = true;
-            pluckSgn = -1;
-
-        }
-    }
 
     if (isnan(wNext))
         DBG("wait");
@@ -278,7 +260,7 @@ void Pluck::calculate (std::vector<double*>& u)
 
 }
 
-void Pluck::updateStates()
+void Hammer::updateStates()
 {
     if (!moduleIsCalculating)
         return;
@@ -289,7 +271,7 @@ void Pluck::updateStates()
     psiPrev = psi;
 }
 
-double Pluck::getEnergy()
+double Hammer::getEnergy()
 {
     if (!moduleIsReady || !moduleIsCalculating)
         return 0;
@@ -315,28 +297,28 @@ double Pluck::getEnergy()
     return kinEnergy + potEnergy + totDampEnergy + collEnergy - totPowEnergy; // NOTE THE MINUS-SIGN FOR THE POWER
 }
 
-void Pluck::hiResTimerCallback()
+void Hammer::hiResTimerCallback()
 {
     double lpCoeff = 0.99;
 }
 
-void Pluck::mouseEntered (const double x, const double y, int height)
+void Hammer::mouseEntered (const double x, const double y, int height)
 {
     resHeight = height;
     controlLoc = (static_cast<double>(y) / height);
     if (controlLoc >= 0.5)
     {
-        pickIsAbove = false;
-        pluckSgn = 1;
+        hammerIsAbove = false;
+        hammerSgn = 1;
     } else {
-        pickIsAbove = true;
-        pluckSgn = -1;
+        hammerIsAbove = true;
+        hammerSgn = -1;
     }
     
     wNext = (-controlLoc + 0.5) / (Global::stringVisualScaling);
 //    wNext = -(yLoc - 0.5) / (0.5 * K / (M * maxForce));
     w = wNext;
-    wPrev = w - k * static_cast<float> (pluckSgn) / (Global::stringVisualScaling); // to prevent etaStar and etaPrev from being too close to each other
+    wPrev = w - k * static_cast<float> (hammerSgn) / (Global::stringVisualScaling); // to prevent etaStar and etaPrev from being too close to each other
     prevDampEnergy = 0;
     prevPowEnergy = 0;
     totDampEnergy = 0;
@@ -346,12 +328,12 @@ void Pluck::mouseEntered (const double x, const double y, int height)
     
 }
 
-void Pluck::mouseExited()
+void Hammer::mouseExited()
 {
     moduleIsCalculating = false;
 }
 
-void Pluck::saveOutput()
+void Hammer::saveOutput()
 {
 #ifdef SAVE_OUTPUT
     statesSave << wNext << ", " << w << ", " << wPrev << ", " << psi << ", " << psiPrev << ", " << g << ";\n";

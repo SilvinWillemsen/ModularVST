@@ -14,6 +14,7 @@
 #include "Global.h"
 #include "ExciterModule.h"
 #include "Pluck.h"
+#include "Hammer.h"
 #include "Bow.h"
 #include "InOutInfo.h"
 //==============================================================================
@@ -143,8 +144,12 @@ public:
             std::cout << "donerecording = true" << std::endl;
         std::cout << "Done recording? (within res) " << doneRecording << std::endl;
         return doneRecording;
- };
-
+    };
+    
+    // ALSO DO THIS FOR HAMMER MODULES
+    void setExciterForce (float f) { pluckModule->setForce (f); bowModule->setForce (f); };
+    void setExciterControlParameter (float c) { pluckModule->setControlParameter (c); bowModule->setControlParameter (c); };
+    void trigger (bool t) {  }
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -213,6 +218,7 @@ private:
     std::shared_ptr<ExciterModule> curExciterModule;
     
     std::shared_ptr<Pluck> pluckModule;
+    std::shared_ptr<Hammer> hammerModule;
     std::shared_ptr<Bow> bowModule;
 
     bool excitationActive = (Global::bowAtStartup || Global::pluckAtStartup) ? true : false;
