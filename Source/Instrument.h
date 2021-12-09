@@ -170,6 +170,9 @@ public:
     
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
+    void mouseEnter (const MouseEvent& e) override;
+    void mouseMove (const MouseEvent& e) override;
+    void mouseExit (const MouseEvent& e) override;
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
     
     void setApplicationState (ApplicationState a);
@@ -227,6 +230,40 @@ public:
     void setExciterControlParameter (float c) { for (auto res : resonators) res->setExciterControlParameter (c); };
     ExcitationType getExcitationType() { if (resonators.size() != 0) return resonators[0]->getExcitationType(); else return noExcitation; };
     
+    
+    // Resonator groups
+    class ResonatorGroup
+    {
+    public:
+        ResonatorGroup();
+        ~ResonatorGroup();
+        
+        std::vector<std::shared_ptr<ResonatorModule>>& getResonatorsInGroup() { return resonatorsInGroup; };
+        Colour& getColour() { return colour; };
+        void addResonator (std::shared_ptr<ResonatorModule> resToAdd, int group);
+        void removeResonator (std::shared_ptr<ResonatorModule> resToRemove);
+        
+    private:
+        std::vector<std::shared_ptr<ResonatorModule>> resonatorsInGroup;
+        Colour colour;
+    };
+
+    void addResonatorGroup();
+    void removeResonatorGroup (int idx);
+    int getNumResonatorGroups() { return (int)resonatorGroups.size(); };
+    ResonatorGroup* getCurrentlySelectedResonatorGroup() { return currentlySelectedResonatorGroup; };
+    void setCurrentlySelectedResonatorGroup (int idx)
+    {
+        currentlySelectedResonatorGroupIdx = idx;
+        if (idx == 0)
+            currentlySelectedResonatorGroup = nullptr;
+        else
+            currentlySelectedResonatorGroup = &resonatorGroups[idx-1];
+        
+        for (auto res : resonators)
+            res->setCurrentlySelectedResonatorGroup (idx);
+    }
+
 private:
     
     int fs;
@@ -270,5 +307,10 @@ private:
     ExcitationType excitationType = noExcitation;
     
     int prevMouseMoveResonator = -1;
+    
+    std::vector<ResonatorGroup> resonatorGroups;
+    ResonatorGroup* currentlySelectedResonatorGroup = nullptr;
+    int currentlySelectedResonatorGroupIdx = 0;
+    ResonatorGroup* groupCurrentlyInteractingWith = nullptr;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

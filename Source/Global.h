@@ -38,16 +38,19 @@ enum Action
     addResonatorModuleFromWindowAction,
     editResonatorModulesAction,
     removeResonatorModuleAction,
-    cancelRemoveResonatorModuleAction,
     
+    editResonatorGroupsAction,
+    addResonatorGroupAction,
+    removeResonatorGroupAction,
+//    interactWithGroupAction,
+//    noInteractionWithGroupAction,
+
     editInOutputsAction,
-    cancelInOutputsAction,
     
     addConnectionAction, // only for presets
     addInputAction,
     addOutputAction,
     editConnectionAction,
-    cancelConnectionAction,
 
     changeMassRatioAction,
     changeActiveConnectionAction,
@@ -69,7 +72,9 @@ enum ApplicationState
     editInOutputsState,
     editConnectionState,
     moveConnectionState,
-    firstConnectionState
+    firstConnectionState,
+    editResonatorGroupsState
+
 };
 
 enum ResonatorModuleType
@@ -158,6 +163,12 @@ namespace Global
         "Right-click: remove connection.",
         "CTRL-click: add connection."
     };
+
+    static StringArray groupInstructions = {
+        "Left-click: add to current group.",
+        "Right-click: remove from group."
+    };
+
 
     static NamedValueSet defaultStringParametersAdvanced {
         {"L", 1.0},
@@ -261,6 +272,4 @@ namespace Global
         uVec[bp + 2] = uVec[bp + 2] + val * (alpha * (alpha + 1) * (alpha - 1)) / 6.0;
         
     }
-
-
 };

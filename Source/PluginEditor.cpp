@@ -153,12 +153,17 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     if (changeBroadcaster == controlPanel.get())
     {
         // If the connection type changed (right now this is the only combobox in controlpanel)
-        if (controlPanel->didComboBoxChange())
+        if (controlPanel->didConnectionTypeComboBoxChange())
         {
-            for (auto inst : instruments)
-                inst->setConnectionType (controlPanel->getConnectionType());
-            controlPanel->setComboBoxChangeBoolFalse();
+            currentlyActiveInstrument->setConnectionType (controlPanel->getConnectionType());
+            controlPanel->setConnectionTypeComboBoxChangeBoolFalse();
             controlPanel->refreshConnectionLabel();
+        }
+        else if (controlPanel->didResonatorGroupComboBoxChange())
+        {
+            currentlyActiveInstrument->setCurrentlySelectedResonatorGroup (controlPanel->getCurrentResonatorGroup());
+            
+            controlPanel->setResonatorGroupComboBoxChangeBoolFalse();
         }
         else
         {
@@ -188,7 +193,10 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 }
                 case editResonatorModulesAction:
                 {
-                    setApplicationState (removeResonatorModuleState);
+                    if (applicationState == normalState)
+                        setApplicationState (removeResonatorModuleState);
+                    else
+                        setApplicationState (normalState);
                     break;
                 }
                 case removeResonatorModuleAction:
@@ -196,25 +204,24 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     currentlyActiveInstrument->setToRemoveResonatorModule();
                     break;
                 }
-                case cancelRemoveResonatorModuleAction:
-                {
-                    setApplicationState (normalState);
-                    break;
-                }
+
                 case editInOutputsAction:
                 {
-                    setApplicationState (editInOutputsState);
-                    break;
-                }
-                case cancelInOutputsAction:
-                {
-                    setApplicationState (normalState);
+                    if (applicationState == normalState)
+                        setApplicationState (editInOutputsState);
+                    else
+                        setApplicationState (normalState);
+
                     break;
                 }
 
                 case editConnectionAction:
                 {
-                    setApplicationState (editConnectionState);
+                    if (applicationState == normalState)
+                        setApplicationState (editConnectionState);
+                    else
+                        setApplicationState (normalState);
+
                     break;
                 }
                     
@@ -223,9 +230,23 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     currentlyActiveInstrument->setCustomMassRatio (controlPanel->getCurSliderValue());
                     break;
                 }
-                case cancelConnectionAction:
+
+                case editResonatorGroupsAction:
                 {
-                    setApplicationState (normalState);
+                    if (applicationState == normalState)
+                        setApplicationState (editResonatorGroupsState);
+                    else
+                        setApplicationState (normalState);
+                    break;
+                }
+                case addResonatorGroupAction:
+                {
+                    addResonatorGroup();
+                    break;
+                }
+                case removeResonatorGroupAction:
+                {
+                    removeResonatorGroup();
                     break;
                 }
                 case savePresetAction:
@@ -441,12 +462,6 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
     });
     
 }
-//std::function<void (const FileChooser&)> ModularVSTAudioProcessorEditor::loadPresetCallBack (FileChooser& fileChooser)
-//{
-////   String resultingFile = fileChooser.getResult().getFullPathName();
-////   std::cout << resultingFile << std::endl;
-//}
-
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
 {
     if (applicationState == removeResonatorModuleState)
@@ -455,6 +470,21 @@ void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
     controlPanel->setApplicationState (a);
     controlPanel->refresh (currentlyActiveInstrument);
     audioProcessor.setApplicationState (a);
+}
+
+void ModularVSTAudioProcessorEditor::addResonatorGroup()
+{
+    controlPanel->addResonatorGroup();
+    currentlyActiveInstrument->addResonatorGroup();
+}
+
+void ModularVSTAudioProcessorEditor::removeResonatorGroup()
+{
+    if (controlPanel->getNumGroups() == 0)
+        return;
+    currentlyActiveInstrument->removeResonatorGroup (controlPanel->getCurrentResonatorGroup() - 1);
+    controlPanel->removeResonatorGroup();
+
 }
 
 #ifdef EDITOR_AND_SLIDERS

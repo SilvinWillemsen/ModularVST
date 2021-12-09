@@ -47,9 +47,9 @@ public:
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void sliderValueChanged (Slider* slider) override;
 
-    bool didComboBoxChange() { return comboBoxChangeBool; };
-    void setComboBoxChangeBoolFalse() { comboBoxChangeBool = false; };
-    ConnectionType getConnectionType() { return connectionType; };
+    bool didConnectionTypeComboBoxChange() { return connectionTypeComboBoxChangeBool; };
+    void setConnectionTypeComboBoxChangeBoolFalse() { connectionTypeComboBoxChangeBool = false; };
+    ConnectionType getConnectionType() { return static_cast<ConnectionType> (connectionTypeBox->getSelectedId()); };
     
     double getCurSliderValue() { return curSliderValue; };
     void setMassRatioSliderValue (double val) { massRatioSlider->setValue (val, dontSendNotification); };
@@ -58,6 +58,14 @@ public:
     void setCurrentlyActiveConnection (Instrument::ConnectionInfo* CI);
     void refreshConnectionLabel(); 
     
+    int getNumGroups() { return numGroups; };
+    bool didResonatorGroupComboBoxChange() { return resonatorGroupComboBoxChangeBool; };
+    void setResonatorGroupComboBoxChangeBoolFalse() { resonatorGroupComboBoxChangeBool = false; };
+    int getCurrentResonatorGroup() { return resonatorGroupBox->getSelectedId(); };
+    void addResonatorGroup() { ++numGroups; refreshResonatorGroupBox(); };
+    void removeResonatorGroup () { --numGroups; refreshResonatorGroupBox(); };
+    
+    void refreshResonatorGroupBox();
 private:
     
     // Collection of all buttons
@@ -68,7 +76,10 @@ private:
     // 4 - Edit In- Outputs
     // 5 - Edit Connections
     // 6 - Save Preset
-    // 6 - Load Preset
+    // 7 - Load Preset
+    // 8 - Edit Resonator Groups
+    // 9 - Add Resonator Group
+    // 10 - Remove Resonator Group
 
     std::vector<std::shared_ptr<TextButton>> allButtons;
     
@@ -80,6 +91,9 @@ private:
     std::shared_ptr<TextButton> editConnectionButton;               // 5
     std::shared_ptr<TextButton> savePresetButton;                   // 6
     std::shared_ptr<TextButton> loadPresetButton;                   // 7
+    std::shared_ptr<TextButton> editResonatorGroupsButton;          // 8
+    std::shared_ptr<TextButton> addResonatorGroupButton;            // 9
+    std::shared_ptr<TextButton> removeResonatorGroupButton;         // 10
 
     std::shared_ptr<Label> instructionsLabel1;
     std::shared_ptr<Label> instructionsLabel2;
@@ -91,7 +105,9 @@ private:
     // 1 - Input Output
     std::vector<std::shared_ptr<ComboBox>> allComboBoxes;
     std::shared_ptr<ComboBox> connectionTypeBox;
-
+    std::shared_ptr<ComboBox> resonatorGroupBox;
+    int numGroups = 0;
+    
     std::vector<std::shared_ptr<Slider>> allSliders;
     std::shared_ptr<Slider> massRatioSlider;
     double curSliderValue = 0;
@@ -99,9 +115,9 @@ private:
     Action action = noAction;
     ApplicationState applicationState = normalState;
     
-    bool comboBoxChangeBool = false;
+    bool connectionTypeComboBoxChangeBool = false;
+    bool resonatorGroupComboBoxChangeBool = false;
 //    bool init = false;
-    ConnectionType connectionType = rigid;
     
     Instrument::ConnectionInfo* currentlyActiveConnection = nullptr;
         

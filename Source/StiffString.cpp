@@ -208,7 +208,12 @@ void StiffString::paint (juce::Graphics& g)
         
         }
     }
-
+    
+    if (applicationState == editResonatorGroupsState && getGroupNumber() != 0)
+    {
+        g.setColour (getGroupColour());
+        g.drawRect (getLocalBounds(), 5.0f);
+    }
 }
 
 Path StiffString::visualiseState (Graphics& g)
@@ -396,7 +401,7 @@ void StiffString::myMouseMove (const double x, const double y, bool triggeredByM
 //    std::cout << getID() << " " << e.y << std::endl;
 }
 
-#ifndef EDITOR_AND_SLIDERS
+//#ifndef EDITOR_AND_SLIDERS
 void StiffString::mouseDown (const MouseEvent& e)
 {
     setModifier (e.mods);
@@ -408,7 +413,10 @@ void StiffString::mouseDown (const MouseEvent& e)
         {
             this->findParentComponentOfClass<Component>()->mouseDown(e);
             if (getExcitationType() == hammer)
-                getCurExciterModule()->triggerExciterModule();
+            {
+                if (!isPartOfGroup())
+                    getCurExciterModule()->triggerExciterModule();
+            }
             if (isExcitationActive())
                 return;
             excitationLoc = static_cast<float>(e.x) / static_cast<float>(getWidth());
@@ -439,12 +447,6 @@ void StiffString::mouseDrag (const MouseEvent& e)
     }
     this->findParentComponentOfClass<Component>()->mouseDrag (e);
 
-//    if (!alreadyExcited)
-//    {
-//        std::cout << getID() << std::endl;
-//        alreadyExcited = true;
-//        mouseDown (e);
-//    }
 }
 
 void StiffString::mouseUp (const MouseEvent& e)
@@ -452,9 +454,8 @@ void StiffString::mouseUp (const MouseEvent& e)
     if (applicationState == moveConnectionState)
         this->findParentComponentOfClass<Component>()->mouseUp(e);
     
-    alreadyExcited = false;
 }
-#endif
+//#endif
 
 double StiffString::getKinEnergy()
 {

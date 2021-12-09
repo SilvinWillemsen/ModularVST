@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="mNMeLw" name="ModularVST" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginFormats="buildAU,buildStandalone,buildUnity">
+              pluginFormats="buildAU,buildStandalone,buildUnity" pluginCharacteristicsValue="pluginIsSynth">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{4B2749B4-BD26-0801-4218-F77B211B9B79}" name="SenselWrapper">
       <GROUP id="{D5BFAB12-62A1-B1B6-0553-AEA15856F137}" name="lib">

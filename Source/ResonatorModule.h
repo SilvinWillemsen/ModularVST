@@ -50,7 +50,7 @@ public:
     // energy
     double getTotalEnergy() {
         double resEnergy = getKinEnergy() + getPotEnergy() + getDampEnergy() + getInputEnergy();
-        double exciterEnergy = getCurExciterModule()->getEnergy();
+        double exciterEnergy = getCurExciterModule() == nullptr ? 0 : getCurExciterModule()->getEnergy();
         return resEnergy + exciterEnergy;
     };
     
@@ -81,13 +81,13 @@ public:
     virtual int getNumIntervals() = 0;
     virtual int getNumPoints() = 0;
     
-    virtual int getNumIntervalsX() {
+    int getNumIntervalsX() {
         if (is1D)
             std::cout << "MODULE IS 1D!!" << std::endl;
         return Nx;
         
     };
-    virtual int getNumIntervalsY() {
+    int getNumIntervalsY() {
         if (is1D)
             std::cout << "MODULE IS 1D!!" << std::endl;
         return Ny;
@@ -149,7 +149,17 @@ public:
     // ALSO DO THIS FOR HAMMER MODULES
     void setExciterForce (float f) { pluckModule->setForce (f); bowModule->setForce (f); };
     void setExciterControlParameter (float c) { pluckModule->setControlParameter (c); bowModule->setControlParameter (c); };
-    void trigger (bool t) {  }
+    void trigger (bool t) { };
+    
+    int getGroupNumber() { return partOfGroup; };
+    bool isPartOfGroup() { return partOfGroup != 0; };
+    void setPartOfGroup (int g, Colour c = Colours::transparentBlack) { partOfGroup = g; groupColour = c; };
+    
+    void setCurrentlySelectedResonatorGroup (int idx) { currentlySelectedResonatorGroup = idx; };
+    Colour getGroupColour() { return groupColour; };
+    
+    void setEnteredThisResonator (bool e) { enteredThisResonator = e; };
+    bool hasEnteredThisResonator() { return enteredThisResonator; };
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -189,13 +199,12 @@ protected:
     double prevInputEnergy = 0;
     double dampTot = 0;
     double inputTot = 0;
-    
-    bool alreadyExcited = false; // for hover excitation
-    
+        
     long calcCounter = 0;
     NamedValueSet nonAdvancedParameters;
     bool doneRecording = false;
-
+    int currentlySelectedResonatorGroup = 0;
+    
 private:
     int ID; // Holds the index in the vector of resonator modules in the instrument
     bool moduleIsReady = false; // Becomes true when the u vectors are initialised
@@ -225,5 +234,9 @@ private:
     
     bool childOfHighlightedInstrument = false;
     
+    int partOfGroup = 0;
+    Colour groupColour;
+    
+    bool enteredThisResonator = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };

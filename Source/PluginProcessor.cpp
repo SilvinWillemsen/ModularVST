@@ -31,7 +31,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 
     //#endif
 //#ifdef EDITOR_AND_SLIDERS
-    allParameters.reserve(8);
+    allParameters.reserve (8);
     allParameters.push_back (mouseX);
     allParameters.push_back (mouseY);
     allParameters.push_back (excite);
@@ -380,24 +380,11 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
         case normalState:
             setStatesToZero (false);
             break;
-        case editInOutputsState:
-        {
+        default:
             setStatesToZero (true);
             highlightInstrument (currentlyActiveInstrument);
             break;
-        }
-        case editConnectionState:
-        {
-            setStatesToZero (true);
-            highlightInstrument (currentlyActiveInstrument);
-            break;
-        }
-        case removeResonatorModuleState:
-        {
-            setStatesToZero (true);
-            highlightInstrument (currentlyActiveInstrument);
-            break;
-        }
+
     }
     for (auto inst : instruments)
         inst->setApplicationState (a);

@@ -39,16 +39,41 @@ public:
     int getNumPoints() override;
     int getNumIntervals() override { return N; } ;
         
-#ifndef EDITOR_AND_SLIDERS
+//#ifndef EDITOR_AND_SLIDERS
     // interaction
-    void mouseEnter (const MouseEvent& e) override { myMouseEnter (e.x, e.y, true); };
-    void mouseExit (const MouseEvent& e) override { myMouseExit (e.x, e.y, true); };
-    void mouseMove (const MouseEvent& e) override { myMouseMove (e.x, e.y, true); };
+    void mouseEnter (const MouseEvent& e) override {
+        if (isPartOfGroup())
+        {
+            setEnteredThisResonator (true);
+            this->findParentComponentOfClass<Component>()->mouseEnter (e);
+        }
+        else
+        {
+            myMouseEnter (e.x, e.y, true);
+        }
+    };
+    void mouseExit (const MouseEvent& e) override {
+        if (isPartOfGroup())
+        {
+            setEnteredThisResonator (false);
+            this->findParentComponentOfClass<Component>()->mouseExit (e);
+        }
+        else
+        {
+            myMouseExit (e.x, e.y, true);
+        }
+    };
+    void mouseMove (const MouseEvent& e) override {
+        if (isPartOfGroup())
+            this->findParentComponentOfClass<Component>()->mouseMove (e);
+        else
+            myMouseMove (e.x, e.y, true);
+ };
     // for now uses the mouse event and calls instrument so can't have custom mouse funtions
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
-#endif
+//#endif
     
     void myMouseEnter (const double x, const double y, bool triggeredByMouse) override;
     void myMouseExit (const double x, const double y, bool triggeredByMouse) override;
@@ -58,8 +83,6 @@ public:
     double getPotEnergy() override;
     double getDampEnergy() override;
     double getInputEnergy() override;
-
-    void setAlreadyExcited (bool a) { alreadyExcited = a; };
     
     void initialiseExciterModule (std::shared_ptr<ExciterModule> exciterModule) override;
     

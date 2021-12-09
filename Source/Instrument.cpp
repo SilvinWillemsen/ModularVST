@@ -16,7 +16,8 @@ Instrument::Instrument (int fs) : fs (fs)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    resonators.reserve (8);
+    resonators.reserve (16);
+    resonatorGroups.reserve (8);
     CI.reserve (16);
     setInterceptsMouseClicks (true, false);
 }
@@ -453,6 +454,11 @@ void Instrument::mouseDown (const MouseEvent& e)
         DBG ("Probably clicked next to resonator component");
         return;
     };
+    
+    if (groupCurrentlyInteractingWith != nullptr)
+        if (getExcitationType() == hammer)
+            for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
+                res->getCurExciterModule()->triggerExciterModule();
     sendChangeMessage(); // set instrument to active one (for adding modules)
 }
 
@@ -472,6 +478,42 @@ void Instrument::mouseUp (const MouseEvent& e)
         setApplicationState (editConnectionState);
 }
 
+void Instrument::mouseEnter (const MouseEvent& e)
+{
+    if (applicationState != normalState)
+        return;
+    
+    for (auto res : resonators)
+        if (res->hasEnteredThisResonator())
+            groupCurrentlyInteractingWith = &resonatorGroups[res->getGroupNumber()-1];
+    
+    if (groupCurrentlyInteractingWith == nullptr)
+        return;
+    
+    for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
+        res->myMouseEnter (e.x, e.y, true);
+}
+
+void Instrument::mouseMove (const MouseEvent& e)
+{
+    if (applicationState != normalState)
+        return;
+
+    if (groupCurrentlyInteractingWith == nullptr)
+        return;
+    for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
+        res->myMouseMove (e.x, e.y, true);
+}
+
+void Instrument::mouseExit (const MouseEvent& e)
+{
+    if (groupCurrentlyInteractingWith == nullptr)
+        return;
+    for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
+        res->myMouseExit (e.x, e.y, true);
+    groupCurrentlyInteractingWith = nullptr;
+}
+
 void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
 {
 //    std::cout << wheel.deltaY << std::endl;
@@ -480,7 +522,7 @@ void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& w
         switch (res->getExcitationType()) {
             case pluck:
             case hammer:
-                res->getCurExciterModule()->setControlParameter (Global::limit (res->getCurExciterModule()->getControlParameter() - wheel.deltaY, 1, 20));
+                res->getCurExciterModule()->setControlParameter (Global::limit (res->getCurExciterModule()->getControlParameter() - wheel.deltaY, 1, 10));
                 break;
             case bow:
                 res->getCurExciterModule()->setControlParameter (Global::limit (res->getCurExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
@@ -546,6 +588,25 @@ void Instrument::setApplicationState (ApplicationState a)
 void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
     for (auto res : resonators)
+    {
+//        if (res.get() == changeBroadcaster)
+//        {
+//            if (res->getAction() == interactWithGroupAction)
+//            {
+//                groupCurrentlyInteractingWith = &resonatorGroups[res->getGroupNumber()-1];
+//                res->setAction (noAction);
+//                return;
+//            }
+//            else if (res->getAction() == noInteractionWithGroupAction)
+//            {
+//                groupCurrentlyInteractingWith = nullptr;
+//                res->setAction (noAction);
+//                return;
+//            }
+//        }
+
+    }
+    for (auto res : resonators)
         if (res.get() == changeBroadcaster)
         {
             currentlySelectedResonator = res;
@@ -561,9 +622,9 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
     if (!highlightedInstrument)
         return;
     
-    // do not edit in- and outputs if this is not the currently highlighted instrument
-    if (applicationState == editInOutputsState && !highlightedInstrument)
-        return;
+//    // do not edit in- and outputs if this is not the currently highlighted instrument
+//    if (applicationState == editInOutputsState && !highlightedInstrument)
+//        return;
     
     for (auto res : resonators)
     {
@@ -781,6 +842,19 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                         reson->readyModule();
                     resonatorToRemove->unReadyModule();
                     break;
+                }
+                case editResonatorGroupsState:
+                {
+                    if (currentlySelectedResonatorGroup == nullptr)
+                    {
+                        DBG("No resonator group selected");
+                        return;
+                    }
+                    if (res->getModifier() == ModifierKeys::leftButtonModifier)
+                        currentlySelectedResonatorGroup->addResonator (res, currentlySelectedResonatorGroupIdx);
+                    else if (res->getModifier() == ModifierKeys::rightButtonModifier)
+                        resonatorGroups[res->getGroupNumber()-1].removeResonator (res);
+
                 }
                 default:
                 {
@@ -1134,4 +1208,52 @@ void Instrument::virtualMouseMove (const double x, const double y)
     prevMouseMoveResonator = curMouseMoveResonator;
                                     
     resonators[curMouseMoveResonator]->myMouseMove (x, yRes, false);
+}
+
+Instrument::ResonatorGroup::ResonatorGroup()
+{
+    resonatorsInGroup.reserve (8);
+    Random r;
+    colour = Colour::fromRGBA (r.nextInt(255), r.nextInt(255), r.nextInt(255), 127);
+}
+
+Instrument::ResonatorGroup::~ResonatorGroup()
+{
+    resonatorsInGroup.clear();
+    
+}
+
+void Instrument::ResonatorGroup::addResonator (std::shared_ptr<ResonatorModule> resToAdd, int group)
+{
+   resonatorsInGroup.push_back (resToAdd);
+   resToAdd->setPartOfGroup (group, colour);
+}
+
+void Instrument::ResonatorGroup::removeResonator (std::shared_ptr<ResonatorModule> resToRemove)
+{
+   for (int r = 0; r < resonatorsInGroup.size(); ++r)
+       if (resonatorsInGroup[r] == resToRemove)
+       {
+           resToRemove->setPartOfGroup (0);
+           resToRemove->setEnteredThisResonator (false);
+           resonatorsInGroup.erase (resonatorsInGroup.begin() + r);
+       }
+}
+
+void Instrument::addResonatorGroup()
+{
+   ResonatorGroup newGroup;
+   resonatorGroups.push_back (newGroup);
+   setCurrentlySelectedResonatorGroup (getNumResonatorGroups());
+}
+
+void Instrument::removeResonatorGroup (int idx)
+{
+    for (auto res : resonatorGroups[idx].getResonatorsInGroup())
+        res->setPartOfGroup (0);
+    resonatorGroups.erase (resonatorGroups.begin() + idx);         setCurrentlySelectedResonatorGroup (0);
+    
+    for (int i = 0; i < resonatorGroups.size(); ++i)
+        for (auto res : resonatorGroups[i].getResonatorsInGroup())
+            res->setPartOfGroup (i+1, resonatorGroups[i].getColour());
 }

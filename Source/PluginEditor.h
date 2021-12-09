@@ -49,6 +49,9 @@ public:
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
         
+    void addResonatorGroup();
+    void removeResonatorGroup();
+    
 #ifdef EDITOR_AND_SLIDERS
     void sliderValueChanged (Slider* slider) override;
 #endif
