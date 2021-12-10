@@ -154,18 +154,21 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     if (changeBroadcaster == controlPanel.get())
     {
         // If the connection type changed (right now this is the only combobox in controlpanel)
-        if (controlPanel->didConnectionTypeComboBoxChange())
+        if (controlPanel->didConnectionTypeComboBoxChange() || controlPanel->didResonatorGroupComboBoxChange() )
         {
-            if (currentlyActiveInstrument != nullptr)
-                currentlyActiveInstrument->setConnectionType (controlPanel->getConnectionType());
-            controlPanel->setConnectionTypeComboBoxChangeBoolFalse();
-            controlPanel->refreshConnectionLabel();
-        }
-        else if (controlPanel->didResonatorGroupComboBoxChange())
-        {
-            currentlyActiveInstrument->setCurrentlySelectedResonatorGroup (controlPanel->getCurrentResonatorGroup());
-            
-            controlPanel->setResonatorGroupComboBoxChangeBoolFalse();
+            if (controlPanel->didConnectionTypeComboBoxChange())
+            {
+                if (currentlyActiveInstrument != nullptr)
+                    currentlyActiveInstrument->setConnectionType (controlPanel->getConnectionType());
+                controlPanel->setConnectionTypeComboBoxChangeBoolFalse();
+                controlPanel->refreshConnectionLabel();
+            }
+            if (controlPanel->didResonatorGroupComboBoxChange())
+            {
+                currentlyActiveInstrument->setCurrentlySelectedResonatorGroup (controlPanel->getCurrentResonatorGroup());
+                
+                controlPanel->setResonatorGroupComboBoxChangeBoolFalse();
+            }
         }
         else
         {
@@ -471,6 +474,7 @@ void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
     if (applicationState == removeResonatorModuleState)
         currentlyActiveInstrument->resetResonatorToRemove();
     applicationState = a;
+    excitationPanel->setEnabled (applicationState == normalState);
     controlPanel->setApplicationState (a);
     controlPanel->refresh (currentlyActiveInstrument);
     audioProcessor.setApplicationState (a);

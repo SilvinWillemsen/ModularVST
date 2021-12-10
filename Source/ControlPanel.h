@@ -67,6 +67,7 @@ public:
     void removeResonatorGroup () { --numGroups; refreshResonatorGroupBox(); };
     
     void refreshResonatorGroupBox();
+    
 private:
     
     // Collection of all buttons

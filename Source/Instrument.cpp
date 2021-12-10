@@ -485,16 +485,16 @@ void Instrument::mouseEnter (const MouseEvent& e)
     
     for (auto res : resonators)
         if (res->hasEnteredThisResonator())
-            groupCurrentlyInteractingWith = &resonatorGroups[res->getGroupNumber()-1];
+        {
+            groupCurrentlyInteractingWith = resonatorGroups[res->getGroupNumber()-1];
+            res->setEnteredThisResonator (false);
+        }
     
     if (groupCurrentlyInteractingWith == nullptr)
         return;
-    
-    if (groupCurrentlyInteractingWith->getResonatorsInGroup().size() == 0)
-        return;
-    
-    for (int r = 0; r < groupCurrentlyInteractingWith->getResonatorsInGroup().size(); ++r)
-        groupCurrentlyInteractingWith->getResonatorsInGroup()[r]->myMouseEnter (e.x, e.y, true);
+        
+    for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
+        res->myMouseEnter (e.x, e.y, true);
 }
 
 void Instrument::mouseMove (const MouseEvent& e)
@@ -516,8 +516,13 @@ void Instrument::mouseExit (const MouseEvent& e)
 {
     if (groupCurrentlyInteractingWith == nullptr)
         return;
+    
+    if (groupCurrentlyInteractingWith->getResonatorsInGroup().size() == 0)
+        return;
+    
     for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
         res->myMouseExit (e.x, e.y, true);
+    
     groupCurrentlyInteractingWith = nullptr;
 }
 
@@ -860,7 +865,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     if (res->getModifier() == ModifierKeys::leftButtonModifier)
                         currentlySelectedResonatorGroup->addResonator (res, currentlySelectedResonatorGroupIdx);
                     else if (res->getModifier() == ModifierKeys::rightButtonModifier)
-                        resonatorGroups[res->getGroupNumber()-1].removeResonator (res);
+                        resonatorGroups[res->getGroupNumber()-1]->removeResonator (res);
 
                 }
                 default:
@@ -1221,7 +1226,7 @@ Instrument::ResonatorGroup::ResonatorGroup()
 {
     resonatorsInGroup.reserve (8);
     Random r;
-    colour = Colour::fromRGBA (r.nextInt(255), r.nextInt(255), r.nextInt(255), 127);
+    colour = Colour (r.nextFloat(), 1.0f, 1.0f, 0.5f);
 }
 
 Instrument::ResonatorGroup::~ResonatorGroup()
@@ -1249,18 +1254,19 @@ void Instrument::ResonatorGroup::removeResonator (std::shared_ptr<ResonatorModul
 
 void Instrument::addResonatorGroup()
 {
-   ResonatorGroup newGroup;
+   std::shared_ptr<ResonatorGroup> newGroup = std::make_shared<ResonatorGroup>();
    resonatorGroups.push_back (newGroup);
    setCurrentlySelectedResonatorGroup (getNumResonatorGroups());
 }
 
 void Instrument::removeResonatorGroup (int idx)
 {
-    for (auto res : resonatorGroups[idx].getResonatorsInGroup())
+    for (auto res : resonatorGroups[idx]->getResonatorsInGroup())
         res->setPartOfGroup (0);
-    resonatorGroups.erase (resonatorGroups.begin() + idx);         setCurrentlySelectedResonatorGroup (0);
+    resonatorGroups.erase (resonatorGroups.begin() + idx);
+    setCurrentlySelectedResonatorGroup (0);
     
     for (int i = 0; i < resonatorGroups.size(); ++i)
-        for (auto res : resonatorGroups[i].getResonatorsInGroup())
-            res->setPartOfGroup (i+1, resonatorGroups[i].getColour());
+        for (auto res : resonatorGroups[i]->getResonatorsInGroup())
+            res->setPartOfGroup (i+1, resonatorGroups[i]->getColour());
 }

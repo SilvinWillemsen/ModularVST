@@ -538,7 +538,7 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
         for (int g = 0; g < instruments[i]->getNumResonatorGroups(); ++g)
         {
             file << "\t " << "\t " << "<ResonatorGroup id=\"i" << i << "_g" << g << "\">\n";
-            for (auto res : instruments[i]->getResonatorGroups()[g].getResonatorsInGroup())
+            for (auto res : instruments[i]->getResonatorGroups()[g]->getResonatorsInGroup())
                 file << "\t " << "\t " << "\t " << "<Res id=\"" << res->getID() << "\"/>\n";
             file << "\t " << "\t " << "</ResonatorGroup>\n";
         }
@@ -778,7 +778,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
                 ++i;
                 r = 0;
                 c = 0;
-                g = -1;
+                g = 0;
                 break;
             }
             case addResonatorModuleAction:
@@ -786,7 +786,6 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
                 o = 0;
                 switch (initModuleTypes[m]) {
                     case stiffString:
-                        juce::Logger::getCurrentLogger()->outputDebugString(std::to_string(params[i][r][0]));
                         parameters = {
                             {"L", params[i][r][0]},
                             {"T", params[i][r][1]},
@@ -886,11 +885,13 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
             }
             case addResonatorGroupAction:
                 instruments[i]->addResonatorGroup();
-                ++g;
+                ++g; // addResonatorToGroupAction starts at 1
                 rIG = 0;
                 break;
             case addResonatorToGroupAction:
-                instruments[i]->getCurrentlySelectedResonatorGroup()->addResonator (instruments[i]->getResonatorPtr (resonatorInGroupIds[i][g][rIG]), resonatorInGroupIds[i][g][rIG]);
+                instruments[i]->getCurrentlySelectedResonatorGroup()->addResonator (instruments[i]->getResonatorPtr (resonatorInGroupIds[i][g-1][rIG]), g);
+                juce::Logger::getCurrentLogger()->outputDebugString ("Resonator " + String (resonatorInGroupIds[i][g-1][rIG]) + " is part of group " + String (g));
+
                 ++rIG;
                 break;
 

@@ -251,15 +251,15 @@ public:
     void addResonatorGroup();
     void removeResonatorGroup (int idx);
     int getNumResonatorGroups() { return (int)resonatorGroups.size(); };
-    std::vector<ResonatorGroup>& getResonatorGroups() { return resonatorGroups; };
-    ResonatorGroup* getCurrentlySelectedResonatorGroup() { return currentlySelectedResonatorGroup; };
+    std::vector<std::shared_ptr<ResonatorGroup>>& getResonatorGroups() { return resonatorGroups; };
+    std::shared_ptr<ResonatorGroup> getCurrentlySelectedResonatorGroup() { return currentlySelectedResonatorGroup; };
     void setCurrentlySelectedResonatorGroup (int idx)
     {
         currentlySelectedResonatorGroupIdx = idx;
         if (idx == 0)
             currentlySelectedResonatorGroup = nullptr;
         else
-            currentlySelectedResonatorGroup = &resonatorGroups[idx-1];
+            currentlySelectedResonatorGroup = resonatorGroups[idx-1];
         
         for (auto res : resonators)
             res->setCurrentlySelectedResonatorGroup (idx);
@@ -309,9 +309,9 @@ private:
     
     int prevMouseMoveResonator = -1;
     
-    std::vector<ResonatorGroup> resonatorGroups;
-    ResonatorGroup* currentlySelectedResonatorGroup = nullptr;
+    std::vector<std::shared_ptr<ResonatorGroup>> resonatorGroups;
     int currentlySelectedResonatorGroupIdx = 0;
-    ResonatorGroup* groupCurrentlyInteractingWith = nullptr;
+    std::shared_ptr<ResonatorGroup> currentlySelectedResonatorGroup = nullptr;
+    std::shared_ptr<ResonatorGroup> groupCurrentlyInteractingWith = nullptr;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

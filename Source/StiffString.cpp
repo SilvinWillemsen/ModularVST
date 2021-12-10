@@ -212,7 +212,7 @@ void StiffString::paint (juce::Graphics& g)
     if (applicationState == editResonatorGroupsState && getGroupNumber() != 0)
     {
         g.setColour (getGroupColour());
-        g.drawRect (getLocalBounds(), 5.0f);
+        g.drawRect (getLocalBounds(), 3.0f);
     }
 }
 
