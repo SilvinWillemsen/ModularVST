@@ -251,6 +251,7 @@ public:
     void addResonatorGroup();
     void removeResonatorGroup (int idx);
     int getNumResonatorGroups() { return (int)resonatorGroups.size(); };
+    std::vector<ResonatorGroup>& getResonatorGroups() { return resonatorGroups; };
     ResonatorGroup* getCurrentlySelectedResonatorGroup() { return currentlySelectedResonatorGroup; };
     void setCurrentlySelectedResonatorGroup (int idx)
     {

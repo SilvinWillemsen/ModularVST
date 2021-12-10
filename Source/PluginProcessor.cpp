@@ -532,7 +532,17 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
         //    << instruments[i]->getConnectionInfo()[0][c].loc1
         //    << "\" toResonator=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\" toLocation=\""
         //    << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>" << "\n";
+
         }
+        
+        for (int g = 0; g < instruments[i]->getNumResonatorGroups(); ++g)
+        {
+            file << "\t " << "\t " << "<ResonatorGroup id=\"i" << i << "_g" << g << "\">\n";
+            for (auto res : instruments[i]->getResonatorGroups()[g].getResonatorsInGroup())
+                file << "\t " << "\t " << "\t " << "<Res id=\"" << res->getID() << "\"/>\n";
+            file << "\t " << "\t " << "</ResonatorGroup>\n";
+        }
+        
         file << "\t " << "</Instrument>" << "\n";
     }
     file << "</App" << ">" << "\n";
@@ -549,6 +559,23 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
 
 PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
 {
+    
+    pugi::xml_document doc;
+    std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
+    const char* pathToUse = test.c_str();
+    pugi::xml_parse_result result = doc.load_file (pathToUse);
+    switch (result.status)
+    {
+        case pugi::status_ok:
+            break;
+        case pugi::status_file_not_found:
+            return fileNotFound;
+            break;
+        default:
+            return presetNotLoaded;
+            break;
+    }
+    
     // make sure that application is loaded from scratch
     if (instruments.size() != 0)
     {
@@ -558,18 +585,8 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
         }
         while (instruments.size() > 0)
             instruments.erase(instruments.begin() + instruments.size() - 1);
-        
-//            return applicationIsNotEmpty;
     }
     
-    pugi::xml_document doc;
-    std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
-    const char* pathToUse = test.c_str();
-    pugi::xml_parse_result result = doc.load_file (pathToUse);
-    if (result.status != pugi::status_ok)
-    {
-        return fileNotFound;
-    }
     pugi::xml_node node = doc.child("App");
     pugi::xml_node instrum = node.child("Instrument");
     
@@ -578,10 +595,11 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
-    std::vector< std::vector<std::vector<double>>> params;
-    std::vector< std::vector<std::vector<double>>> connects;
-    std::vector< std::vector<std::vector<double>>> outputLocs;
-    std::vector< std::vector<std::vector<double>>> outputChannels;
+    std::vector<std::vector<std::vector<double>>> params;
+    std::vector<std::vector<std::vector<double>>> connects;
+    std::vector<std::vector<std::vector<double>>> outputLocs;
+    std::vector<std::vector<std::vector<double>>> outputChannels;
+    std::vector<std::vector<std::vector<int>>> resonatorInGroupIds;
 
     std::vector<String> resoType;
     std::vector<std::vector<String>> connType;
@@ -601,10 +619,12 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
         
 //        resoNum.push_back(0);
 //        connNum.push_back(0);
-        params.push_back(std::vector< std::vector<double>>());
-        connects.push_back(std::vector< std::vector<double>>());
-        outputLocs.push_back(std::vector< std::vector<double>>());
-        outputChannels.push_back(std::vector< std::vector<double>>());
+        params.push_back(std::vector<std::vector<double>>());
+        connects.push_back(std::vector<std::vector<double>>());
+        outputLocs.push_back(std::vector<std::vector<double>>());
+        outputChannels.push_back(std::vector<std::vector<double>>());
+        
+        resonatorInGroupIds.push_back(std::vector<std::vector<int>>());
 
         int r = 0;
         int c = 0;
@@ -677,10 +697,22 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
                 juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("id").value());
                 juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("value").value());
                 connects[i][c].push_back(std::stod(connChild.attribute("value").value()));
-
             }
 
             ++c;
+        }
+        
+        int g = 0;
+        for (pugi::xml_node group : inst.children("ResonatorGroup"))
+        {
+            initActions.push_back (addResonatorGroupAction);
+            resonatorInGroupIds[i].push_back (std::vector<int>());
+            for (pugi::xml_node resInGroup : group.children())
+            {
+                initActions.push_back (addResonatorToGroupAction);
+                resonatorInGroupIds[i][g].push_back (std::stoi(resInGroup.attribute("id").value()));
+            }
+            ++g;
         }
         ++i;
         // --------------------------------------------------------------------------------------------------
@@ -731,6 +763,8 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     int m = 0;  // module type
     int r;      // resonator
     int c;      // connection
+    int g;      // group
+    int rIG;    // resonator in group
     int o;      // output
     i = -1; // reinitialise instrument index
 
@@ -744,6 +778,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
                 ++i;
                 r = 0;
                 c = 0;
+                g = -1;
                 break;
             }
             case addResonatorModuleAction:
@@ -849,6 +884,16 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
                 ++o;
                 break;
             }
+            case addResonatorGroupAction:
+                instruments[i]->addResonatorGroup();
+                ++g;
+                rIG = 0;
+                break;
+            case addResonatorToGroupAction:
+                instruments[i]->getCurrentlySelectedResonatorGroup()->addResonator (instruments[i]->getResonatorPtr (resonatorInGroupIds[i][g][rIG]), resonatorInGroupIds[i][g][rIG]);
+                ++rIG;
+                break;
+
             default:
                 break;
         }

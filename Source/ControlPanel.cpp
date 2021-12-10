@@ -306,13 +306,13 @@ void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrumen
             case normalState:
                 addInstrumentButton->setVisible (true);
                 addResonatorModuleButton->setVisible (true);
-                editResonatorGroupsButton->setVisible (true);
                 savePresetButton->setVisible (true);
                 loadPresetButton->setVisible (true);
 
                 if (currentlyActiveInstrument->getNumResonatorModules() != 0)
                 {
                     editResonatorModuleButton->setVisible (true);
+                    editResonatorGroupsButton->setVisible (true);
                     editInOutputsButton->setVisible (true);
                 }
                 if (currentlyActiveInstrument->getNumResonatorModules() > 1)

@@ -39,7 +39,8 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         }
         else
             std::cout << "NOT READY" << std::endl;
-        
+      
+    controlPanel->setNumGroups (currentlyActiveInstrument->getNumResonatorGroups());
     // At what rate to refresh the states of the system
     startTimerHz (15);
     
@@ -155,7 +156,8 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         // If the connection type changed (right now this is the only combobox in controlpanel)
         if (controlPanel->didConnectionTypeComboBoxChange())
         {
-            currentlyActiveInstrument->setConnectionType (controlPanel->getConnectionType());
+            if (currentlyActiveInstrument != nullptr)
+                currentlyActiveInstrument->setConnectionType (controlPanel->getConnectionType());
             controlPanel->setConnectionTypeComboBoxChangeBoolFalse();
             controlPanel->refreshConnectionLabel();
         }
@@ -178,6 +180,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     audioProcessor.addInstrument();
                     std::shared_ptr<Instrument> newInstrument = instruments[instruments.size()-1];
                     currentlyActiveInstrument = newInstrument;
+                    controlPanel->setNumGroups (0);
                     addAndMakeVisible (newInstrument.get());
                     newInstrument->addChangeListener (this);
                     newInstrument->resized();
@@ -351,6 +354,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
             if (applicationState == normalState)
             {
                 currentlyActiveInstrument = inst;
+                controlPanel->setNumGroups (currentlyActiveInstrument->getNumResonatorGroups());
                 audioProcessor.setCurrentlyActiveInstrument (inst);
             }
             if (changeBroadcaster == inst.get())

@@ -59,6 +59,7 @@ public:
     void refreshConnectionLabel(); 
     
     int getNumGroups() { return numGroups; };
+    void setNumGroups (int n) { numGroups = n; refreshResonatorGroupBox(); };
     bool didResonatorGroupComboBoxChange() { return resonatorGroupComboBoxChangeBool; };
     void setResonatorGroupComboBoxChangeBoolFalse() { resonatorGroupComboBoxChangeBool = false; };
     int getCurrentResonatorGroup() { return resonatorGroupBox->getSelectedId(); };

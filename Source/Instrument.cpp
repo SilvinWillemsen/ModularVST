@@ -490,8 +490,11 @@ void Instrument::mouseEnter (const MouseEvent& e)
     if (groupCurrentlyInteractingWith == nullptr)
         return;
     
-    for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
-        res->myMouseEnter (e.x, e.y, true);
+    if (groupCurrentlyInteractingWith->getResonatorsInGroup().size() == 0)
+        return;
+    
+    for (int r = 0; r < groupCurrentlyInteractingWith->getResonatorsInGroup().size(); ++r)
+        groupCurrentlyInteractingWith->getResonatorsInGroup()[r]->myMouseEnter (e.x, e.y, true);
 }
 
 void Instrument::mouseMove (const MouseEvent& e)
@@ -501,6 +504,10 @@ void Instrument::mouseMove (const MouseEvent& e)
 
     if (groupCurrentlyInteractingWith == nullptr)
         return;
+    
+    if (groupCurrentlyInteractingWith->getResonatorsInGroup().size() == 0)
+        return;
+    
     for (auto res : groupCurrentlyInteractingWith->getResonatorsInGroup())
         res->myMouseMove (e.x, e.y, true);
 }

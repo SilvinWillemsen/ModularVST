@@ -42,6 +42,7 @@ enum Action
     editResonatorGroupsAction,
     addResonatorGroupAction,
     removeResonatorGroupAction,
+    addResonatorToGroupAction,
 //    interactWithGroupAction,
 //    noInteractionWithGroupAction,
 
