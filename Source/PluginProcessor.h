@@ -172,6 +172,7 @@ private:
     OwnedArray<Sensel> sensels;
     int amountOfSensels = 1;
 
+    std::mutex testMutex;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };
