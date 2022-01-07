@@ -4,6 +4,29 @@
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
               pluginFormats="buildAU,buildStandalone,buildUnity" pluginCharacteristicsValue="pluginIsSynth">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
+    <GROUP id="{CA98F5C1-AF6D-8C4E-4931-C1CDF50239C1}" name="Presets">
+      <FILE id="jKNbJ5" name="EmptyInstrument.xml" compile="0" resource="1"
+            file="Presets/EmptyInstrument.xml"/>
+      <FILE id="OyQAyY" name="guitar.xml" compile="0" resource="1" file="Presets/guitar.xml"/>
+      <FILE id="WapqY4" name="GuitarWithoutBody.xml" compile="0" resource="1"
+            file="Presets/GuitarWithoutBody.xml"/>
+      <FILE id="XDYJFa" name="Harp.xml" compile="0" resource="1" file="Presets/Harp.xml"/>
+      <FILE id="GgUENm" name="HarpGroups.xml" compile="0" resource="1" file="Presets/HarpGroups.xml"/>
+      <FILE id="ECZK5W" name="lastPreset.txt" compile="0" resource="1" file="Presets/lastPreset.txt"/>
+      <FILE id="bqQzWA" name="lastSavedPreset.xml" compile="0" resource="1"
+            file="Presets/lastSavedPreset.xml"/>
+      <FILE id="hUSWbb" name="SanturUnedited.xml" compile="0" resource="1"
+            file="Presets/SanturUnedited.xml"/>
+      <FILE id="K4F9vS" name="Shamisen.xml" compile="0" resource="1" file="Presets/Shamisen.xml"/>
+      <FILE id="E5Jb0m" name="SimpleString.xml" compile="0" resource="1"
+            file="Presets/SimpleString.xml"/>
+      <FILE id="VdJKDR" name="TwoStrings.xml" compile="0" resource="1" file="Presets/TwoStrings.xml"/>
+      <FILE id="dO7yZk" name="Ukulele.xml" compile="0" resource="1" file="Presets/Ukulele.xml"/>
+      <FILE id="qq0rvq" name="WeirdInstrument.xml" compile="0" resource="1"
+            file="Presets/WeirdInstrument.xml"/>
+      <FILE id="lH0KxJ" name="WeirdInstrument2.xml" compile="0" resource="1"
+            file="Presets/WeirdInstrument2.xml"/>
+    </GROUP>
     <GROUP id="{4B2749B4-BD26-0801-4218-F77B211B9B79}" name="SenselWrapper">
       <GROUP id="{D5BFAB12-62A1-B1B6-0553-AEA15856F137}" name="lib">
         <FILE id="ETh4T9" name="sensel.c" compile="1" resource="0" file="SenselWrapper/lib/sensel.c"/>

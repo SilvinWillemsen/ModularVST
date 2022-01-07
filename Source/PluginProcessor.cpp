@@ -156,6 +156,8 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                 break;
         }
     }
+    addInstrument();
+    addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
     
     // start the hi-res timer
     if (sensels.size() != 0)
@@ -921,6 +923,9 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
 
 void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, float value)
 {
+    if (currentlyActiveInstrument == nullptr)
+        return;
+    
     if ((name == "mouseX" || name == "mouseY") && (sliderValues[exciteID] >= 0.5))
         currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
 
