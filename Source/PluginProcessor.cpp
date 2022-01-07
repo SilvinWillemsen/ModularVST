@@ -156,8 +156,11 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
                 break;
         }
     }
+    
+    //---// For unity, temporary solution until we get the presets to work //---//
     addInstrument();
     addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
+    //---//
     
     // start the hi-res timer
     if (sensels.size() != 0)
