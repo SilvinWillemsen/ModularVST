@@ -39,8 +39,10 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         }
         else
             std::cout << "NOT READY" << std::endl;
-      
-    controlPanel->setNumGroups (currentlyActiveInstrument->getNumResonatorGroups());
+    
+    if (currentlyActiveInstrument != nullptr)
+        controlPanel->setNumGroups (currentlyActiveInstrument->getNumResonatorGroups());
+    
     // At what rate to refresh the states of the system
     startTimerHz (15);
     

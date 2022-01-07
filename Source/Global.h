@@ -121,7 +121,7 @@ enum PresetResult
 
 namespace Global
 {
-    static const bool loadPresetAtStartUp = true;
+    static const bool loadPresetAtStartUp = false;
     static const bool bowAtStartup = false;
     static const bool pluckAtStartup = false;
     static const int samplesToRecord = 1000;
