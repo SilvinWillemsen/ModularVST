@@ -426,6 +426,7 @@ void ModularVSTAudioProcessorEditor::openSavePresetWindow()
 
 void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
 {
+    editorMutex.lock();
     stopTimer();
     for (auto inst : instruments)
         inst->unReadyAllModules();
@@ -471,7 +472,7 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
         refresh();
         
     });
-    
+    editorMutex.unlock();
 }
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
 {
