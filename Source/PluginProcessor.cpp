@@ -193,7 +193,6 @@ bool ModularVSTAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 
 void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    testMutex.lock();
     
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -242,19 +241,19 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             inst->setStatesToZero();
         if (applicationState == normalState)
             setToZero = false;
-        testMutex.unlock();
         return;
     }
-    
+
     for (auto inst : instruments)
     {
         // check whether the instrument is ready
         if (!inst->areModulesReady() || applicationState == removeResonatorModuleState)
         {
-            testMutex.unlock();
-            return;
+            continue;
         }
-        
+        testMutex.lock();
+        Logger::getCurrentLogger()->outputDebugString("Lock mutex");
+
         inst->checkIfShouldExciteRaisedCos();
         
 //        if (inst->checkIfShouldRemoveResonatorModule())
@@ -288,7 +287,9 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             totOutputL[i] += inst->getOutputL();
             totOutputR[i] += inst->getOutputR();
         }
-        
+        testMutex.unlock();
+        Logger::getCurrentLogger()->outputDebugString("Unlock mutex" + String(counter));
+
     }
     
     // limit output
@@ -306,7 +307,6 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         }
     }
 //    std::cout << totOutput[15] << std::endl;
-    testMutex.unlock();
 
 }
 

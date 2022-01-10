@@ -396,6 +396,7 @@ void ModularVSTAudioProcessorEditor::refresh()
         inst->resized();
         inst->addChangeListener (this);
     }
+    startTimerHz (15);
     controlPanel->refresh (currentlyActiveInstrument);
     resized();
 
@@ -426,7 +427,6 @@ void ModularVSTAudioProcessorEditor::openSavePresetWindow()
 
 void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
 {
-    editorMutex.lock();
     stopTimer();
     for (auto inst : instruments)
         inst->unReadyAllModules();
@@ -468,11 +468,9 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
                 inst->reReadyAllModules();
         else
             currentlyActiveInstrument = instruments[instruments.size()-1];
-        startTimerHz (15);
         refresh();
         
     });
-    editorMutex.unlock();
 }
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
 {
