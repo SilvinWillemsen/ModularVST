@@ -435,4 +435,5 @@ void senselSerialClose(SenselSerialHandle *data)
     data->serial_handle = INVALID_HANDLE_VALUE;
   }
 }
+
 */

@@ -115,12 +115,13 @@ void ModularVSTAudioProcessor::changeProgramName (int index, const juce::String&
 //==============================================================================
 void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+#if JUCE_MAC
     for (int i = 0; i < amountOfSensels; ++i)
     {
         sensels.add (new Sensel (i)); // chooses the device in the sensel device list
         std::cout << "Sensel added" << std::endl;
     }
-    
+#endif
     if (instruments.size() != 0)
     {
         instruments.clear();
@@ -161,12 +162,12 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     addInstrument();
     addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
     //---//
-    
+#if JUCE_MAC
     // start the hi-res timer
     if (sensels.size() != 0)
         if (sensels[0]->senselDetected)
             HighResolutionTimer::startTimer (1000.0 / 150.0); // 150 Hz
-
+#endif
 }
 
 void ModularVSTAudioProcessor::releaseResources()
@@ -174,7 +175,8 @@ void ModularVSTAudioProcessor::releaseResources()
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
     HighResolutionTimer::stopTimer();
-    
+#ifdef JUCE_MAC
+
     for (auto sensel : sensels)
     {
         if (sensel->senselDetected)
@@ -182,6 +184,7 @@ void ModularVSTAudioProcessor::releaseResources()
             sensel->shutDown();
         }
     }
+#endif
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -1015,6 +1018,7 @@ void ModularVSTAudioProcessor::myRangedAudioParameterChanged (Slider* mySlider)
 
 void ModularVSTAudioProcessor::hiResTimerCallback()
 {
+#ifdef JUCE_MAC
     double maxVb = 0.2;
     for (auto sensel : sensels)
     {
@@ -1090,4 +1094,5 @@ void ModularVSTAudioProcessor::hiResTimerCallback()
             }
         }
     }
+#endif
 }

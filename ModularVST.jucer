@@ -2,27 +2,28 @@
 
 <JUCERPROJECT id="mNMeLw" name="ModularVST" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginFormats="buildAU,buildStandalone,buildUnity" pluginCharacteristicsValue="pluginIsSynth">
+              pluginFormats="buildAU,buildStandalone,buildUnity" pluginCharacteristicsValue="pluginIsSynth"
+              compilerFlagSchemes="NewScheme">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{4B2749B4-BD26-0801-4218-F77B211B9B79}" name="SenselWrapper">
       <GROUP id="{D5BFAB12-62A1-B1B6-0553-AEA15856F137}" name="lib">
-        <FILE id="ETh4T9" name="sensel.c" compile="1" resource="0" file="SenselWrapper/lib/sensel.c"/>
+        <FILE id="ETh4T9" name="sensel.c" compile="0" resource="0" file="SenselWrapper/lib/sensel.c"/>
         <FILE id="IpwXZW" name="sensel.h" compile="0" resource="0" file="SenselWrapper/lib/sensel.h"/>
         <FILE id="owIMYA" name="sensel_device.h" compile="0" resource="0" file="SenselWrapper/lib/sensel_device.h"/>
         <FILE id="komvOM" name="sensel_device_vidpid.h" compile="0" resource="0"
               file="SenselWrapper/lib/sensel_device_vidpid.h"/>
         <FILE id="qhzTqL" name="sensel_protocol.h" compile="0" resource="0"
               file="SenselWrapper/lib/sensel_protocol.h"/>
-        <FILE id="t327xH" name="sensel_register.c" compile="1" resource="0"
+        <FILE id="t327xH" name="sensel_register.c" compile="0" resource="0"
               file="SenselWrapper/lib/sensel_register.c"/>
         <FILE id="Prz9Z3" name="sensel_register.h" compile="0" resource="0"
               file="SenselWrapper/lib/sensel_register.h"/>
         <FILE id="dScZe7" name="sensel_register_map.h" compile="0" resource="0"
               file="SenselWrapper/lib/sensel_register_map.h"/>
         <FILE id="iUxNJD" name="sensel_serial.h" compile="0" resource="0" file="SenselWrapper/lib/sensel_serial.h"/>
-        <FILE id="ucMGi3" name="sensel_serial_linux.c" compile="1" resource="0"
+        <FILE id="ucMGi3" name="sensel_serial_linux.c" compile="0" resource="0"
               file="SenselWrapper/lib/sensel_serial_linux.c"/>
-        <FILE id="xvBHOZ" name="sensel_serial_win.c" compile="1" resource="0"
+        <FILE id="xvBHOZ" name="sensel_serial_win.c" compile="0" resource="0"
               file="SenselWrapper/lib/sensel_serial_win.c"/>
         <FILE id="ioAS21" name="sensel_types.h" compile="0" resource="0" file="SenselWrapper/lib/sensel_types.h"/>
       </GROUP>

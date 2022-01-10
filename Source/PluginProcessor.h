@@ -9,7 +9,9 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../SenselWrapper/SenselWrapper.h"
+#if (JUCE_MAC)
+    #include "../SenselWrapper/SenselWrapper.h"
+#endif
 #include "Instrument.h"
 
 #include <fstream>
@@ -147,9 +149,9 @@ private:
     std::vector<Action> initActions;
     std::vector<ResonatorModuleType> initModuleTypes;
     
-#if (JUCE_MAC)
+#if JUCE_MAC
     String presetPath = "../../../../Presets/";
-#elif (JUCE_WINDOWS)
+#elif JUCE_WINDOWS
     String presetPath = "../../Presets/";
 #endif
     
@@ -168,9 +170,10 @@ private:
 #ifdef EDITOR_AND_SLIDERS
     std::vector<std::shared_ptr<Slider>>* editorSliders;
 #endif
-    
+#if JUCE_MAC
     OwnedArray<Sensel> sensels;
     int amountOfSensels = 1;
+#endif
 
     std::mutex testMutex;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
