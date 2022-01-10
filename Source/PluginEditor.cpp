@@ -465,6 +465,8 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
         if (res != success)
             for (auto inst : instruments)
                 inst->reReadyAllModules();
+        else
+            currentlyActiveInstrument = instruments[instruments.size()-1];
         startTimerHz (15);
         refresh();
         
