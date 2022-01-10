@@ -9,9 +9,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#if (JUCE_MAC)
-    #include "../SenselWrapper/SenselWrapper.h"
-#endif
 #include "Instrument.h"
 
 #include <fstream>
@@ -22,7 +19,7 @@
 /**
  
  */
-class ModularVSTAudioProcessor  : public juce::AudioProcessor, public HighResolutionTimer
+class ModularVSTAudioProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
@@ -129,9 +126,7 @@ public:
     std::vector<RangedAudioParameter*>& getMyParameters() { return allParameters; };
     void setEditorSliders (std::vector<std::shared_ptr<Slider>>* s) { editorSliders = s; };
 #endif
-    
-    void hiResTimerCallback() override;
-    
+        
 private:
     //==============================================================================
     int fs;
@@ -169,10 +164,6 @@ private:
 //#endif
 #ifdef EDITOR_AND_SLIDERS
     std::vector<std::shared_ptr<Slider>>* editorSliders;
-#endif
-#if JUCE_MAC
-    OwnedArray<Sensel> sensels;
-    int amountOfSensels = 1;
 #endif
 
     std::mutex testMutex;

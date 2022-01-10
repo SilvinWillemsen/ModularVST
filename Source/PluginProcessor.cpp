@@ -115,13 +115,6 @@ void ModularVSTAudioProcessor::changeProgramName (int index, const juce::String&
 //==============================================================================
 void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-#if JUCE_MAC
-    for (int i = 0; i < amountOfSensels; ++i)
-    {
-        sensels.add (new Sensel (i)); // chooses the device in the sensel device list
-        std::cout << "Sensel added" << std::endl;
-    }
-#endif
     if (instruments.size() != 0)
     {
         instruments.clear();
@@ -162,29 +155,13 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     addInstrument();
     addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
     //---//
-#if JUCE_MAC
-    // start the hi-res timer
-    if (sensels.size() != 0)
-        if (sensels[0]->senselDetected)
-            HighResolutionTimer::startTimer (1000.0 / 150.0); // 150 Hz
-#endif
+
 }
 
 void ModularVSTAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
-    HighResolutionTimer::stopTimer();
-#ifdef JUCE_MAC
-
-    for (auto sensel : sensels)
-    {
-        if (sensel->senselDetected)
-        {
-            sensel->shutDown();
-        }
-    }
-#endif
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -1015,84 +992,3 @@ void ModularVSTAudioProcessor::myRangedAudioParameterChanged (Slider* mySlider)
 //}
 //
 ////#endif
-
-void ModularVSTAudioProcessor::hiResTimerCallback()
-{
-#ifdef JUCE_MAC
-    double maxVb = 0.2;
-    for (auto sensel : sensels)
-    {
-        double finger0X = 0;
-        double finger0Y = 0;
-        if (sensel->senselDetected)
-        {
-            sensel->check();
-            unsigned int fingerCount = sensel->contactAmount;
-            int index = sensel->senselIndex;
-
-            for (int f = 0; f < fingerCount; f++)
-            {
-                bool state = sensel->fingers[f].state;
-                float x = sensel->fingers[f].x;
-                float y = Global::limit (sensel->fingers[f].y * 1.2 - 0.05, 0, 0.999);
-                float Vb = Global::limit (-sensel->fingers[f].delta_y * 0.5, -0.2, 0.2);
-                float force = Global::limit (sensel->fingers[f].force * 5, 0, 1);
-//
-                if (currentlyActiveInstrument != nullptr)
-                {
-                    currentlyActiveInstrument->setExciterForce (force);
-                    switch (currentlyActiveInstrument->getExcitationType())
-                    {
-                        case pluck:
-                            currentlyActiveInstrument->setExciterControlParameter (Global::limit (force * 10, 2, 10));
-                            break;
-                        case hammer:
-                            break;
-                        case bow:
-                            currentlyActiveInstrument->setExciterControlParameter (Vb);
-                            std::cout << Vb << std::endl;
-                            break;
-                    }
-//                    std::cout << currentlyActiveInstrument->getExcitationType() << std::endl;
-                }
-                int fingerID = sensel->fingers[f].fingerID;
-                if (fingerID == 0 && state) //fingerID == 0)
-                {
-                    if (currentlyActiveInstrument != nullptr)
-                        currentlyActiveInstrument->virtualMouseMove (x, y);
-                    
-//                    finger0X = x;
-//                    finger0Y = y;
-//                    Vb = Global::limit (Vb, -maxVb, maxVb);
-//
-                }
-                else if (fingerID > 0)
-                {
-//                    //                    float dist = sqrt ((finger0X - x) * (finger0X - x) + (finger0Y - y) * (finger0Y - y));
-//                    float verDist = std::abs(finger0Y - y);
-//                    float horDist = std::abs(finger0X - x);
-//                    //                    std::cout << horDist << std::endl;
-//                    if (!(verDist <= 0.3 && horDist < 0.05))
-//                    {
-//                        if (quantisePitch){
-//                            std::cout << "before " << x << std::endl;
-//                            x = 1.0 / round (1.0 / x);
-//                            std::cout << "after " << x << std::endl;
-//                        }
-//
-//                        trombaString->setFingerPos (x * bridgeLocRatio);
-////                        std::cout << "force = " << sensel->fingers[f].force << std::endl;
-//                        if (!easyControl)
-//                            trombaString->setFingerForce (Global::clamp(sensel->fingers[f].force * 10.0, 0.0, 1.0));
-//                    }
-                }
-            }
-            
-            if (fingerCount == 0)
-            {
-//                trombaString->disableBowing();
-            }
-        }
-    }
-#endif
-}

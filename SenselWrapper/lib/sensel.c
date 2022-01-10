@@ -23,12 +23,13 @@
 ******************************************************************************************/
 
 //TODO: Right now, anyone that uses the API has to allocate arrays for labels and force images, even if they're only using contacts. This should not be the case
-#if JUCE_MAC
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include "sensel.h"
+
+#if __APPLE__
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #include <fcntl.h>
+    #include "sensel.h"
     #include "sensel_device.h"
     #include "sensel_serial.h"
     #include "sensel_register_map.h"
