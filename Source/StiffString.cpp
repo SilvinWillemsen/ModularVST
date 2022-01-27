@@ -32,7 +32,7 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
         sig0 = *parameters.getVarPointer ("sig0");
         sig1 = *parameters.getVarPointer ("sig1");
         
-        nonAdvancedParameters.set("f0", sqrt(T / (rho * A) / (2 * L)));
+        nonAdvancedParameters.set("f0", sqrt(T / (rho * A)) / (2.0 * L));
         nonAdvancedParameters.set("r", sqrt(A / double_Pi));
         
     } else {

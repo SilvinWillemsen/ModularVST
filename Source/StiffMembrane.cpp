@@ -63,7 +63,7 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
     
     // Initialise states and connection division term of the system
     initialiseModule();
-    
+    std::cout << Nx << " " << Ny << std::endl;
 //    excite(); // start by exciting
     
 #ifdef SAVE_OUTPUT

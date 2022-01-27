@@ -124,15 +124,24 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     if (Global::loadPresetAtStartUp)
     {
-        File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
-        if (!lastSavedPresetFile.exists())
+        PresetResult res;
+        if (Global::loadFromBinary)
         {
-            DBG("There is no last saved preset!");
-            return;
+            String test = "";
+            res = loadPreset (test);
         }
-//        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
-        String fileName = lastSavedPresetFile.loadFileAsString();
-        PresetResult res = loadPreset (fileName);
+        else
+        {
+            File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
+            if (!lastSavedPresetFile.exists())
+            {
+                DBG("There is no last saved preset!");
+                return;
+            }
+    //        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
+            String fileName = lastSavedPresetFile.loadFileAsString();
+            PresetResult res = loadPreset (fileName);
+        }
         switch (res) {
             case applicationIsNotEmpty:
                 DBG ("Application is not empty.");
@@ -152,8 +161,8 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     }
     
     //---// For unity, temporary solution until we get the presets to work //---//
-    addInstrument();
-    addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
+//    addInstrument();
+//    addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
     //---//
 
 }
@@ -252,7 +261,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             continue;
         }
         testMutex.lock();
-        Logger::getCurrentLogger()->outputDebugString("Lock mutex");
+//        Logger::getCurrentLogger()->outputDebugString("Lock mutex");
 
         inst->checkIfShouldExciteRaisedCos();
         
@@ -288,7 +297,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             totOutputR[i] += inst->getOutputR();
         }
         testMutex.unlock();
-        Logger::getCurrentLogger()->outputDebugString("Unlock mutex" + String(counter));
+//        Logger::getCurrentLogger()->outputDebugString("Unlock mutex" + String(counter));
 
     }
     
@@ -555,7 +564,8 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     pugi::xml_document doc;
     std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
     const char* pathToUse = test.c_str();
-    pugi::xml_parse_result result = doc.load_file (pathToUse);
+    
+    pugi::xml_parse_result result = (fileName == "") ? doc.load_string (BinaryData::TwoStringsConnected_xml) : doc.load_file (pathToUse);
     switch (result.status)
     {
         case pugi::status_ok:

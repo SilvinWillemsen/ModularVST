@@ -36,12 +36,16 @@ public:
     ExcitationType getExcitationType() { return static_cast<ExcitationType> (excitationTypeBox->getSelectedId()); };
     Action getAction() { return action; };
     void setAction (Action a) { action = a; };
+    
+    bool getGraphicsToggle() { return graphicsToggle; };
 
 private:
     std::shared_ptr<ComboBox> excitationTypeBox;
     std::shared_ptr<TextButton> toggleExcitationButton;
+    std::shared_ptr<TextButton> toggleGraphicsButton;
 
-    bool exciteMode = false;
+    bool exciteMode = true;
+    bool graphicsToggle = true;
     
     Action action = noAction;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExcitationPanel)

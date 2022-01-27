@@ -43,6 +43,21 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     if (currentlyActiveInstrument != nullptr)
         controlPanel->setNumGroups (currentlyActiveInstrument->getNumResonatorGroups());
     
+    if (excitationPanel->getExciteMode())
+    {
+        for (auto inst : instruments)
+            inst->setExcitationType (excitationPanel->getExcitationType());
+        audioProcessor.setExcitationType (excitationPanel->getExcitationType());
+    }
+    else
+    {
+        
+    // Otherwise disable excitation using exciter modules
+        for (auto inst : instruments)
+            inst->setExcitationType (noExcitation);
+        audioProcessor.setExcitationType (noExcitation);
+    }
+    
     // At what rate to refresh the states of the system
     startTimerHz (15);
     
@@ -267,8 +282,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     openLoadPresetWindow();
                     break;
                 }
-
-
+                
                 default:
                     DBG ("Action shouldn't come from controlpanel");
                     break;
@@ -305,6 +319,11 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 break;
             case noAction:
                 break;
+            case graphicsToggleAction:
+            {
+                toggleGraphics();
+                break;
+            }
             default:
                 DBG ("Action shouldn't come from excitation panel");
                 break;
@@ -508,3 +527,11 @@ void ModularVSTAudioProcessorEditor::sliderValueChanged (Slider* slider)
     }
 }
 #endif
+
+void ModularVSTAudioProcessorEditor::toggleGraphics()
+{
+    if (excitationPanel->getGraphicsToggle())
+        startTimerHz (15);
+    else
+        stopTimer();
+}

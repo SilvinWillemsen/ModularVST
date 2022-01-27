@@ -104,3 +104,12 @@ void CoefficientList::listBoxItemClicked (int row, const MouseEvent& e)
 {
     sendChangeMessage();
 }
+
+String CoefficientList::getSelectedParameterValue()
+{
+    std::ostringstream decimalValue;
+    double value = parameters.getValueAt (getSelectedRow());
+    decimalValue << std::setprecision (3) << value;
+        
+    return decimalValue.str();
+}

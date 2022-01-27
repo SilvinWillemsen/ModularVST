@@ -12,5 +12,17 @@
 	 	 	 <Output id="i0_r0_o0" channel="2" loc="4"/>
 	 	 	 <Output id="i0_r0_o1" channel="2" loc="114"/>
 	 	 </Resonator>
+         <Resonator id="i0_r1" type="Stiff_String">
+              <PARAM id="i0_r1_L" value="1"/>
+              <PARAM id="i0_r1_T" value="300"/>
+              <PARAM id="i0_r1_rho" value="7850"/>
+              <PARAM id="i0_r1_A" value="7.85398e-07"/>
+              <PARAM id="i0_r1_E" value="2e+11"/>
+              <PARAM id="i0_r1_I" value="4.90874e-14"/>
+              <PARAM id="i0_r1_sig0" value="1"/>
+              <PARAM id="i0_r1_sig1" value="0.005"/>
+              <Output id="i0_r1_o0" channel="2" loc="4"/>
+              <Output id="i0_r1_o1" channel="2" loc="114"/>
+         </Resonator>
 	 </Instrument>
 </App>

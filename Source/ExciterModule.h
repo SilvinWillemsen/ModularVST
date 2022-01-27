@@ -57,7 +57,7 @@ public:
     virtual void saveOutput() {};
     
     void triggerExciterModule() { trigger = true; };
-protected:
+    protected:
     ExcitationType excitationType;
     double excitationLoc = 0.5;
     double controlLoc = 0;

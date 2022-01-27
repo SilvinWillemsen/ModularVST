@@ -61,6 +61,8 @@ enum Action
     exciteAction,
     changeExcitationAction,
     
+    graphicsToggleAction,
+    
     refreshEditorAction,
     setStatesToZeroAction
     
@@ -121,7 +123,10 @@ enum PresetResult
 
 namespace Global
 {
-    static const bool loadPresetAtStartUp = false;
+    static const bool showGraphicsToggle = true;
+
+    static const bool loadPresetAtStartUp = true;
+    static const bool loadFromBinary = true;
     static const bool bowAtStartup = false;
     static const bool pluckAtStartup = false;
     static const int samplesToRecord = 1000;
@@ -183,7 +188,7 @@ namespace Global
     };
 
     static NamedValueSet defaultStringParameters {
-        {"f0", 110.29},
+        {"f0", 110.00},
         {"r", 0.0005}
     };
 

@@ -30,10 +30,16 @@ ExcitationPanel::ExcitationPanel (ChangeListener* audioProcessorEditor)
         excitationTypeBox->setSelectedId (1, dontSendNotification);
     
     toggleExcitationButton = std::make_shared<TextButton> ("Excite!");
-    toggleExcitationButton->setColour (TextButton::ColourIds::buttonColourId, Colours::red);
+    toggleExcitationButton->setColour (TextButton::ColourIds::buttonColourId, exciteMode ? Colours::green : Colours::red);
     toggleExcitationButton->addListener (this);
     addAndMakeVisible (toggleExcitationButton.get());
     
+    toggleGraphicsButton = std::make_shared<TextButton> ("Graphics");
+    toggleGraphicsButton->setColour (TextButton::ColourIds::buttonColourId, graphicsToggle ? Colours::green : Colours::red);
+    toggleGraphicsButton->addListener (this);
+    if (Global::showGraphicsToggle)
+        addAndMakeVisible (toggleGraphicsButton.get());
+
     if (Global::bowAtStartup)
         buttonClicked (toggleExcitationButton.get());
     else if (Global::pluckAtStartup)
@@ -69,6 +75,11 @@ void ExcitationPanel::resized()
     Rectangle<int> area = getLocalBounds();
     area.reduce (Global::margin, Global::margin);
     excitationTypeBox->setBounds (area.removeFromTop (Global::buttonHeight));
+    if (Global::showGraphicsToggle)
+    {
+        toggleGraphicsButton->setBounds (area.removeFromBottom (Global::buttonHeight));
+        area.removeFromBottom (Global::margin);
+    }
     toggleExcitationButton->setBounds (area.removeFromBottom (Global::buttonHeight));
 }
 
@@ -82,6 +93,16 @@ void ExcitationPanel::buttonClicked (Button* button)
         action = exciteAction;
         sendChangeMessage();
         
+    }
+    if (button == toggleGraphicsButton.get())
+    
+    {
+        graphicsToggle = !graphicsToggle;
+        toggleGraphicsButton->setColour (TextButton::ColourIds::buttonColourId,
+                                          graphicsToggle ? Colours::green : Colours::red);
+        action = graphicsToggleAction;
+        sendChangeMessage();
+
     }
 }
 

@@ -46,7 +46,7 @@ public:
     int getSelectedRow() { return list.getSelectedRow(); };
     
     String getSelectedParameter() { return parameters.getName (getSelectedRow()).toString(); };
-    String getSelectedParameterValue() { return parameters.getValueAt (getSelectedRow()); };
+    String getSelectedParameterValue();
     void deselect() { list.deselectAllRows(); };
     
     

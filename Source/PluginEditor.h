@@ -55,7 +55,7 @@ public:
 #ifdef EDITOR_AND_SLIDERS
     void sliderValueChanged (Slider* slider) override;
 #endif
-    
+    void toggleGraphics();
 private:
     // Reference to the audio processor
     ModularVSTAudioProcessor& audioProcessor;

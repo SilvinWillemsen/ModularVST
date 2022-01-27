@@ -240,7 +240,7 @@ void Pluck::calculate (std::vector<double*>& u)
         std::cout << "States are set to zero" << std::endl;
         setStatesToZero();
     }
-    if (force / h > f * forceLimitOh && !plucked)
+    if (force / h > forceLimitOh && !plucked)
     {
         std::cout << getID() << ": " << force << std::endl;
         Kc = 0;
