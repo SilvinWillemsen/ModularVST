@@ -362,8 +362,8 @@ void Instrument::solveInteractions()
         CI[i].eta = CI[i].res1->getStateAt (CI[i].loc1, 1) - CI[i].res2->getStateAt (CI[i].loc2, 1);
         CI[i].etaPrev = CI[i].res1->getStateAt (CI[i].loc1, 2) - CI[i].res2->getStateAt (CI[i].loc2, 2);
         
-        rPlus = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta + 0.5 * fs * R;
-        rMin = 0.25 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta - 0.5 * fs * R;
+        rPlus = 0.5 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta + 0.5 * fs * R;
+        rMin = 0.5 * K1 + 0.5 * K3 * CI[i].eta * CI[i].eta - 0.5 * fs * R;
         
         switch (CI[i].connType)
         {
@@ -375,12 +375,12 @@ void Instrument::solveInteractions()
 //                force = (CI[i].etaNext + CI[i].etaPrev)
 //                    / (2.0 / K1 + CI[i].res1->getConnectionDivisionTerm()
 //                       + CI[i].res2->getConnectionDivisionTerm());
-                force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMin / rPlus * CI[i].etaPrev)
+                force = (CI[i].etaNext + rMin / rPlus * CI[i].etaPrev)
                     / (1.0 / rPlus + CI[i].res1->getConnectionDivisionTerm()
                        + CI[i].res2->getConnectionDivisionTerm());
                 break;
             case nonlinearSpring:
-                force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMin / rPlus * CI[i].etaPrev)
+                force = (CI[i].etaNext + rMin / rPlus * CI[i].etaPrev)
                     / (1.0 / rPlus + CI[i].res1->getConnectionDivisionTerm()
                        + CI[i].res2->getConnectionDivisionTerm());
                 break;
@@ -442,7 +442,7 @@ void Instrument::calcTotalEnergy()
     
     // connection energy
     for (int i = 0; i < CI.size(); ++i)
-        totEnergy += 0.125 * CI[i].K1 * (CI[i].eta + CI[i].etaPrev) * (CI[i].eta + CI[i].etaPrev)
+        totEnergy += 0.25 * CI[i].K1 * (CI[i].eta * CI[i].eta + CI[i].etaPrev * CI[i].etaPrev)
             + 0.25 * CI[i].K3 * (CI[i].eta * CI[i].etaPrev) * (CI[i].eta * CI[i].etaPrev);
     
 }
