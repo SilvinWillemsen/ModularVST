@@ -6,10 +6,12 @@
               compilerFlagSchemes="NewScheme">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
+      <FILE id="RY7fBJ" name="TwoStrings.xml" compile="0" resource="1" file="Presets/TwoStrings.xml"/>
       <FILE id="MepOT1" name="TwoStringsConnected.xml" compile="0" resource="1"
             file="Presets/TwoStringsConnected.xml"/>
       <FILE id="iJlkOu" name="TwoStringsConnectedNonlinear.xml" compile="0"
             resource="1" file="Presets/TwoStringsConnectedNonlinear.xml"/>
+      <FILE id="DSBWku" name="guitar.xml" compile="0" resource="1" file="Presets/guitar.xml"/>
       <FILE id="tUn1pb" name="TwoStringsConnectedLinear.xml" compile="0"
             resource="1" file="Presets/TwoStringsConnectedLinear.xml"/>
       <GROUP id="{671C00D5-9279-8FA7-65F1-1A317725E8BF}" name="Pugi">

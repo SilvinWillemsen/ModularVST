@@ -111,7 +111,8 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
 #ifdef SAVE_OUTPUT
     statesSave.open ("statesSaveString.csv");
 #endif
-    
+    std::cout << N << std::endl;
+
 //    excite(); // start by exciting
 }
 

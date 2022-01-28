@@ -372,6 +372,13 @@ void Instrument::solveInteractions()
                     / (CI[i].res1->getConnectionDivisionTerm() + CI[i].res2->getConnectionDivisionTerm());
                 break;
             case linearSpring:
+//                force = (CI[i].etaNext + CI[i].etaPrev)
+//                    / (2.0 / K1 + CI[i].res1->getConnectionDivisionTerm()
+//                       + CI[i].res2->getConnectionDivisionTerm());
+                force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMin / rPlus * CI[i].etaPrev)
+                    / (1.0 / rPlus + CI[i].res1->getConnectionDivisionTerm()
+                       + CI[i].res2->getConnectionDivisionTerm());
+                break;
             case nonlinearSpring:
                 force = (CI[i].etaNext + K1 / (2.0 * rPlus) * CI[i].eta + rMin / rPlus * CI[i].etaPrev)
                     / (1.0 / rPlus + CI[i].res1->getConnectionDivisionTerm()
