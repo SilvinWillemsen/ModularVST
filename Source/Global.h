@@ -12,7 +12,7 @@
 //#define USE_EIGEN     // use overlapping connections (and therefore the eigen library) or not
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
-#define NO_EDITOR // build for unity
+//#define NO_EDITOR // build for unity
 //#define EDITOR_AND_SLIDERS
 
 #include <JuceHeader.h>
@@ -126,7 +126,11 @@ namespace Global
     static const bool showGraphicsToggle = true;
 
     static const bool loadPresetAtStartUp = true;
+#ifdef NO_EDITOR
     static const bool loadFromBinary = true;
+#else
+    static const bool loadFromBinary = true;
+#endif
     static const bool bowAtStartup = false;
     static const bool pluckAtStartup = false;
     static const int samplesToRecord = 1000;
@@ -153,7 +157,7 @@ namespace Global
     // default parameters
     static const double defaultLinSpringCoeff = 1e8;
     static const double defaultNonLinSpringCoeff = 1e10;
-    static const double defaultConnDampCoeff = 1.0;
+    static const double defaultConnDampCoeff = 0.0;
     static const double eps = 1e-15;
 
 

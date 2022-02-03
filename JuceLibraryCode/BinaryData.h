@@ -8,6 +8,9 @@
 
 namespace BinaryData
 {
+    extern const char*   WeirdInstrument_xml;
+    const int            WeirdInstrument_xmlSize = 4109;
+
     extern const char*   Harp_xml;
     const int            Harp_xmlSize = 7820;
 
@@ -30,7 +33,7 @@ namespace BinaryData
     const int            TwoStringsConnectedLinear_xmlSize = 27218;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 7;
+    const int namedResourceListSize = 8;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
