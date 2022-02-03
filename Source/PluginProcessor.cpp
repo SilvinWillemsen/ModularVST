@@ -565,7 +565,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
     std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
     const char* pathToUse = test.c_str();
     
-    pugi::xml_parse_result result = (fileName == "") ? doc.load_string (BinaryData::TwoStringsConnectedNonlinear_xml) : doc.load_file (pathToUse);
+    pugi::xml_parse_result result = (fileName == "") ? doc.load_string (BinaryData::Harp_xml) : doc.load_file (pathToUse);
     switch (result.status)
     {
         case pugi::status_ok:

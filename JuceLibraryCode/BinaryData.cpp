@@ -7,8 +7,230 @@
 namespace BinaryData
 {
 
-//================== TwoStrings.xml ==================
+//================== Harp.xml ==================
 static const unsigned char temp_binary_data_0[] =
+"<App>\n"
+"\t <Instrument id=\"i0\">\n"
+"\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r0_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_T\" value=\"421.989\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o1\" channel=\"2\" loc=\"109\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r1\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r1_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_T\" value=\"531.679\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r1_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r1_o1\" channel=\"2\" loc=\"105\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r2\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r2_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_T\" value=\"669.864\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r2_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r2_o1\" channel=\"2\" loc=\"100\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r3\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r3_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_T\" value=\"751.896\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r3_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r3_o1\" channel=\"2\" loc=\"97\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r4\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r4_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_T\" value=\"947.396\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r4_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r4_o1\" channel=\"2\" loc=\"91\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r5\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r5_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_T\" value=\"1193.62\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r5_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r5_o1\" channel=\"2\" loc=\"85\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r6\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r6_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_T\" value=\"1503.84\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r6_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r6_o1\" channel=\"2\" loc=\"78\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r7\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r7_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_T\" value=\"1688.09\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o1\" channel=\"2\" loc=\"74\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r8\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r8_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r8_T\" value=\"2126.71\"/>\n"
+"\t \t \t <PARAM id=\"i0_r8_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r8_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r8_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r8_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r8_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r8_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r8_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r8_o1\" channel=\"2\" loc=\"67\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r9\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r9_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r9_T\" value=\"2679.62\"/>\n"
+"\t \t \t <PARAM id=\"i0_r9_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r9_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r9_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r9_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r9_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r9_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r9_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r9_o1\" channel=\"2\" loc=\"60\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r10\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r10_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r10_T\" value=\"3007.76\"/>\n"
+"\t \t \t <PARAM id=\"i0_r10_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r10_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r10_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r10_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r10_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r10_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r10_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r10_o1\" channel=\"2\" loc=\"57\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r11\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r11_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r11_T\" value=\"3789.58\"/>\n"
+"\t \t \t <PARAM id=\"i0_r11_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r11_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r11_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r11_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r11_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r11_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r11_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r11_o1\" channel=\"2\" loc=\"51\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r12\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r12_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r12_T\" value=\"4774.47\"/>\n"
+"\t \t \t <PARAM id=\"i0_r12_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r12_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r12_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r12_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r12_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r12_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r12_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r12_o1\" channel=\"2\" loc=\"45\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r13\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r13_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r13_T\" value=\"6015.37\"/>\n"
+"\t \t \t <PARAM id=\"i0_r13_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r13_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r13_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r13_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r13_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r13_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r13_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r13_o1\" channel=\"2\" loc=\"40\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r14\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r14_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r14_T\" value=\"6752.09\"/>\n"
+"\t \t \t <PARAM id=\"i0_r14_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r14_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r14_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r14_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r14_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r14_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r14_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r14_o1\" channel=\"2\" loc=\"37\"/>\n"
+"\t \t </Resonator>\n"
+"\t </Instrument>\n"
+"</App>\n";
+
+const char* Harp_xml = (const char*) temp_binary_data_0;
+
+//================== TwoStringsOctave.xml ==================
+static const unsigned char temp_binary_data_1[] =
+"<App>\n"
+"\t <Instrument id=\"i0\">\n"
+"\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r0_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_T\" value=\"298.404\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o1\" channel=\"2\" loc=\"114\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r1\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r1_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_T\" value=\"1193.62\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r1_o0\" channel=\"2\" loc=\"4\"/>\n"
+"\t \t \t <Output id=\"i0_r1_o1\" channel=\"2\" loc=\"85\"/>\n"
+"\t \t </Resonator>\n"
+"\t </Instrument>\n"
+"</App>\n";
+
+const char* TwoStringsOctave_xml = (const char*) temp_binary_data_1;
+
+//================== TwoStrings.xml ==================
+static const unsigned char temp_binary_data_2[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -38,10 +260,10 @@ static const unsigned char temp_binary_data_0[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStrings_xml = (const char*) temp_binary_data_0;
+const char* TwoStrings_xml = (const char*) temp_binary_data_2;
 
 //================== TwoStringsConnected.xml ==================
-static const unsigned char temp_binary_data_1[] =
+static const unsigned char temp_binary_data_3[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -773,10 +995,10 @@ static const unsigned char temp_binary_data_1[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnected_xml = (const char*) temp_binary_data_1;
+const char* TwoStringsConnected_xml = (const char*) temp_binary_data_3;
 
 //================== TwoStringsConnectedNonlinear.xml ==================
-static const unsigned char temp_binary_data_2[] =
+static const unsigned char temp_binary_data_4[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -1508,10 +1730,10 @@ static const unsigned char temp_binary_data_2[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnectedNonlinear_xml = (const char*) temp_binary_data_2;
+const char* TwoStringsConnectedNonlinear_xml = (const char*) temp_binary_data_4;
 
 //================== guitar.xml ==================
-static const unsigned char temp_binary_data_3[] =
+static const unsigned char temp_binary_data_5[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -1701,10 +1923,10 @@ static const unsigned char temp_binary_data_3[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* guitar_xml = (const char*) temp_binary_data_3;
+const char* guitar_xml = (const char*) temp_binary_data_5;
 
 //================== TwoStringsConnectedLinear.xml ==================
-static const unsigned char temp_binary_data_4[] =
+static const unsigned char temp_binary_data_6[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -2436,7 +2658,7 @@ static const unsigned char temp_binary_data_4[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnectedLinear_xml = (const char*) temp_binary_data_4;
+const char* TwoStringsConnectedLinear_xml = (const char*) temp_binary_data_6;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -2450,6 +2672,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
+        case 0x0b70d0ef:  numBytes = 7820; return Harp_xml;
+        case 0xf867b85e:  numBytes = 1081; return TwoStringsOctave_xml;
         case 0x5c291b0e:  numBytes = 1082; return TwoStrings_xml;
         case 0xd43c26cb:  numBytes = 27101; return TwoStringsConnected_xml;
         case 0x42df7c57:  numBytes = 27569; return TwoStringsConnectedNonlinear_xml;
@@ -2464,6 +2688,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
 const char* namedResourceList[] =
 {
+    "Harp_xml",
+    "TwoStringsOctave_xml",
     "TwoStrings_xml",
     "TwoStringsConnected_xml",
     "TwoStringsConnectedNonlinear_xml",
@@ -2473,6 +2699,8 @@ const char* namedResourceList[] =
 
 const char* originalFilenames[] =
 {
+    "Harp.xml",
+    "TwoStringsOctave.xml",
     "TwoStrings.xml",
     "TwoStringsConnected.xml",
     "TwoStringsConnectedNonlinear.xml",

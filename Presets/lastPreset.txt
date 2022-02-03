@@ -1,1 +1,1 @@
-guitar.xml
+EmptyInstrument.xml
