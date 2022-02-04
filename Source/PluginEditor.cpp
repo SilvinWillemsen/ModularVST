@@ -457,7 +457,7 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
         if (fileChooser.getResult().exists())
         {
             String fileName = fileChooser.getResult().getFileName();
-            res = audioProcessor.loadPreset (fileName);
+            res = audioProcessor.loadPreset (fileName, Global::loadFromBinary); // check what button in the load preset window has been pressed
             switch (res) {
                 case applicationIsNotEmpty:
                     Logger::getCurrentLogger()->outputDebugString ("Application is not empty.");

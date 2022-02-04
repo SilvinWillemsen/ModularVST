@@ -124,24 +124,16 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     
     if (Global::loadPresetAtStartUp)
     {
-        PresetResult res;
-        if (Global::loadFromBinary)
+
+        File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
+        if (!lastSavedPresetFile.exists())
         {
-            String test = "";
-            res = loadPreset (test);
+            DBG("There is no last saved preset!");
+            return;
         }
-        else
-        {
-            File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
-            if (!lastSavedPresetFile.exists())
-            {
-                DBG("There is no last saved preset!");
-                return;
-            }
-    //        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
-            String fileName = lastSavedPresetFile.loadFileAsString();
-            PresetResult res = loadPreset (fileName);
-        }
+//        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
+        String fileName = lastSavedPresetFile.loadFileAsString();
+        PresetResult res = loadPreset (fileName, Global::loadFromBinary);
         switch (res) {
             case applicationIsNotEmpty:
                 DBG ("Application is not empty.");
@@ -574,14 +566,14 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
     return success;
 }
 
-PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName)
+PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary)
 {
     
     pugi::xml_document doc;
     std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
     const char* pathToUse = test.c_str();
-    
-    pugi::xml_parse_result result = (fileName == "") ? doc.load_string (BinaryData::TwoStringsConnectedNonlinear_xml) : doc.load_file (pathToUse);
+    int sizeTest = 0;
+    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource ("Harp_xml", sizeTest)) : doc.load_file (pathToUse);
     switch (result.status)
     {
         case pugi::status_ok:
