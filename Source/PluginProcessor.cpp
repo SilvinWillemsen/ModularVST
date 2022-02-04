@@ -449,7 +449,7 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 if (curResonator->isModule1D())
                 {
                     int N = curResonator-> getNumIntervals();
-                    double locRatio = (curResonator->getInOutInfo()->getOutLocAt(o)) / N;
+                    double locRatio = double(curResonator->getInOutInfo()->getOutLocAt(o)) / N;
                     file << "\" channel=\"" << channel << "\" loc=\"" << locRatio << "\"/>\n";
                 }
                 else
@@ -502,7 +502,7 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 //=============================== 1 D res1 ==========================================================================
                 if (instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->isModule1D())
                 {
-                    int N = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->getNumIntervals();
+                    int N = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->getNumPoints();
                     double locRatio = double(instruments[i]->getConnectionInfo()[0][c].loc1) / N;
                     file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
                     file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "value=\"" << locRatio << "\"/>\n";
@@ -606,8 +606,8 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
     std::vector<std::vector<std::vector<double>>> params;
-    std::vector<std::vector<std::vector<double>>> connects;
-    std::vector<std::vector<std::vector<double>>> outputLocs;
+    std::vector<std::vector<std::vector<std::vector<double>>>> connects;
+    std::vector<std::vector<std::vector<std::vector<double>>>> outputLocs;
     std::vector<std::vector<std::vector<double>>> outputChannels;
     std::vector<std::vector<std::vector<int>>> resonatorInGroupIds;
 
@@ -630,8 +630,8 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
 //        resoNum.push_back(0);
 //        connNum.push_back(0);
         params.push_back(std::vector<std::vector<double>>());
-        connects.push_back(std::vector<std::vector<double>>());
-        outputLocs.push_back(std::vector<std::vector<double>>());
+        connects.push_back(std::vector<std::vector<std::vector<double>>>());
+        outputLocs.push_back(std::vector<std::vector<std::vector<double>>>());
         outputChannels.push_back(std::vector<std::vector<double>>());
         
         resonatorInGroupIds.push_back(std::vector<std::vector<int>>());
@@ -643,7 +643,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
             initActions.push_back (addResonatorModuleAction);
 
             params[i].push_back(std::vector<double>());
-            outputLocs[i].push_back(std::vector<double>());
+            outputLocs[i].push_back(std::vector<std::vector<double>>());
             outputChannels[i].push_back(std::vector<double>());
 //            ++resoNum[i];
             juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
@@ -671,7 +671,14 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
                     juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
                     juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("loc").value());
                     juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("channel").value());
-                    outputLocs[i][r].push_back(std::stod(resoChild.attribute("loc").value()));
+                    if (resoChild.attribute ("loc"))
+                        outputLocs[i][r].push_back (std::vector<double> {std::stod(resoChild.attribute("loc").value())});
+                    else
+                    {
+                        outputLocs[i][r].push_back(std::vector<double>{std::stod(resoChild.attribute("locX").value()),
+                            std::stod(resoChild.attribute("locY").value())
+                        });
+                    }
                     outputChannels[i][r].push_back(std::stod(resoChild.attribute("channel").value()));
                     
                     initActions.push_back (addOutputAction);
@@ -687,7 +694,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
         {
             initActions.push_back (addConnectionAction);
             
-            connects[i].push_back(std::vector<double>());
+            connects[i].push_back(std::vector<std::vector<double>>());
             connType.push_back(std::vector<String>());
 //            ++connNum[i];
             juce::Logger::getCurrentLogger()->outputDebugString("Connection:");
@@ -706,7 +713,13 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
             {
                 juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("id").value());
                 juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("value").value());
-                connects[i][c].push_back(std::stod(connChild.attribute("value").value()));
+                if (connChild.attribute("value"))
+                    connects[i][c].push_back(std::vector<double> {std::stod(connChild.attribute("value").value())});
+                else
+                    connects[i][c].push_back(std::vector<double> {std::stod(connChild.attribute("valueX").value()),
+                        std::stod(connChild.attribute("valueY").value())
+                    });
+
             }
 
             ++c;
@@ -863,10 +876,12 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
             }
             case addConnectionAction:
             {
-                int resFromIdx = connects[i][c][0];
-                int resFromLoc = connects[i][c][1];
-                int resToIdx = connects[i][c][2];
-                int resToLoc = connects[i][c][3];
+                int resFromIdx = connects[i][c][0][0];
+                double resFromLoc1 = connects[i][c][1][0];
+                double resFromLoc2 = (connects[i][c][1].size() == 1) ? -1 : connects[i][c][1][1];
+                int resToIdx = connects[i][c][2][0];
+                double resToLoc1 = connects[i][c][3][0];
+                double resToLoc2 = (connects[i][c][3].size() == 1) ? -1 : connects[i][c][3][1];
                 ConnectionType curConnType;
                 
                 if (connType[i][c] == "rigid")
@@ -876,11 +891,20 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
                 else if (connType[i][c] == "nonlinear")
                     curConnType = nonlinearSpring;
                         
-                instruments[i]->addFirstConnection (instruments[i]->getResonatorPtr (resFromIdx),
-                                                    curConnType,
-                                                    resFromLoc);
-                instruments[i]->addSecondConnection (instruments[i]->getResonatorPtr (resToIdx),
-                                                     resToLoc);
+                if (resFromLoc2 == -1)
+                    instruments[i]->addFirstConnection (instruments[i]->getResonatorPtr (resFromIdx),
+                                                        curConnType,
+                                                        resFromLoc1);
+                else
+                    instruments[i]->addFirstConnection (instruments[i]->getResonatorPtr (resFromIdx),
+                                                        curConnType,
+                                                        resFromLoc1, resFromLoc2);
+                if (resToLoc2 == -1)
+                    instruments[i]->addSecondConnection (instruments[i]->getResonatorPtr (resToIdx),
+                                                         resToLoc1);
+                else
+                    instruments[i]->addSecondConnection (instruments[i]->getResonatorPtr (resToIdx),
+                                                         resToLoc1, resToLoc2);
                 instruments[i]->setCurrentlyActiveConnection (nullptr);
                 instruments[i]->setAction (noAction);
                 ++c;
@@ -889,7 +913,11 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
             case addOutputAction:
             {
                 // as the resonator idx is incremented before the outputs are added, subtract 1 from this index
-                instruments[i]->getResonatorPtr(r-1)->getInOutInfo()->addOutput (outputLocs[i][r-1][o], outputChannels[i][r-1][o]);
+                if (outputLocs[i][r-1][o].size() == 1)
+                    instruments[i]->getResonatorPtr(r-1)->getInOutInfo()->addOutput (outputLocs[i][r-1][o][0], outputChannels[i][r-1][o]);
+                else
+                    instruments[i]->getResonatorPtr(r-1)->getInOutInfo()->addOutput (outputLocs[i][r-1][o][0], outputLocs[i][r-1][o][1], outputChannels[i][r-1][o]);
+
                 ++o;
                 break;
             }
