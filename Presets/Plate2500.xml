@@ -1,0 +1,17 @@
+<App>
+	 <Instrument id="i0">
+	 	 <Resonator id="i0_r0" type="Thin_Plate">
+	 	 	 <PARAM id="i0_r0_Lx" value="2"/>
+	 	 	 <PARAM id="i0_r0_Ly" value="2"/>
+	 	 	 <PARAM id="i0_r0_rho" value="7850"/>
+	 	 	 <PARAM id="i0_r0_H" value="0.005"/>
+	 	 	 <PARAM id="i0_r0_E" value="2e+11"/>
+	 	 	 <PARAM id="i0_r0_nu" value="0.3"/>
+	 	 	 <PARAM id="i0_r0_sig0" value="1"/>
+	 	 	 <PARAM id="i0_r0_sig1" value="0.005"/>
+	 	 	 <PARAM id="i0_r0_maxPoints" value="2500"/>
+	 	 	 <Output id="i0_r0_o0" channel="0" loc="270"/>
+	 	 	 <Output id="i0_r0_o1" channel="1" loc="313"/>
+	 	 </Resonator>
+	 </Instrument>
+</App>

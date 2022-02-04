@@ -16,9 +16,9 @@ Instrument::Instrument (int fs) : fs (fs)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    resonators.reserve (16);
+    resonators.reserve (32);
     resonatorGroups.reserve (8);
-    CI.reserve (16);
+    CI.reserve (128);
     setInterceptsMouseClicks (true, false);
 }
 
@@ -694,7 +694,7 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                         switch (res->getModifier().getRawFlags())
                         {
                             case ModifierKeys::leftButtonModifier:
-                                IOinfo->addOutput (res->getMouseLoc());
+                                IOinfo->addOutput (res->getMouseLoc(), 2);
                                 break;
                             case ModifierKeys::leftButtonModifier + ModifierKeys::ctrlModifier:
                                 IOinfo->addOutput (res->getMouseLoc(), 0);
@@ -1188,16 +1188,50 @@ void Instrument::setConnectionType (ConnectionType c)
     }
 }
 
-void Instrument::addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, int loc)
+void Instrument::addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, double loc)
 {
-    CI.push_back (ConnectionInfo (connType, res, loc, res->getResonatorModuleType()));
+    if (loc > 1) // then it's an integer (internal handling)
+        CI.push_back (ConnectionInfo (connType, res, loc, res->getResonatorModuleType()));
+    else // preset handling
+    {
+        if (res->isModule1D())
+        CI.push_back (ConnectionInfo (connType, res, round (loc * res->getNumPoints()), res->getResonatorModuleType()));
+    }
+
 }
 
-void Instrument::addSecondConnection (std::shared_ptr<ResonatorModule> res, int loc)
+void Instrument::addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, double locX, double locY)
 {
-    CI[CI.size()-1].setSecondResonatorParams (res, loc, res->getResonatorModuleType());
+    if (locX > 1) // then it's an integer (internal handling)
+        CI.push_back (ConnectionInfo (connType, res, locX, res->getResonatorModuleType()));
+    else // preset handling
+    {
+        CI.push_back (ConnectionInfo (connType, res, round(locX * (res->getNumIntervalsX()+1)) + (round(locY * (res->getNumIntervalsY() + 1) * (res->getNumIntervalsX() + 1))), res->getResonatorModuleType()));
+    }
+
+}
+
+
+void Instrument::addSecondConnection (std::shared_ptr<ResonatorModule> res, double loc)
+{
+    if (loc > 1) // then it's an integer (internal handling)
+        CI[CI.size()-1].setSecondResonatorParams (res, loc, res->getResonatorModuleType());
+    else
+        CI[CI.size()-1].setSecondResonatorParams (res, round(loc * res->getNumPoints()), res->getResonatorModuleType());
+
     setCurrentlyActiveConnection (&CI[CI.size()-1]);
 }
+
+void Instrument::addSecondConnection (std::shared_ptr<ResonatorModule> res, double locX, double locY)
+{
+    if (locX > 1) // then it's an integer (internal handling)
+        CI[CI.size()-1].setSecondResonatorParams (res, locX, res->getResonatorModuleType());
+    else
+        CI[CI.size()-1].setSecondResonatorParams (res, round(locX * (res->getNumIntervalsX()+1)) + (round(locY * (res->getNumIntervalsY() + 1) * (res->getNumIntervalsX() + 1))), res->getResonatorModuleType());
+
+    setCurrentlyActiveConnection (&CI[CI.size()-1]);
+}
+
 
 void Instrument::saveOutput()
 {

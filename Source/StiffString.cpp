@@ -112,7 +112,6 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
     statesSave.open ("statesSaveString.csv");
 #endif
     std::cout << N << std::endl;
-
 //    excite(); // start by exciting
 }
 
@@ -157,11 +156,13 @@ void StiffString::initialise (int fs)
 
     setConnectionDivisionTerm (k * k / (rho * A * h * (1.0 + sig0 * k)));
     
+    inOutInfo.setN (std::vector<int> {N});
+    
     if (inOutInfo.isDefaultInit())
     {
         // Add in / outputs
-        inOutInfo.addOutput (4);
-        inOutInfo.addOutput (N - 4);
+        inOutInfo.addOutput (0.11, 0);
+        inOutInfo.addOutput (0.83, 1);
     }
 }
 

@@ -39,12 +39,36 @@ void InOutInfo::removeInput (int idx)
 
 }
 
-void InOutInfo::addOutput (int loc, int channel)
+void InOutInfo::addOutput (double loc, int channel)
 {
-    outLocs.push_back (loc);
+    if (loc > 1) // then it's an integer (internal handling)
+        outLocs.push_back(loc);
+    else // preset handling
+    {
+        jassert (N.size() == 1);
+        outLocs.push_back (round(loc * (N[0]+1)));
+    }
     outChannels.push_back(channel);
     ++numOutputs;
 }
+
+void InOutInfo::addOutput (double locX, double locY, int channel)
+{
+    if (locX > 1) // then it's an integer (internal handling)
+        outLocs.push_back(locX);
+    else // preset handling
+    {
+        jassert (N.size() == 2);
+        // LEFT OFF HERE!!
+        std::cout << round(locX * (N[0]+1)) << std::endl;
+        std::cout << round(locY * (N[1]+1)) << std::endl;
+
+        outLocs.push_back (round(locX * (N[0]+1)) + (round(locY * (N[1]) * (N[0]+1))));
+    }
+    outChannels.push_back(channel);
+    ++numOutputs;
+}
+
 
 void InOutInfo::removeOutput (int idx)
 {

@@ -189,8 +189,10 @@ public:
     void setConnectionType (ConnectionType c);
     
     // Have separate functions (and separate location) for presets
-    void addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, int loc);
-    void addSecondConnection (std::shared_ptr<ResonatorModule> res, int loc);
+    void addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, double loc);
+    void addFirstConnection (std::shared_ptr<ResonatorModule> res, ConnectionType connType, double locX, double locY);
+    void addSecondConnection (std::shared_ptr<ResonatorModule> res, double loc);
+    void addSecondConnection (std::shared_ptr<ResonatorModule> res, double locX, double locY);
 
 //    void setChangeListener (ChangeListener* changeListener) { if (getChangeL) addChangelistener (changeListener); };
     ApplicationState getApplicationState() { return applicationState; };

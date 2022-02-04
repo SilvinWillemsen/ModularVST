@@ -21,7 +21,8 @@ public:
     void addInput (int loc, int channel = 2);
     void removeInput (int idx);
     
-    void addOutput (int loc, int channel = 2);
+    void addOutput (double loc, int channel);
+    void addOutput (double locX, double locY, int channel);
     void removeOutput (int idx);
     
     int getNumInputs() { return numInputs; };
@@ -34,6 +35,8 @@ public:
     int getOutChannelAt (int idx) { return outChannels[idx]; };
 
     bool isDefaultInit() { return defaultInit; };
+    void setN (std::vector<int> NtoSet) { N = NtoSet; };
+    
 private:
     
     // Input locations and channels
@@ -45,6 +48,8 @@ private:
     // Output locations and channels
     std::vector<int> outLocs;
     std::vector<int> outChannels; // 0 - left; 1 - right; 2 - both
+    
+    std::vector<int> N;
     
     int numOutputs = 0;
     bool defaultInit;

@@ -17,6 +17,7 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
     
+    // max moving points
     maxPoints = *parameters.getVarPointer ("maxPoints");
     
 //    if (rmt == membrane)
@@ -86,14 +87,17 @@ void StiffMembrane::initialise (int fs)
     h = sqrt (stabilityTerm + sqrt ((stabilityTerm * stabilityTerm) + 16.0 * kappaSq * k * k));
     Nx = floor (Lx / h);
     Ny = floor (Ly / h);
-    N = (Nx + 1) * (Ny + 1) - 1; // minus 1 because the resonator module adds one
-    if (N > maxPoints)
+    int Nmoving = (Nx - 3) * (Ny - 3) ;
+    if (Nmoving > maxPoints)
     {
         double aspectRatio = Lx / Ly;
-        Nx = floor(sqrt(maxPoints * aspectRatio));
-        Ny = floor(sqrt(maxPoints / aspectRatio));
-        N = (Nx + 1) * (Ny + 1) - 1; // minus 1 because the resonator module adds one
+        int NxMoving = floor(sqrt(maxPoints * aspectRatio));
+        int NyMoving = floor(sqrt(maxPoints / aspectRatio));
+        Nx = NxMoving + 3;
+        Ny = NyMoving + 3;
     }
+    N = (Nx + 1) * (Ny + 1) - 1; // minus 1 because the resonator module adds one
+
     h = std::min (Lx / Nx, Ly / Ny); // recalculate h
     
     if (getResonatorModuleType() == membrane)
@@ -133,11 +137,13 @@ void StiffMembrane::initialise (int fs)
     
     setConnectionDivisionTerm (k * k / (rho * H * h * h * (1.0 + sig0 * k)));
 
+    inOutInfo.setN (std::vector<int> {Nx, Ny});
+
     if (inOutInfo.isDefaultInit())
     {
-        // Add in / outputs
-        inOutInfo.addOutput (5 + (5 * Nx), 0);
-        inOutInfo.addOutput ((Nx - 5) + (5 * Nx), 1);
+        // Add in / outputs (used to be form: 5 + (5 * Nx))
+        inOutInfo.addOutput (0.25, 0.25, 0);
+        inOutInfo.addOutput (0.75, 0.25, 1);
     }
     
 #ifdef SAVE_OUTPUT

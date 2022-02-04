@@ -129,7 +129,7 @@ namespace Global
 #ifdef NO_EDITOR
     static const bool loadFromBinary = true;
 #else
-    static const bool loadFromBinary = true;
+    static const bool loadFromBinary = false;
 #endif
     static const bool bowAtStartup = false;
     static const bool pluckAtStartup = false;
