@@ -445,8 +445,23 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
             {
                 file << "\t " << "\t " << "\t " << "<Output id=\"i" << i << "_r" << r << "_o" << o;
                 int channel = curResonator->getInOutInfo()->getOutChannelAt (o);
-                int loc = curResonator->getInOutInfo()->getOutLocAt (o);
-                file << "\" channel=\"" << channel << "\" loc=\"" << loc << "\"/>\n";
+                // make "if" for string, bar and membrane i suppose, cuz it all depends on h: locRatio = locpoint/N;  N = floor (L/h) 
+                if (curResonator->isModule1D())
+                {
+                    int N = curResonator-> getNumIntervals();
+                    double locRatio = (curResonator->getInOutInfo()->getOutLocAt(o)) / N;
+                    file << "\" channel=\"" << channel << "\" loc=\"" << locRatio << "\"/>\n";
+                }
+                else
+                {
+                    int Nx = curResonator->getNumIntervalsX();
+                    int Ny = curResonator->getNumIntervalsY();
+                    double locRatioX = double(curResonator->getInOutInfo()->getOutLocAt(o) % Nx) / (Nx + 1);
+                    double locRatioY = double(curResonator->getInOutInfo()->getOutLocAt(o) / Nx) / (Ny + 1);
+                    file << "\" channel=\"" << channel << "\" locX=\"" << locRatioX << "\" locY=\"" << locRatioY << "\"/>\n";
+                }
+                //double loc = (curResonator->getInOutInfo()->getOutLocAt (o));
+                //file << "\" channel=\"" << channel << "\" loc=\"" << loc << "\"/>\n";
             }
             
             // inputs
@@ -479,52 +494,53 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
             }
             file << "\n";
 
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
+                /*file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
                 file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc1 << "\"/>\n";
                 file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_tR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\"/>\n";
-                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_tL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>\n";
+                file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_tL\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>\n";*/
+
+                //=============================== 1 D res1 ==========================================================================
+                if (instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->isModule1D())
+                {
+                    int N = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->getNumIntervals();
+                    double locRatio = double(instruments[i]->getConnectionInfo()[0][c].loc1) / N;
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "value=\"" << locRatio << "\"/>\n";
+                }
+                //================================= 2 D res1 =======================================================================================
+                else
+                {
+                    int Nx = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->getNumIntervalsX();
+                    int Ny = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->getNumIntervalsY();
+                    double locRatioX = double(instruments[i]->getConnectionInfo()[0][c].loc1 % Nx) / (Nx + 1);
+                    double locRatioY = double(instruments[i]->getConnectionInfo()[0][c].loc1 / Nx) / (Ny + 1);
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "valueX=\"" << locRatioX << " \" valueY=\"" << locRatioY << "\"/>\n";
+                }
+                //================================= 1 D res2 =======================================================================================
+                if (instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res2->getID())->isModule1D())
+                {
+                    int N = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res2->getID())->getNumIntervals();
+                    double locRatio = double(instruments[i]->getConnectionInfo()[0][c].loc2) / N;
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\"/>\n";
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "value=\"" << locRatio << "\"/>\n";
+                }
+                //================================= 2 D res2 =======================================================================================
+                else
+                {
+                    int Nx = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res2->getID())->getNumIntervalsX();
+                    int Ny = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res2->getID())->getNumIntervalsY();
+                    double locRatioX = double(instruments[i]->getConnectionInfo()[0][c].loc2 % Nx) / (Nx + 1);
+                    double locRatioY = double(instruments[i]->getConnectionInfo()[0][c].loc2 / Nx) / (Ny + 1);
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_tR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\"/>\n";
+                    file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_tL\" " << "valueX=\"" << locRatioX << " \" valueY=\"" << locRatioY << "\"/>\n";
+                }
 
             file << "\t " << "\t " << "</Connection>" << "\n";
 
 
         // ----------------------------------------------------------------------------------
        
-        //switch (numConnections) {
-        //    case 0:
-        //        file << "... and " << numConnections << " connections."<< "\n";
-        //        break;
-        //    case 1:
-        //        file << "... and " << numConnections << " connection:"<< "\n";
-        //        break;
-        //    default:
-        //        file << "... and " << numConnections << " connections:"<< "\n";
-        //        break;
-        //}
-        
-        //for (int c = 0; c < numConnections; ++c)
-        //{
-        //    file << "\t " << "\t " << "<Connection id=\"" << i << "_" << c << "_c\" type=\"";
-        //    String connectionTypeString;
-        //    switch (instruments[i]->getConnectionInfo()[0][c].connType) {
-        //        case rigid:
-        //            connectionTypeString = "rigid";
-        //            break;
-        //        case linearSpring:
-        //            connectionTypeString = "linear";
-        //            break;
-        //        case nonlinearSpring:
-        //            connectionTypeString = "nonlinear";
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //    
-        //    file << connectionTypeString <<"\" fromResonator=\""
-        //    << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\" fromLocation=\""
-        //    << instruments[i]->getConnectionInfo()[0][c].loc1
-        //    << "\" toResonator=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\" toLocation=\""
-        //    << instruments[i]->getConnectionInfo()[0][c].loc2 << "\"/>" << "\n";
 
         }
         
