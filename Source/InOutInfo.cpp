@@ -59,10 +59,7 @@ void InOutInfo::addOutput (double locX, double locY, int channel)
     else // preset handling
     {
         jassert (N.size() == 2);
-        // LEFT OFF HERE!!
-        std::cout << round(locX * (N[0]+1)) << std::endl;
-        std::cout << round(locY * (N[1]+1)) << std::endl;
-        outLocs.push_back (round(locX * (N[0]+1)) + (round(N[0] * (N[1] + 1) * locY)));
+        outLocs.push_back (round(locX * (N[0]+1)) + (floor(locY * (N[1] + 1)) * N[0]));
     }
     outChannels.push_back(channel);
     ++numOutputs;

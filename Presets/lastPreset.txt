@@ -1,1 +1,1 @@
-guitarNewSettings.xml
+stringPlate.xml
