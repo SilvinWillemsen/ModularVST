@@ -14,6 +14,7 @@
 #include "ExcitationPanel.h"
 #include "AddModuleWindow.h"
 #include "SavePresetWindow.h"
+#include "DebugCPP.h"
 //==============================================================================
 /**
 */

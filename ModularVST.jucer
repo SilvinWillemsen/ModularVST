@@ -6,6 +6,8 @@
               compilerFlagSchemes="NewScheme">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
+      <FILE id="e9SETK" name="DebugCPP.cpp" compile="1" resource="0" file="Source/DebugCPP.cpp"/>
+      <FILE id="KLPmfA" name="DebugCPP.h" compile="0" resource="0" file="Source/DebugCPP.h"/>
       <GROUP id="{EDF98768-FD60-FF15-CE20-76C2402D92E3}" name="Presets">
         <FILE id="xrKq0a" name="String1.xml" compile="0" resource="1" file="Presets/String1.xml"/>
         <FILE id="C8uPQG" name="String5.xml" compile="0" resource="1" file="Presets/String5.xml"/>

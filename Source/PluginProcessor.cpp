@@ -584,6 +584,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
     const char* pathToUse = test.c_str();
     int sizeTest = 0;
     pugi::xml_parse_result result = loadFromBinary ?
+
         doc.load_string(BinaryData::getNamedResource (
                                                       (fileName == "" ? "Harp_xml" : std::string(fileName.toStdString()).c_str())
                                                       , sizeTest)) : doc.load_file (pathToUse);
@@ -968,6 +969,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
 
 void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, float value)
 {
+	    
     if (currentlyActiveInstrument == nullptr)
         return;
     
@@ -1000,7 +1002,7 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
         if (sliderValues[presetSelectID] < 0.5)
             presetToLoad = "Harp_xml";
         else
-            presetToLoad = "TwoStringsOctave_xml";
+            presetToLoad = "guitar_xml";
             
         shouldLoadPreset = true;
     }
