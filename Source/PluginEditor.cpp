@@ -162,6 +162,7 @@ void ModularVSTAudioProcessorEditor::timerCallback()
         refresh();
         audioProcessor.dontRefreshEditor();
     }
+
     repaint();
 }
 

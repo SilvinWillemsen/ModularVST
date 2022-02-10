@@ -19,7 +19,7 @@
 /**
  
  */
-class ModularVSTAudioProcessor  : public juce::AudioProcessor
+class ModularVSTAudioProcessor  : public juce::AudioProcessor, public ChangeListener, public ChangeBroadcaster
 {
 public:
     //==============================================================================
@@ -115,7 +115,9 @@ public:
         mouseXID = 0,
         mouseYID,
         exciteID,
-        excitationTypeID
+        excitationTypeID,
+        presetSelectID,
+        loadPresetToggleID
     };
     
     void myRangedAudioParameterChanged (RangedAudioParameter* myAudioParameter);
@@ -126,6 +128,8 @@ public:
     std::vector<RangedAudioParameter*>& getMyParameters() { return allParameters; };
     void setEditorSliders (std::vector<std::shared_ptr<Slider>>* s) { editorSliders = s; };
 #endif
+    
+    void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
         
 private:
     //==============================================================================
@@ -156,7 +160,9 @@ private:
     AudioParameterFloat* mouseX;
     AudioParameterFloat* mouseY;
     AudioParameterBool* excite;
-    AudioParameterInt* excitationType;
+    AudioParameterFloat* excitationType;
+    AudioParameterFloat* presetSelect;
+    AudioParameterBool* loadPresetToggle;
 
     std::vector<RangedAudioParameter*> allParameters;
     std::vector<float> sliderValues;
@@ -166,7 +172,11 @@ private:
     std::vector<std::shared_ptr<Slider>>* editorSliders;
 #endif
 
-    std::mutex testMutex;
+    std::mutex audioMutex;
+    std::mutex loadPresetMutex;
+    
+    bool shouldLoadPreset = false;
+    String presetToLoad = "";
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };
