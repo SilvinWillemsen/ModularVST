@@ -20,8 +20,7 @@
 class LoadPresetWindow : public juce::Component,
                          public Button::Listener,
                          public ChangeBroadcaster,
-                         public ChangeListener,
-                         public Timer
+                         public ChangeListener
 {
 public:
     LoadPresetWindow(ChangeListener* audioProcessorEditor, ModularVSTAudioProcessor* modularVSTAudioProcessor);

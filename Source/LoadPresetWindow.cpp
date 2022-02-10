@@ -20,8 +20,10 @@ LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor, Modular
     
     loadPresetButton = std::make_unique<TextButton> ("Load preset");
     loadPresetButton->addListener (this);
-    addAndMakeVisible(loadPresetButton.get());
+    addAndMakeVisible (loadPresetButton.get());
 
+    filenameEditor = std::make_unique<TextEditor> ();
+    addAndMakeVisible (filenameEditor.get());
    // addChangeListener (audioProcessorEditor);
     int n = modularVSTAudioProcessor->getNumPresets();
     for (int i = 0; i < n; i++) {

@@ -27,6 +27,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     // Window for adding modules
     addModuleWindow = std::make_unique<AddModuleWindow> (this);
     savePresetWindow = std::make_unique<SavePresetWindow>(this);
+    loadPresetWindow = std::make_unique<LoadPresetWindow>(this, &p);
 //    addAndMakeVisible (addModuleWindow.get());
     
     // Instruments
