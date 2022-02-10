@@ -44,6 +44,14 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 //        sliderValues[i] = allParameters[i]->getValue();
 //    }
     prevSliderValues = sliderValues;
+
+    numOfBinaryPresets = 0;
+    const char* s2 = ".";
+
+    while (strpbrk(BinaryData::namedResourceList[numOfBinaryPresets], s2) == NULL)
+    {
+        numOfBinaryPresets++;
+    }
 }
 
 ModularVSTAudioProcessor::~ModularVSTAudioProcessor()
@@ -568,12 +576,16 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
 
 PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary)
 {
+    std::string st = BinaryData::namedResourceList[1];
     
+    Logger::getCurrentLogger()->outputDebugString(st.substr(0, st.size() - 4));
+
+    //int instrumentListSize = sizeof(BinaryData::namedResourceList[-1]) / sizeof(BinaryData::namedResourceList[0]);
     pugi::xml_document doc;
     std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
     const char* pathToUse = test.c_str();
     int sizeTest = 0;
-    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource ("Harp_xml", sizeTest)) : doc.load_file (pathToUse);
+    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource(BinaryData::namedResourceList[1], sizeTest)) : doc.load_file(pathToUse);
     switch (result.status)
     {
         case pugi::status_ok:

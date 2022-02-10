@@ -56,6 +56,7 @@ enum Action
     changeMassRatioAction,
     changeActiveConnectionAction,
     loadPresetAction,
+    loadPresetFromWindowAction,
     savePresetAction,
     savePresetFromWindowAction,
     exciteAction,
