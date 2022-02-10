@@ -46,8 +46,7 @@ private:
 
     juce::ComboBox presetList;
     Action action = noAction;
-    ModularVSTAudioProcessor *modularVSTAudioProcessor;
-    std::unique_ptr<TextEditor> filenameEditor;
+    ModularVSTAudioProcessor* modularVSTAudioProcessor;
 
     int dlgPreset = -1;
 

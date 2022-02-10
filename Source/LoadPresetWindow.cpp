@@ -22,8 +22,6 @@ LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor, Modular
     loadPresetButton->addListener (this);
     addAndMakeVisible (loadPresetButton.get());
 
-    filenameEditor = std::make_unique<TextEditor> ();
-    addAndMakeVisible (filenameEditor.get());
    // addChangeListener (audioProcessorEditor);
     int n = modularVSTAudioProcessor->getNumPresets();
     for (int i = 0; i < n; i++) {
@@ -79,7 +77,7 @@ void LoadPresetWindow::resized()
 
     Rectangle<int> labelArea = totalArea.removeFromTop (Global::buttonHeight);
     totalArea.removeFromLeft (Global::margin);
-    filenameEditor->setBounds (totalArea.removeFromTop (Global::buttonHeight));
+    presetList.setBounds (totalArea.removeFromTop (Global::buttonHeight));
 }
 
 
