@@ -1,0 +1,730 @@
+<App>
+	 <Instrument id="i0">
+	 	 <Resonator id="i0_r0" type="Stiff_String">
+	 	 	 <PARAM id="i0_r0_L" value="1"/>
+	 	 	 <PARAM id="i0_r0_T" value="300"/>
+	 	 	 <PARAM id="i0_r0_rho" value="7850"/>
+	 	 	 <PARAM id="i0_r0_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="i0_r0_E" value="2e+11"/>
+	 	 	 <PARAM id="i0_r0_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r0_sig0" value="1"/>
+	 	 	 <PARAM id="i0_r0_sig1" value="0.005"/>
+	 	 	 <Output id="i0_r0_o0" channel="2" loc="0.0338983"/>
+	 	 	 <Output id="i0_r0_o1" channel="2" loc="0.966102"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r1" type="Stiff_String">
+	 	 	 <PARAM id="i0_r1_L" value="1"/>
+	 	 	 <PARAM id="i0_r1_T" value="300"/>
+	 	 	 <PARAM id="i0_r1_rho" value="7850"/>
+	 	 	 <PARAM id="i0_r1_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="i0_r1_E" value="2e+11"/>
+	 	 	 <PARAM id="i0_r1_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r1_sig0" value="1"/>
+	 	 	 <PARAM id="i0_r1_sig1" value="0.005"/>
+	 	 	 <Output id="i0_r1_o0" channel="2" loc="0.0338983"/>
+	 	 	 <Output id="i0_r1_o1" channel="2" loc="0.966102"/>
+	 	 </Resonator>
+	 	 <Connection id="i0_c0" type="nonlinear">
+	 	 	 <PARAM id="i0_c0_fR" value="0"/>
+	 	 	 <PARAM id="i0_c0_fL" value="1"/>
+	 	 	 <PARAM id="i0_c0_fR" value="1"/>
+	 	 	 <PARAM id="i0_c0_fL" value="1.00847"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c1" type="nonlinear">
+	 	 	 <PARAM id="i0_c1_fR" value="0"/>
+	 	 	 <PARAM id="i0_c1_fL" value="0.0168067"/>
+	 	 	 <PARAM id="i0_c1_fR" value="1"/>
+	 	 	 <PARAM id="i0_c1_fL" value="0.0169492"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c2" type="nonlinear">
+	 	 	 <PARAM id="i0_c2_fR" value="0"/>
+	 	 	 <PARAM id="i0_c2_fL" value="0.0252101"/>
+	 	 	 <PARAM id="i0_c2_fR" value="1"/>
+	 	 	 <PARAM id="i0_c2_fL" value="0.0254237"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c3" type="nonlinear">
+	 	 	 <PARAM id="i0_c3_fR" value="0"/>
+	 	 	 <PARAM id="i0_c3_fL" value="0.0336134"/>
+	 	 	 <PARAM id="i0_c3_fR" value="1"/>
+	 	 	 <PARAM id="i0_c3_fL" value="0.0338983"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c4" type="nonlinear">
+	 	 	 <PARAM id="i0_c4_fR" value="0"/>
+	 	 	 <PARAM id="i0_c4_fL" value="0.0420168"/>
+	 	 	 <PARAM id="i0_c4_fR" value="1"/>
+	 	 	 <PARAM id="i0_c4_fL" value="0.0423729"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c5" type="nonlinear">
+	 	 	 <PARAM id="i0_c5_fR" value="0"/>
+	 	 	 <PARAM id="i0_c5_fL" value="0.0504202"/>
+	 	 	 <PARAM id="i0_c5_fR" value="1"/>
+	 	 	 <PARAM id="i0_c5_fL" value="0.0508475"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c6" type="nonlinear">
+	 	 	 <PARAM id="i0_c6_fR" value="0"/>
+	 	 	 <PARAM id="i0_c6_fL" value="0.0588235"/>
+	 	 	 <PARAM id="i0_c6_fR" value="1"/>
+	 	 	 <PARAM id="i0_c6_fL" value="0.059322"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c7" type="nonlinear">
+	 	 	 <PARAM id="i0_c7_fR" value="0"/>
+	 	 	 <PARAM id="i0_c7_fL" value="0.0672269"/>
+	 	 	 <PARAM id="i0_c7_fR" value="1"/>
+	 	 	 <PARAM id="i0_c7_fL" value="0.0677966"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c8" type="nonlinear">
+	 	 	 <PARAM id="i0_c8_fR" value="0"/>
+	 	 	 <PARAM id="i0_c8_fL" value="0.0756303"/>
+	 	 	 <PARAM id="i0_c8_fR" value="1"/>
+	 	 	 <PARAM id="i0_c8_fL" value="0.0762712"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c9" type="nonlinear">
+	 	 	 <PARAM id="i0_c9_fR" value="0"/>
+	 	 	 <PARAM id="i0_c9_fL" value="0.0840336"/>
+	 	 	 <PARAM id="i0_c9_fR" value="1"/>
+	 	 	 <PARAM id="i0_c9_fL" value="0.0847458"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c10" type="nonlinear">
+	 	 	 <PARAM id="i0_c10_fR" value="0"/>
+	 	 	 <PARAM id="i0_c10_fL" value="0.092437"/>
+	 	 	 <PARAM id="i0_c10_fR" value="1"/>
+	 	 	 <PARAM id="i0_c10_fL" value="0.0932203"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c11" type="nonlinear">
+	 	 	 <PARAM id="i0_c11_fR" value="0"/>
+	 	 	 <PARAM id="i0_c11_fL" value="0.10084"/>
+	 	 	 <PARAM id="i0_c11_fR" value="1"/>
+	 	 	 <PARAM id="i0_c11_fL" value="0.101695"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c12" type="nonlinear">
+	 	 	 <PARAM id="i0_c12_fR" value="0"/>
+	 	 	 <PARAM id="i0_c12_fL" value="0.109244"/>
+	 	 	 <PARAM id="i0_c12_fR" value="1"/>
+	 	 	 <PARAM id="i0_c12_fL" value="0.110169"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c13" type="nonlinear">
+	 	 	 <PARAM id="i0_c13_fR" value="0"/>
+	 	 	 <PARAM id="i0_c13_fL" value="0.117647"/>
+	 	 	 <PARAM id="i0_c13_fR" value="1"/>
+	 	 	 <PARAM id="i0_c13_fL" value="0.118644"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c14" type="nonlinear">
+	 	 	 <PARAM id="i0_c14_fR" value="0"/>
+	 	 	 <PARAM id="i0_c14_fL" value="0.12605"/>
+	 	 	 <PARAM id="i0_c14_fR" value="1"/>
+	 	 	 <PARAM id="i0_c14_fL" value="0.127119"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c15" type="nonlinear">
+	 	 	 <PARAM id="i0_c15_fR" value="0"/>
+	 	 	 <PARAM id="i0_c15_fL" value="0.134454"/>
+	 	 	 <PARAM id="i0_c15_fR" value="1"/>
+	 	 	 <PARAM id="i0_c15_fL" value="0.135593"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c16" type="nonlinear">
+	 	 	 <PARAM id="i0_c16_fR" value="0"/>
+	 	 	 <PARAM id="i0_c16_fL" value="0.142857"/>
+	 	 	 <PARAM id="i0_c16_fR" value="1"/>
+	 	 	 <PARAM id="i0_c16_fL" value="0.144068"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c17" type="nonlinear">
+	 	 	 <PARAM id="i0_c17_fR" value="0"/>
+	 	 	 <PARAM id="i0_c17_fL" value="0.151261"/>
+	 	 	 <PARAM id="i0_c17_fR" value="1"/>
+	 	 	 <PARAM id="i0_c17_fL" value="0.152542"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c18" type="nonlinear">
+	 	 	 <PARAM id="i0_c18_fR" value="0"/>
+	 	 	 <PARAM id="i0_c18_fL" value="0.159664"/>
+	 	 	 <PARAM id="i0_c18_fR" value="1"/>
+	 	 	 <PARAM id="i0_c18_fL" value="0.161017"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c19" type="nonlinear">
+	 	 	 <PARAM id="i0_c19_fR" value="0"/>
+	 	 	 <PARAM id="i0_c19_fL" value="0.168067"/>
+	 	 	 <PARAM id="i0_c19_fR" value="1"/>
+	 	 	 <PARAM id="i0_c19_fL" value="0.169492"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c20" type="nonlinear">
+	 	 	 <PARAM id="i0_c20_fR" value="0"/>
+	 	 	 <PARAM id="i0_c20_fL" value="0.176471"/>
+	 	 	 <PARAM id="i0_c20_fR" value="1"/>
+	 	 	 <PARAM id="i0_c20_fL" value="0.177966"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c21" type="nonlinear">
+	 	 	 <PARAM id="i0_c21_fR" value="0"/>
+	 	 	 <PARAM id="i0_c21_fL" value="0.184874"/>
+	 	 	 <PARAM id="i0_c21_fR" value="1"/>
+	 	 	 <PARAM id="i0_c21_fL" value="0.186441"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c22" type="nonlinear">
+	 	 	 <PARAM id="i0_c22_fR" value="0"/>
+	 	 	 <PARAM id="i0_c22_fL" value="0.193277"/>
+	 	 	 <PARAM id="i0_c22_fR" value="1"/>
+	 	 	 <PARAM id="i0_c22_fL" value="0.194915"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c23" type="nonlinear">
+	 	 	 <PARAM id="i0_c23_fR" value="0"/>
+	 	 	 <PARAM id="i0_c23_fL" value="0.201681"/>
+	 	 	 <PARAM id="i0_c23_fR" value="1"/>
+	 	 	 <PARAM id="i0_c23_fL" value="0.20339"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c24" type="nonlinear">
+	 	 	 <PARAM id="i0_c24_fR" value="0"/>
+	 	 	 <PARAM id="i0_c24_fL" value="0.210084"/>
+	 	 	 <PARAM id="i0_c24_fR" value="1"/>
+	 	 	 <PARAM id="i0_c24_fL" value="0.211864"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c25" type="nonlinear">
+	 	 	 <PARAM id="i0_c25_fR" value="0"/>
+	 	 	 <PARAM id="i0_c25_fL" value="0.218487"/>
+	 	 	 <PARAM id="i0_c25_fR" value="1"/>
+	 	 	 <PARAM id="i0_c25_fL" value="0.220339"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c26" type="nonlinear">
+	 	 	 <PARAM id="i0_c26_fR" value="0"/>
+	 	 	 <PARAM id="i0_c26_fL" value="0.226891"/>
+	 	 	 <PARAM id="i0_c26_fR" value="1"/>
+	 	 	 <PARAM id="i0_c26_fL" value="0.228814"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c27" type="nonlinear">
+	 	 	 <PARAM id="i0_c27_fR" value="0"/>
+	 	 	 <PARAM id="i0_c27_fL" value="0.235294"/>
+	 	 	 <PARAM id="i0_c27_fR" value="1"/>
+	 	 	 <PARAM id="i0_c27_fL" value="0.237288"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c28" type="nonlinear">
+	 	 	 <PARAM id="i0_c28_fR" value="0"/>
+	 	 	 <PARAM id="i0_c28_fL" value="0.243697"/>
+	 	 	 <PARAM id="i0_c28_fR" value="1"/>
+	 	 	 <PARAM id="i0_c28_fL" value="0.245763"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c29" type="nonlinear">
+	 	 	 <PARAM id="i0_c29_fR" value="0"/>
+	 	 	 <PARAM id="i0_c29_fL" value="0.252101"/>
+	 	 	 <PARAM id="i0_c29_fR" value="1"/>
+	 	 	 <PARAM id="i0_c29_fL" value="0.254237"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c30" type="nonlinear">
+	 	 	 <PARAM id="i0_c30_fR" value="0"/>
+	 	 	 <PARAM id="i0_c30_fL" value="0.260504"/>
+	 	 	 <PARAM id="i0_c30_fR" value="1"/>
+	 	 	 <PARAM id="i0_c30_fL" value="0.262712"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c31" type="nonlinear">
+	 	 	 <PARAM id="i0_c31_fR" value="0"/>
+	 	 	 <PARAM id="i0_c31_fL" value="0.268908"/>
+	 	 	 <PARAM id="i0_c31_fR" value="1"/>
+	 	 	 <PARAM id="i0_c31_fL" value="0.271186"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c32" type="nonlinear">
+	 	 	 <PARAM id="i0_c32_fR" value="0"/>
+	 	 	 <PARAM id="i0_c32_fL" value="0.277311"/>
+	 	 	 <PARAM id="i0_c32_fR" value="1"/>
+	 	 	 <PARAM id="i0_c32_fL" value="0.279661"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c33" type="nonlinear">
+	 	 	 <PARAM id="i0_c33_fR" value="0"/>
+	 	 	 <PARAM id="i0_c33_fL" value="0.285714"/>
+	 	 	 <PARAM id="i0_c33_fR" value="1"/>
+	 	 	 <PARAM id="i0_c33_fL" value="0.288136"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c34" type="nonlinear">
+	 	 	 <PARAM id="i0_c34_fR" value="0"/>
+	 	 	 <PARAM id="i0_c34_fL" value="0.294118"/>
+	 	 	 <PARAM id="i0_c34_fR" value="1"/>
+	 	 	 <PARAM id="i0_c34_fL" value="0.29661"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c35" type="nonlinear">
+	 	 	 <PARAM id="i0_c35_fR" value="0"/>
+	 	 	 <PARAM id="i0_c35_fL" value="0.302521"/>
+	 	 	 <PARAM id="i0_c35_fR" value="1"/>
+	 	 	 <PARAM id="i0_c35_fL" value="0.305085"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c36" type="nonlinear">
+	 	 	 <PARAM id="i0_c36_fR" value="0"/>
+	 	 	 <PARAM id="i0_c36_fL" value="0.310924"/>
+	 	 	 <PARAM id="i0_c36_fR" value="1"/>
+	 	 	 <PARAM id="i0_c36_fL" value="0.313559"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c37" type="nonlinear">
+	 	 	 <PARAM id="i0_c37_fR" value="0"/>
+	 	 	 <PARAM id="i0_c37_fL" value="0.319328"/>
+	 	 	 <PARAM id="i0_c37_fR" value="1"/>
+	 	 	 <PARAM id="i0_c37_fL" value="0.322034"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c38" type="nonlinear">
+	 	 	 <PARAM id="i0_c38_fR" value="0"/>
+	 	 	 <PARAM id="i0_c38_fL" value="0.327731"/>
+	 	 	 <PARAM id="i0_c38_fR" value="1"/>
+	 	 	 <PARAM id="i0_c38_fL" value="0.330508"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c39" type="nonlinear">
+	 	 	 <PARAM id="i0_c39_fR" value="0"/>
+	 	 	 <PARAM id="i0_c39_fL" value="0.336134"/>
+	 	 	 <PARAM id="i0_c39_fR" value="1"/>
+	 	 	 <PARAM id="i0_c39_fL" value="0.338983"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c40" type="nonlinear">
+	 	 	 <PARAM id="i0_c40_fR" value="0"/>
+	 	 	 <PARAM id="i0_c40_fL" value="0.344538"/>
+	 	 	 <PARAM id="i0_c40_fR" value="1"/>
+	 	 	 <PARAM id="i0_c40_fL" value="0.347458"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c41" type="nonlinear">
+	 	 	 <PARAM id="i0_c41_fR" value="0"/>
+	 	 	 <PARAM id="i0_c41_fL" value="0.352941"/>
+	 	 	 <PARAM id="i0_c41_fR" value="1"/>
+	 	 	 <PARAM id="i0_c41_fL" value="0.355932"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c42" type="nonlinear">
+	 	 	 <PARAM id="i0_c42_fR" value="0"/>
+	 	 	 <PARAM id="i0_c42_fL" value="0.361345"/>
+	 	 	 <PARAM id="i0_c42_fR" value="1"/>
+	 	 	 <PARAM id="i0_c42_fL" value="0.364407"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c43" type="nonlinear">
+	 	 	 <PARAM id="i0_c43_fR" value="0"/>
+	 	 	 <PARAM id="i0_c43_fL" value="0.369748"/>
+	 	 	 <PARAM id="i0_c43_fR" value="1"/>
+	 	 	 <PARAM id="i0_c43_fL" value="0.372881"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c44" type="nonlinear">
+	 	 	 <PARAM id="i0_c44_fR" value="0"/>
+	 	 	 <PARAM id="i0_c44_fL" value="0.378151"/>
+	 	 	 <PARAM id="i0_c44_fR" value="1"/>
+	 	 	 <PARAM id="i0_c44_fL" value="0.381356"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c45" type="nonlinear">
+	 	 	 <PARAM id="i0_c45_fR" value="0"/>
+	 	 	 <PARAM id="i0_c45_fL" value="0.386555"/>
+	 	 	 <PARAM id="i0_c45_fR" value="1"/>
+	 	 	 <PARAM id="i0_c45_fL" value="0.389831"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c46" type="nonlinear">
+	 	 	 <PARAM id="i0_c46_fR" value="0"/>
+	 	 	 <PARAM id="i0_c46_fL" value="0.394958"/>
+	 	 	 <PARAM id="i0_c46_fR" value="1"/>
+	 	 	 <PARAM id="i0_c46_fL" value="0.398305"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c47" type="nonlinear">
+	 	 	 <PARAM id="i0_c47_fR" value="0"/>
+	 	 	 <PARAM id="i0_c47_fL" value="0.403361"/>
+	 	 	 <PARAM id="i0_c47_fR" value="1"/>
+	 	 	 <PARAM id="i0_c47_fL" value="0.40678"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c48" type="nonlinear">
+	 	 	 <PARAM id="i0_c48_fR" value="0"/>
+	 	 	 <PARAM id="i0_c48_fL" value="0.411765"/>
+	 	 	 <PARAM id="i0_c48_fR" value="1"/>
+	 	 	 <PARAM id="i0_c48_fL" value="0.415254"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c49" type="nonlinear">
+	 	 	 <PARAM id="i0_c49_fR" value="0"/>
+	 	 	 <PARAM id="i0_c49_fL" value="0.420168"/>
+	 	 	 <PARAM id="i0_c49_fR" value="1"/>
+	 	 	 <PARAM id="i0_c49_fL" value="0.423729"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c50" type="nonlinear">
+	 	 	 <PARAM id="i0_c50_fR" value="0"/>
+	 	 	 <PARAM id="i0_c50_fL" value="0.428571"/>
+	 	 	 <PARAM id="i0_c50_fR" value="1"/>
+	 	 	 <PARAM id="i0_c50_fL" value="0.432203"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c51" type="nonlinear">
+	 	 	 <PARAM id="i0_c51_fR" value="0"/>
+	 	 	 <PARAM id="i0_c51_fL" value="0.436975"/>
+	 	 	 <PARAM id="i0_c51_fR" value="1"/>
+	 	 	 <PARAM id="i0_c51_fL" value="0.440678"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c52" type="nonlinear">
+	 	 	 <PARAM id="i0_c52_fR" value="0"/>
+	 	 	 <PARAM id="i0_c52_fL" value="0.445378"/>
+	 	 	 <PARAM id="i0_c52_fR" value="1"/>
+	 	 	 <PARAM id="i0_c52_fL" value="0.449153"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c53" type="nonlinear">
+	 	 	 <PARAM id="i0_c53_fR" value="0"/>
+	 	 	 <PARAM id="i0_c53_fL" value="0.453782"/>
+	 	 	 <PARAM id="i0_c53_fR" value="1"/>
+	 	 	 <PARAM id="i0_c53_fL" value="0.457627"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c54" type="nonlinear">
+	 	 	 <PARAM id="i0_c54_fR" value="0"/>
+	 	 	 <PARAM id="i0_c54_fL" value="0.462185"/>
+	 	 	 <PARAM id="i0_c54_fR" value="1"/>
+	 	 	 <PARAM id="i0_c54_fL" value="0.466102"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c55" type="nonlinear">
+	 	 	 <PARAM id="i0_c55_fR" value="0"/>
+	 	 	 <PARAM id="i0_c55_fL" value="0.470588"/>
+	 	 	 <PARAM id="i0_c55_fR" value="1"/>
+	 	 	 <PARAM id="i0_c55_fL" value="0.474576"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c56" type="nonlinear">
+	 	 	 <PARAM id="i0_c56_fR" value="0"/>
+	 	 	 <PARAM id="i0_c56_fL" value="0.478992"/>
+	 	 	 <PARAM id="i0_c56_fR" value="1"/>
+	 	 	 <PARAM id="i0_c56_fL" value="0.483051"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c57" type="nonlinear">
+	 	 	 <PARAM id="i0_c57_fR" value="0"/>
+	 	 	 <PARAM id="i0_c57_fL" value="0.487395"/>
+	 	 	 <PARAM id="i0_c57_fR" value="1"/>
+	 	 	 <PARAM id="i0_c57_fL" value="0.491525"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c58" type="nonlinear">
+	 	 	 <PARAM id="i0_c58_fR" value="0"/>
+	 	 	 <PARAM id="i0_c58_fL" value="0.495798"/>
+	 	 	 <PARAM id="i0_c58_fR" value="1"/>
+	 	 	 <PARAM id="i0_c58_fL" value="0.5"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c59" type="nonlinear">
+	 	 	 <PARAM id="i0_c59_fR" value="0"/>
+	 	 	 <PARAM id="i0_c59_fL" value="0.504202"/>
+	 	 	 <PARAM id="i0_c59_fR" value="1"/>
+	 	 	 <PARAM id="i0_c59_fL" value="0.508475"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c60" type="nonlinear">
+	 	 	 <PARAM id="i0_c60_fR" value="0"/>
+	 	 	 <PARAM id="i0_c60_fL" value="0.512605"/>
+	 	 	 <PARAM id="i0_c60_fR" value="1"/>
+	 	 	 <PARAM id="i0_c60_fL" value="0.516949"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c61" type="nonlinear">
+	 	 	 <PARAM id="i0_c61_fR" value="0"/>
+	 	 	 <PARAM id="i0_c61_fL" value="0.521008"/>
+	 	 	 <PARAM id="i0_c61_fR" value="1"/>
+	 	 	 <PARAM id="i0_c61_fL" value="0.525424"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c62" type="nonlinear">
+	 	 	 <PARAM id="i0_c62_fR" value="0"/>
+	 	 	 <PARAM id="i0_c62_fL" value="0.529412"/>
+	 	 	 <PARAM id="i0_c62_fR" value="1"/>
+	 	 	 <PARAM id="i0_c62_fL" value="0.533898"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c63" type="nonlinear">
+	 	 	 <PARAM id="i0_c63_fR" value="0"/>
+	 	 	 <PARAM id="i0_c63_fL" value="0.537815"/>
+	 	 	 <PARAM id="i0_c63_fR" value="1"/>
+	 	 	 <PARAM id="i0_c63_fL" value="0.542373"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c64" type="nonlinear">
+	 	 	 <PARAM id="i0_c64_fR" value="0"/>
+	 	 	 <PARAM id="i0_c64_fL" value="0.546218"/>
+	 	 	 <PARAM id="i0_c64_fR" value="1"/>
+	 	 	 <PARAM id="i0_c64_fL" value="0.550847"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c65" type="nonlinear">
+	 	 	 <PARAM id="i0_c65_fR" value="0"/>
+	 	 	 <PARAM id="i0_c65_fL" value="0.554622"/>
+	 	 	 <PARAM id="i0_c65_fR" value="1"/>
+	 	 	 <PARAM id="i0_c65_fL" value="0.559322"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c66" type="nonlinear">
+	 	 	 <PARAM id="i0_c66_fR" value="0"/>
+	 	 	 <PARAM id="i0_c66_fL" value="0.563025"/>
+	 	 	 <PARAM id="i0_c66_fR" value="1"/>
+	 	 	 <PARAM id="i0_c66_fL" value="0.567797"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c67" type="nonlinear">
+	 	 	 <PARAM id="i0_c67_fR" value="0"/>
+	 	 	 <PARAM id="i0_c67_fL" value="0.571429"/>
+	 	 	 <PARAM id="i0_c67_fR" value="1"/>
+	 	 	 <PARAM id="i0_c67_fL" value="0.576271"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c68" type="nonlinear">
+	 	 	 <PARAM id="i0_c68_fR" value="0"/>
+	 	 	 <PARAM id="i0_c68_fL" value="0.579832"/>
+	 	 	 <PARAM id="i0_c68_fR" value="1"/>
+	 	 	 <PARAM id="i0_c68_fL" value="0.584746"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c69" type="nonlinear">
+	 	 	 <PARAM id="i0_c69_fR" value="0"/>
+	 	 	 <PARAM id="i0_c69_fL" value="0.588235"/>
+	 	 	 <PARAM id="i0_c69_fR" value="1"/>
+	 	 	 <PARAM id="i0_c69_fL" value="0.59322"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c70" type="nonlinear">
+	 	 	 <PARAM id="i0_c70_fR" value="0"/>
+	 	 	 <PARAM id="i0_c70_fL" value="0.596639"/>
+	 	 	 <PARAM id="i0_c70_fR" value="1"/>
+	 	 	 <PARAM id="i0_c70_fL" value="0.601695"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c71" type="nonlinear">
+	 	 	 <PARAM id="i0_c71_fR" value="0"/>
+	 	 	 <PARAM id="i0_c71_fL" value="0.605042"/>
+	 	 	 <PARAM id="i0_c71_fR" value="1"/>
+	 	 	 <PARAM id="i0_c71_fL" value="0.610169"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c72" type="nonlinear">
+	 	 	 <PARAM id="i0_c72_fR" value="0"/>
+	 	 	 <PARAM id="i0_c72_fL" value="0.613445"/>
+	 	 	 <PARAM id="i0_c72_fR" value="1"/>
+	 	 	 <PARAM id="i0_c72_fL" value="0.618644"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c73" type="nonlinear">
+	 	 	 <PARAM id="i0_c73_fR" value="0"/>
+	 	 	 <PARAM id="i0_c73_fL" value="0.621849"/>
+	 	 	 <PARAM id="i0_c73_fR" value="1"/>
+	 	 	 <PARAM id="i0_c73_fL" value="0.627119"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c74" type="nonlinear">
+	 	 	 <PARAM id="i0_c74_fR" value="0"/>
+	 	 	 <PARAM id="i0_c74_fL" value="0.630252"/>
+	 	 	 <PARAM id="i0_c74_fR" value="1"/>
+	 	 	 <PARAM id="i0_c74_fL" value="0.635593"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c75" type="nonlinear">
+	 	 	 <PARAM id="i0_c75_fR" value="0"/>
+	 	 	 <PARAM id="i0_c75_fL" value="0.638655"/>
+	 	 	 <PARAM id="i0_c75_fR" value="1"/>
+	 	 	 <PARAM id="i0_c75_fL" value="0.644068"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c76" type="nonlinear">
+	 	 	 <PARAM id="i0_c76_fR" value="0"/>
+	 	 	 <PARAM id="i0_c76_fL" value="0.647059"/>
+	 	 	 <PARAM id="i0_c76_fR" value="1"/>
+	 	 	 <PARAM id="i0_c76_fL" value="0.652542"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c77" type="nonlinear">
+	 	 	 <PARAM id="i0_c77_fR" value="0"/>
+	 	 	 <PARAM id="i0_c77_fL" value="0.655462"/>
+	 	 	 <PARAM id="i0_c77_fR" value="1"/>
+	 	 	 <PARAM id="i0_c77_fL" value="0.661017"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c78" type="nonlinear">
+	 	 	 <PARAM id="i0_c78_fR" value="0"/>
+	 	 	 <PARAM id="i0_c78_fL" value="0.663866"/>
+	 	 	 <PARAM id="i0_c78_fR" value="1"/>
+	 	 	 <PARAM id="i0_c78_fL" value="0.669492"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c79" type="nonlinear">
+	 	 	 <PARAM id="i0_c79_fR" value="0"/>
+	 	 	 <PARAM id="i0_c79_fL" value="0.672269"/>
+	 	 	 <PARAM id="i0_c79_fR" value="1"/>
+	 	 	 <PARAM id="i0_c79_fL" value="0.677966"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c80" type="nonlinear">
+	 	 	 <PARAM id="i0_c80_fR" value="0"/>
+	 	 	 <PARAM id="i0_c80_fL" value="0.680672"/>
+	 	 	 <PARAM id="i0_c80_fR" value="1"/>
+	 	 	 <PARAM id="i0_c80_fL" value="0.686441"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c81" type="nonlinear">
+	 	 	 <PARAM id="i0_c81_fR" value="0"/>
+	 	 	 <PARAM id="i0_c81_fL" value="0.689076"/>
+	 	 	 <PARAM id="i0_c81_fR" value="1"/>
+	 	 	 <PARAM id="i0_c81_fL" value="0.694915"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c82" type="nonlinear">
+	 	 	 <PARAM id="i0_c82_fR" value="0"/>
+	 	 	 <PARAM id="i0_c82_fL" value="0.697479"/>
+	 	 	 <PARAM id="i0_c82_fR" value="1"/>
+	 	 	 <PARAM id="i0_c82_fL" value="0.70339"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c83" type="nonlinear">
+	 	 	 <PARAM id="i0_c83_fR" value="0"/>
+	 	 	 <PARAM id="i0_c83_fL" value="0.705882"/>
+	 	 	 <PARAM id="i0_c83_fR" value="1"/>
+	 	 	 <PARAM id="i0_c83_fL" value="0.711864"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c84" type="nonlinear">
+	 	 	 <PARAM id="i0_c84_fR" value="0"/>
+	 	 	 <PARAM id="i0_c84_fL" value="0.714286"/>
+	 	 	 <PARAM id="i0_c84_fR" value="1"/>
+	 	 	 <PARAM id="i0_c84_fL" value="0.720339"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c85" type="nonlinear">
+	 	 	 <PARAM id="i0_c85_fR" value="0"/>
+	 	 	 <PARAM id="i0_c85_fL" value="0.722689"/>
+	 	 	 <PARAM id="i0_c85_fR" value="1"/>
+	 	 	 <PARAM id="i0_c85_fL" value="0.728814"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c86" type="nonlinear">
+	 	 	 <PARAM id="i0_c86_fR" value="0"/>
+	 	 	 <PARAM id="i0_c86_fL" value="0.731092"/>
+	 	 	 <PARAM id="i0_c86_fR" value="1"/>
+	 	 	 <PARAM id="i0_c86_fL" value="0.737288"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c87" type="nonlinear">
+	 	 	 <PARAM id="i0_c87_fR" value="0"/>
+	 	 	 <PARAM id="i0_c87_fL" value="0.739496"/>
+	 	 	 <PARAM id="i0_c87_fR" value="1"/>
+	 	 	 <PARAM id="i0_c87_fL" value="0.745763"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c88" type="nonlinear">
+	 	 	 <PARAM id="i0_c88_fR" value="0"/>
+	 	 	 <PARAM id="i0_c88_fL" value="0.747899"/>
+	 	 	 <PARAM id="i0_c88_fR" value="1"/>
+	 	 	 <PARAM id="i0_c88_fL" value="0.754237"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c89" type="nonlinear">
+	 	 	 <PARAM id="i0_c89_fR" value="0"/>
+	 	 	 <PARAM id="i0_c89_fL" value="0.756303"/>
+	 	 	 <PARAM id="i0_c89_fR" value="1"/>
+	 	 	 <PARAM id="i0_c89_fL" value="0.762712"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c90" type="nonlinear">
+	 	 	 <PARAM id="i0_c90_fR" value="0"/>
+	 	 	 <PARAM id="i0_c90_fL" value="0.764706"/>
+	 	 	 <PARAM id="i0_c90_fR" value="1"/>
+	 	 	 <PARAM id="i0_c90_fL" value="0.771186"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c91" type="nonlinear">
+	 	 	 <PARAM id="i0_c91_fR" value="0"/>
+	 	 	 <PARAM id="i0_c91_fL" value="0.773109"/>
+	 	 	 <PARAM id="i0_c91_fR" value="1"/>
+	 	 	 <PARAM id="i0_c91_fL" value="0.779661"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c92" type="nonlinear">
+	 	 	 <PARAM id="i0_c92_fR" value="0"/>
+	 	 	 <PARAM id="i0_c92_fL" value="0.781513"/>
+	 	 	 <PARAM id="i0_c92_fR" value="1"/>
+	 	 	 <PARAM id="i0_c92_fL" value="0.788136"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c93" type="nonlinear">
+	 	 	 <PARAM id="i0_c93_fR" value="0"/>
+	 	 	 <PARAM id="i0_c93_fL" value="0.789916"/>
+	 	 	 <PARAM id="i0_c93_fR" value="1"/>
+	 	 	 <PARAM id="i0_c93_fL" value="0.79661"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c94" type="nonlinear">
+	 	 	 <PARAM id="i0_c94_fR" value="0"/>
+	 	 	 <PARAM id="i0_c94_fL" value="0.798319"/>
+	 	 	 <PARAM id="i0_c94_fR" value="1"/>
+	 	 	 <PARAM id="i0_c94_fL" value="0.805085"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c95" type="nonlinear">
+	 	 	 <PARAM id="i0_c95_fR" value="0"/>
+	 	 	 <PARAM id="i0_c95_fL" value="0.806723"/>
+	 	 	 <PARAM id="i0_c95_fR" value="1"/>
+	 	 	 <PARAM id="i0_c95_fL" value="0.813559"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c96" type="nonlinear">
+	 	 	 <PARAM id="i0_c96_fR" value="0"/>
+	 	 	 <PARAM id="i0_c96_fL" value="0.815126"/>
+	 	 	 <PARAM id="i0_c96_fR" value="1"/>
+	 	 	 <PARAM id="i0_c96_fL" value="0.822034"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c97" type="nonlinear">
+	 	 	 <PARAM id="i0_c97_fR" value="0"/>
+	 	 	 <PARAM id="i0_c97_fL" value="0.823529"/>
+	 	 	 <PARAM id="i0_c97_fR" value="1"/>
+	 	 	 <PARAM id="i0_c97_fL" value="0.830508"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c98" type="nonlinear">
+	 	 	 <PARAM id="i0_c98_fR" value="0"/>
+	 	 	 <PARAM id="i0_c98_fL" value="0.831933"/>
+	 	 	 <PARAM id="i0_c98_fR" value="1"/>
+	 	 	 <PARAM id="i0_c98_fL" value="0.838983"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c99" type="nonlinear">
+	 	 	 <PARAM id="i0_c99_fR" value="0"/>
+	 	 	 <PARAM id="i0_c99_fL" value="0.840336"/>
+	 	 	 <PARAM id="i0_c99_fR" value="1"/>
+	 	 	 <PARAM id="i0_c99_fL" value="0.847458"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c100" type="nonlinear">
+	 	 	 <PARAM id="i0_c100_fR" value="0"/>
+	 	 	 <PARAM id="i0_c100_fL" value="0.92437"/>
+	 	 	 <PARAM id="i0_c100_fR" value="1"/>
+	 	 	 <PARAM id="i0_c100_fL" value="0.932203"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c101" type="nonlinear">
+	 	 	 <PARAM id="i0_c101_fR" value="0"/>
+	 	 	 <PARAM id="i0_c101_fL" value="0.848739"/>
+	 	 	 <PARAM id="i0_c101_fR" value="1"/>
+	 	 	 <PARAM id="i0_c101_fL" value="0.855932"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c102" type="nonlinear">
+	 	 	 <PARAM id="i0_c102_fR" value="0"/>
+	 	 	 <PARAM id="i0_c102_fL" value="0.857143"/>
+	 	 	 <PARAM id="i0_c102_fR" value="1"/>
+	 	 	 <PARAM id="i0_c102_fL" value="0.864407"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c103" type="nonlinear">
+	 	 	 <PARAM id="i0_c103_fR" value="0"/>
+	 	 	 <PARAM id="i0_c103_fL" value="0.865546"/>
+	 	 	 <PARAM id="i0_c103_fR" value="1"/>
+	 	 	 <PARAM id="i0_c103_fL" value="0.872881"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c104" type="nonlinear">
+	 	 	 <PARAM id="i0_c104_fR" value="0"/>
+	 	 	 <PARAM id="i0_c104_fL" value="0.87395"/>
+	 	 	 <PARAM id="i0_c104_fR" value="1"/>
+	 	 	 <PARAM id="i0_c104_fL" value="0.881356"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c105" type="nonlinear">
+	 	 	 <PARAM id="i0_c105_fR" value="0"/>
+	 	 	 <PARAM id="i0_c105_fL" value="0.882353"/>
+	 	 	 <PARAM id="i0_c105_fR" value="1"/>
+	 	 	 <PARAM id="i0_c105_fL" value="0.889831"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c106" type="nonlinear">
+	 	 	 <PARAM id="i0_c106_fR" value="0"/>
+	 	 	 <PARAM id="i0_c106_fL" value="0.890756"/>
+	 	 	 <PARAM id="i0_c106_fR" value="1"/>
+	 	 	 <PARAM id="i0_c106_fL" value="0.898305"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c107" type="nonlinear">
+	 	 	 <PARAM id="i0_c107_fR" value="0"/>
+	 	 	 <PARAM id="i0_c107_fL" value="0.89916"/>
+	 	 	 <PARAM id="i0_c107_fR" value="1"/>
+	 	 	 <PARAM id="i0_c107_fL" value="0.90678"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c108" type="nonlinear">
+	 	 	 <PARAM id="i0_c108_fR" value="0"/>
+	 	 	 <PARAM id="i0_c108_fL" value="0.915966"/>
+	 	 	 <PARAM id="i0_c108_fR" value="1"/>
+	 	 	 <PARAM id="i0_c108_fL" value="0.923729"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c109" type="nonlinear">
+	 	 	 <PARAM id="i0_c109_fR" value="0"/>
+	 	 	 <PARAM id="i0_c109_fL" value="0.907563"/>
+	 	 	 <PARAM id="i0_c109_fR" value="1"/>
+	 	 	 <PARAM id="i0_c109_fL" value="0.915254"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c110" type="nonlinear">
+	 	 	 <PARAM id="i0_c110_fR" value="0"/>
+	 	 	 <PARAM id="i0_c110_fL" value="0.932773"/>
+	 	 	 <PARAM id="i0_c110_fR" value="1"/>
+	 	 	 <PARAM id="i0_c110_fL" value="0.940678"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c111" type="nonlinear">
+	 	 	 <PARAM id="i0_c111_fR" value="0"/>
+	 	 	 <PARAM id="i0_c111_fL" value="0.941176"/>
+	 	 	 <PARAM id="i0_c111_fR" value="1"/>
+	 	 	 <PARAM id="i0_c111_fL" value="0.949153"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c112" type="nonlinear">
+	 	 	 <PARAM id="i0_c112_fR" value="0"/>
+	 	 	 <PARAM id="i0_c112_fL" value="0.94958"/>
+	 	 	 <PARAM id="i0_c112_fR" value="1"/>
+	 	 	 <PARAM id="i0_c112_fL" value="0.957627"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c113" type="nonlinear">
+	 	 	 <PARAM id="i0_c113_fR" value="0"/>
+	 	 	 <PARAM id="i0_c113_fL" value="0.957983"/>
+	 	 	 <PARAM id="i0_c113_fR" value="1"/>
+	 	 	 <PARAM id="i0_c113_fL" value="0.966102"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c114" type="nonlinear">
+	 	 	 <PARAM id="i0_c114_fR" value="0"/>
+	 	 	 <PARAM id="i0_c114_fL" value="0.97479"/>
+	 	 	 <PARAM id="i0_c114_fR" value="1"/>
+	 	 	 <PARAM id="i0_c114_fL" value="0.983051"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c115" type="nonlinear">
+	 	 	 <PARAM id="i0_c115_fR" value="0"/>
+	 	 	 <PARAM id="i0_c115_fL" value="0.966387"/>
+	 	 	 <PARAM id="i0_c115_fR" value="1"/>
+	 	 	 <PARAM id="i0_c115_fL" value="0.974576"/>
+	 	 </Connection>
+	 	 <Connection id="i0_c116" type="nonlinear">
+	 	 	 <PARAM id="i0_c116_fR" value="0"/>
+	 	 	 <PARAM id="i0_c116_fL" value="0.983193"/>
+	 	 	 <PARAM id="i0_c116_fR" value="1"/>
+	 	 	 <PARAM id="i0_c116_fL" value="0.991525"/>
+	 	 </Connection>
+	 </Instrument>
+</App>

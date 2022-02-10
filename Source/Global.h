@@ -157,7 +157,7 @@ namespace Global
     // default parameters
     static const double defaultLinSpringCoeff = 1e8;
     static const double defaultNonLinSpringCoeff = 1e10;
-    static const double defaultConnDampCoeff = 0.0;
+    static const double defaultConnDampCoeff = 0.01;
     static const double eps = 1e-15;
 
 

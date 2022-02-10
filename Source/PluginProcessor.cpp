@@ -449,7 +449,7 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 if (curResonator->isModule1D())
                 {
                     int N = curResonator-> getNumIntervals();
-                    double locRatio = double(curResonator->getInOutInfo()->getOutLocAt(o)) / N;
+                    double locRatio = double(curResonator->getInOutInfo()->getOutLocAt(o)) / (N + 1);
                     file << "\" channel=\"" << channel << "\" loc=\"" << locRatio << "\"/>\n";
                 }
                 else
@@ -502,8 +502,8 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 //=============================== 1 D res1 ==========================================================================
                 if (instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->isModule1D())
                 {
-                    int N = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->getNumPoints();
-                    double locRatio = double(instruments[i]->getConnectionInfo()[0][c].loc1) / N;
+                    int N = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res1->getID())->getNumIntervals();
+                    double locRatio = double(instruments[i]->getConnectionInfo()[0][c].loc1) / (N + 1);
                     file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res1->getID() << "\"/>\n";
                     file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "value=\"" << locRatio << "\"/>\n";
                 }
@@ -521,7 +521,7 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 if (instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res2->getID())->isModule1D())
                 {
                     int N = instruments[i]->getResonatorPtr(instruments[i]->getConnectionInfo()[0][c].res2->getID())->getNumIntervals();
-                    double locRatio = double(instruments[i]->getConnectionInfo()[0][c].loc2) / N;
+                    double locRatio = double(instruments[i]->getConnectionInfo()[0][c].loc2) / (N + 1);
                     file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fR\" " << "value=\"" << instruments[i]->getConnectionInfo()[0][c].res2->getID() << "\"/>\n";
                     file << "\t " << "\t " << "\t " << "<PARAM id=\"i" << i << "_c" << c << "_fL\" " << "value=\"" << locRatio << "\"/>\n";
                 }

@@ -1,1 +1,1 @@
-stringPlate.xml
+EmptyInstrument.xml

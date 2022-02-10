@@ -92,31 +92,31 @@
 	 	 	 <PARAM id="i0_c0_fR" value="1"/>
 	 	 	 <PARAM id="i0_c0_fL" value="0.977778"/>
 	 	 	 <PARAM id="i0_c0_fR" value="6"/>
-	 	 	 <PARAM id="i0_c0_fL" value="0.230769"/>
+	 	 	 <PARAM id="i0_c0_fL" value="0.225"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c1" type="linear">
 	 	 	 <PARAM id="i0_c1_fR" value="2"/>
 	 	 	 <PARAM id="i0_c1_fL" value="0.972222"/>
 	 	 	 <PARAM id="i0_c1_fR" value="6"/>
-	 	 	 <PARAM id="i0_c1_fL" value="0.384615"/>
+	 	 	 <PARAM id="i0_c1_fL" value="0.375"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c2" type="linear">
 	 	 	 <PARAM id="i0_c2_fR" value="3"/>
 	 	 	 <PARAM id="i0_c2_fL" value="0.964286"/>
 	 	 	 <PARAM id="i0_c2_fR" value="6"/>
-	 	 	 <PARAM id="i0_c2_fL" value="0.564103"/>
+	 	 	 <PARAM id="i0_c2_fL" value="0.55"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c3" type="linear">
 	 	 	 <PARAM id="i0_c3_fR" value="4"/>
 	 	 	 <PARAM id="i0_c3_fL" value="0.955556"/>
 	 	 	 <PARAM id="i0_c3_fR" value="6"/>
-	 	 	 <PARAM id="i0_c3_fL" value="0.717949"/>
+	 	 	 <PARAM id="i0_c3_fL" value="0.7"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c4" type="linear">
 	 	 	 <PARAM id="i0_c4_fR" value="5"/>
 	 	 	 <PARAM id="i0_c4_fL" value="0.941176"/>
 	 	 	 <PARAM id="i0_c4_fR" value="6"/>
-	 	 	 <PARAM id="i0_c4_fL" value="0.871795"/>
+	 	 	 <PARAM id="i0_c4_fL" value="0.85"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c5" type="rigid">
 	 	 	 <PARAM id="i0_c5_fR" value="6"/>
@@ -176,7 +176,7 @@
 	 	 	 <PARAM id="i0_c14_fR" value="0"/>
 	 	 	 <PARAM id="i0_c14_fL" value="0.980952"/>
 	 	 	 <PARAM id="i0_c14_fR" value="6"/>
-	 	 	 <PARAM id="i0_c14_fL" value="0.128205"/>
+	 	 	 <PARAM id="i0_c14_fL" value="0.125"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c15" type="rigid">
 	 	 	 <PARAM id="i0_c15_fR" value="6"/>

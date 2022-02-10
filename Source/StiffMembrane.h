@@ -57,6 +57,8 @@ public:
     double getDampEnergy() override;
     double getInputEnergy() override;
 
+    double getMassPerGridPoint() override { return rho * H * h * h; };
+
 protected:
     
     int maxPoints;

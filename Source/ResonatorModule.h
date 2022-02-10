@@ -100,6 +100,7 @@ public:
 
     int getVisualScaling() { return visualScaling; };
     double getConnectionDivisionTerm() { return connectionDivisionTerm; };
+    virtual double getMassPerGridPoint() = 0; // for drawing massratio
     void setConnectionDivisionTerm (double cDT) { connectionDivisionTerm = cDT; };
        
     void setModifier (ModifierKeys mod) { modifier = mod; };

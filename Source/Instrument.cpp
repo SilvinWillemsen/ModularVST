@@ -167,12 +167,12 @@ void Instrument::paint (juce::Graphics& g)
             yLoc2 += 0.5 * stateHeight2;
         }
         
-        double massRatio = CI[i].customMassRatio * CI[i].res1->getConnectionDivisionTerm() / CI[i].res2->getConnectionDivisionTerm();
-        int sign = 1;
-        if (CI[i].res1->getConnectionDivisionTerm() < CI[i].res2->getConnectionDivisionTerm())
+        double massRatio = CI[i].customMassRatio * CI[i].res1->getMassPerGridPoint() / CI[i].res2->getMassPerGridPoint();
+        int sign = -1;
+        if (CI[i].res1->getMassPerGridPoint() < CI[i].res2->getMassPerGridPoint())
         {
             massRatio = 1.0 / massRatio;
-            sign = -1;
+            sign = 1;
         }
 
         line = Line<float> (xLoc1, yLoc1, xLoc2, yLoc2);
@@ -1206,7 +1206,7 @@ void Instrument::addFirstConnection (std::shared_ptr<ResonatorModule> res, Conne
         CI.push_back (ConnectionInfo (connType, res, locX, res->getResonatorModuleType()));
     else // preset handling
     {
-        CI.push_back (ConnectionInfo (connType, res, round(locX * (res->getNumIntervalsX()+1)) + (round(locY * (res->getNumIntervalsY() + 1)) * (res->getNumIntervalsX())), res->getResonatorModuleType()));
+        CI.push_back (ConnectionInfo (connType, res, round(locX * (res->getNumIntervalsX()+1)) + (floor(locY * (res->getNumIntervalsY() + 1)) * (res->getNumIntervalsX())), res->getResonatorModuleType()));
     }
 
 }
@@ -1217,7 +1217,7 @@ void Instrument::addSecondConnection (std::shared_ptr<ResonatorModule> res, doub
     if (loc > 1) // then it's an integer (internal handling)
         CI[CI.size()-1].setSecondResonatorParams (res, loc, res->getResonatorModuleType());
     else
-        CI[CI.size()-1].setSecondResonatorParams (res, floor(loc * res->getNumPoints()), res->getResonatorModuleType());
+        CI[CI.size()-1].setSecondResonatorParams (res, round(loc * res->getNumPoints()), res->getResonatorModuleType());
 
     setCurrentlyActiveConnection (&CI[CI.size()-1]);
 }

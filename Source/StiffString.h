@@ -84,6 +84,7 @@ public:
     double getDampEnergy() override;
     double getInputEnergy() override;
     
+    double getMassPerGridPoint() override { return rho * A * h; };
     void initialiseExciterModule (std::shared_ptr<ExciterModule> exciterModule) override;
     
     void saveOutput() override;
