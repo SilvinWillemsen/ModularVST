@@ -1,1 +1,1 @@
-TwoStringsOctave_xml
+EmptyInstrument.xml

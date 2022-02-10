@@ -122,7 +122,7 @@ public:
     
     void myRangedAudioParameterChanged (RangedAudioParameter* myAudioParameter);
     void genericAudioParameterValueChanged (String name, float value);
-    
+    int getNumPresets() { return numOfBinaryPresets; };
 #ifdef EDITOR_AND_SLIDERS
     void myRangedAudioParameterChanged (Slider* mySlider);
     std::vector<RangedAudioParameter*>& getMyParameters() { return allParameters; };
@@ -134,7 +134,7 @@ public:
 private:
     //==============================================================================
     int fs;
-        
+    int numOfBinaryPresets;
     std::vector<std::shared_ptr<Instrument>> instruments;
     bool refreshEditor = true;
     

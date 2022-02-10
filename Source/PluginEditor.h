@@ -15,6 +15,7 @@
 #include "AddModuleWindow.h"
 #include "SavePresetWindow.h"
 #include "DebugCPP.h"
+#include "LoadPresetWindow.h"
 //==============================================================================
 /**
 */
@@ -46,7 +47,7 @@ public:
     void openAddModuleWindow();
     void openSavePresetWindow();
     void openLoadPresetWindow();
-
+    void loadPresetFromWindow();
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
         
@@ -72,8 +73,9 @@ private:
     // Window for adding modules
     std::unique_ptr<AddModuleWindow> addModuleWindow;
     std::unique_ptr<SavePresetWindow> savePresetWindow;
+    std::unique_ptr<LoadPresetWindow> loadPresetWindow;
     DialogWindow* dlgWindow;
-    std::unique_ptr<FileChooser> loadPresetWindow;
+    std::unique_ptr<FileChooser> openloadPresetFromWindow;
 
     // State of the application
     ApplicationState applicationState;

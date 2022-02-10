@@ -26,10 +26,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 //#ifdef NO_EDITOR
     addParameter (mouseX = new AudioParameterFloat ("mouseX", "Mouse X", 0, 0.99, 0.5) );
     addParameter (mouseY = new AudioParameterFloat ("mouseY", "Mouse Y", 0, 0.99, 0.5) );
-    addParameter (excite = new AudioParameterBool ("excite", "Excite", 1) );
-    addParameter (excitationType = new AudioParameterFloat ("excitationType", "Excitation Type", 0, 0.99, 0.25));
-    addParameter (presetSelect = new AudioParameterFloat ("presetSelect", "Preset Select", 0, 0.99, 0));
-    addParameter (loadPresetToggle = new AudioParameterBool ("loadPresetToggle", "Load preset", 0));
+    addParameter (excite = new AudioParameterBool ("excite", "Excite", 0) );
+    addParameter (excitationType = new AudioParameterInt ("excitationType", "Excitation Type", 0, 2, 0));
 
     //#endif
 //#ifdef EDITOR_AND_SLIDERS
@@ -38,8 +36,6 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (mouseY);
     allParameters.push_back (excite);
     allParameters.push_back (excitationType);
-    allParameters.push_back (presetSelect);
-    allParameters.push_back (loadPresetToggle);
 //#endif
     sliderValues.resize (allParameters.size());
     
@@ -47,10 +43,15 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 //    {
 //        sliderValues[i] = allParameters[i]->getValue();
 //    }
-#ifdef NO_EDITOR
-    addChangeListener (this);
-#endif
     prevSliderValues = sliderValues;
+
+    numOfBinaryPresets = 0;
+    const char* s2 = ".";
+
+    while (strpbrk(BinaryData::namedResourceList[numOfBinaryPresets], s2) == NULL)
+    {
+        numOfBinaryPresets++;
+    }
 }
 
 ModularVSTAudioProcessor::~ModularVSTAudioProcessor()
@@ -133,13 +134,13 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     {
 
         File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
-        if (!lastSavedPresetFile.exists() && !Global::loadFromBinary)
+        if (!lastSavedPresetFile.exists())
         {
             DBG("There is no last saved preset!");
             return;
         }
 //        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
-        String fileName = Global::loadFromBinary ? "" : lastSavedPresetFile.loadFileAsString();
+        String fileName = lastSavedPresetFile.loadFileAsString();
         PresetResult res = loadPreset (fileName, Global::loadFromBinary);
         switch (res) {
             case applicationIsNotEmpty:
@@ -201,6 +202,7 @@ bool ModularVSTAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 
 void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -258,7 +260,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         {
             continue;
         }
-        audioMutex.lock();
+        testMutex.lock();
 //        Logger::getCurrentLogger()->outputDebugString("Lock mutex");
 
         inst->checkIfShouldExciteRaisedCos();
@@ -294,7 +296,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             totOutputL[i] += inst->getOutputL();
             totOutputR[i] += inst->getOutputR();
         }
-        audioMutex.unlock();
+        testMutex.unlock();
 //        Logger::getCurrentLogger()->outputDebugString("Unlock mutex" + String(counter));
 
     }
@@ -312,11 +314,6 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             for (int i = 0; i < buffer.getNumSamples(); ++i)
                 curChannel[channel][0][i] = outputLimit (totOutputR[i]);
         }
-    }
-    if (shouldLoadPreset)
-    {
-        sendChangeMessage();
-        shouldLoadPreset = false;
     }
 //    std::cout << totOutput[15] << std::endl;
 
@@ -578,16 +575,17 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
 }
 
 PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary)
-{    
+{
+    std::string st = BinaryData::namedResourceList[1];
+    
+    Logger::getCurrentLogger()->outputDebugString(st.substr(0, st.size() - 4));
+
+    //int instrumentListSize = sizeof(BinaryData::namedResourceList[-1]) / sizeof(BinaryData::namedResourceList[0]);
     pugi::xml_document doc;
     std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
     const char* pathToUse = test.c_str();
     int sizeTest = 0;
-    pugi::xml_parse_result result = loadFromBinary ?
-
-        doc.load_string(BinaryData::getNamedResource (
-                                                      (fileName == "" ? "Harp_xml" : std::string(fileName.toStdString()).c_str())
-                                                      , sizeTest)) : doc.load_file (pathToUse);
+    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource(BinaryData::namedResourceList[1], sizeTest)) : doc.load_file(pathToUse);
     switch (result.status)
     {
         case pugi::status_ok:
@@ -600,7 +598,6 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
             break;
     }
     
-//    loadPresetMutex.lock();
     // make sure that application is loaded from scratch
     if (instruments.size() != 0)
     {
@@ -959,8 +956,6 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
     lastLoadedPreset << String (fileName);
     lastLoadedPreset.close();
     
-//    loadPresetMutex.unlock();
-
     return success;
 }
 
@@ -980,12 +975,18 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
     {
         if (sliderValues[exciteID] >= 0.5)
         {
-            if (sliderValues[excitationTypeID] < 0.33)
-                curExcitationType = pluck;
-            else if (sliderValues[excitationTypeID] < 0.67)
-                curExcitationType = hammer;
-            else
-                curExcitationType = bow;
+            switch (static_cast<int> (sliderValues[excitationTypeID]))
+            {
+                case 0:
+                    curExcitationType = pluck;
+                    break;
+                case 1:
+                    curExcitationType = hammer;
+                    break;
+                case 2:
+                    curExcitationType = bow;
+                    break;
+            }
             currentlyActiveInstrument->setExcitationType (curExcitationType);
             currentlyActiveInstrument->resetPrevMouseMoveResonator();
             currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
@@ -1028,14 +1029,6 @@ void ModularVSTAudioProcessor::myRangedAudioParameterChanged (Slider* mySlider)
 }
 #endif
 
-void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
-{
-    DBG("test");
-    if (changeBroadcaster == this)
-        loadPreset (presetToLoad, true);
-
-}
-
 //ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
 //                                            ModularVSTAudioProcessor* audioProcessor,
 //                                            String parameterID,
@@ -1069,4 +1062,3 @@ void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* change
 //}
 //
 ////#endif
-
