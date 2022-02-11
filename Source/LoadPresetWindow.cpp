@@ -20,6 +20,10 @@ LoadPresetWindow::LoadPresetWindow (ChangeListener* audioProcessorEditor)
     loadPresetButton->addListener (this);
     addAndMakeVisible (loadPresetButton.get());
 
+    loadFromFileButton = std::make_unique<TextButton>("Load preset from file");
+    loadFromFileButton->addListener(this);
+    addAndMakeVisible(loadFromFileButton.get());
+
     presetList = std::make_unique<ComboBox> ();
     addAndMakeVisible (presetList.get());
 
@@ -76,6 +80,7 @@ void LoadPresetWindow::resized()
     buttonArea.reduce(Global::margin, Global::margin);
 
     loadPresetButton->setBounds(buttonArea.removeFromRight (100));
+    loadFromFileButton->setBounds(buttonArea.removeFromRight(100));
 
     totalArea.reduce(Global::margin, Global::margin);
 
@@ -89,7 +94,19 @@ void LoadPresetWindow::buttonClicked (Button* button)
 {
 //    ModularVSTAudioProcessorEditor* modularVSTAudioProcessorEditor;
 //    modularVSTAudioProcessorEditor->loadPresetFromWindow(selectedBinaryPreset);
-    action = loadBinaryPresetAction;
-    sendChangeMessage();
+    if (button == loadPresetButton.get()) 
+    {
+        action = loadBinaryPresetAction;
+        sendChangeMessage();
+    }
+    else if (button == loadFromFileButton.get())
+    {
+        // load from file
+        Logger::getCurrentLogger()->outputDebugString("load preset from file");
+        action = loadPresetFromWindowAction;
+        sendChangeMessage();
+    }
+
+    
 }
 

@@ -37,11 +37,11 @@ public:
     String& getFileName() { return filename; };
     
     int getSelectedBinaryPreset() { return selectedBinaryPreset; };
-    
+
 private: 
     int selectedBinaryPreset = -1;
     String filename;
-    std::unique_ptr<TextButton> loadPresetButton;
+    std::unique_ptr<TextButton> loadPresetButton, loadFromFileButton;
 
     std::unique_ptr<ComboBox> presetList;
     Action action = noAction;

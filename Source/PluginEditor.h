@@ -53,7 +53,7 @@ public:
     void openAddModuleWindow();
     void openSavePresetWindow();
     void openLoadPresetWindow();
-    void loadPresetFromWindow(int selectedBinaryPreset);
+    void loadPresetFromWindow();
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
         
@@ -67,7 +67,7 @@ public:
 private:
     // Reference to the audio processor
     ModularVSTAudioProcessor& audioProcessor;
-
+    Action action;
     // Reference to the instruments
     std::vector<std::shared_ptr<Instrument>>& instruments;
     std::shared_ptr<Instrument> currentlyActiveInstrument = nullptr;

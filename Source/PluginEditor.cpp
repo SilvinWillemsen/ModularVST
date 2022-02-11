@@ -289,7 +289,6 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     openLoadPresetWindow();
                     break;
                 }
-                
                 default:
                     DBG ("Action shouldn't come from controlpanel");
                     break;
@@ -378,9 +377,20 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     }
     else if (changeBroadcaster == loadPresetWindow.get())
     {
-        String fileName = BinaryData::namedResourceList[loadPresetWindow->getSelectedBinaryPreset()];
-        audioProcessor.loadPreset (fileName, true);
-        loadPresetWindow->setAction (noAction);
+        action = loadPresetWindow->getAction();
+        if (action == loadBinaryPresetAction)
+        {
+            String fileName = BinaryData::namedResourceList[loadPresetWindow->getSelectedBinaryPreset()];
+            audioProcessor.loadPreset(fileName, true);
+            loadPresetWindow->setAction(noAction);
+            refresh();
+        }
+        else if (action == loadPresetFromWindowAction)
+        {
+            loadPresetFromWindow();
+            loadPresetWindow->setAction(noAction);
+        }
+
 
     }
     // If none of the above, the broadcaster has to be an an instrument
@@ -464,7 +474,7 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
     addAndMakeVisible(loadPresetWindow.get());
     dlgWindow->showDialog("Load Preset", loadPresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
 }
-void ModularVSTAudioProcessorEditor::loadPresetFromWindow (int selectedBinaryPreset)
+void ModularVSTAudioProcessorEditor::loadPresetFromWindow()
 {
     stopTimer();
     for (auto inst : instruments)
