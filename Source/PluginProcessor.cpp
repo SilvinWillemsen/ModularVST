@@ -13,6 +13,8 @@
 const char* getPresetAt (int i)
 {
     return BinaryData::originalFilenames[i];
+//    return "test";
+//    return String (BinaryData::originalFilenames[i]).toStdString();
 }
 
 int getNumPresets()
@@ -61,6 +63,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 #endif
     prevSliderValues = sliderValues;
     numOfBinaryPresets = BinaryData::namedResourceListSize;
+    
     std::cout << "Constructor processor" << std::endl;
 }
 
@@ -330,7 +333,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         shouldLoadPreset = false;
     }
 //    std::cout << totOutput[15] << std::endl;
-    Debug::Log ("Hellow Orange", Color::Orange);
+//    Debug::Log ("Hellow Orange", Color::Orange); // unity debug
 
 }
 
