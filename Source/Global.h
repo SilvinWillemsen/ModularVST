@@ -12,7 +12,7 @@
 //#define USE_EIGEN     // use overlapping connections (and therefore the eigen library) or not
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
-#define NO_EDITOR // build for unity
+//#define NO_EDITOR // build for unity
 //#define EDITOR_AND_SLIDERS
 
 #include <JuceHeader.h>
@@ -61,6 +61,7 @@ enum Action
     changeMassRatioAction,
     changeActiveConnectionAction,
     loadPresetAction,
+    loadBinaryPresetAction,
     loadPresetFromWindowAction,
     savePresetAction,
     savePresetFromWindowAction,

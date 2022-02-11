@@ -378,7 +378,10 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     }
     else if (changeBroadcaster == loadPresetWindow.get())
     {
-        
+        String fileName = BinaryData::namedResourceList[loadPresetWindow->getSelectedBinaryPreset()];
+        audioProcessor.loadPreset (fileName, true);
+        loadPresetWindow->setAction (noAction);
+
     }
     // If none of the above, the broadcaster has to be an an instrument
     else
@@ -461,7 +464,7 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
     addAndMakeVisible(loadPresetWindow.get());
     dlgWindow->showDialog("Load Preset", loadPresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
 }
-void ModularVSTAudioProcessorEditor::loadPresetFromWindow(int selectedBinaryPreset)
+void ModularVSTAudioProcessorEditor::loadPresetFromWindow (int selectedBinaryPreset)
 {
     stopTimer();
     for (auto inst : instruments)

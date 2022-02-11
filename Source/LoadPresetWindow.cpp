@@ -7,13 +7,11 @@
 */
 
 #include "LoadPresetWindow.h"
-#include "PluginProcessor.h"
 #include <JuceHeader.h>
-#include <sys/stat.h>
 
 
 //==============================================================================
-LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor)
+LoadPresetWindow::LoadPresetWindow (ChangeListener* audioProcessorEditor)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -22,7 +20,10 @@ LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor)
     loadPresetButton->addListener (this);
     addAndMakeVisible (loadPresetButton.get());
 
-   // addChangeListener (audioProcessorEditor);
+    presetList = std::make_unique<ComboBox> ();
+    addAndMakeVisible (presetList.get());
+
+    addChangeListener (audioProcessorEditor);
     int n = BinaryData::namedResourceListSize;
     
 
@@ -35,11 +36,10 @@ LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor)
         const char* c = stShort.c_str();
         
 
-        presetList.addItem(c, i + 1);
+        presetList->addItem(c, i + 1);
     }
-    presetList.onChange = [this] { presetListChanged(); };
-    presetList.setSelectedId(1);
-    addAndMakeVisible(presetList);
+    presetList->onChange = [this] { presetListChanged(); };
+    presetList->setSelectedId (1);
 
 
     // initialise to string
@@ -53,7 +53,7 @@ LoadPresetWindow::~LoadPresetWindow()
 
 void LoadPresetWindow::presetListChanged()
 {
-    selectedBinaryPreset = presetList.getSelectedId() - 1;
+    selectedBinaryPreset = presetList->getSelectedId() - 1;
 }
 
 void LoadPresetWindow::paint (juce::Graphics& g)
@@ -81,18 +81,15 @@ void LoadPresetWindow::resized()
 
     Rectangle<int> labelArea = totalArea.removeFromTop (Global::buttonHeight);
     totalArea.removeFromLeft (Global::margin);
-    presetList.setBounds (totalArea.removeFromTop (Global::buttonHeight));
+    presetList->setBounds (totalArea.removeFromTop (Global::buttonHeight));
 }
 
 
 void LoadPresetWindow::buttonClicked (Button* button)
 {
-    ModularVSTAudioProcessorEditor* modularVSTAudioProcessorEditor;
-    modularVSTAudioProcessorEditor->loadPresetFromWindow(selectedBinaryPreset);
+//    ModularVSTAudioProcessorEditor* modularVSTAudioProcessorEditor;
+//    modularVSTAudioProcessorEditor->loadPresetFromWindow(selectedBinaryPreset);
+    action = loadBinaryPresetAction;
+    sendChangeMessage();
 }
 
-
-void LoadPresetWindow::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
-{
-
-}
