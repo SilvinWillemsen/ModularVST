@@ -53,7 +53,7 @@ public:
     void openAddModuleWindow();
     void openSavePresetWindow();
     void openLoadPresetWindow();
-    void loadPresetFromWindow();
+    void loadPresetFromWindow(int selectedBinaryPreset);
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
         
