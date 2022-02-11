@@ -1,1 +1,1 @@
-WeirdInstrument_xml
+String1_xml

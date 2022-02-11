@@ -267,12 +267,14 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 
     for (auto inst : instruments)
     {
+        audioMutex.lock();
+
         // check whether the instrument is ready
         if (!inst->areModulesReady() || applicationState == removeResonatorModuleState)
         {
+            audioMutex.unlock();
             continue;
         }
-        audioMutex.lock();
 //        Logger::getCurrentLogger()->outputDebugString("Lock mutex");
 
         inst->checkIfShouldExciteRaisedCos();
