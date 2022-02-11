@@ -27,7 +27,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     // Window for adding modules
     addModuleWindow = std::make_unique<AddModuleWindow> (this);
     savePresetWindow = std::make_unique<SavePresetWindow>(this);
-    loadPresetWindow = std::make_unique<LoadPresetWindow>(this, &p);
+    loadPresetWindow = std::make_unique<LoadPresetWindow>(this);
 //    addAndMakeVisible (addModuleWindow.get());
     
     // Instruments
@@ -380,6 +380,10 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         savePresetWindow->setDlgPreset(-1);
         savePresetWindow->setAction(noAction);
     }
+    else if (changeBroadcaster == loadPresetWindow.get())
+    {
+        
+    }
     // If none of the above, the broadcaster has to be an an instrument
     else
     {
@@ -460,52 +464,8 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
 
     addAndMakeVisible(loadPresetWindow.get());
     dlgWindow->showDialog("Load Preset", loadPresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
-    //stopTimer();
-    //for (auto inst : instruments)
-    //    inst->unReadyAllModules();
-    //
-    //loadPresetWindow = std::make_unique<FileChooser> ("Load Preset", File::getCurrentWorkingDirectory().getChildFile(audioProcessor.getPresetPath()), "*.xml", true, true);
-    //loadPresetWindow->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles,
-    //   [this] (const FileChooser& fileChooser) {
-    //    PresetResult res;
-    //    if (fileChooser.getResult().exists())
-    //    {
-    //        String fileName = fileChooser.getResult().getFileName();
-    //        res = audioProcessor.loadPreset (fileName, false); // check what button in the load preset window has been pressed
-    //        switch (res) {
-    //            case applicationIsNotEmpty:
-    //                Logger::getCurrentLogger()->outputDebugString ("Application is not empty.");
-    //                break;
-    //            case fileNotFound:
-    //                Logger::getCurrentLogger()->outputDebugString ("Presetfile not found");
-    //                break;
-    //            case presetNotLoaded:
-    //                Logger::getCurrentLogger()->outputDebugString ("For whatever reason, the preset was not loaded.");
-    //                break;
-    //            case loadingCancelled:
-    //                Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
-    //                break;
-    //            case success:
-    //                Logger::getCurrentLogger()->outputDebugString ("Preset loaded successfully.");
-    //                break;
-
-    //            default:
-    //                break;
-    //        }
-    //    } else {
-    //        res = loadingCancelled;
-    //        Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
-    //    }
-    //    if (res != success)
-    //        for (auto inst : instruments)
-    //            inst->reReadyAllModules();
-    //    else
-    //        currentlyActiveInstrument = instruments[instruments.size()-1];
-    //    refresh();
-    //    
-    //});
 }
-void ModularVSTAudioProcessorEditor::loadPresetFromWindow() 
+void ModularVSTAudioProcessorEditor::loadPresetFromWindow(int selectedBinaryPreset)
 {
     stopTimer();
     for (auto inst : instruments)

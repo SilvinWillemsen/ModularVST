@@ -12,6 +12,7 @@
 #include "CoefficientList.h"
 
 #include "PluginProcessor.h"
+#include "PluginEditor.h"
 #include <JuceHeader.h>
 #include <sys/stat.h>
 //==============================================================================
@@ -23,7 +24,7 @@ class LoadPresetWindow : public juce::Component,
                          public ChangeListener
 {
 public:
-    LoadPresetWindow(ChangeListener* audioProcessorEditor, ModularVSTAudioProcessor* modularVSTAudioProcessor);
+    LoadPresetWindow(ChangeListener* audioProcessorEditor);
     ~LoadPresetWindow() override;
 
     void paint (juce::Graphics&) override;
@@ -40,14 +41,14 @@ public:
 
     String& getFileName() { return filename; };
 private: 
-    
+    int selectedBinaryPreset;
     String filename;
     std::unique_ptr<TextButton> loadPresetButton;
 
     juce::ComboBox presetList;
     Action action = noAction;
-    ModularVSTAudioProcessor* modularVSTAudioProcessor;
-
+ 
+    
     int dlgPreset = -1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoadPresetWindow)

@@ -13,7 +13,7 @@
 
 
 //==============================================================================
-LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor, ModularVSTAudioProcessor* modularVSTAudioProcessor)
+LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -23,9 +23,19 @@ LoadPresetWindow::LoadPresetWindow(ChangeListener* audioProcessorEditor, Modular
     addAndMakeVisible (loadPresetButton.get());
 
    // addChangeListener (audioProcessorEditor);
-    int n = modularVSTAudioProcessor->getNumPresets();
+    int n = BinaryData::namedResourceListSize;
+    
+
+
     for (int i = 0; i < n; i++) {
-        presetList.addItem(BinaryData::namedResourceList[i], i+1);
+        std::string st = BinaryData::namedResourceList[i];
+        Logger::getCurrentLogger()->outputDebugString(st.substr(0, st.size() - 4));
+        std::string stShort = st.substr(0, st.size() - 4);
+
+        const char* c = stShort.c_str();
+        
+
+        presetList.addItem(c, i + 1);
     }
     presetList.onChange = [this] { presetListChanged(); };
     presetList.setSelectedId(1);
@@ -43,13 +53,7 @@ LoadPresetWindow::~LoadPresetWindow()
 
 void LoadPresetWindow::presetListChanged()
 {
-    switch (presetList.getSelectedId())
-    {
-        /*case 1: textFont.setStyleFlags(juce::Font::plain);  break;                               make it call editor to load selected preset from the binary
-        case 2: textFont.setStyleFlags(juce::Font::bold);   break;
-        case 3: textFont.setStyleFlags(juce::Font::italic); break;*/
-    default: break;
-    }
+    selectedBinaryPreset = presetList.getSelectedId() - 1;
 }
 
 void LoadPresetWindow::paint (juce::Graphics& g)
@@ -83,7 +87,8 @@ void LoadPresetWindow::resized()
 
 void LoadPresetWindow::buttonClicked (Button* button)
 {
-
+    ModularVSTAudioProcessorEditor* modularVSTAudioProcessorEditor;
+    modularVSTAudioProcessorEditor->loadPresetFromWindow(selectedBinaryPreset);
 }
 
 
