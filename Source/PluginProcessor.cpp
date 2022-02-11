@@ -33,6 +33,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     //#endif
 //#ifdef EDITOR_AND_SLIDERS
     allParameters.reserve (8);
+    allParameters.push_back (mouseX);
     allParameters.push_back (mouseY);
     allParameters.push_back (excite);
     allParameters.push_back (excitationType);

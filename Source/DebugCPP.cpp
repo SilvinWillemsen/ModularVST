@@ -73,3 +73,7 @@ void Debug::send_log(const std::stringstream &ss, const Color &color) {
 void RegisterDebugCallback(FuncCallBack cb) {
     callbackInstance = cb;
 }
+
+int addTwoInts (int a, int b) {
+    return a + b;
+}

@@ -20,6 +20,7 @@ extern "C"
     typedef void(*FuncCallBack)(const char* message, int color, int size);
     static FuncCallBack callbackInstance = nullptr;
     void RegisterDebugCallback(FuncCallBack cb);
+    int addTwoInts (int a, int b);
 }
 
 //Color Enum
