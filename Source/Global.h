@@ -26,7 +26,12 @@
     #include <fstream>
 #endif
 
-
+// For extern "C" functions
+#if _MSC_VER // this is defined when compiling with Visual Studio
+    #define DLLExport __declspec(dllexport) // Visual Studio needs annotating exported functions with this
+#else
+    #define DLLExport __attribute__((visibility("default"))) // Mac does too, although google disagrees (possibly JUCE changes the visibility somehow)
+#endif
 
 enum Action
 {

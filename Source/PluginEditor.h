@@ -6,6 +6,7 @@
   ==============================================================================
 */
 
+
 #pragma once
 
 #include <JuceHeader.h>
@@ -14,11 +15,16 @@
 #include "ExcitationPanel.h"
 #include "AddModuleWindow.h"
 #include "SavePresetWindow.h"
-#include "DebugCPP.h"
 #include "LoadPresetWindow.h"
+
 //==============================================================================
 /**
 */
+extern "C"
+{
+    DLLExport int AddTwoInts (int a, int b);
+}
+
 class ModularVSTAudioProcessorEditor  : public juce::AudioProcessorEditor,
                                         public Button::Listener,
                                         public Timer,

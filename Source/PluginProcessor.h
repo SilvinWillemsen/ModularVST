@@ -13,12 +13,20 @@
 
 #include <fstream>
 #include <iostream>
+#include "DebugCPP.h"
+
 //#include "MyAudioParameterFloat.h"
 
 //==============================================================================
 /**
  
  */
+
+extern "C"
+{
+    DLLExport const char* getPresetAt (int);
+    DLLExport int getNumPresets();
+}
 class ModularVSTAudioProcessor  : public juce::AudioProcessor, public ChangeListener, public ChangeBroadcaster
 {
 public:

@@ -10,6 +10,16 @@
 #include "PluginEditor.h"
 #include "pugixml.hpp"
 
+const char* getPresetAt (int i)
+{
+    return BinaryData::originalFilenames[i];
+}
+
+int getNumPresets()
+{
+    return BinaryData::namedResourceListSize;
+}
+
 //==============================================================================
 ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -50,14 +60,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addChangeListener(this);
 #endif
     prevSliderValues = sliderValues;
-
-    numOfBinaryPresets = 0;
-    const char* s2 = ".";
-
-    while (strpbrk(BinaryData::namedResourceList[numOfBinaryPresets], s2) == NULL)
-    {
-        numOfBinaryPresets++;
-    }
+    numOfBinaryPresets = BinaryData::namedResourceListSize;
+    std::cout << "Constructor processor" << std::endl;
 }
 
 ModularVSTAudioProcessor::~ModularVSTAudioProcessor()
@@ -170,7 +174,6 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 //    addInstrument();
 //    addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
     //---//
-
 }
 
 void ModularVSTAudioProcessor::releaseResources()
@@ -327,6 +330,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         shouldLoadPreset = false;
     }
 //    std::cout << totOutput[15] << std::endl;
+    Debug::Log ("Hellow Orange", Color::Orange);
 
 }
 

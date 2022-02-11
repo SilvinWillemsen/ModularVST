@@ -6,8 +6,14 @@
   ==============================================================================
 */
 
+
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+
+int AddTwoInts (int a, int b)
+{
+    return a + b;
+}
 
 //==============================================================================
 ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioProcessor& p)
@@ -163,16 +169,6 @@ void ModularVSTAudioProcessorEditor::timerCallback()
         refresh();
         audioProcessor.dontRefreshEditor();
     }
-    Debug::Log ("Hellow Red", Color::Red);
-    Debug::Log ("Hellow Green", Color::Green);
-    Debug::Log ("Hellow Blue", Color::Blue);
-    Debug::Log ("Hellow Black", Color::Black);
-    Debug::Log ("Hellow White", Color::White);
-    Debug::Log ("Hellow Yellow", Color::Yellow);
-    Debug::Log ("Hellow Orange", Color::Orange);
-
-    Debug::Log (true, Color::Black);
-    Debug::Log (false, Color::Red);
     repaint();
 }
 
