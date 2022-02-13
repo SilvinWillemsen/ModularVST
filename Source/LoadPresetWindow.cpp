@@ -94,17 +94,21 @@ void LoadPresetWindow::buttonClicked (Button* button)
 {
 //    ModularVSTAudioProcessorEditor* modularVSTAudioProcessorEditor;
 //    modularVSTAudioProcessorEditor->loadPresetFromWindow(selectedBinaryPreset);
+    DialogWindow* dw = this->findParentComponentOfClass<DialogWindow>();
     if (button == loadPresetButton.get()) 
     {
         action = loadBinaryPresetAction;
         sendChangeMessage();
+        dw->exitModalState(1);
     }
     else if (button == loadFromFileButton.get())
     {
         // load from file
         Logger::getCurrentLogger()->outputDebugString("load preset from file");
+        //dw->exitModalState(1);
         action = loadPresetFromWindowAction;
         sendChangeMessage();
+        
     }
 
     
