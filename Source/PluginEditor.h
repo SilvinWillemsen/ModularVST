@@ -54,6 +54,7 @@ public:
     void openSavePresetWindow();
     void openLoadPresetWindow();
     void loadPresetFromWindow();
+    
     // Set application state and "rain it down" to all other components
     void setApplicationState (ApplicationState applicationState);
         

@@ -112,10 +112,8 @@ public:
     // Presets
     PresetResult savePreset (String& fileName);
     PresetResult loadPreset (String& fileName, bool loadFromBinary);
-    String getPresetPath()
-    {
-        return presetPath;
-    }
+    String getPresetPath() {return presetPath; }
+    void debugLoadPresetResult (PresetResult res);
     
 //# ifdef NO_EDITOR
     enum ParameterNameIdx
@@ -138,7 +136,8 @@ public:
 #endif
     
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
-        
+    void setShouldLoadPreset (String filename, bool loadFromBinary, std::function<void(String)> callback = {});
+    
 private:
     //==============================================================================
     int fs;
@@ -185,6 +184,8 @@ private:
     
     bool shouldLoadPreset = false;
     String presetToLoad = "";
+    bool shouldLoadFromBinary = false;
+    std::function<void (String)> loadPresetWindowCallback = {};
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };

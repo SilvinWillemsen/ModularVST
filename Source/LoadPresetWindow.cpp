@@ -108,6 +108,8 @@ void LoadPresetWindow::buttonClicked (Button* button)
         //dw->exitModalState(1);
         action = loadPresetFromWindowAction;
         sendChangeMessage();
+        dw->exitModalState(1);
+
         
     }
 

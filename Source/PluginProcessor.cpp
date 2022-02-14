@@ -58,9 +58,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 //    {
 //        sliderValues[i] = allParameters[i]->getValue();
 //    }
-#ifdef NO_EDITOR
-    addChangeListener(this);
-#endif
+    addChangeListener (this);
+
     prevSliderValues = sliderValues;
     numOfBinaryPresets = BinaryData::namedResourceListSize;
     
@@ -155,22 +154,23 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 //        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
         String fileName = Global::loadFromBinary ? "" : lastSavedPresetFile.loadFileAsString();
         PresetResult res = loadPreset (fileName, Global::loadFromBinary);
-        switch (res) {
-            case applicationIsNotEmpty:
-                DBG ("Application is not empty.");
-                break;
-            case fileNotFound:
-                DBG ("Presetfile not found");
-                break;
-            case presetNotLoaded:
-                DBG ("For whatever reason, the preset was not loaded.");
-            case success:
-                DBG ("Preset loaded successfully.");
-                break;
-
-            default:
-                break;
-        }
+        debugLoadPresetResult (res);
+//        switch (res) {
+//            case applicationIsNotEmpty:
+//                DBG ("Application is not empty.");
+//                break;
+//            case fileNotFound:
+//                DBG ("Presetfile not found");
+//                break;
+//            case presetNotLoaded:
+//                DBG ("For whatever reason, the preset was not loaded.");
+//            case success:
+//                DBG ("Preset loaded successfully.");
+//                break;
+//
+//            default:
+//                break;
+//        }
     }
     
     //---// For unity, temporary solution until we get the presets to work //---//
@@ -333,6 +333,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     {
         sendChangeMessage();
         shouldLoadPreset = false;
+        refreshEditor = true;
     }
 //    std::cout << totOutput[15] << std::endl;
 //    Debug::Log ("Hellow Orange", Color::Orange); // unity debug
@@ -1022,7 +1023,31 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
         else
             presetToLoad = "guitar_xml";
             
-        shouldLoadPreset = true;
+        setShouldLoadPreset (presetToLoad, true);
+    }
+}
+
+void ModularVSTAudioProcessor::debugLoadPresetResult (PresetResult res)
+{
+    switch (res) {
+        case applicationIsNotEmpty:
+            Logger::getCurrentLogger()->outputDebugString ("Application is not empty.");
+            break;
+        case fileNotFound:
+            Logger::getCurrentLogger()->outputDebugString ("Presetfile not found");
+            break;
+        case presetNotLoaded:
+            Logger::getCurrentLogger()->outputDebugString ("For whatever reason, the preset was not loaded.");
+            break;
+        case loadingCancelled:
+            Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
+            break;
+        case success:
+            Logger::getCurrentLogger()->outputDebugString ("Preset loaded successfully.");
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -1045,43 +1070,27 @@ void ModularVSTAudioProcessor::myRangedAudioParameterChanged (Slider* mySlider)
     genericAudioParameterValueChanged (mySlider->getName(), mySlider->getValue());
 }
 #endif
-void ModularVSTAudioProcessor::changeListenerCallback(ChangeBroadcaster* changeBroadcaster)
+void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
     DBG("test");
     if (changeBroadcaster == this)
-        loadPreset(presetToLoad, true);
+    {
+        if (shouldLoadFromBinary)
+        {
+            PresetResult res = loadPreset (presetToLoad, shouldLoadFromBinary);
+            debugLoadPresetResult (res);
+        } else {
+            loadPresetWindowCallback (presetToLoad);
+        }
+    }
 
 }
-//ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
-//                                            ModularVSTAudioProcessor* audioProcessor,
-//                                            String parameterID,
-//                                            String parameterName,
-//                                            float minValue,
-//                                            float maxValue,
-//                                            float defaultValue) : AudioParameterFloat (parameterID,
-//                                                                                       parameterName,
-//                                                                                       minValue,
-//                                                                                       maxValue,
-//                                                                                       defaultValue),
-//                                                                  audioProcessor (audioProcessor)
-//{
-//    
-//}
-//
-//ModularVSTAudioProcessor::MyAudioParameterFloat::MyAudioParameterFloat (
-//                                            ModularVSTAudioProcessor* audioProcessor,
-//                                            String parameterID,
-//                                            String parameterName,
-//                                            float minValue,
-//                                            float maxValue,
-//                                            float stepSize,
-//                                            float defaultValue) : AudioParameterFloat (parameterID,
-//                                                                                       parameterName,
-//                                                                                       {minValue, maxValue, stepSize},
-//                                                                                       defaultValue),
-//                                                                  audioProcessor (audioProcessor)
-//{
-//    
-//}
-//
-////#endif
+
+void ModularVSTAudioProcessor::setShouldLoadPreset (String filename, bool loadFromBinary, std::function<void(String)> callback)
+{
+    shouldLoadPreset = true;
+    presetToLoad = filename;
+    shouldLoadFromBinary = loadFromBinary;
+    if (callback != NULL)
+        loadPresetWindowCallback = callback;
+}

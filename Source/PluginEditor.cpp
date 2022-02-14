@@ -378,16 +378,17 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     else if (changeBroadcaster == loadPresetWindow.get())
     {
         action = loadPresetWindow->getAction();
+        String fileName = BinaryData::namedResourceList[loadPresetWindow->getSelectedBinaryPreset()];
+
         if (action == loadBinaryPresetAction)
         {
-            String fileName = BinaryData::namedResourceList[loadPresetWindow->getSelectedBinaryPreset()];
-            audioProcessor.loadPreset(fileName, true);
-            loadPresetWindow->setAction(noAction);
-            refresh();
+            audioProcessor.setShouldLoadPreset (fileName, true);
+            loadPresetWindow->setAction (noAction);
         }
         else if (action == loadPresetFromWindowAction)
         {
             loadPresetFromWindow();
+//            audioProcessor.setShouldLoadPreset (fileName, false, loadPresetFromWindow());
             loadPresetWindow->setAction(noAction);
         }
 
@@ -481,45 +482,32 @@ void ModularVSTAudioProcessorEditor::loadPresetFromWindow()
         inst->unReadyAllModules();
 
     openloadPresetFromWindow = std::make_unique<FileChooser> ("Load Preset", File::getCurrentWorkingDirectory().getChildFile(audioProcessor.getPresetPath()), "*.xml", true, true);
-    openloadPresetFromWindow->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles,
-       [this] (const FileChooser& fileChooser) {
-        PresetResult res;
+    openloadPresetFromWindow->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [this] (const FileChooser& fileChooser) {
         if (fileChooser.getResult().exists())
         {
             String fileName = fileChooser.getResult().getFileName();
-            res = audioProcessor.loadPreset (fileName, false); // check what button in the load preset window has been pressed
-            switch (res) {
-                case applicationIsNotEmpty:
-                    Logger::getCurrentLogger()->outputDebugString ("Application is not empty.");
-                    break;
-                case fileNotFound:
-                    Logger::getCurrentLogger()->outputDebugString ("Presetfile not found");
-                    break;
-                case presetNotLoaded:
-                    Logger::getCurrentLogger()->outputDebugString ("For whatever reason, the preset was not loaded.");
-                    break;
-                case loadingCancelled:
-                    Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
-                    break;
-                case success:
-                    Logger::getCurrentLogger()->outputDebugString ("Preset loaded successfully.");
-                    break;
+            audioProcessor.setShouldLoadPreset (fileName, false, [this](String fileName) {
+                PresetResult res = audioProcessor.loadPreset (fileName, false);
+                audioProcessor.debugLoadPresetResult (res);
+                if (res != success)
+                    for (auto inst : instruments)
+                        inst->reReadyAllModules();
+                else
+                {
+                    currentlyActiveInstrument = instruments[instruments.size()-1];
+                }
 
-                default:
-                    break;
-            }
+            });
+
         } else {
-            res = loadingCancelled;
             Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
-        }
-        if (res != success)
             for (auto inst : instruments)
                 inst->reReadyAllModules();
-        else
-            currentlyActiveInstrument = instruments[instruments.size()-1];
+        }
         refresh();
     });
 }
+
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
 {
     if (applicationState == removeResonatorModuleState)
