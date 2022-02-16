@@ -267,7 +267,13 @@ public:
         for (auto res : resonators)
             res->setCurrentlySelectedResonatorGroup (idx);
     }
+    
+    void triggerHammer() {
+        for (auto res : resonators)
+            if (res->getCurExciterModule()->isModuleCalculating())
+                res->getCurExciterModule()->triggerExciterModule();
 
+    }
 private:
     
     int fs;

@@ -49,7 +49,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (smoothness = new AudioParameterFloat ("smoothness", "Smoothness", 0, 99, 95));
     addParameter (excite = new AudioParameterBool ("excite", "Excite", 1));
     addParameter (excitationType = new AudioParameterFloat ("excitationType", "Excitation Type", 0, 0.99, 0.25));
-    addParameter (presetSelect = new AudioParameterFloat ("presetSelect", "Preset Select", 0, 0.99, 0.51));
+    addParameter (trigger = new AudioParameterBool ("trigger", "Trigger", 0));
+    addParameter (presetSelect = new AudioParameterFloat ("presetSelect", "Preset Select", 0, 0.99, 0));
     addParameter (loadPresetToggle = new AudioParameterBool ("loadPresetToggle", "Load preset", 1));
     //#endif
 //#ifdef EDITOR_AND_SLIDERS
@@ -60,6 +61,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (smoothness);
     allParameters.push_back (excite);
     allParameters.push_back (excitationType);
+    allParameters.push_back (trigger);
     allParameters.push_back(presetSelect);
     allParameters.push_back(loadPresetToggle);
 //#endif
@@ -1043,15 +1045,9 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
 
     }
     
-    if (name == "smooth")
+    if (name == "trigger" && sliderValues[triggerID] == 1)
     {
-//        for (auto inst : instruments)
-//            inst->setSmoothExcitation (sliderValues[smoothID] == 1);
-    }
-    if (name == "smoothness")
-    {
-        std::cout << sliderValues[smoothnessID] << std::endl;
-
+        currentlyActiveInstrument->triggerHammer();
     }
     
     if (name == "excite" || name == "excitationType")
@@ -1139,7 +1135,8 @@ void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* change
         } else {
             loadPresetWindowCallback (presetToLoad);
         }
-        
+        std::string debugString = String("Preset loaded is: " + presetToLoad).toStdString();
+        Debug::Log (debugString);
     }
 #ifdef NO_EDITOR
     for (int i = mouseXID; i < presetSelectID; ++i)

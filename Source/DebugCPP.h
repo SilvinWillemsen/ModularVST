@@ -30,13 +30,13 @@ enum class Color { Red, Green, Blue, Black, White, Yellow, Orange };
 class  Debug
 {
 public:
-    static void Log(const char* message, Color color = Color::Black);
-    static void Log(const std::string message, Color color = Color::Black);
-    static void Log(const int message, Color color = Color::Black);
-    static void Log(const char message, Color color = Color::Black);
-    static void Log(const float message, Color color = Color::Black);
-    static void Log(const double message, Color color = Color::Black);
-    static void Log(const bool message, Color color = Color::Black);
+    static void Log(const char* message, Color color = Color::White);
+    static void Log(const std::string message, Color color = Color::White);
+    static void Log(const int message, Color color = Color::White);
+    static void Log(const char message, Color color = Color::White);
+    static void Log(const float message, Color color = Color::White);
+    static void Log(const double message, Color color = Color::White);
+    static void Log(const bool message, Color color = Color::White);
 
 private:
     static void send_log(const std::stringstream &ss, const Color &color);

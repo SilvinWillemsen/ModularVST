@@ -125,6 +125,7 @@ public:
         smoothnessID,
         exciteID,
         excitationTypeID,
+        triggerID,
         presetSelectID,
         loadPresetToggleID
     };
@@ -175,6 +176,7 @@ private:
     AudioParameterFloat* smoothness;
     AudioParameterBool* excite;
     AudioParameterFloat* excitationType;
+    AudioParameterBool* trigger;
     AudioParameterFloat* presetSelect;
     AudioParameterBool* loadPresetToggle;
 

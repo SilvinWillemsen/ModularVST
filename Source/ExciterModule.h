@@ -73,6 +73,8 @@ public:
     void toggleSmoothExcitation();
     bool shouldExciteSmooth() { return exciteSmooth; };
 
+    bool isModuleCalculating() { return moduleIsCalculating; };
+    
 protected:
     ExcitationType excitationType;
     double excitationLoc = 0.5;
