@@ -8,6 +8,9 @@
 
 namespace BinaryData
 {
+    extern const char*   BanjoLele_xml;
+    const int            BanjoLele_xmlSize = 6636;
+
     extern const char*   String1_xml;
     const int            String1_xmlSize = 567;
 
@@ -57,7 +60,7 @@ namespace BinaryData
     const int            TwoStringsConnectedLinear_xmlSize = 27218;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 16;
+    const int namedResourceListSize = 17;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

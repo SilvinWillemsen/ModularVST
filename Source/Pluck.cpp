@@ -287,6 +287,7 @@ void Pluck::updateStates()
     w = wNext;
     
     psiPrev = psi;
+
 }
 
 double Pluck::getEnergy()

@@ -232,6 +232,7 @@ public:
     void setExciterControlParameter (float c) { for (auto res : resonators) res->setExciterControlParameter (c); };
     ExcitationType getExcitationType() { if (resonators.size() != 0) return resonators[0]->getExcitationType(); else return noExcitation; };
     
+    void setSmoothExcitation (bool s);
     
     // Resonator groups
     class ResonatorGroup
@@ -315,5 +316,7 @@ private:
     int currentlySelectedResonatorGroupIdx = 0;
     std::shared_ptr<ResonatorGroup> currentlySelectedResonatorGroup = nullptr;
     std::shared_ptr<ResonatorGroup> groupCurrentlyInteractingWith = nullptr;
+    
+    bool shouldExciteSmooth = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

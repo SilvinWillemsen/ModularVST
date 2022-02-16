@@ -9,6 +9,7 @@
       <FILE id="e9SETK" name="DebugCPP.cpp" compile="1" resource="0" file="Source/DebugCPP.cpp"/>
       <FILE id="KLPmfA" name="DebugCPP.h" compile="0" resource="0" file="Source/DebugCPP.h"/>
       <GROUP id="{EDF98768-FD60-FF15-CE20-76C2402D92E3}" name="Presets">
+        <FILE id="ReyFBa" name="BanjoLele.xml" compile="0" resource="1" file="Presets/BanjoLele.xml"/>
         <FILE id="xrKq0a" name="String1.xml" compile="0" resource="1" file="Presets/String1.xml"/>
         <FILE id="C8uPQG" name="String5.xml" compile="0" resource="1" file="Presets/String5.xml"/>
         <FILE id="Yfuert" name="String10.xml" compile="0" resource="1" file="Presets/String10.xml"/>

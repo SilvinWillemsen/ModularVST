@@ -161,6 +161,9 @@ public:
     
     void setEnteredThisResonator (bool e) { enteredThisResonator = e; };
     bool hasEnteredThisResonator() { return enteredThisResonator; };
+    
+    void toggleSmoothExcitation() { for (auto e : allExciterModules) e->toggleSmoothExcitation(); };
+
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
@@ -230,6 +233,8 @@ private:
     std::shared_ptr<Pluck> pluckModule;
     std::shared_ptr<Hammer> hammerModule;
     std::shared_ptr<Bow> bowModule;
+    
+    std::vector<std::shared_ptr<ExciterModule>> allExciterModules;
 
     bool excitationActive = (Global::bowAtStartup || Global::pluckAtStartup) ? true : false;
     

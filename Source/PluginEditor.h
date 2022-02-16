@@ -20,10 +20,6 @@
 //==============================================================================
 /**
 */
-extern "C"
-{
-    DLLExport int AddTwoInts (int a, int b);
-}
 
 class ModularVSTAudioProcessorEditor  : public juce::AudioProcessorEditor,
                                         public Button::Listener,

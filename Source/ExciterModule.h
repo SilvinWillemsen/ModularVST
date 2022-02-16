@@ -38,9 +38,22 @@ public:
     double getControlParameter() { return controlParameter; };
     void setControlParameter (double c) { controlParameter = c; };
     
-    void setExcitationLoc (double loc) { excitationLoc = loc; };
-    void setControlLoc (double loc) { controlLoc = loc; }; // ypos
+    void setExcitationLoc (double loc) {
+        if (exciteSmooth)
+            excitationLocToGoTo = loc;
+        else
+            excitationLoc = loc;
+    };
+    void setControlLoc (double loc) {
+        if (exciteSmooth)
+            controlLocToGoTo = loc;
+        else
+            controlLoc = loc;
+        
+    }; // ypos
 
+    void updateSmoothExcitation();
+    
     void hiResTimerCallback() override {};
     
     long getCalcCounter() { return calcCounter; };
@@ -57,7 +70,10 @@ public:
     virtual void saveOutput() {};
     
     void triggerExciterModule() { trigger = true; };
-    protected:
+    void toggleSmoothExcitation();
+    bool shouldExciteSmooth() { return exciteSmooth; };
+
+protected:
     ExcitationType excitationType;
     double excitationLoc = 0.5;
     double controlLoc = 0;
@@ -70,10 +86,15 @@ public:
     long calcCounter = 0;
     bool moduleIsReady = false;
     bool moduleIsCalculating = false;
-    
+        
 private:
     int ID = -1;
     Action action = noAction;
     
+    bool exciteSmooth = false;
+    double excitationLocToGoTo = 0.5;
+    double controlLocToGoTo = 0;
+    
+    float smoothCoeff = 0.9999;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExciterModule)
 };

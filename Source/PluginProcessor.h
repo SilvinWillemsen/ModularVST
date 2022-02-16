@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 #include "Instrument.h"
-
 #include <fstream>
 #include <iostream>
 #include "DebugCPP.h"
@@ -27,13 +26,15 @@ extern "C"
     DLLExport const char* getPresetAt (int);
     DLLExport int getNumPresets();
 }
+
 class ModularVSTAudioProcessor  : public juce::AudioProcessor, public ChangeListener, public ChangeBroadcaster
 {
 public:
     //==============================================================================
     ModularVSTAudioProcessor();
     ~ModularVSTAudioProcessor() override;
-
+    
+    
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -120,6 +121,8 @@ public:
     {
         mouseXID = 0,
         mouseYID,
+        smoothID,
+        smoothnessID,
         exciteID,
         excitationTypeID,
         presetSelectID,
@@ -137,6 +140,8 @@ public:
     
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
     void setShouldLoadPreset (String filename, bool loadFromBinary, std::function<void(String)> callback = {});
+    
+    void LoadIncludedPreset (int i);
     
 private:
     //==============================================================================
@@ -166,6 +171,8 @@ private:
 //#ifdef NO_EDITOR
     AudioParameterFloat* mouseX;
     AudioParameterFloat* mouseY;
+    AudioParameterBool* smooth;
+    AudioParameterFloat* smoothness;
     AudioParameterBool* excite;
     AudioParameterFloat* excitationType;
     AudioParameterFloat* presetSelect;
@@ -173,7 +180,9 @@ private:
 
     std::vector<RangedAudioParameter*> allParameters;
     std::vector<float> sliderValues;
+    std::vector<float> mouseSmoothValues;
     std::vector<float> prevSliderValues;
+
 //#endif
 #ifdef EDITOR_AND_SLIDERS
     std::vector<std::shared_ptr<Slider>>* editorSliders;

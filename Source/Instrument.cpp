@@ -1312,3 +1312,14 @@ void Instrument::removeResonatorGroup (int idx)
         for (auto res : resonatorGroups[i]->getResonatorsInGroup())
             res->setPartOfGroup (i+1, resonatorGroups[i]->getColour());
 }
+
+void Instrument::setSmoothExcitation (bool s)
+{
+    if (s == shouldExciteSmooth)
+        return;
+    
+    for (auto res : resonators)
+        res->toggleSmoothExcitation();
+    shouldExciteSmooth = s;
+    
+}

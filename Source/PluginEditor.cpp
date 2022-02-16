@@ -10,11 +10,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-int AddTwoInts (int a, int b)
-{
-    return a + b;
-}
-
 //==============================================================================
 ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p), instruments (audioProcessor.getInstrumentsRef())

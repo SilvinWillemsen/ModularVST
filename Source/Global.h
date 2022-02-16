@@ -12,7 +12,7 @@
 //#define USE_EIGEN     // use overlapping connections (and therefore the eigen library) or not
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
-//#define NO_EDITOR // build for unity
+#define NO_EDITOR // build for unity
 //#define EDITOR_AND_SLIDERS
 
 #include <JuceHeader.h>
@@ -131,8 +131,8 @@ enum PresetResult
 namespace Global
 {
     static const bool showGraphicsToggle = true;
+    static const bool loadPresetAtStartUp = false;
 
-    static const bool loadPresetAtStartUp = true;
 #ifdef NO_EDITOR
     static const bool loadFromBinary = true;
 #else
@@ -167,6 +167,12 @@ namespace Global
     static const double defaultConnDampCoeff = 0.01;
     static const double eps = 1e-15;
 
+static StringArray presetFilesToIncludeInUnity = {
+    "guitar_xml",
+    "Harp_xml",
+    "TwoStringsOctave_xml",
+    "BanjoLele_xml"
+};
 
     static StringArray inOutInstructions = {
         "Left-Click: add a stereo output.",

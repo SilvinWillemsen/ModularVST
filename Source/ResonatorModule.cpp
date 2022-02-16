@@ -65,6 +65,10 @@ void ResonatorModule::initialiseModule()
     bowModule->addChangeListener (this);
     initialiseExciterModule (bowModule);
     
+    allExciterModules.reserve (3);
+    allExciterModules.push_back (pluckModule);
+    allExciterModules.push_back (hammerModule);
+    allExciterModules.push_back (bowModule);
 
     curExciterModule = nullptr;
     setExcitationType (noExcitation);
@@ -88,7 +92,11 @@ void ResonatorModule::update()
     u[0] = uTmp;
     
     if (curExciterModule != nullptr)
+    {
         curExciterModule->updateStates();
+        if (curExciterModule->shouldExciteSmooth())
+            curExciterModule->updateSmoothExcitation();
+    }
 }
 
 double ResonatorModule::getStateAt (int idx, int time)
