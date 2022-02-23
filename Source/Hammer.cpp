@@ -240,7 +240,7 @@ void Hammer::calculate (std::vector<double*>& u)
     if (abs((wNext - wPrev) / (2.0 * k)) < 1.0 / Global::stringVisualScaling && trigger)
         forceIsZero = true;
     
-    if (force > 100)
+    if (force > 200)
     {
         std::cout << "Details: " << "etaStar - etaPrev: " << etaStar - etaPrev << " g: " << g << std::endl;
         wNext = 0;

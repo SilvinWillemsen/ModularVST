@@ -34,7 +34,6 @@ public:
     ModularVSTAudioProcessor();
     ~ModularVSTAudioProcessor() override;
     
-    
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -98,8 +97,9 @@ public:
     bool shouldRefreshEditor() { return refreshEditor; };
     void dontRefreshEditor() { refreshEditor = false; };
         
-    void setCurrentlyActiveInstrument (std::shared_ptr<Instrument> i) { currentlyActiveInstrument = i; }; 
-        
+    std::shared_ptr<Instrument> getCurrentlyActiveInstrument() { return currentlyActiveInstrument; };
+    void setCurrentlyActiveInstrument (std::shared_ptr<Instrument> i) { currentlyActiveInstrument = i; };
+
     void setStatesToZero (bool s) { setToZero = s; };
     
     ApplicationState getApplicationState() { return applicationState; };
@@ -197,6 +197,8 @@ private:
     String presetToLoad = "";
     bool shouldLoadFromBinary = false;
     std::function<void (String)> loadPresetWindowCallback = {};
+    
+    bool sliderControl = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };

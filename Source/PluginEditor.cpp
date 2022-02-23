@@ -36,14 +36,13 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         if (inst->areModulesReady())
         {
             addAndMakeVisible (inst.get());
-            currentlyActiveInstrument = inst;
             audioProcessor.setCurrentlyActiveInstrument (inst);
         }
         else
             std::cout << "NOT READY" << std::endl;
     
-    if (currentlyActiveInstrument != nullptr)
-        controlPanel->setNumGroups (currentlyActiveInstrument->getNumResonatorGroups());
+    if (getCurrentlyActiveInstrument() != nullptr)
+        controlPanel->setNumGroups (getCurrentlyActiveInstrument()->getNumResonatorGroups());
     
     if (excitationPanel->getExciteMode())
     {
@@ -177,14 +176,14 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         {
             if (controlPanel->didConnectionTypeComboBoxChange())
             {
-                if (currentlyActiveInstrument != nullptr)
-                    currentlyActiveInstrument->setConnectionType (controlPanel->getConnectionType());
+                if (getCurrentlyActiveInstrument() != nullptr)
+                    getCurrentlyActiveInstrument()->setConnectionType (controlPanel->getConnectionType());
                 controlPanel->setConnectionTypeComboBoxChangeBoolFalse();
                 controlPanel->refreshConnectionLabel();
             }
             if (controlPanel->didResonatorGroupComboBoxChange())
             {
-                currentlyActiveInstrument->setCurrentlySelectedResonatorGroup (controlPanel->getCurrentResonatorGroup());
+                getCurrentlyActiveInstrument()->setCurrentlySelectedResonatorGroup (controlPanel->getCurrentResonatorGroup());
                 
                 controlPanel->setResonatorGroupComboBoxChangeBoolFalse();
             }
@@ -201,7 +200,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     // Add an instrument and make it visible
                     audioProcessor.addInstrument();
                     std::shared_ptr<Instrument> newInstrument = instruments[instruments.size()-1];
-                    currentlyActiveInstrument = newInstrument;
+                    audioProcessor.setCurrentlyActiveInstrument (newInstrument);
                     controlPanel->setNumGroups (0);
                     addAndMakeVisible (newInstrument.get());
                     newInstrument->addChangeListener (this);
@@ -226,7 +225,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 }
                 case removeResonatorModuleAction:
                 {
-                    currentlyActiveInstrument->setToRemoveResonatorModule();
+                    getCurrentlyActiveInstrument()->setToRemoveResonatorModule();
                     break;
                 }
 
@@ -250,12 +249,20 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     break;
                 }
                     
-                case changeMassRatioAction:
+                case editDensityAction:
                 {
-                    currentlyActiveInstrument->setCustomMassRatio (controlPanel->getCurSliderValue());
+                    if (applicationState == editConnectionState)
+                        setApplicationState (editDensityState);
+                    else
+                        setApplicationState (editConnectionState);
+
                     break;
                 }
-
+                case densitySliderAction:
+                {
+                    getCurrentlyActiveInstrument()->getCurrentlySelectedResonator()->changeDensity (controlPanel->getCurSliderValue());
+                    break;
+                }
                 case editResonatorGroupsAction:
                 {
                     if (applicationState == normalState)
@@ -397,16 +404,20 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         {
             if (applicationState == normalState)
             {
-                currentlyActiveInstrument = inst;
-                controlPanel->setNumGroups (currentlyActiveInstrument->getNumResonatorGroups());
                 audioProcessor.setCurrentlyActiveInstrument (inst);
+                controlPanel->setNumGroups (getCurrentlyActiveInstrument()->getNumResonatorGroups());
+
             }
             if (changeBroadcaster == inst.get())
                 switch (inst->getAction())
                 {
                     case changeActiveConnectionAction:
                         controlPanel->setCurrentlyActiveConnection (inst->getCurrentlyActiveConnection()); // nullptr is handled inside funtion
-                        controlPanel->refresh (currentlyActiveInstrument);
+                        controlPanel->refresh (getCurrentlyActiveInstrument());
+                        break;
+                    case updateDensityAction:
+                        controlPanel->setDensitySliderValueFromResonator (getCurrentlyActiveInstrument()->getCurrentlySelectedResonator());
+                        controlPanel->refresh (getCurrentlyActiveInstrument());
                         break;
                     // when a module has just been added
                     case refreshEditorAction:
@@ -436,7 +447,7 @@ void ModularVSTAudioProcessorEditor::refresh()
         inst->addChangeListener (this);
     }
     startTimerHz (15);
-    controlPanel->refresh (currentlyActiveInstrument);
+    controlPanel->refresh (getCurrentlyActiveInstrument());
     resized();
 
 }
@@ -444,16 +455,20 @@ void ModularVSTAudioProcessorEditor::refresh()
 void ModularVSTAudioProcessorEditor::openAddModuleWindow()
 {
     addAndMakeVisible (addModuleWindow.get());
-    addModuleWindow->triggerComboBox(); // to prevent advanced parameters from appearing when non-advanced parameters should be shown
-    if (currentlyActiveInstrument->getCurrentlySelectedResonator() != nullptr)
+    ResonatorModule* curSelectedResonator = getCurrentlyActiveInstrument()->getCurrentlySelectedResonator().get();
+
+    if (curSelectedResonator != nullptr)
     {
+        addModuleWindow->triggerComboBox (curSelectedResonator->getResonatorModuleType());
         if (addModuleWindow->isAdvanced())
         {
-            addModuleWindow->getCoefficientList()->setParameters (currentlyActiveInstrument->getCurrentlySelectedResonator()->getParameters());
+            addModuleWindow->getCoefficientList()->setParameters (getCurrentlyActiveInstrument()->getCurrentlySelectedResonator()->getParameters());
         } else {
-            const NamedValueSet nonAdvancedParameters = currentlyActiveInstrument->getCurrentlySelectedResonator()->getNonAdvancedParameters();
+            const NamedValueSet nonAdvancedParameters = getCurrentlyActiveInstrument()->getCurrentlySelectedResonator()->getNonAdvancedParameters();
             addModuleWindow->getCoefficientList()->setParameters (nonAdvancedParameters);
         }
+    } else {
+        addModuleWindow->triggerComboBox(); // to prevent advanced parameters from appearing when non-advanced parameters should be shown
     }
     dlgWindow->showDialog ("Add Resonator Module", addModuleWindow.get(), this, getLookAndFeel().findColour (ResizableWindow::backgroundColourId), true);
 }
@@ -489,7 +504,7 @@ void ModularVSTAudioProcessorEditor::loadPresetFromWindow()
                         inst->reReadyAllModules();
                 else
                 {
-                    currentlyActiveInstrument = instruments[instruments.size()-1];
+                    audioProcessor.setCurrentlyActiveInstrument (instruments[instruments.size()-1]);
                 }
 
             });
@@ -506,25 +521,25 @@ void ModularVSTAudioProcessorEditor::loadPresetFromWindow()
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)
 {
     if (applicationState == removeResonatorModuleState)
-        currentlyActiveInstrument->resetResonatorToRemove();
+        getCurrentlyActiveInstrument()->resetResonatorToRemove();
     applicationState = a;
     excitationPanel->setEnabled (applicationState == normalState);
     controlPanel->setApplicationState (a);
-    controlPanel->refresh (currentlyActiveInstrument);
+    controlPanel->refresh (getCurrentlyActiveInstrument());
     audioProcessor.setApplicationState (a);
 }
 
 void ModularVSTAudioProcessorEditor::addResonatorGroup()
 {
     controlPanel->addResonatorGroup();
-    currentlyActiveInstrument->addResonatorGroup();
+    getCurrentlyActiveInstrument()->addResonatorGroup();
 }
 
 void ModularVSTAudioProcessorEditor::removeResonatorGroup()
 {
     if (controlPanel->getNumGroups() == 0)
         return;
-    currentlyActiveInstrument->removeResonatorGroup (controlPanel->getCurrentResonatorGroup() - 1);
+    getCurrentlyActiveInstrument()->removeResonatorGroup (controlPanel->getCurrentResonatorGroup() - 1);
     controlPanel->removeResonatorGroup();
 
 }

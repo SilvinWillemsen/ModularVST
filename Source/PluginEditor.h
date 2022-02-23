@@ -61,14 +61,16 @@ public:
     void sliderValueChanged (Slider* slider) override;
 #endif
     void toggleGraphics();
+    
 private:
     // Reference to the audio processor
     ModularVSTAudioProcessor& audioProcessor;
     Action action;
     // Reference to the instruments
     std::vector<std::shared_ptr<Instrument>>& instruments;
-    std::shared_ptr<Instrument> currentlyActiveInstrument = nullptr;
     
+    std::shared_ptr<Instrument> getCurrentlyActiveInstrument() { return audioProcessor.getCurrentlyActiveInstrument(); };
+
     // Various GUI panels
     std::unique_ptr<ControlPanel> controlPanel;
     std::unique_ptr<ExcitationPanel> excitationPanel;

@@ -52,7 +52,11 @@ public:
     ConnectionType getConnectionType() { return static_cast<ConnectionType> (connectionTypeBox->getSelectedId()); };
     
     double getCurSliderValue() { return curSliderValue; };
-    void setMassRatioSliderValue (double val) { massRatioSlider->setValue (val, dontSendNotification); };
+    void setDensitySliderValueFromResonator (std::shared_ptr<ResonatorModule> r) {
+        setCurrentlyActiveResonator (r);
+        densitySlider->setValue ((double)*r->getParameters().getVarPointer("rho"), dontSendNotification);
+    };
+    void setCurrentlyActiveResonator (std::shared_ptr<ResonatorModule> r) { currentlyActiveResonator = r.get(); }
 
     void setInstructionsText (StringArray& instructions);
     void setCurrentlyActiveConnection (Instrument::ConnectionInfo* CI);
@@ -67,35 +71,24 @@ public:
     void removeResonatorGroup () { --numGroups; refreshResonatorGroupBox(); };
     
     void refreshResonatorGroupBox();
-    
 private:
     
     // Collection of all buttons
-    // 0 - Add Instrument
-    // 1 - Add Resonator
-    // 2 - Edit Resonator
-    // 3 - Remove Resonator
-    // 4 - Edit In- Outputs
-    // 5 - Edit Connections
-    // 6 - Save Preset
-    // 7 - Load Preset
-    // 8 - Edit Resonator Groups
-    // 9 - Add Resonator Group
-    // 10 - Remove Resonator Group
-
+    
     std::vector<std::shared_ptr<TextButton>> allButtons;
     
-    std::shared_ptr<TextButton> addInstrumentButton;                // 0
-    std::shared_ptr<TextButton> addResonatorModuleButton;           // 1
-    std::shared_ptr<TextButton> editResonatorModuleButton;          // 2
-    std::shared_ptr<TextButton> removeResonatorModuleButton;        // 3
-    std::shared_ptr<TextButton> editInOutputsButton;                // 4
-    std::shared_ptr<TextButton> editConnectionButton;               // 5
-    std::shared_ptr<TextButton> savePresetButton;                   // 6
-    std::shared_ptr<TextButton> loadPresetButton;                   // 7
-    std::shared_ptr<TextButton> editResonatorGroupsButton;          // 8
-    std::shared_ptr<TextButton> addResonatorGroupButton;            // 9
-    std::shared_ptr<TextButton> removeResonatorGroupButton;         // 10
+    std::shared_ptr<TextButton> addInstrumentButton;
+    std::shared_ptr<TextButton> addResonatorModuleButton;
+    std::shared_ptr<TextButton> editResonatorModuleButton;
+    std::shared_ptr<TextButton> removeResonatorModuleButton;
+    std::shared_ptr<TextButton> editInOutputsButton;
+    std::shared_ptr<TextButton> editConnectionButton;
+    std::shared_ptr<TextButton> editDensityButton;
+    std::shared_ptr<TextButton> savePresetButton;
+    std::shared_ptr<TextButton> loadPresetButton;
+    std::shared_ptr<TextButton> editResonatorGroupsButton;
+    std::shared_ptr<TextButton> addResonatorGroupButton;
+    std::shared_ptr<TextButton> removeResonatorGroupButton;
 
     std::shared_ptr<Label> instructionsLabel1;
     std::shared_ptr<Label> instructionsLabel2;
@@ -111,7 +104,7 @@ private:
     int numGroups = 0;
     
     std::vector<std::shared_ptr<Slider>> allSliders;
-    std::shared_ptr<Slider> massRatioSlider;
+    std::shared_ptr<Slider> densitySlider;
     double curSliderValue = 0;
 
     Action action = noAction;
@@ -122,6 +115,6 @@ private:
 //    bool init = false;
     
     Instrument::ConnectionInfo* currentlyActiveConnection = nullptr;
-        
+    ResonatorModule* currentlyActiveResonator = nullptr;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControlPanel)
 };

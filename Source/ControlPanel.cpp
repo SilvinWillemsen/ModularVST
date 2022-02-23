@@ -38,6 +38,9 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     
     editConnectionButton = std::make_shared<TextButton> ("Edit Connections");
     allButtons.push_back (editConnectionButton);
+    
+    editDensityButton = std::make_shared<TextButton> ("Edit Density");
+    allButtons.push_back (editDensityButton);
 
     savePresetButton = std::make_unique<TextButton> ("Save Preset");
     allButtons.push_back (savePresetButton);
@@ -82,10 +85,10 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
 
     }
     
-    massRatioSlider = std::make_shared<Slider>();
-    massRatioSlider->setRange (1e-6, 1e6);
-    massRatioSlider->setSkewFactorFromMidPoint (1.0);
-    allSliders.push_back (massRatioSlider);
+    densitySlider = std::make_shared<Slider>();
+    densitySlider->setRange (10, 100000);
+    densitySlider->setSkewFactorFromMidPoint (1000.0);
+    allSliders.push_back (densitySlider);
 
     for (int i = 0; i < allSliders.size(); ++i)
     {
@@ -173,6 +176,16 @@ void ControlPanel::resized()
 //                    allSliders[0]->setBounds(area.removeFromRight (300));
 
                 }
+                else if (allButtons[i] == editDensityButton
+                         && applicationState == editDensityState
+                         && currentlyActiveResonator != nullptr)
+                {
+                    area.removeFromRight (Global::margin);
+                    allSliders[0]->setBounds (area.removeFromRight (300));
+//                    area.removeFromRight (Global::margin);
+//                    allSliders[0]->setBounds(area.removeFromRight (300));
+
+                }
                 else if (allButtons[i] == removeResonatorGroupButton && allComboBoxes[1]->isVisible())
                 {
                     area.removeFromRight (Global::margin);
@@ -231,6 +244,20 @@ void ControlPanel::buttonClicked (Button* button)
             editConnectionButton->setButtonText ("Done");
         else if (applicationState == editConnectionState)
             editConnectionButton->setButtonText ("Edit Connections");
+
+    }
+    else if (button == editDensityButton.get())
+    {
+        action = editDensityAction;
+        if (applicationState == editConnectionState)
+        {
+            setCurrentlyActiveResonator (nullptr);
+            editDensityButton->setButtonText ("Done");
+        }
+        else if (applicationState == editDensityState)
+        {
+            editDensityButton->setButtonText ("Edit Density");
+        }
 
     }
     else if (button == editResonatorGroupsButton.get())
@@ -320,19 +347,21 @@ void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrumen
                     editConnectionButton->setVisible (true);
                 }
                 break;
+                
             case removeResonatorModuleState:
                 editResonatorModuleButton->setVisible (true);
                 removeResonatorModuleButton->setVisible (true);
                 break;
+                
             case editInOutputsState:
                 editInOutputsButton->setVisible (true);
                 setInstructionsText (Global::inOutInstructions);
 //                instructionsLabel->setText (Global::inOutInstructions, dontSendNotification);
-
                 break;
 
             case editConnectionState:
             case moveConnectionState:
+                editDensityButton->setVisible (true);
             case firstConnectionState:
                 setInstructionsText (Global::connectionInstructions);
                 if (currentlyActiveConnection != nullptr)
@@ -341,6 +370,13 @@ void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrumen
                 editConnectionButton->setVisible (true);
                 connectionTypeBox->setVisible (true);
                 break;
+                
+            case editDensityState:
+                editDensityButton->setVisible (true);
+                densitySlider->setVisible (currentlyActiveResonator == nullptr ? false : true);
+                setInstructionsText (Global::densityInstructions);
+                break;
+                
             case editResonatorGroupsState:
                 editResonatorGroupsButton->setVisible (true);
                 addResonatorGroupButton->setVisible (true);
@@ -358,11 +394,11 @@ void ControlPanel::refresh (std::shared_ptr<Instrument> currentlyActiveInstrumen
 
 void ControlPanel::sliderValueChanged (Slider* slider)
 {
-    if (slider == massRatioSlider.get())
+    if (slider == densitySlider.get())
     {
-        curSliderValue = massRatioSlider->getValue();
+        curSliderValue = densitySlider->getValue();
         
-        action = changeMassRatioAction;
+        action = densitySliderAction;
         sendChangeMessage();
     }
 }

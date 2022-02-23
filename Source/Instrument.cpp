@@ -189,9 +189,16 @@ void Instrument::paint (juce::Graphics& g)
     }
     if (applicationState == removeResonatorModuleState && resonatorToRemove != nullptr)
     {
-        g.setColour (Colours::red.withAlpha(0.5f));
+        g.setColour (Colours::red.withAlpha (0.5f));
         g.fillRect (0, moduleHeight * resonatorToRemove->getID(),
                     getWidth(), moduleHeight);
+    }
+    else if (applicationState == editDensityState && currentlySelectedResonator != nullptr)
+    {
+        g.setColour (Colours::yellow.withAlpha (0.5f));
+        g.fillRect (0, moduleHeight * currentlySelectedResonator->getID(),
+                    getWidth(), moduleHeight);
+
     }
     
     
@@ -607,25 +614,6 @@ void Instrument::setApplicationState (ApplicationState a)
 void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
     for (auto res : resonators)
-    {
-//        if (res.get() == changeBroadcaster)
-//        {
-//            if (res->getAction() == interactWithGroupAction)
-//            {
-//                groupCurrentlyInteractingWith = &resonatorGroups[res->getGroupNumber()-1];
-//                res->setAction (noAction);
-//                return;
-//            }
-//            else if (res->getAction() == noInteractionWithGroupAction)
-//            {
-//                groupCurrentlyInteractingWith = nullptr;
-//                res->setAction (noAction);
-//                return;
-//            }
-//        }
-
-    }
-    for (auto res : resonators)
         if (res.get() == changeBroadcaster)
         {
             currentlySelectedResonator = res;
@@ -850,6 +838,14 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
                     }
                     
                     setApplicationState (editConnectionState);
+                    sendChangeMessage();
+
+                    break;
+                }
+                case editDensityState:
+                {
+                    currentlySelectedResonator = res;
+                    action = updateDensityAction;
                     sendChangeMessage();
 
                     break;
@@ -1260,7 +1256,6 @@ void Instrument::virtualMouseMove (const double x, const double y)
         resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
     }
     prevMouseMoveResonator = curMouseMoveResonator;
-                                    
     resonators[curMouseMoveResonator]->myMouseMove (x, yRes, false);
 }
 

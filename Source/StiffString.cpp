@@ -70,26 +70,21 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
             sig1 = (*advancedParameters.getVarPointer("sig1"));
 
         }
-        // reinitialise parameters (for saving presets)
-        parameters.clear();
-        parameters.set ("L", L);
-        if (rmt != bar)
-            parameters.set ("T", T);
-        parameters.set ("rho", rho);
-        parameters.set ("A", A);
-        parameters.set ("E", E);
-        parameters.set ("I", I);
-        parameters.set ("sig0", sig0);
-        parameters.set ("sig1", sig1);
         
-        setParameters (parameters);
     }
-    // Calculate wave speed (squared)
-    cSq = T / (rho * A);
+    // reinitialise parameters (for saving presets)
+    parameters.clear();
+    parameters.set ("L", L);
+    if (rmt != bar)
+        parameters.set ("T", T);
+    parameters.set ("rho", rho);
+    parameters.set ("A", A);
+    parameters.set ("E", E);
+    parameters.set ("I", I);
+    parameters.set ("sig0", sig0);
+    parameters.set ("sig1", sig1);
     
-    // Calculate stiffness coefficient (squared)
-    kappaSq = E * I / (rho * A);
-
+    setParameters (parameters);
     visualScaling = Global::stringVisualScaling;
         
     // Initialise paramters
@@ -122,6 +117,27 @@ StiffString::~StiffString()
 void StiffString::initialise (int fs)
 {
     k = 1.0 / fs;
+    
+    refreshCoefficients();
+    
+    inOutInfo.setN (std::vector<int> {N});
+    
+    if (inOutInfo.isDefaultInit())
+    {
+        // Add in / outputs
+        inOutInfo.addOutput (0.11, 0);
+        inOutInfo.addOutput (0.83, 1);
+    }
+}
+
+void StiffString::refreshCoefficients()
+{
+    // Calculate wave speed (squared)
+    cSq = T / (rho * A);
+    
+    // Calculate stiffness coefficient (squared)
+    kappaSq = E * I / (rho * A);
+    
     double stabilityTerm = cSq * k * k + 4.0 * sig1 * k; // just easier to write down below
     
     h = sqrt (0.5 * (stabilityTerm + sqrt ((stabilityTerm * stabilityTerm) + 16.0 * kappaSq * k * k)));
@@ -155,15 +171,6 @@ void StiffString::initialise (int fs)
     C1 *= Adiv;
 
     setConnectionDivisionTerm (k * k / (rho * A * h * (1.0 + sig0 * k)));
-    
-    inOutInfo.setN (std::vector<int> {N});
-    
-    if (inOutInfo.isDefaultInit())
-    {
-        // Add in / outputs
-        inOutInfo.addOutput (0.11, 0);
-        inOutInfo.addOutput (0.83, 1);
-    }
 }
 
 void StiffString::paint (juce::Graphics& g)
@@ -352,9 +359,10 @@ void StiffString::myMouseEnter (const double x, const double y, bool triggeredBy
             getCurExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
             break;
         case bow:
-            getCurExciterModule()->setForce (40.0 * (rho * A));
+        {
+            getCurExciterModule()->setForce (30.0 * h);
             break;
-            
+        }
         default:
             break;
     }
@@ -385,7 +393,7 @@ void StiffString::myMouseMove (const double x, const double y, bool triggeredByM
 {
     if (getExcitationType() == noExcitation)
         return;
-    
+
     getCurExciterModule()->setExcitationLoc (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));
     getCurExciterModule()->setControlLoc (static_cast<float> (y) / (triggeredByMouse ? getHeight() : 1));
     
@@ -419,10 +427,11 @@ void StiffString::mouseDown (const MouseEvent& e)
                 if (!isPartOfGroup())
                     getCurExciterModule()->triggerExciterModule();
             }
-            if (isExcitationActive())
-                return;
-            excitationLoc = static_cast<float>(e.x) / static_cast<float>(getWidth());
-            rcExcitationFlag = true;
+            if (!isExcitationActive())
+            {
+                excitationLoc = static_cast<float>(e.x) / static_cast<float>(getWidth());
+                rcExcitationFlag = true;
+            }
             break;
         }
         case editInOutputsState: {}
@@ -552,4 +561,18 @@ void StiffString::saveOutput()
         doneRecording = true;
     }
 #endif
+}
+
+void StiffString::changeDensity (double rhoToSet)
+{
+    T = T * rhoToSet / rho;
+    E = E * rhoToSet / rho;
+    rho = rhoToSet;
+    NamedValueSet p = getParameters();
+    p.set ("rho", rho);
+    p.set ("T", T);
+    p.set ("E", E);
+    setParameters (p);
+    
+    refreshCoefficients();
 }

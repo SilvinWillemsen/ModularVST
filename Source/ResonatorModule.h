@@ -30,6 +30,7 @@ public:
     ~ResonatorModule() override;
     
     virtual void initialise (int fs) = 0;
+    virtual void refreshCoefficients() = 0; // if e.g. density is changed
     void setStatesToZero();
     
     bool isModuleReady() { return moduleIsReady; };
@@ -164,6 +165,7 @@ public:
     
     void toggleSmoothExcitation() { for (auto e : allExciterModules) e->toggleSmoothExcitation(); };
 
+    virtual void changeDensity (double rhoToSet) = 0;
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();

@@ -67,17 +67,22 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 //#endif
     sliderValues.resize (allParameters.size());
         
-//    for (int i = 0; i < sliderValues.size(); ++i)
-//    {
-//        sliderValues[i] = allParameters[i]->getValue();
-//    }
     
     mouseSmoothValues = { *mouseX, *mouseY };
     addChangeListener (this);
 
-    prevSliderValues = sliderValues;
     numOfBinaryPresets = BinaryData::namedResourceListSize;
     
+#if defined(NO_EDITOR) || defined(EDITOR_AND_SLIDERS)
+    sliderControl = true;
+#else
+    for (int i = 0; i < sliderValues.size(); ++i)
+    {
+        sliderValues[i] = allParameters[i]->getValue();
+    }
+#endif
+    prevSliderValues = sliderValues;
+
 //    std::cout << "Constructor processor" << std::endl;
 //    Debug::Log ("Debugger (constructor processor)", Color::Orange);
 }
@@ -161,15 +166,17 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     if (Global::loadPresetAtStartUp)
     {
         File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
-        if (!lastSavedPresetFile.exists() && !Global::loadFromBinary)
+        if (!lastSavedPresetFile.exists())
         {
             DBG("There is no last saved preset!");
             return;
         }
 //        FileInputStream lastSavedPresetFileReader (lastSavedPresetFile)
-        String fileName = Global::loadFromBinary ? "" : lastSavedPresetFile.loadFileAsString();
-        PresetResult res = loadPreset (fileName, Global::loadFromBinary);
+        String fileName = lastSavedPresetFile.loadFileAsString();
+
+        PresetResult res = loadPreset (fileName, fileName.contains("_"));
         debugLoadPresetResult (res);
+
 //        switch (res) {
 //            case applicationIsNotEmpty:
 //                DBG ("Application is not empty.");
@@ -327,7 +334,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             totOutputR[i] += inst->getOutputR();
             
             // virtual mouse move at audio rate (smoothing)
-            if (sliderValues[smoothID] == 1)
+            if (sliderValues[smoothID] == 1 && sliderControl)
             {
                 mouseSmoothValues[0] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues[0] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * sliderValues[0];
                 mouseSmoothValues[1] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues[1] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * sliderValues[1];
@@ -432,6 +439,10 @@ void ModularVSTAudioProcessor::setApplicationState (ApplicationState a)
         case normalState:
             setStatesToZero (false);
             break;
+        case removeResonatorModuleState:
+        case editConnectionState:
+            if (currentlyActiveInstrument != nullptr)
+                currentlyActiveInstrument->setCurrentlySelectedResonatorToNullptr();
         default:
             setStatesToZero (true);
             highlightInstrument (currentlyActiveInstrument);
@@ -1003,6 +1014,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
                 break;
         }
     }
+    currentlyActiveInstrument->setCurrentlySelectedResonatorToNullptr();
     
     // save path of last loaded preset
     std::ofstream lastLoadedPreset;
@@ -1131,6 +1143,7 @@ void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* change
             else
             {
                 currentlyActiveInstrument = instruments[instruments.size()-1];
+                refreshEditor = true;
             }
         } else {
             loadPresetWindowCallback (presetToLoad);
@@ -1138,7 +1151,7 @@ void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* change
         std::string debugString = String("Preset loaded is: " + presetToLoad).toStdString();
         Debug::Log (debugString);
     }
-#ifdef NO_EDITOR
+#if defined(NO_EDITOR) || defined(EDITOR_AND_SLIDERS)
     for (int i = mouseXID; i < presetSelectID; ++i)
         prevSliderValues[i] = 0;
 #endif

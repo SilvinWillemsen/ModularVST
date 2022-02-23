@@ -12,7 +12,7 @@
 //#define USE_EIGEN     // use overlapping connections (and therefore the eigen library) or not
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
-#define NO_EDITOR // build for unity
+//#define NO_EDITOR // build for unity
 //#define EDITOR_AND_SLIDERS
 
 #include <JuceHeader.h>
@@ -57,8 +57,10 @@ enum Action
     addInputAction,
     addOutputAction,
     editConnectionAction,
+    editDensityAction,
+    densitySliderAction,
+    updateDensityAction,
 
-    changeMassRatioAction,
     changeActiveConnectionAction,
     loadPresetAction,
     loadBinaryPresetAction,
@@ -81,6 +83,7 @@ enum ApplicationState
     removeResonatorModuleState,
     editInOutputsState,
     editConnectionState,
+    editDensityState,
     moveConnectionState,
     firstConnectionState,
     editResonatorGroupsState
@@ -89,7 +92,8 @@ enum ApplicationState
 
 enum ResonatorModuleType
 {
-    stiffString = 1, // set to 1 for the combo box options
+    noResonatorModule = 0, // set to 1 for the combo box options
+    stiffString,
     bar,
     acousticTube,
     membrane,
@@ -131,13 +135,8 @@ enum PresetResult
 namespace Global
 {
     static const bool showGraphicsToggle = true;
-    static const bool loadPresetAtStartUp = false;
+    static const bool loadPresetAtStartUp = true;
 
-#ifdef NO_EDITOR
-    static const bool loadFromBinary = true;
-#else
-    static const bool loadFromBinary = false;
-#endif
     static const bool bowAtStartup = false;
     static const bool pluckAtStartup = false;
     static const int samplesToRecord = 1000;
@@ -167,12 +166,12 @@ namespace Global
     static const double defaultConnDampCoeff = 0.01;
     static const double eps = 1e-15;
 
-static StringArray presetFilesToIncludeInUnity = {
-    "guitar_xml",
-    "Harp_xml",
-    "TwoStringsOctave_xml",
-    "BanjoLele_xml"
-};
+    static StringArray presetFilesToIncludeInUnity = {
+        "guitar_xml",
+        "Harp_xml",
+        "TwoStringsOctave_xml",
+        "BanjoLele_xml"
+    };
 
     static StringArray inOutInstructions = {
         "Left-Click: add a stereo output.",
@@ -192,6 +191,9 @@ static StringArray presetFilesToIncludeInUnity = {
         "Right-click: remove from group."
     };
 
+    static StringArray densityInstructions = {
+        "Click on a resonator to change its density."
+    };
 
     static NamedValueSet defaultStringParametersAdvanced {
         {"L", 1.0},

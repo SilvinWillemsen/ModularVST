@@ -49,14 +49,28 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
     
     sig0 = *parameters.getVarPointer ("sig0");
     sig1 = *parameters.getVarPointer ("sig1");
-    
-    // Calculate wave speed (squared)
-    cSq = T / (rho * H);
-    
-    // Calculate stiffness coefficient (squared)
-    D = E * H * H * H / (12.0 * (1 - nu * nu));
-    kappaSq =  D / (rho * H);
 
+    // reinitialise parameters (for saving presets)
+    parameters.clear();
+    parameters.set ("Lx", Lx);
+    parameters.set ("Ly", Ly);
+    if (rmt != thinPlate)
+    {
+        parameters.set ("T", T);
+    }
+    if (rmt != membrane)
+    {
+        parameters.set ("E", E);
+        parameters.set ("nu", nu);
+    }
+    parameters.set ("rho", rho);
+    parameters.set ("H", H);
+    parameters.set ("sig0", sig0);
+    parameters.set ("sig1", sig1);
+    parameters.set ("maxPoints", maxPoints);
+
+    setParameters (parameters);
+    
     visualScaling = 10000;
         
     // Initialise paramters
@@ -82,6 +96,36 @@ StiffMembrane::~StiffMembrane()
 void StiffMembrane::initialise (int fs)
 {
     k = 1.0 / fs;
+    
+    refreshCoefficients();
+
+    inOutInfo.setN (std::vector<int> {Nx, Ny});
+
+    if (inOutInfo.isDefaultInit())
+    {
+        // Add in / outputs (used to be form: 5 + (5 * Nx))
+        inOutInfo.addOutput (0.25, 0.25, 0);
+        inOutInfo.addOutput (0.75, 0.25, 1);
+    }
+    
+#ifdef SAVE_OUTPUT
+    std::ofstream NxNy;
+    NxNy.open("NxNy.csv");
+    NxNy << Nx << "," << Ny;
+    NxNy.close();
+#endif
+
+}
+
+void StiffMembrane::refreshCoefficients()
+{
+    // Calculate wave speed (squared)
+    cSq = T / (rho * H);
+    
+    // Calculate stiffness coefficient (squared)
+    D = E * H * H * H / (12.0 * (1 - nu * nu));
+    kappaSq =  D / (rho * H);
+    
     double stabilityTerm = cSq * k * k + 4.0 * sig1 * k; // just easier to write down below
     
     h = sqrt (stabilityTerm + sqrt ((stabilityTerm * stabilityTerm) + 16.0 * kappaSq * k * k));
@@ -136,23 +180,6 @@ void StiffMembrane::initialise (int fs)
     C1 *= Adiv;
     
     setConnectionDivisionTerm (k * k / (rho * H * h * h * (1.0 + sig0 * k)));
-
-    inOutInfo.setN (std::vector<int> {Nx, Ny});
-
-    if (inOutInfo.isDefaultInit())
-    {
-        // Add in / outputs (used to be form: 5 + (5 * Nx))
-        inOutInfo.addOutput (0.25, 0.25, 0);
-        inOutInfo.addOutput (0.75, 0.25, 1);
-    }
-    
-#ifdef SAVE_OUTPUT
-    std::ofstream NxNy;
-    NxNy.open("NxNy.csv");
-    NxNy << Nx << "," << Ny;
-    NxNy.close();
-#endif
-
 }
 
 
@@ -406,4 +433,21 @@ void StiffMembrane::exciteRaisedCos()
         }
     }
 
+}
+
+void StiffMembrane::changeDensity (double rhoToSet)
+{
+    T = T * rhoToSet / rho;
+    E = E * rhoToSet / rho;
+    rho = rhoToSet;
+    
+    NamedValueSet p = getParameters();
+    p.set ("rho", rho);
+    if (getResonatorModuleType() != thinPlate)
+        p.set ("T", T);
+    if (getResonatorModuleType() != membrane)
+        p.set ("E", E);
+    setParameters (p);
+
+    refreshCoefficients();
 }

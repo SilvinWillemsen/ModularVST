@@ -256,6 +256,7 @@ public:
     int getNumResonatorGroups() { return (int)resonatorGroups.size(); };
     std::vector<std::shared_ptr<ResonatorGroup>>& getResonatorGroups() { return resonatorGroups; };
     std::shared_ptr<ResonatorGroup> getCurrentlySelectedResonatorGroup() { return currentlySelectedResonatorGroup; };
+    void setCurrentlySelectedResonatorToNullptr() { currentlySelectedResonator = nullptr; };
     void setCurrentlySelectedResonatorGroup (int idx)
     {
         currentlySelectedResonatorGroupIdx = idx;

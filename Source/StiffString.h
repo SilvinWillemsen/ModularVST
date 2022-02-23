@@ -24,7 +24,8 @@ public:
 
     // initialisation
     void initialise (int fs) override;
-    
+    void refreshCoefficients() override;
+
     // JUCE functions
     void paint (juce::Graphics&) override;
     void resized() override;
@@ -89,6 +90,7 @@ public:
     
     void saveOutput() override;
     
+    void changeDensity (double rhoToSet) override;
 private:
     
     // Model parameters

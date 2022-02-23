@@ -50,12 +50,17 @@ public:
     
     bool isAdvanced() { return showAdvanced; };
     
-    void triggerComboBox() { comboBoxChanged (resonatorTypeBox.get()); }
+    void triggerComboBox (ResonatorModuleType rmt = noResonatorModule) {
+        if (rmt == noResonatorModule)
+            comboBoxChanged (resonatorTypeBox.get());
+        else
+            resonatorTypeBox->setSelectedId (rmt);
+    }
 private:
     
     std::unique_ptr<TextButton> addModuleButton;
     std::unique_ptr<TextButton> advancedSettingsButton;
-    bool showAdvanced = false;
+    bool showAdvanced = true;
     
     std::unique_ptr<ComboBox> resonatorTypeBox;
     std::unique_ptr<CoefficientList> coefficientList;
