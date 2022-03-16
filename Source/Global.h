@@ -230,13 +230,20 @@ namespace Global
 
 
     static NamedValueSet defaultMembraneParametersAdvanced {
-        {"Lx", 0.5},
-        {"Ly", 1},
-        {"rho", 10},
-        {"H", 0.001},
-        {"T", 50}, // check whether this is good
-        {"sig0", 0.5},
+        {"Lx", 0.75},
+        {"Ly", 0.25},
+        {"rho", 1400},
+        {"H", 2.54e-4},
+        {"T", 2312.0}, // check whether this is good
+        {"sig0", 1.0},
         {"sig1", 0.005},
+        {"maxPoints", 2000}
+    };
+
+    static NamedValueSet defaultMembraneParameters{
+        {"Lx", 0.75},
+        {"Ly", 0.25},
+        {"f0", 170},
         {"maxPoints", 2000}
     };
 
@@ -244,24 +251,38 @@ namespace Global
         {"Lx", 0.75},
         {"Ly", 0.25},
         {"rho", 7850},
-        {"H", 0.005},
-        {"E", 2e11},
+        {"H", 0.0025},
+        {"E", 1.14e10},
         {"nu", 0.3},
         {"sig0", 1},
         {"sig1", 0.005},
         {"maxPoints", 2000}
     };
 
+    static NamedValueSet defaultThinPlateParameters{
+        {"Lx", 0.75},
+        {"Ly", 0.25},
+        {"stiffness", 2.0},
+        {"maxPoints", 2000}
+    };
+
     static NamedValueSet defaultStiffMembraneParametersAdvanced {
         {"Lx", 0.75},
         {"Ly", 0.25},
-        {"rho", 7850},
-        {"H", 0.005},
-        {"T", 100000}, // check whether this is good
-        {"E", 2e11},
+        {"rho", 1400},
+        {"H", 2.54e-4},
+        {"T", 2312.0}, // check whether this is good
+        {"E", 0.76e9},
         {"nu", 0.3},
         {"sig0", 1},
         {"sig1", 0.005},
+        {"maxPoints", 2000}
+    };
+    static NamedValueSet defaultStiffMembraneParameters{
+        {"Lx", 0.75},
+        {"Ly", 0.25},
+        {"f0", 170},
+        {"stiffness", 1.0},
         {"maxPoints", 2000}
     };
 

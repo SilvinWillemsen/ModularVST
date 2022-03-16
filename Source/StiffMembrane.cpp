@@ -25,31 +25,138 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
 //    else
 //        test = &StiffMembrane::calculateAll;
     
-    
-    // Initialise member variables using the parameter set
-    Lx = *parameters.getVarPointer ("Lx");
-    Ly = *parameters.getVarPointer ("Ly");
-    rho = *parameters.getVarPointer ("rho");
-    H = *parameters.getVarPointer ("H");
-    if (parameters.contains("T"))
-        T = *parameters.getVarPointer ("T");
-    else
-        T = 0; // thin plate
-    if (parameters.contains("E"))
+    if (advanced)
     {
-        E = *parameters.getVarPointer ("E");
-        nu = *parameters.getVarPointer ("nu");
-    }
-    else
-    {
-        // membrane
-        E = 0;
-        nu = 0;
-    }
-    
-    sig0 = *parameters.getVarPointer ("sig0");
-    sig1 = *parameters.getVarPointer ("sig1");
+        Lx = *parameters.getVarPointer("Lx");
+        Ly = *parameters.getVarPointer("Ly");
+        rho = *parameters.getVarPointer("rho");
+        H = *parameters.getVarPointer("H");
+        if (parameters.contains("T"))
+        {
+            T = *parameters.getVarPointer("T");
+            nonAdvancedParameters.set("T", T);
+        }
+        else
+            T = 0;
+        if (parameters.contains("E"))
+        {
+            E = *parameters.getVarPointer("E");
+            nu = *parameters.getVarPointer("nu");
+            nonAdvancedParameters.set("E", E); 
+            nonAdvancedParameters.set("nu", nu);
+        }
+        else
+        {
+            // membrane
+            E = 0;
+            nu = 0;
+        }
+        sig0 = *parameters.getVarPointer("sig0");
+        sig1 = *parameters.getVarPointer("sig1");
 
+        nonAdvancedParameters.set("f0", (sqrt(T / (rho * H)) / 2.0) * sqrt((1.0 / Lx)*(1.0 / Lx) + (1.0 / Ly)*(1.0 / Ly)));
+        nonAdvancedParameters.set("Lx", Lx);
+        nonAdvancedParameters.set("Ly", Ly);
+        nonAdvancedParameters.set("maxPoints", maxPoints);
+
+    }
+    else {
+        nonAdvancedParameters = parameters;
+        // CALCULATE PARAMETERS FROM SIMPLE PARAMETERS
+        if (rmt == membrane)
+        {
+            NamedValueSet advancedParameters = Global::defaultMembraneParametersAdvanced;
+            maxPoints = (*parameters.getVarPointer("maxPoints"));
+            double f0 = (*parameters.getVarPointer("f0"));
+            Lx = (*parameters.getVarPointer("Lx"));
+            Ly = (*parameters.getVarPointer("Ly"));
+            /*double lx = (*advancedParameters.getVarPointer("Lx"));
+            double ly = (*advancedParameters.getVarPointer("Ly"));
+            double L = sqrt(lx * ly);
+            double Lx, Ly;
+            Lx = L;
+            Ly = L;*/
+            rho = (*advancedParameters.getVarPointer("rho"));
+            H = (*advancedParameters.getVarPointer("H"));
+            sig0 = (*advancedParameters.getVarPointer("sig0"));
+            sig1 = (*advancedParameters.getVarPointer("sig1"));
+            //        f0 = c/2* sqrt((1/Lx)^2 + (1/Ly)^2)
+            T = (4 * Lx * Lx * Ly * Ly * f0 * f0 * H * rho) / (Ly * Ly + Lx * Lx);
+            Logger::getCurrentLogger()->outputDebugString("Loading was cancelled.");
+        }
+        else if (rmt == thinPlate)
+        {
+            NamedValueSet advancedParameters = Global::defaultThinPlateParametersAdvanced;
+            maxPoints = (*parameters.getVarPointer("maxPoints"));
+            Lx = (*parameters.getVarPointer("Lx"));
+            Ly = (*parameters.getVarPointer("Ly"));
+            double stiffness = (*parameters.getVarPointer("stiffness"));
+            if (stiffness < 2.0)
+            {
+                E = 2.2e9;
+            }
+            else if (stiffness < 3.0)
+            {
+                E = 3e10;
+            }
+            else if (stiffness < 4.0)
+            {
+                E = 1.1e11;
+            }
+            else if (stiffness < 5.0)
+            {
+                E = 5.5e11;
+            }
+            else
+            {
+                E = 1e12;
+            }
+            rho = (*advancedParameters.getVarPointer("rho"));
+            H = (*advancedParameters.getVarPointer("H"));
+            sig0 = (*advancedParameters.getVarPointer("sig0"));
+            sig1 = (*advancedParameters.getVarPointer("sig1")); 
+            nu = (*advancedParameters.getVarPointer("nu"));
+            Logger::getCurrentLogger()->outputDebugString("Loading was cancelled.");
+        }
+        else if (rmt == stiffMembrane)
+        {
+            NamedValueSet advancedParameters = Global::defaultStiffMembraneParametersAdvanced;
+            maxPoints = (*parameters.getVarPointer("maxPoints"));
+            double f0 = (*parameters.getVarPointer("f0"));
+            Lx = (*parameters.getVarPointer("Lx"));
+            Ly = (*parameters.getVarPointer("Ly"));
+            double stiffness = (*parameters.getVarPointer("stiffness"));
+            if (stiffness < 2.0)
+            {
+                E = 2.2e9;
+            }
+            else if (stiffness < 3.0)
+            {
+                E = 3e10;
+            }
+            else if (stiffness < 4.0)
+            {
+                E = 1.1e11;
+            }
+            else if (stiffness < 5.0)
+            {
+                E = 5.5e11;
+            }
+            else
+            {
+                E = 1e12;
+            }
+            rho = (*advancedParameters.getVarPointer("rho"));
+            H = (*advancedParameters.getVarPointer("H"));
+            sig0 = (*advancedParameters.getVarPointer("sig0"));
+            sig1 = (*advancedParameters.getVarPointer("sig1"));
+            nu = (*advancedParameters.getVarPointer("nu"));
+            //        f0 = c/2* sqrt((1/Lx)^2 + (1/Ly)^2)
+            T = (4 * Lx * Lx * Ly * Ly * f0 * f0 * H * rho) / (Ly * Ly + Lx * Lx);
+            Logger::getCurrentLogger()->outputDebugString("Loading was cancelled.");
+        }
+
+    }
     // reinitialise parameters (for saving presets)
     parameters.clear();
     parameters.set ("Lx", Lx);
@@ -271,7 +378,7 @@ void StiffMembrane::calculate()
 
 float StiffMembrane::getOutput (int idx)
 {
-    return u[1][idx] * Global::twoDOutputScaling;
+     return u[1][idx] * Global::twoDOutputScaling;
 }
 
 int StiffMembrane::getNumPoints()
