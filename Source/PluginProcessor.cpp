@@ -15,11 +15,13 @@
 
 const char* getPresetAt (int i)
 {
-//    return BinaryData::originalFilenames[i];
     return Global::presetFilesToIncludeInUnity[i].getCharPointer();
+}
 
-//    return "test";
-//    return String (BinaryData::originalFilenames[i]).toStdString();
+const char* getXMLOfPresetAt (int i)
+{
+    int size;
+    return BinaryData::getNamedResource(Global::presetFilesToIncludeInUnity[i].getCharPointer(), size);
 }
 
 int getNumPresets()

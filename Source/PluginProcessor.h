@@ -25,6 +25,7 @@ extern "C"
 {
     DLLExport const char* getPresetAt (int);
     DLLExport int getNumPresets();
+    DLLExport const char* getXMLOfPresetAt (int i);
 }
 
 class ModularVSTAudioProcessor  : public juce::AudioProcessor, public ChangeListener, public ChangeBroadcaster
