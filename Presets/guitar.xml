@@ -79,110 +79,110 @@
 	 	 	 <PARAM id="i0_r7_sig0" value="1"/>
 	 	 	 <PARAM id="i0_r7_sig1" value="0.05"/>
 	 	 	 <PARAM id="i0_r7_maxPoints" value="2000"/>
-	 	 	 <Output id="i0_r7_o0" channel="2" loc="99"/>
-	 	 	 <Output id="i0_r7_o1" channel="2" loc="144"/>
-	 	 	 <Output id="i0_r7_o2" channel="2" loc="241"/>
-	 	 	 <Output id="i0_r7_o3" channel="2" loc="429"/>
-	 	 	 <Output id="i0_r7_o4" channel="2" loc="332"/>
-	 	 	 <Output id="i0_r7_o5" channel="2" loc="520"/>
-	 	 	 <Output id="i0_r7_o6" channel="2" loc="615"/>
-	 	 	 <Output id="i0_r7_o7" channel="2" loc="617"/>
+	 	 	 <Output id="i0_r7_o0" channel="2" locX="0.104167" locY="0.125"/>
+	 	 	 <Output id="i0_r7_o1" channel="2" locX="0.0625" locY="0.1875"/>
+	 	 	 <Output id="i0_r7_o2" channel="2" locX="0.125" locY="0.3125"/>
+	 	 	 <Output id="i0_r7_o3" channel="2" locX="0.125" locY="0.5625"/>
+	 	 	 <Output id="i0_r7_o4" channel="2" locX="0.0625" locY="0.4375"/>
+	 	 	 <Output id="i0_r7_o5" channel="2" locX="0.0625" locY="0.6875"/>
+	 	 	 <Output id="i0_r7_o6" channel="2" locX="0.0833333" locY="0.8125"/>
+	 	 	 <Output id="i0_r7_o7" channel="2" locX="0.125" locY="0.8125"/>
 	 	 </Resonator>
 	 	 <Connection id="i0_c0" type="linear">
 	 	 	 <PARAM id="i0_c0_fR" value="1"/>
-	 	 	 <PARAM id="i0_c0_fL" value="88"/>
-	 	 	 <PARAM id="i0_c0_tR" value="6"/>
-	 	 	 <PARAM id="i0_c0_tL" value="9"/>
+	 	 	 <PARAM id="i0_c0_fL" value="0.977778"/>
+	 	 	 <PARAM id="i0_c0_fR" value="6"/>
+	 	 	 <PARAM id="i0_c0_fL" value="0.225"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c1" type="linear">
 	 	 	 <PARAM id="i0_c1_fR" value="2"/>
-	 	 	 <PARAM id="i0_c1_fL" value="70"/>
-	 	 	 <PARAM id="i0_c1_tR" value="6"/>
-	 	 	 <PARAM id="i0_c1_tL" value="15"/>
+	 	 	 <PARAM id="i0_c1_fL" value="0.972222"/>
+	 	 	 <PARAM id="i0_c1_fR" value="6"/>
+	 	 	 <PARAM id="i0_c1_fL" value="0.375"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c2" type="linear">
 	 	 	 <PARAM id="i0_c2_fR" value="3"/>
-	 	 	 <PARAM id="i0_c2_fL" value="54"/>
-	 	 	 <PARAM id="i0_c2_tR" value="6"/>
-	 	 	 <PARAM id="i0_c2_tL" value="22"/>
+	 	 	 <PARAM id="i0_c2_fL" value="0.964286"/>
+	 	 	 <PARAM id="i0_c2_fR" value="6"/>
+	 	 	 <PARAM id="i0_c2_fL" value="0.55"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c3" type="linear">
 	 	 	 <PARAM id="i0_c3_fR" value="4"/>
-	 	 	 <PARAM id="i0_c3_fL" value="43"/>
-	 	 	 <PARAM id="i0_c3_tR" value="6"/>
-	 	 	 <PARAM id="i0_c3_tL" value="28"/>
+	 	 	 <PARAM id="i0_c3_fL" value="0.955556"/>
+	 	 	 <PARAM id="i0_c3_fR" value="6"/>
+	 	 	 <PARAM id="i0_c3_fL" value="0.7"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c4" type="linear">
 	 	 	 <PARAM id="i0_c4_fR" value="5"/>
-	 	 	 <PARAM id="i0_c4_fL" value="32"/>
-	 	 	 <PARAM id="i0_c4_tR" value="6"/>
-	 	 	 <PARAM id="i0_c4_tL" value="34"/>
+	 	 	 <PARAM id="i0_c4_fL" value="0.941176"/>
+	 	 	 <PARAM id="i0_c4_fR" value="6"/>
+	 	 	 <PARAM id="i0_c4_fL" value="0.85"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c5" type="rigid">
 	 	 	 <PARAM id="i0_c5_fR" value="6"/>
-	 	 	 <PARAM id="i0_c5_fL" value="6"/>
+	 	 	 <PARAM id="i0_c5_fL" value="0.15"/>
 	 	 	 <PARAM id="i0_c5_tR" value="7"/>
-	 	 	 <PARAM id="i0_c5_tL" value="193"/>
+	 	 	 <PARAM id="i0_c5_tL" valueX="0.104167 " valueY="0.25"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c6" type="rigid">
 	 	 	 <PARAM id="i0_c6_fR" value="6"/>
-	 	 	 <PARAM id="i0_c6_fL" value="10"/>
+	 	 	 <PARAM id="i0_c6_fL" value="0.25"/>
 	 	 	 <PARAM id="i0_c6_tR" value="7"/>
-	 	 	 <PARAM id="i0_c6_tL" value="239"/>
+	 	 	 <PARAM id="i0_c6_tL" valueX="0.0833333 " valueY="0.3125"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c7" type="rigid">
 	 	 	 <PARAM id="i0_c7_fR" value="6"/>
-	 	 	 <PARAM id="i0_c7_fL" value="24"/>
+	 	 	 <PARAM id="i0_c7_fL" value="0.6"/>
 	 	 	 <PARAM id="i0_c7_tR" value="7"/>
-	 	 	 <PARAM id="i0_c7_tL" value="427"/>
+	 	 	 <PARAM id="i0_c7_tL" valueX="0.0833333 " valueY="0.5625"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c8" type="rigid">
 	 	 	 <PARAM id="i0_c8_fR" value="6"/>
-	 	 	 <PARAM id="i0_c8_fL" value="36"/>
+	 	 	 <PARAM id="i0_c8_fL" value="0.9"/>
 	 	 	 <PARAM id="i0_c8_tR" value="7"/>
-	 	 	 <PARAM id="i0_c8_tL" value="569"/>
+	 	 	 <PARAM id="i0_c8_tL" valueX="0.104167 " valueY="0.75"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c9" type="rigid">
 	 	 	 <PARAM id="i0_c9_fR" value="6"/>
-	 	 	 <PARAM id="i0_c9_fL" value="32"/>
+	 	 	 <PARAM id="i0_c9_fL" value="0.8"/>
 	 	 	 <PARAM id="i0_c9_tR" value="7"/>
-	 	 	 <PARAM id="i0_c9_tL" value="521"/>
+	 	 	 <PARAM id="i0_c9_tL" valueX="0.0833333 " valueY="0.6875"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c10" type="rigid">
 	 	 	 <PARAM id="i0_c10_fR" value="6"/>
-	 	 	 <PARAM id="i0_c10_fL" value="27"/>
+	 	 	 <PARAM id="i0_c10_fL" value="0.675"/>
 	 	 	 <PARAM id="i0_c10_tR" value="7"/>
-	 	 	 <PARAM id="i0_c10_tL" value="475"/>
+	 	 	 <PARAM id="i0_c10_tL" valueX="0.104167 " valueY="0.625"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c11" type="rigid">
 	 	 	 <PARAM id="i0_c11_fR" value="6"/>
-	 	 	 <PARAM id="i0_c11_fL" value="20"/>
+	 	 	 <PARAM id="i0_c11_fL" value="0.5"/>
 	 	 	 <PARAM id="i0_c11_tR" value="7"/>
-	 	 	 <PARAM id="i0_c11_tL" value="381"/>
+	 	 	 <PARAM id="i0_c11_tL" valueX="0.104167 " valueY="0.5"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c12" type="rigid">
 	 	 	 <PARAM id="i0_c12_fR" value="6"/>
-	 	 	 <PARAM id="i0_c12_fL" value="17"/>
+	 	 	 <PARAM id="i0_c12_fL" value="0.425"/>
 	 	 	 <PARAM id="i0_c12_tR" value="7"/>
-	 	 	 <PARAM id="i0_c12_tL" value="333"/>
+	 	 	 <PARAM id="i0_c12_tL" valueX="0.0833333 " valueY="0.4375"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c13" type="rigid">
 	 	 	 <PARAM id="i0_c13_fR" value="6"/>
-	 	 	 <PARAM id="i0_c13_fL" value="4"/>
+	 	 	 <PARAM id="i0_c13_fL" value="0.1"/>
 	 	 	 <PARAM id="i0_c13_tR" value="7"/>
-	 	 	 <PARAM id="i0_c13_tL" value="145"/>
+	 	 	 <PARAM id="i0_c13_tL" valueX="0.0833333 " valueY="0.1875"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c14" type="linear">
 	 	 	 <PARAM id="i0_c14_fR" value="0"/>
-	 	 	 <PARAM id="i0_c14_fL" value="103"/>
-	 	 	 <PARAM id="i0_c14_tR" value="6"/>
-	 	 	 <PARAM id="i0_c14_tL" value="5"/>
+	 	 	 <PARAM id="i0_c14_fL" value="0.980952"/>
+	 	 	 <PARAM id="i0_c14_fR" value="6"/>
+	 	 	 <PARAM id="i0_c14_fL" value="0.125"/>
 	 	 </Connection>
 	 	 <Connection id="i0_c15" type="rigid">
 	 	 	 <PARAM id="i0_c15_fR" value="6"/>
-	 	 	 <PARAM id="i0_c15_fL" value="13"/>
+	 	 	 <PARAM id="i0_c15_fL" value="0.325"/>
 	 	 	 <PARAM id="i0_c15_tR" value="7"/>
-	 	 	 <PARAM id="i0_c15_tL" value="287"/>
+	 	 	 <PARAM id="i0_c15_tL" valueX="0.104167 " valueY="0.375"/>
 	 	 </Connection>
 	 </Instrument>
 </App>

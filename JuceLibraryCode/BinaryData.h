@@ -42,7 +42,7 @@ namespace BinaryData
     const int            TwoStringsConnectedNonlinear_xmlSize = 27569;
 
     extern const char*   guitar_xml;
-    const int            guitar_xmlSize = 7272;
+    const int            guitar_xmlSize = 7715;
 
     extern const char*   Plate100_xml;
     const int            Plate100_xmlSize = 596;

@@ -50,9 +50,11 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (smooth = new AudioParameterBool ("smooth", "Smooth", 1));
     addParameter (smoothness = new AudioParameterFloat ("smoothness", "Smoothness", 0, 99, 95));
     addParameter (excite = new AudioParameterBool ("excite", "Excite", 1));
-    addParameter (excitationType = new AudioParameterFloat ("excitationType", "Excitation Type", 0, 0.99, 0.25));
+    addParameter (excitationType = new AudioParameterFloat ("excitationType", "Excitation Type", 0, 0.99, 0.5));
+    addParameter (useVelocity = new AudioParameterBool ("useVelocity", "Use Velocity", 1));
+    addParameter (hammerVelocity = new AudioParameterFloat ("hammerVelocity", "Hammer Velocity", 0, 1, 0.5));
     addParameter (trigger = new AudioParameterBool ("trigger", "Trigger", 0));
-    addParameter (presetSelect = new AudioParameterFloat ("presetSelect", "Preset Select", 0, 0.99, 0));
+    addParameter (presetSelect = new AudioParameterFloat ("presetSelect", "Preset Select", 0, 0.99, 0.01));
     addParameter (loadPresetToggle = new AudioParameterBool ("loadPresetToggle", "Load preset", 1));
     //#endif
 //#ifdef EDITOR_AND_SLIDERS
@@ -63,6 +65,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (smoothness);
     allParameters.push_back (excite);
     allParameters.push_back (excitationType);
+    allParameters.push_back (useVelocity);
+    allParameters.push_back (hammerVelocity);
     allParameters.push_back (trigger);
     allParameters.push_back(presetSelect);
     allParameters.push_back(loadPresetToggle);
@@ -339,8 +343,12 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             if (sliderValues[smoothID] == 1 && sliderControl)
             {
                 mouseSmoothValues[0] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues[0] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * sliderValues[0];
-                mouseSmoothValues[1] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues[1] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * sliderValues[1];
+                
+                double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[1];
+
+                mouseSmoothValues[1] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues[1] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * yVal;
                 inst->virtualMouseMove (mouseSmoothValues[0], mouseSmoothValues[1]);
+                // MAKE SMOOTH WORK FOR VELOCITY HAMMER
             } else
             {
                 mouseSmoothValues[0] = sliderValues[0];
@@ -1051,10 +1059,15 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
     if (currentlyActiveInstrument == nullptr)
         return;
     
-    if ((name == "mouseX" || name == "mouseY") && (sliderValues[exciteID] >= 0.5))
+    if ((name == "mouseX" || name == "mouseY"
+         || (name == "hammerVelocity" && sliderValues[useVelocityID] && curExcitationType == hammer)) && (sliderValues[exciteID] >= 0.5)
+        || name == "useVelocity") // refresh
     {
         if (sliderValues[smoothID] != 1)
-            currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
+        {
+            double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseYID];
+            currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], yVal);// (sliderValues[useVelocityID] > 0) ? (sliderValues[hammerVelocityID] * 0.5 * Global::stringVisualScaling) : sliderValues[mouseYID]);
+        }
         // else, the virtualMouseMove goes at audio rate
 
     }

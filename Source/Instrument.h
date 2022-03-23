@@ -222,7 +222,7 @@ public:
     
     bool isDoneRecording() { return resonators[0]->isDoneRecording(); };
     
-    void virtualMouseMove (const double x, double y);
+    void virtualMouseMove (const double x, const double y);
     void resetPrevMouseMoveResonator() { prevMouseMoveResonator = -1; };
     
     void unReadyAllModules() { for (auto res : resonators) res->unReadyModule(); };
