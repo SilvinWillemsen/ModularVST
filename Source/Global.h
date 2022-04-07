@@ -167,9 +167,8 @@ namespace Global
     static const double eps = 1e-15;
 
     static StringArray presetFilesToIncludeInUnity = {
-        "guitar_xml",
+        "Guitar_xml",
         "Harp_xml",
-        "TwoStringsOctave_xml",
         "BanjoLele_xml"
     };
 
@@ -302,6 +301,11 @@ namespace Global
         return val;
     }
 
+//    static double interpolation (double* uVec, int bp, double alpha)
+//    {
+//        return uVec[bp];
+//    }
+
     static double interpolation (double* uVec, int bp, double alpha)
     {
         return uVec[bp - 1] * (alpha * (alpha - 1) * (alpha - 2)) / -6.0
@@ -310,12 +314,17 @@ namespace Global
         + uVec[bp + 2] * (alpha * (alpha + 1) * (alpha - 1)) / 6.0;
     }
 
+//    static void extrapolation (double* uVec, int bp, double alpha, double val)
+//    {
+//        uVec[bp] = uVec[bp] + val;
+//    }
     static void extrapolation (double* uVec, int bp, double alpha, double val)
     {
         uVec[bp - 1] = uVec[bp - 1] + val * (alpha * (alpha - 1) * (alpha - 2)) / -6.0;
         uVec[bp] = uVec[bp] + val * ((alpha - 1) * (alpha + 1) * (alpha - 2)) / 2.0;
         uVec[bp + 1] = uVec[bp + 1] + val * (alpha * (alpha + 1) * (alpha - 2)) / -2.0;
         uVec[bp + 2] = uVec[bp + 2] + val * (alpha * (alpha + 1) * (alpha - 1)) / 6.0;
-        
+
     }
+
 };

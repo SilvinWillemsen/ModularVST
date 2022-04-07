@@ -632,8 +632,201 @@ static const unsigned char temp_binary_data_4[] =
 
 const char* String20_xml = (const char*) temp_binary_data_4;
 
-//================== WeirdInstrument.xml ==================
+//================== Guitar.xml ==================
 static const unsigned char temp_binary_data_5[] =
+"<App>\n"
+"\t <Instrument id=\"i0\">\n"
+"\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r0_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_T\" value=\"669.864\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig1\" value=\"0.005\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r1\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r1_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_T\" value=\"1193.62\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig1\" value=\"0.005\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r2\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r2_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_T\" value=\"2126.71\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_sig1\" value=\"0.005\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r3\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r3_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_T\" value=\"3789.59\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_sig1\" value=\"0.005\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r4\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r4_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_T\" value=\"6015.37\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r4_sig1\" value=\"0.005\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r5\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r5_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_T\" value=\"10718.1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r5_sig1\" value=\"0.005\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r6\" type=\"Bar\">\n"
+"\t \t \t <PARAM id=\"i0_r6_L\" value=\"0.5\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_rho\" value=\"1190\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_A\" value=\"2.0175e-05\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_E\" value=\"3.2e+09\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_I\" value=\"9.45703e-11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r6_sig1\" value=\"0.05\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r7\" type=\"Thin_Plate\">\n"
+"\t \t \t <PARAM id=\"i0_r7_Lx\" value=\"0.75\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_Ly\" value=\"0.25\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_rho\" value=\"1150\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_H\" value=\"0.005\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_E\" value=\"3.8e+09\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_nu\" value=\"0.3\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_sig1\" value=\"0.05\"/>\n"
+"\t \t \t <PARAM id=\"i0_r7_maxPoints\" value=\"2000\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o0\" channel=\"2\" locX=\"0.104167\" locY=\"0.125\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o1\" channel=\"2\" locX=\"0.0625\" locY=\"0.1875\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o2\" channel=\"2\" locX=\"0.125\" locY=\"0.3125\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o3\" channel=\"2\" locX=\"0.125\" locY=\"0.5625\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o4\" channel=\"2\" locX=\"0.0625\" locY=\"0.4375\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o5\" channel=\"2\" locX=\"0.0625\" locY=\"0.6875\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o6\" channel=\"2\" locX=\"0.0833333\" locY=\"0.8125\"/>\n"
+"\t \t \t <Output id=\"i0_r7_o7\" channel=\"2\" locX=\"0.125\" locY=\"0.8125\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Connection id=\"i0_c0\" type=\"linear\">\n"
+"\t \t \t <PARAM id=\"i0_c0_fR\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_c0_fL\" value=\"0.977778\"/>\n"
+"\t \t \t <PARAM id=\"i0_c0_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c0_fL\" value=\"0.225\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c1\" type=\"linear\">\n"
+"\t \t \t <PARAM id=\"i0_c1_fR\" value=\"2\"/>\n"
+"\t \t \t <PARAM id=\"i0_c1_fL\" value=\"0.972222\"/>\n"
+"\t \t \t <PARAM id=\"i0_c1_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c1_fL\" value=\"0.375\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c2\" type=\"linear\">\n"
+"\t \t \t <PARAM id=\"i0_c2_fR\" value=\"3\"/>\n"
+"\t \t \t <PARAM id=\"i0_c2_fL\" value=\"0.964286\"/>\n"
+"\t \t \t <PARAM id=\"i0_c2_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c2_fL\" value=\"0.55\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c3\" type=\"linear\">\n"
+"\t \t \t <PARAM id=\"i0_c3_fR\" value=\"4\"/>\n"
+"\t \t \t <PARAM id=\"i0_c3_fL\" value=\"0.955556\"/>\n"
+"\t \t \t <PARAM id=\"i0_c3_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c3_fL\" value=\"0.7\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c4\" type=\"linear\">\n"
+"\t \t \t <PARAM id=\"i0_c4_fR\" value=\"5\"/>\n"
+"\t \t \t <PARAM id=\"i0_c4_fL\" value=\"0.941176\"/>\n"
+"\t \t \t <PARAM id=\"i0_c4_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c4_fL\" value=\"0.85\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c5\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c5_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c5_fL\" value=\"0.15\"/>\n"
+"\t \t \t <PARAM id=\"i0_c5_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c5_tL\" valueX=\"0.104167 \" valueY=\"0.25\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c6\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c6_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c6_fL\" value=\"0.25\"/>\n"
+"\t \t \t <PARAM id=\"i0_c6_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c6_tL\" valueX=\"0.0833333 \" valueY=\"0.3125\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c7\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c7_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c7_fL\" value=\"0.6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c7_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c7_tL\" valueX=\"0.0833333 \" valueY=\"0.5625\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c8\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c8_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c8_fL\" value=\"0.9\"/>\n"
+"\t \t \t <PARAM id=\"i0_c8_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c8_tL\" valueX=\"0.104167 \" valueY=\"0.75\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c9\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c9_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c9_fL\" value=\"0.8\"/>\n"
+"\t \t \t <PARAM id=\"i0_c9_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c9_tL\" valueX=\"0.0833333 \" valueY=\"0.6875\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c10\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c10_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c10_fL\" value=\"0.675\"/>\n"
+"\t \t \t <PARAM id=\"i0_c10_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c10_tL\" valueX=\"0.104167 \" valueY=\"0.625\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c11\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c11_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c11_fL\" value=\"0.5\"/>\n"
+"\t \t \t <PARAM id=\"i0_c11_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c11_tL\" valueX=\"0.104167 \" valueY=\"0.5\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c12\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c12_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c12_fL\" value=\"0.425\"/>\n"
+"\t \t \t <PARAM id=\"i0_c12_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c12_tL\" valueX=\"0.0833333 \" valueY=\"0.4375\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c13\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c13_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c13_fL\" value=\"0.1\"/>\n"
+"\t \t \t <PARAM id=\"i0_c13_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c13_tL\" valueX=\"0.0833333 \" valueY=\"0.1875\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c14\" type=\"linear\">\n"
+"\t \t \t <PARAM id=\"i0_c14_fR\" value=\"0\"/>\n"
+"\t \t \t <PARAM id=\"i0_c14_fL\" value=\"0.980952\"/>\n"
+"\t \t \t <PARAM id=\"i0_c14_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c14_fL\" value=\"0.125\"/>\n"
+"\t \t </Connection>\n"
+"\t \t <Connection id=\"i0_c15\" type=\"rigid\">\n"
+"\t \t \t <PARAM id=\"i0_c15_fR\" value=\"6\"/>\n"
+"\t \t \t <PARAM id=\"i0_c15_fL\" value=\"0.325\"/>\n"
+"\t \t \t <PARAM id=\"i0_c15_tR\" value=\"7\"/>\n"
+"\t \t \t <PARAM id=\"i0_c15_tL\" valueX=\"0.104167 \" valueY=\"0.375\"/>\n"
+"\t \t </Connection>\n"
+"\t </Instrument>\n"
+"</App>\n";
+
+const char* Guitar_xml = (const char*) temp_binary_data_5;
+
+//================== WeirdInstrument.xml ==================
+static const unsigned char temp_binary_data_6[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -740,10 +933,10 @@ static const unsigned char temp_binary_data_5[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* WeirdInstrument_xml = (const char*) temp_binary_data_5;
+const char* WeirdInstrument_xml = (const char*) temp_binary_data_6;
 
 //================== Harp.xml ==================
-static const unsigned char temp_binary_data_6[] =
+static const unsigned char temp_binary_data_7[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -929,10 +1122,10 @@ static const unsigned char temp_binary_data_6[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* Harp_xml = (const char*) temp_binary_data_6;
+const char* Harp_xml = (const char*) temp_binary_data_7;
 
 //================== TwoStringsOctave.xml ==================
-static const unsigned char temp_binary_data_7[] =
+static const unsigned char temp_binary_data_8[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -962,10 +1155,10 @@ static const unsigned char temp_binary_data_7[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsOctave_xml = (const char*) temp_binary_data_7;
+const char* TwoStringsOctave_xml = (const char*) temp_binary_data_8;
 
 //================== TwoStrings.xml ==================
-static const unsigned char temp_binary_data_8[] =
+static const unsigned char temp_binary_data_9[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -995,10 +1188,10 @@ static const unsigned char temp_binary_data_8[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStrings_xml = (const char*) temp_binary_data_8;
+const char* TwoStrings_xml = (const char*) temp_binary_data_9;
 
 //================== TwoStringsConnected.xml ==================
-static const unsigned char temp_binary_data_9[] =
+static const unsigned char temp_binary_data_10[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -1730,10 +1923,10 @@ static const unsigned char temp_binary_data_9[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnected_xml = (const char*) temp_binary_data_9;
+const char* TwoStringsConnected_xml = (const char*) temp_binary_data_10;
 
 //================== TwoStringsConnectedNonlinear.xml ==================
-static const unsigned char temp_binary_data_10[] =
+static const unsigned char temp_binary_data_11[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -2465,200 +2658,7 @@ static const unsigned char temp_binary_data_10[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnectedNonlinear_xml = (const char*) temp_binary_data_10;
-
-//================== guitar.xml ==================
-static const unsigned char temp_binary_data_11[] =
-"<App>\n"
-"\t <Instrument id=\"i0\">\n"
-"\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
-"\t \t \t <PARAM id=\"i0_r0_L\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r0_T\" value=\"669.864\"/>\n"
-"\t \t \t <PARAM id=\"i0_r0_rho\" value=\"7850\"/>\n"
-"\t \t \t <PARAM id=\"i0_r0_A\" value=\"7.85398e-07\"/>\n"
-"\t \t \t <PARAM id=\"i0_r0_E\" value=\"2e+11\"/>\n"
-"\t \t \t <PARAM id=\"i0_r0_I\" value=\"4.90874e-14\"/>\n"
-"\t \t \t <PARAM id=\"i0_r0_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r0_sig1\" value=\"0.005\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Resonator id=\"i0_r1\" type=\"Stiff_String\">\n"
-"\t \t \t <PARAM id=\"i0_r1_L\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r1_T\" value=\"1193.62\"/>\n"
-"\t \t \t <PARAM id=\"i0_r1_rho\" value=\"7850\"/>\n"
-"\t \t \t <PARAM id=\"i0_r1_A\" value=\"7.85398e-07\"/>\n"
-"\t \t \t <PARAM id=\"i0_r1_E\" value=\"2e+11\"/>\n"
-"\t \t \t <PARAM id=\"i0_r1_I\" value=\"4.90874e-14\"/>\n"
-"\t \t \t <PARAM id=\"i0_r1_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r1_sig1\" value=\"0.005\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Resonator id=\"i0_r2\" type=\"Stiff_String\">\n"
-"\t \t \t <PARAM id=\"i0_r2_L\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r2_T\" value=\"2126.71\"/>\n"
-"\t \t \t <PARAM id=\"i0_r2_rho\" value=\"7850\"/>\n"
-"\t \t \t <PARAM id=\"i0_r2_A\" value=\"7.85398e-07\"/>\n"
-"\t \t \t <PARAM id=\"i0_r2_E\" value=\"2e+11\"/>\n"
-"\t \t \t <PARAM id=\"i0_r2_I\" value=\"4.90874e-14\"/>\n"
-"\t \t \t <PARAM id=\"i0_r2_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r2_sig1\" value=\"0.005\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Resonator id=\"i0_r3\" type=\"Stiff_String\">\n"
-"\t \t \t <PARAM id=\"i0_r3_L\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r3_T\" value=\"3789.59\"/>\n"
-"\t \t \t <PARAM id=\"i0_r3_rho\" value=\"7850\"/>\n"
-"\t \t \t <PARAM id=\"i0_r3_A\" value=\"7.85398e-07\"/>\n"
-"\t \t \t <PARAM id=\"i0_r3_E\" value=\"2e+11\"/>\n"
-"\t \t \t <PARAM id=\"i0_r3_I\" value=\"4.90874e-14\"/>\n"
-"\t \t \t <PARAM id=\"i0_r3_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r3_sig1\" value=\"0.005\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Resonator id=\"i0_r4\" type=\"Stiff_String\">\n"
-"\t \t \t <PARAM id=\"i0_r4_L\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r4_T\" value=\"6015.37\"/>\n"
-"\t \t \t <PARAM id=\"i0_r4_rho\" value=\"7850\"/>\n"
-"\t \t \t <PARAM id=\"i0_r4_A\" value=\"7.85398e-07\"/>\n"
-"\t \t \t <PARAM id=\"i0_r4_E\" value=\"2e+11\"/>\n"
-"\t \t \t <PARAM id=\"i0_r4_I\" value=\"4.90874e-14\"/>\n"
-"\t \t \t <PARAM id=\"i0_r4_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r4_sig1\" value=\"0.005\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Resonator id=\"i0_r5\" type=\"Stiff_String\">\n"
-"\t \t \t <PARAM id=\"i0_r5_L\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r5_T\" value=\"10718.1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r5_rho\" value=\"7850\"/>\n"
-"\t \t \t <PARAM id=\"i0_r5_A\" value=\"7.85398e-07\"/>\n"
-"\t \t \t <PARAM id=\"i0_r5_E\" value=\"2e+11\"/>\n"
-"\t \t \t <PARAM id=\"i0_r5_I\" value=\"4.90874e-14\"/>\n"
-"\t \t \t <PARAM id=\"i0_r5_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r5_sig1\" value=\"0.005\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Resonator id=\"i0_r6\" type=\"Bar\">\n"
-"\t \t \t <PARAM id=\"i0_r6_L\" value=\"0.5\"/>\n"
-"\t \t \t <PARAM id=\"i0_r6_rho\" value=\"1190\"/>\n"
-"\t \t \t <PARAM id=\"i0_r6_A\" value=\"2.0175e-05\"/>\n"
-"\t \t \t <PARAM id=\"i0_r6_E\" value=\"3.2e+09\"/>\n"
-"\t \t \t <PARAM id=\"i0_r6_I\" value=\"9.45703e-11\"/>\n"
-"\t \t \t <PARAM id=\"i0_r6_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r6_sig1\" value=\"0.05\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Resonator id=\"i0_r7\" type=\"Thin_Plate\">\n"
-"\t \t \t <PARAM id=\"i0_r7_Lx\" value=\"0.75\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_Ly\" value=\"0.25\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_rho\" value=\"1150\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_H\" value=\"0.005\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_E\" value=\"3.8e+09\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_nu\" value=\"0.3\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_sig0\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_sig1\" value=\"0.05\"/>\n"
-"\t \t \t <PARAM id=\"i0_r7_maxPoints\" value=\"2000\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o0\" channel=\"2\" locX=\"0.104167\" locY=\"0.125\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o1\" channel=\"2\" locX=\"0.0625\" locY=\"0.1875\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o2\" channel=\"2\" locX=\"0.125\" locY=\"0.3125\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o3\" channel=\"2\" locX=\"0.125\" locY=\"0.5625\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o4\" channel=\"2\" locX=\"0.0625\" locY=\"0.4375\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o5\" channel=\"2\" locX=\"0.0625\" locY=\"0.6875\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o6\" channel=\"2\" locX=\"0.0833333\" locY=\"0.8125\"/>\n"
-"\t \t \t <Output id=\"i0_r7_o7\" channel=\"2\" locX=\"0.125\" locY=\"0.8125\"/>\n"
-"\t \t </Resonator>\n"
-"\t \t <Connection id=\"i0_c0\" type=\"linear\">\n"
-"\t \t \t <PARAM id=\"i0_c0_fR\" value=\"1\"/>\n"
-"\t \t \t <PARAM id=\"i0_c0_fL\" value=\"0.977778\"/>\n"
-"\t \t \t <PARAM id=\"i0_c0_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c0_fL\" value=\"0.225\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c1\" type=\"linear\">\n"
-"\t \t \t <PARAM id=\"i0_c1_fR\" value=\"2\"/>\n"
-"\t \t \t <PARAM id=\"i0_c1_fL\" value=\"0.972222\"/>\n"
-"\t \t \t <PARAM id=\"i0_c1_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c1_fL\" value=\"0.375\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c2\" type=\"linear\">\n"
-"\t \t \t <PARAM id=\"i0_c2_fR\" value=\"3\"/>\n"
-"\t \t \t <PARAM id=\"i0_c2_fL\" value=\"0.964286\"/>\n"
-"\t \t \t <PARAM id=\"i0_c2_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c2_fL\" value=\"0.55\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c3\" type=\"linear\">\n"
-"\t \t \t <PARAM id=\"i0_c3_fR\" value=\"4\"/>\n"
-"\t \t \t <PARAM id=\"i0_c3_fL\" value=\"0.955556\"/>\n"
-"\t \t \t <PARAM id=\"i0_c3_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c3_fL\" value=\"0.7\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c4\" type=\"linear\">\n"
-"\t \t \t <PARAM id=\"i0_c4_fR\" value=\"5\"/>\n"
-"\t \t \t <PARAM id=\"i0_c4_fL\" value=\"0.941176\"/>\n"
-"\t \t \t <PARAM id=\"i0_c4_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c4_fL\" value=\"0.85\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c5\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c5_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c5_fL\" value=\"0.15\"/>\n"
-"\t \t \t <PARAM id=\"i0_c5_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c5_tL\" valueX=\"0.104167 \" valueY=\"0.25\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c6\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c6_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c6_fL\" value=\"0.25\"/>\n"
-"\t \t \t <PARAM id=\"i0_c6_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c6_tL\" valueX=\"0.0833333 \" valueY=\"0.3125\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c7\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c7_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c7_fL\" value=\"0.6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c7_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c7_tL\" valueX=\"0.0833333 \" valueY=\"0.5625\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c8\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c8_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c8_fL\" value=\"0.9\"/>\n"
-"\t \t \t <PARAM id=\"i0_c8_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c8_tL\" valueX=\"0.104167 \" valueY=\"0.75\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c9\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c9_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c9_fL\" value=\"0.8\"/>\n"
-"\t \t \t <PARAM id=\"i0_c9_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c9_tL\" valueX=\"0.0833333 \" valueY=\"0.6875\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c10\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c10_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c10_fL\" value=\"0.675\"/>\n"
-"\t \t \t <PARAM id=\"i0_c10_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c10_tL\" valueX=\"0.104167 \" valueY=\"0.625\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c11\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c11_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c11_fL\" value=\"0.5\"/>\n"
-"\t \t \t <PARAM id=\"i0_c11_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c11_tL\" valueX=\"0.104167 \" valueY=\"0.5\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c12\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c12_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c12_fL\" value=\"0.425\"/>\n"
-"\t \t \t <PARAM id=\"i0_c12_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c12_tL\" valueX=\"0.0833333 \" valueY=\"0.4375\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c13\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c13_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c13_fL\" value=\"0.1\"/>\n"
-"\t \t \t <PARAM id=\"i0_c13_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c13_tL\" valueX=\"0.0833333 \" valueY=\"0.1875\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c14\" type=\"linear\">\n"
-"\t \t \t <PARAM id=\"i0_c14_fR\" value=\"0\"/>\n"
-"\t \t \t <PARAM id=\"i0_c14_fL\" value=\"0.980952\"/>\n"
-"\t \t \t <PARAM id=\"i0_c14_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c14_fL\" value=\"0.125\"/>\n"
-"\t \t </Connection>\n"
-"\t \t <Connection id=\"i0_c15\" type=\"rigid\">\n"
-"\t \t \t <PARAM id=\"i0_c15_fR\" value=\"6\"/>\n"
-"\t \t \t <PARAM id=\"i0_c15_fL\" value=\"0.325\"/>\n"
-"\t \t \t <PARAM id=\"i0_c15_tR\" value=\"7\"/>\n"
-"\t \t \t <PARAM id=\"i0_c15_tL\" valueX=\"0.104167 \" valueY=\"0.375\"/>\n"
-"\t \t </Connection>\n"
-"\t </Instrument>\n"
-"</App>\n";
-
-const char* guitar_xml = (const char*) temp_binary_data_11;
+const char* TwoStringsConnectedNonlinear_xml = (const char*) temp_binary_data_11;
 
 //================== Plate100.xml ==================
 static const unsigned char temp_binary_data_12[] =
@@ -3500,13 +3500,13 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x070a877c:  numBytes = 2627; return String5_xml;
         case 0xd0d18168:  numBytes = 5202; return String10_xml;
         case 0xd2865a07:  numBytes = 10462; return String20_xml;
+        case 0xc34ce702:  numBytes = 7715; return Guitar_xml;
         case 0x4dbaafcc:  numBytes = 4109; return WeirdInstrument_xml;
         case 0x0b70d0ef:  numBytes = 7820; return Harp_xml;
         case 0xf867b85e:  numBytes = 1081; return TwoStringsOctave_xml;
         case 0x5c291b0e:  numBytes = 1082; return TwoStrings_xml;
         case 0xd43c26cb:  numBytes = 27101; return TwoStringsConnected_xml;
         case 0x42df7c57:  numBytes = 27569; return TwoStringsConnectedNonlinear_xml;
-        case 0x4c7b0ae2:  numBytes = 7715; return guitar_xml;
         case 0x67775113:  numBytes = 596; return Plate100_xml;
         case 0x062a02d6:  numBytes = 598; return Plate400_xml;
         case 0xc236b0b3:  numBytes = 599; return Plate1600_xml;
@@ -3526,13 +3526,13 @@ const char* namedResourceList[] =
     "String5_xml",
     "String10_xml",
     "String20_xml",
+    "Guitar_xml",
     "WeirdInstrument_xml",
     "Harp_xml",
     "TwoStringsOctave_xml",
     "TwoStrings_xml",
     "TwoStringsConnected_xml",
     "TwoStringsConnectedNonlinear_xml",
-    "guitar_xml",
     "Plate100_xml",
     "Plate400_xml",
     "Plate1600_xml",
@@ -3547,13 +3547,13 @@ const char* originalFilenames[] =
     "String5.xml",
     "String10.xml",
     "String20.xml",
+    "Guitar.xml",
     "WeirdInstrument.xml",
     "Harp.xml",
     "TwoStringsOctave.xml",
     "TwoStrings.xml",
     "TwoStringsConnected.xml",
     "TwoStringsConnectedNonlinear.xml",
-    "guitar.xml",
     "Plate100.xml",
     "Plate400.xml",
     "Plate1600.xml",

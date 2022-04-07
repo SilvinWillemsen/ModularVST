@@ -23,6 +23,9 @@ namespace BinaryData
     extern const char*   String20_xml;
     const int            String20_xmlSize = 10462;
 
+    extern const char*   Guitar_xml;
+    const int            Guitar_xmlSize = 7715;
+
     extern const char*   WeirdInstrument_xml;
     const int            WeirdInstrument_xmlSize = 4109;
 
@@ -40,9 +43,6 @@ namespace BinaryData
 
     extern const char*   TwoStringsConnectedNonlinear_xml;
     const int            TwoStringsConnectedNonlinear_xmlSize = 27569;
-
-    extern const char*   guitar_xml;
-    const int            guitar_xmlSize = 7715;
 
     extern const char*   Plate100_xml;
     const int            Plate100_xmlSize = 596;
