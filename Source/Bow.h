@@ -19,7 +19,7 @@
 class Bow  : public ExciterModule
 {
 public:
-    Bow (int ID, int N);
+    Bow (int ID, bool isModule1D);
     ~Bow() override;
     
     void drawExciter (Graphics& g) override;
@@ -32,7 +32,7 @@ public:
     void hiResTimerCallback() override;
 private:
     // string variables still needed in the NR solve
-    double rho, A, sig0, k, h;
+    double rho, AorH, sig0, k, h;
     double connectionDivisionTerm;
 
     // bow variables

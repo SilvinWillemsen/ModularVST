@@ -166,6 +166,35 @@ public:
     void toggleSmoothExcitation() { for (auto e : allExciterModules) e->toggleSmoothExcitation(); };
 
     virtual void changeDensity (double rhoToSet) = 0;
+    
+    void mouseEnter (const MouseEvent& e) override {
+        if (isPartOfGroup())
+        {
+            setEnteredThisResonator (true);
+            this->findParentComponentOfClass<Component>()->mouseEnter (e);
+        }
+        else
+        {
+            myMouseEnter (e.x, e.y, true);
+        }
+    };
+    void mouseExit (const MouseEvent& e) override {
+        if (isPartOfGroup())
+        {
+            setEnteredThisResonator (false);
+            this->findParentComponentOfClass<Component>()->mouseExit (e);
+        }
+        else
+        {
+            myMouseExit (e.x, e.y, true);
+        }
+    };
+    void mouseMove (const MouseEvent& e) override {
+        if (isPartOfGroup())
+            this->findParentComponentOfClass<Component>()->mouseMove (e);
+        else
+            myMouseMove (e.x, e.y, true);
+    };
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();

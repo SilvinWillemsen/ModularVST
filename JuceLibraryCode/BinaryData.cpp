@@ -7,8 +7,98 @@
 namespace BinaryData
 {
 
-//================== BanjoLele.xml ==================
+//================== Timpani.xml ==================
 static const unsigned char temp_binary_data_0[] =
+"<App>\n"
+"\t <Instrument id=\"i0\">\n"
+"\t \t <Resonator id=\"i0_r0\" type=\"Membrane\">\n"
+"\t \t \t <PARAM id=\"i0_r0_Lx\" value=\"0.75\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_Ly\" value=\"0.75\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_T\" value=\"2310\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_rho\" value=\"1400\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_H\" value=\"0.000254\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig0\" value=\"0.1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_maxPoints\" value=\"2000\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o0\" channel=\"0\" locX=\"0.25\" locY=\"0.25\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o1\" channel=\"1\" locX=\"0.75\" locY=\"0.25\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o2\" channel=\"0\" locX=\"0.145833\" locY=\"0.645833\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o3\" channel=\"0\" locX=\"0.229167\" locY=\"0.729167\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o4\" channel=\"0\" locX=\"0.375\" locY=\"0.645833\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o5\" channel=\"0\" locX=\"0.375\" locY=\"0.791667\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o6\" channel=\"0\" locX=\"0.270833\" locY=\"0.541667\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o7\" channel=\"0\" locX=\"0.291667\" locY=\"0.354167\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o8\" channel=\"1\" locX=\"0.770833\" locY=\"0.541667\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o9\" channel=\"1\" locX=\"0.75\" locY=\"0.6875\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o10\" channel=\"1\" locX=\"0.8125\" locY=\"0.729167\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o11\" channel=\"1\" locX=\"0.854167\" locY=\"0.541667\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o12\" channel=\"1\" locX=\"0.791667\" locY=\"0.375\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o13\" channel=\"1\" locX=\"0.833333\" locY=\"0.333333\"/>\n"
+"\t \t </Resonator>\n"
+"\t </Instrument>\n"
+"</App>\n";
+
+const char* Timpani_xml = (const char*) temp_binary_data_0;
+
+//================== Cello.xml ==================
+static const unsigned char temp_binary_data_1[] =
+"<App>\n"
+"\t <Instrument id=\"i0\">\n"
+"\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r0_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_T\" value=\"105.513\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r0_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o0\" channel=\"0\" loc=\"0.110236\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o1\" channel=\"1\" loc=\"0.826772\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r1\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r1_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_T\" value=\"236.849\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r1_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r1_o0\" channel=\"0\" loc=\"0.106557\"/>\n"
+"\t \t \t <Output id=\"i0_r1_o1\" channel=\"1\" loc=\"0.827869\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r2\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r2_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_T\" value=\"531.679\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r2_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r2_o0\" channel=\"0\" loc=\"0.109091\"/>\n"
+"\t \t \t <Output id=\"i0_r2_o1\" channel=\"1\" loc=\"0.827273\"/>\n"
+"\t \t </Resonator>\n"
+"\t \t <Resonator id=\"i0_r3\" type=\"Stiff_String\">\n"
+"\t \t \t <PARAM id=\"i0_r3_L\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_T\" value=\"1193.62\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_rho\" value=\"7850\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_A\" value=\"7.85398e-07\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_E\" value=\"2e+11\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_I\" value=\"4.90874e-14\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_sig0\" value=\"1\"/>\n"
+"\t \t \t <PARAM id=\"i0_r3_sig1\" value=\"0.005\"/>\n"
+"\t \t \t <Output id=\"i0_r3_o0\" channel=\"0\" loc=\"0.111111\"/>\n"
+"\t \t \t <Output id=\"i0_r3_o1\" channel=\"1\" loc=\"0.833333\"/>\n"
+"\t \t </Resonator>\n"
+"\t </Instrument>\n"
+"</App>\n";
+
+const char* Cello_xml = (const char*) temp_binary_data_1;
+
+//================== BanjoLele.xml ==================
+static const unsigned char temp_binary_data_2[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -162,10 +252,10 @@ static const unsigned char temp_binary_data_0[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* BanjoLele_xml = (const char*) temp_binary_data_0;
+const char* BanjoLele_xml = (const char*) temp_binary_data_2;
 
 //================== String1.xml ==================
-static const unsigned char temp_binary_data_1[] =
+static const unsigned char temp_binary_data_3[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -183,10 +273,10 @@ static const unsigned char temp_binary_data_1[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* String1_xml = (const char*) temp_binary_data_1;
+const char* String1_xml = (const char*) temp_binary_data_3;
 
 //================== String5.xml ==================
-static const unsigned char temp_binary_data_2[] =
+static const unsigned char temp_binary_data_4[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -252,10 +342,10 @@ static const unsigned char temp_binary_data_2[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* String5_xml = (const char*) temp_binary_data_2;
+const char* String5_xml = (const char*) temp_binary_data_4;
 
 //================== String10.xml ==================
-static const unsigned char temp_binary_data_3[] =
+static const unsigned char temp_binary_data_5[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -381,10 +471,10 @@ static const unsigned char temp_binary_data_3[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* String10_xml = (const char*) temp_binary_data_3;
+const char* String10_xml = (const char*) temp_binary_data_5;
 
 //================== String20.xml ==================
-static const unsigned char temp_binary_data_4[] =
+static const unsigned char temp_binary_data_6[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -630,10 +720,10 @@ static const unsigned char temp_binary_data_4[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* String20_xml = (const char*) temp_binary_data_4;
+const char* String20_xml = (const char*) temp_binary_data_6;
 
 //================== Guitar.xml ==================
-static const unsigned char temp_binary_data_5[] =
+static const unsigned char temp_binary_data_7[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -823,10 +913,10 @@ static const unsigned char temp_binary_data_5[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* Guitar_xml = (const char*) temp_binary_data_5;
+const char* Guitar_xml = (const char*) temp_binary_data_7;
 
 //================== WeirdInstrument.xml ==================
-static const unsigned char temp_binary_data_6[] =
+static const unsigned char temp_binary_data_8[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -933,10 +1023,10 @@ static const unsigned char temp_binary_data_6[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* WeirdInstrument_xml = (const char*) temp_binary_data_6;
+const char* WeirdInstrument_xml = (const char*) temp_binary_data_8;
 
 //================== Harp.xml ==================
-static const unsigned char temp_binary_data_7[] =
+static const unsigned char temp_binary_data_9[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -1122,10 +1212,10 @@ static const unsigned char temp_binary_data_7[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* Harp_xml = (const char*) temp_binary_data_7;
+const char* Harp_xml = (const char*) temp_binary_data_9;
 
 //================== TwoStringsOctave.xml ==================
-static const unsigned char temp_binary_data_8[] =
+static const unsigned char temp_binary_data_10[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -1155,10 +1245,10 @@ static const unsigned char temp_binary_data_8[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsOctave_xml = (const char*) temp_binary_data_8;
+const char* TwoStringsOctave_xml = (const char*) temp_binary_data_10;
 
 //================== TwoStrings.xml ==================
-static const unsigned char temp_binary_data_9[] =
+static const unsigned char temp_binary_data_11[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -1188,10 +1278,10 @@ static const unsigned char temp_binary_data_9[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStrings_xml = (const char*) temp_binary_data_9;
+const char* TwoStrings_xml = (const char*) temp_binary_data_11;
 
 //================== TwoStringsConnected.xml ==================
-static const unsigned char temp_binary_data_10[] =
+static const unsigned char temp_binary_data_12[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -1923,10 +2013,10 @@ static const unsigned char temp_binary_data_10[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnected_xml = (const char*) temp_binary_data_10;
+const char* TwoStringsConnected_xml = (const char*) temp_binary_data_12;
 
 //================== TwoStringsConnectedNonlinear.xml ==================
-static const unsigned char temp_binary_data_11[] =
+static const unsigned char temp_binary_data_13[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -2658,10 +2748,10 @@ static const unsigned char temp_binary_data_11[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnectedNonlinear_xml = (const char*) temp_binary_data_11;
+const char* TwoStringsConnectedNonlinear_xml = (const char*) temp_binary_data_13;
 
 //================== Plate100.xml ==================
-static const unsigned char temp_binary_data_12[] =
+static const unsigned char temp_binary_data_14[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Thin_Plate\">\n"
@@ -2680,10 +2770,10 @@ static const unsigned char temp_binary_data_12[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* Plate100_xml = (const char*) temp_binary_data_12;
+const char* Plate100_xml = (const char*) temp_binary_data_14;
 
 //================== Plate400.xml ==================
-static const unsigned char temp_binary_data_13[] =
+static const unsigned char temp_binary_data_15[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Thin_Plate\">\n"
@@ -2702,10 +2792,10 @@ static const unsigned char temp_binary_data_13[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* Plate400_xml = (const char*) temp_binary_data_13;
+const char* Plate400_xml = (const char*) temp_binary_data_15;
 
 //================== Plate1600.xml ==================
-static const unsigned char temp_binary_data_14[] =
+static const unsigned char temp_binary_data_16[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Thin_Plate\">\n"
@@ -2724,10 +2814,10 @@ static const unsigned char temp_binary_data_14[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* Plate1600_xml = (const char*) temp_binary_data_14;
+const char* Plate1600_xml = (const char*) temp_binary_data_16;
 
 //================== Plate2500.xml ==================
-static const unsigned char temp_binary_data_15[] =
+static const unsigned char temp_binary_data_17[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Thin_Plate\">\n"
@@ -2746,10 +2836,10 @@ static const unsigned char temp_binary_data_15[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* Plate2500_xml = (const char*) temp_binary_data_15;
+const char* Plate2500_xml = (const char*) temp_binary_data_17;
 
 //================== TwoStringsConnectedLinear.xml ==================
-static const unsigned char temp_binary_data_16[] =
+static const unsigned char temp_binary_data_18[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -3481,7 +3571,7 @@ static const unsigned char temp_binary_data_16[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnectedLinear_xml = (const char*) temp_binary_data_16;
+const char* TwoStringsConnectedLinear_xml = (const char*) temp_binary_data_18;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -3495,6 +3585,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
+        case 0x6db71d3c:  numBytes = 1469; return Timpani_xml;
+        case 0xd9755405:  numBytes = 2160; return Cello_xml;
         case 0x4627789e:  numBytes = 6636; return BanjoLele_xml;
         case 0x06d22978:  numBytes = 567; return String1_xml;
         case 0x070a877c:  numBytes = 2627; return String5_xml;
@@ -3521,6 +3613,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
 const char* namedResourceList[] =
 {
+    "Timpani_xml",
+    "Cello_xml",
     "BanjoLele_xml",
     "String1_xml",
     "String5_xml",
@@ -3542,6 +3636,8 @@ const char* namedResourceList[] =
 
 const char* originalFilenames[] =
 {
+    "Timpani.xml",
+    "Cello.xml",
     "BanjoLele.xml",
     "String1.xml",
     "String5.xml",

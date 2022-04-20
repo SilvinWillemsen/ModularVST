@@ -12,7 +12,7 @@
 #include "Pluck.h"
 
 //==============================================================================
-Pluck::Pluck (int ID, int N) : ExciterModule (ID, N, pluck)
+Pluck::Pluck (int ID, bool isModule1D) : ExciterModule (ID, isModule1D, pluck)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -85,7 +85,7 @@ void Pluck::initialise (NamedValueSet& parametersFromResonator)
 {
     h = *parametersFromResonator.getVarPointer ("h");
     rho = *parametersFromResonator.getVarPointer ("rho");
-    A = *parametersFromResonator.getVarPointer ("A");
+    AorH = parametersFromResonator.contains("A") ? *parametersFromResonator.getVarPointer ("A") : *parametersFromResonator.getVarPointer ("H");
     k = *parametersFromResonator.getVarPointer ("k");
     sig0 = *parametersFromResonator.getVarPointer ("sig0");
     connectionDivisionTerm = *parametersFromResonator.getVarPointer ("connDivTerm");
@@ -101,7 +101,7 @@ void Pluck::initialise (NamedValueSet& parametersFromResonator)
     B2 *= Adiv;
     C1 *= Adiv;
     
-    Jterm = k * k / (rho * A * (1.0 + sig0 * k)); // connection division term without division by h
+    Jterm = k * k / (rho * AorH * (1.0 + sig0 * k)); // connection division term without division by h
     
     controlParameter = 6;
     
@@ -323,16 +323,10 @@ void Pluck::hiResTimerCallback()
 
 void Pluck::mouseEntered (const double x, const double y, int height)
 {
-    resHeight = height;
-    controlLoc = (static_cast<double>(y) / height);
-    if (controlLoc >= 0.5)
-    {
-        pickIsAbove = false;
-        pluckSgn = 1;
-    } else {
-        pickIsAbove = true;
-        pluckSgn = -1;
-    }
+    if (isModule1D)
+        mouseEntered1D (y, height);
+    else
+        mouseEntered2D();
     
     wNext = (-controlLoc + 0.5) / (Global::stringVisualScaling);
 //    wNext = -(yLoc - 0.5) / (0.5 * K / (M * maxForce));
@@ -346,6 +340,28 @@ void Pluck::mouseEntered (const double x, const double y, int height)
     moduleIsCalculating = true;
     
 }
+
+void Pluck::mouseEntered1D (const double y, int height)
+{
+    resHeight = height;
+    controlLoc = (static_cast<double>(y) / height);
+    if (controlLoc >= 0.5)
+    {
+        pickIsAbove = false;
+        pluckSgn = 1;
+    } else {
+        pickIsAbove = true;
+        pluckSgn = -1;
+    }
+}
+
+void Pluck::mouseEntered2D()
+{
+    controlLoc = 0.8;
+    pickIsAbove = false;
+    pluckSgn = 1;
+}
+
 
 void Pluck::mouseExited()
 {

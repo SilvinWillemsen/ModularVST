@@ -12,7 +12,7 @@
 #include "Hammer.h"
 
 //==============================================================================
-Hammer::Hammer (int ID, int N) : ExciterModule (ID, N, hammer)
+Hammer::Hammer (int ID, bool isModule1D) : ExciterModule (ID, isModule1D, hammer)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -24,7 +24,7 @@ Hammer::Hammer (int ID, int N) : ExciterModule (ID, N, hammer)
     KcOrig = Kc;
     alphaC = 1.3;
     
-if (Global::pluckAtStartup)
+    if (Global::pluckAtStartup)
     {
         double extForce = 1;
         wNext = -extForce / K;
@@ -51,41 +51,59 @@ void Hammer::drawExciter (Graphics& g)
 {
     Rectangle<int> bounds = g.getClipBounds();
     g.setColour(Colours::white.withAlpha(0.5f));
-    float startLoc = excitationLoc * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / N * getControlParameter() * 0.5;
-    float pickWidth = getControlParameter() * static_cast<float>(bounds.getWidth()) / N;
-    
-    g.drawEllipse (startLoc - Global::excitationVisualWidth,
-                   controlLoc * bounds.getHeight() - Global::excitationVisualWidth,
-                   pickWidth + 2.0 * Global::excitationVisualWidth,
-                   Global::excitationVisualWidth * 2, 1);
+    if (isModule1D)
+    {
+        float startLoc = excitationLoc * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / (N * getControlParameter() * 0.5);
+        float pickWidth = getControlParameter() * static_cast<float>(bounds.getWidth()) / N;
+        
+        g.drawEllipse (startLoc - Global::excitationVisualWidth,
+                       controlLoc * bounds.getHeight() - Global::excitationVisualWidth,
+                       pickWidth + 2.0 * Global::excitationVisualWidth,
+                       Global::excitationVisualWidth * 2, 1);
 
-    ColourGradient cg (Colours::yellow.withAlpha(0.0f), startLoc, 0.0f,
-                       Colours::yellow.withAlpha(0.0f), startLoc + pickWidth, 0.0f, false);
-    cg.addColour(0.5, Colours::yellow.withAlpha(0.8f));
-    g.setGradientFill (cg);
+        ColourGradient cg (Colours::yellow.withAlpha(0.0f), startLoc, 0.0f,
+                           Colours::yellow.withAlpha(0.0f), startLoc + pickWidth, 0.0f, false);
+        cg.addColour(0.5, Colours::yellow.withAlpha(0.8f));
+        g.setGradientFill (cg);
 
-    g.fillRoundedRectangle(excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
-                           -w * Global::stringVisualScaling * bounds.getHeight() + 0.5 * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
+        g.fillRoundedRectangle(excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
+                               -w * Global::stringVisualScaling * bounds.getHeight() + 0.5 * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
+                               Global::excitationVisualWidth,
+                               Global::excitationVisualWidth, Global::excitationVisualWidth);
+    } else {
+        float startLocX = excitationLocX * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / Nx * getControlParameter() * 0.5;
+        float startLocY = excitationLocY * bounds.getHeight() - static_cast<float>(bounds.getHeight()) / Ny * getControlParameter() * 0.5;
+        float pickWidth = getControlParameter() * static_cast<float>(bounds.getWidth()) / Nx;
+        float pickHeight = getControlParameter() * static_cast<float>(bounds.getHeight()) / Ny;    
+        
+        g.drawEllipse (startLocX - Global::excitationVisualWidth,
+                       startLocY - Global::excitationVisualWidth,
+                       pickWidth + 2.0 * Global::excitationVisualWidth,
+                       pickHeight + 2.0 * Global::excitationVisualWidth, 1);
+        g.setColour (Colours::yellow);
+
+        g.fillEllipse (excitationLocX * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
+                           excitationLocY * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
                            Global::excitationVisualWidth,
-                           Global::excitationVisualWidth, Global::excitationVisualWidth);
-//    g.setColour(Colours::white);
-//    Path cosine;
-//    cosine.startNewSubPath ((cLoc + alpha - 0.5 * getControlParameter()) / N * bounds.getWidth(), bounds.getHeight() - ItoDraw[0] * 500);
-//    for (int i = 1; i < ItoDraw.size(); ++i)
-//        cosine.lineTo ((cLoc + alpha + i - 0.5 * getControlParameter()) / N * bounds.getWidth(), bounds.getHeight() - ItoDraw[i] * 500);
-//    g.strokePath(cosine, PathStrokeType(2.0f));
-//    g.fillEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
-//                   -w * Global::stringVisualScaling + 0.5 * bounds.getHeight()
-//                   - static_cast<float>(bounds.getWidth()) / N * getControlParameter() * 0.5,
-//                   getControlParameter() * static_cast<float>(bounds.getWidth()) / N,
-//                   Global::excitationVisualWidth);
+                           Global::excitationVisualWidth);
+
+//        ColourGradient cg (Colours::yellow.withAlpha(0.0f), startLocX, 0.0f,
+//                           Colours::yellow.withAlpha(0.0f), startLocX + pickWidth, 0.0f, false);
+//        cg.addColour(0.5, Colours::yellow.withAlpha(0.8f));
+//        g.setGradientFill (cg);
+//        g.fillRoundedRectangle(excitationLocX * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
+//                               excitationLocY * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
+//                               Global::excitationVisualWidth,
+//                               Global::excitationVisualWidth, Global::excitationVisualWidth);
+
+    }
 }
 
 void Hammer::initialise (NamedValueSet& parametersFromResonator)
 {
     h = *parametersFromResonator.getVarPointer ("h");
     rho = *parametersFromResonator.getVarPointer ("rho");
-    A = *parametersFromResonator.getVarPointer ("A");
+    AorH = parametersFromResonator.contains("A") ? *parametersFromResonator.getVarPointer ("A") : *parametersFromResonator.getVarPointer ("H");
     k = *parametersFromResonator.getVarPointer ("k");
     sig0 = *parametersFromResonator.getVarPointer ("sig0");
     connectionDivisionTerm = *parametersFromResonator.getVarPointer ("connDivTerm");
@@ -101,9 +119,9 @@ void Hammer::initialise (NamedValueSet& parametersFromResonator)
     B2 *= Adiv;
     C1 *= Adiv;
     
-    Jterm = k * k / (rho * A * (1.0 + sig0 * k)); // connection division term without division by h
+    Jterm = k * k / (rho * AorH * (1.0 + sig0 * k)); // connection division term without division by h
     
-    controlParameter = 6;
+    controlParameter = isModule1D ? 6 : 1;
     
     moduleIsReady = true;
 }
@@ -121,18 +139,35 @@ void Hammer::calculate (std::vector<double*>& u)
     singlePoint = width < 2.0;
     if (singlePoint)
     {
-        cLoc = Global::limit (floor (excitationLoc * N), 3, N - 4);
-        alpha = Global::limit (excitationLoc * N, 3, N - 4) - cLoc;
-        std::vector<double> dummy = {0, 0, 0, 0};
-        Global::extrapolation(&dummy[0], 1, alpha, 1.0 / h);
-        IJ = Global::interpolation (&dummy[0], 1, alpha);
-        
-        // Interpolation
-        // (Note that MATLAB uses a distribution rather than interpolation)
-        uStar = Global::interpolation (u[0], cLoc, alpha);
-        uI = Global::interpolation (u[1], cLoc, alpha);
-        uIPrev = Global::interpolation (u[2], cLoc, alpha);
+        if (isModule1D)
+        {
+            cLoc = Global::limit (floor (excitationLoc * N), 3, N - 4);
+            alpha = Global::limit (excitationLoc * N, 3, N - 4) - cLoc;
+            std::vector<double> dummy = {0, 0, 0, 0};
+            Global::extrapolation(&dummy[0], 1, alpha, 1.0 / h);
+            IJ = Global::interpolation (&dummy[0], 1, alpha);
+            
+            // Interpolation
+            // (Note that MATLAB uses a distribution rather than interpolation)
+            uStar = Global::interpolation (u[0], cLoc, alpha);
+            uI = Global::interpolation (u[1], cLoc, alpha);
+            uIPrev = Global::interpolation (u[2], cLoc, alpha);
+        }
+        else
+        {
+            cLocX = Global::limit (floor (excitationLocX * Nx), 3, Nx - 4);
+            alphaX = Global::limit (excitationLocX * Nx, 3, Nx - 4) - cLocX;
+            cLocY = Global::limit (floor (excitationLocY * Ny), 3, Ny - 4);
+            alphaY = Global::limit (excitationLocY * Ny, 3, Ny - 4) - cLocY;
+            
+            uStar = Global::interpolation2D (u[0], cLocX, cLocY, alphaX, alphaY, Nx);
+            uI = Global::interpolation2D (u[1], cLocX, cLocY, alphaX, alphaY, Nx);
+            uIPrev = Global::interpolation2D (u[2], cLocX, cLocY, alphaX, alphaY, Nx);
+        }
     } else {
+        if (!isModule1D)
+            DBG("Not made for 2D yet!!");
+        
         cLoc = Global::limit (floor (excitationLoc * N), ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1);
         alpha = Global::limit (excitationLoc * N, ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1) - cLoc;
 
@@ -218,7 +253,11 @@ void Hammer::calculate (std::vector<double*>& u)
     
     if (singlePoint)
     {
-        Global::extrapolation (u[0], cLoc, alpha, val);
+        if (isModule1D)
+            Global::extrapolation (u[0], cLoc, alpha, val);
+        else
+            Global::extrapolation2D (u[0], cLocX, cLocY, alphaX, alphaY, val, Nx);
+        
     } else {
         for (int i = 0; i < I.size(); ++i)
         {
@@ -304,16 +343,10 @@ void Hammer::hiResTimerCallback()
 
 void Hammer::mouseEntered (const double x, const double y, int height)
 {
-    resHeight = height;
-    controlLoc = (static_cast<double>(y) / height);
-    if (controlLoc >= 0.5)
-    {
-        hammerIsAbove = false;
-        hammerSgn = 1;
-    } else {
-        hammerIsAbove = true;
-        hammerSgn = -1;
-    }
+    if (isModule1D)
+        mouseEntered1D (y, height);
+    else
+        mouseEntered2D();
     
     wNext = (-controlLoc + 0.5) / (Global::stringVisualScaling);
 //    wNext = -(yLoc - 0.5) / (0.5 * K / (M * maxForce));
@@ -331,6 +364,27 @@ void Hammer::mouseEntered (const double x, const double y, int height)
 void Hammer::mouseExited()
 {
     moduleIsCalculating = false;
+}
+
+void Hammer::mouseEntered1D (const double y, int height)
+{
+    resHeight = height;
+    controlLoc = (static_cast<double>(y) / height);
+    if (controlLoc >= 0.5)
+    {
+        hammerIsAbove = false;
+        hammerSgn = 1;
+    } else {
+        hammerIsAbove = true;
+        hammerSgn = -1;
+    }
+}
+
+void Hammer::mouseEntered2D()
+{
+    controlLoc = 0.8;
+    hammerIsAbove = false;
+    hammerSgn = 1;
 }
 
 void Hammer::saveOutput()

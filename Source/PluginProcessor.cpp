@@ -49,7 +49,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (mouseY = new AudioParameterFloat ("mouseY", "Mouse Y", 0, 0.99, 0.5) );
     addParameter (smooth = new AudioParameterBool ("smooth", "Smooth", 1));
     addParameter (smoothness = new AudioParameterFloat ("smoothness", "Smoothness", 0, 99, 95));
-    addParameter (excite = new AudioParameterBool ("excite", "Excite", 1));
+    addParameter (excite = new AudioParameterBool ("excite", "Excite", 0));
     addParameter (excitationType = new AudioParameterFloat ("excitationType", "Excitation Type", 0, 0.99, 0.5));
     addParameter (useVelocity = new AudioParameterBool ("useVelocity", "Use Velocity", 1));
     addParameter (hammerVelocity = new AudioParameterFloat ("hammerVelocity", "Hammer Velocity", 0, 1, 0.5));
@@ -436,7 +436,7 @@ void ModularVSTAudioProcessor::addInstrument()
 void ModularVSTAudioProcessor::addResonatorModule (ResonatorModuleType rmt, NamedValueSet& parameters, InOutInfo inOutInfo, bool advanced)
 {
     jassert(currentlyActiveInstrument != nullptr);
-
+    
     currentlyActiveInstrument->addResonatorModule (rmt, parameters, inOutInfo, advanced);
     refreshEditor = true;
 }
@@ -920,9 +920,9 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
                         parameters = {
                             {"Lx", params[i][r][0]},
                             {"Ly", params[i][r][1]},
-                            {"rho", params[i][r][2]},
-                            {"H", params[i][r][3]},
-                            {"T", params[i][r][4]},
+                            {"T", params[i][r][2]},
+                            {"rho", params[i][r][3]},
+                            {"H", params[i][r][4]},
                             {"sig0", params[i][r][5]},
                             {"sig1", params[i][r][6]},
                             {"maxPoints", params[i][r][7]} };

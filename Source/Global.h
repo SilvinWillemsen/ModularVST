@@ -169,7 +169,9 @@ namespace Global
     static StringArray presetFilesToIncludeInUnity = {
         "Guitar_xml",
         "Harp_xml",
-        "BanjoLele_xml"
+        "BanjoLele_xml",
+        "Timpani_xml",
+        "Cello_xml"
     };
 
     static StringArray inOutInstructions = {
@@ -324,6 +326,23 @@ namespace Global
         uVec[bp] = uVec[bp] + val * ((alpha - 1) * (alpha + 1) * (alpha - 2)) / 2.0;
         uVec[bp + 1] = uVec[bp + 1] + val * (alpha * (alpha + 1) * (alpha - 2)) / -2.0;
         uVec[bp + 2] = uVec[bp + 2] + val * (alpha * (alpha + 1) * (alpha - 1)) / 6.0;
+
+    }
+
+    static double interpolation2D (double* uVec, int bpX, int bpY, double alphaX, double alphaY, int Nx)
+    {
+        return (1.0 - alphaX) * (1.0 - alphaY) * uVec[bpX + bpY*Nx]
+                    + (1.0 - alphaX) * alphaY * uVec[bpX + (bpY+1)*Nx]
+                    + alphaX * (1.0 - alphaY) * uVec[bpX+1 + bpY*Nx]
+                    + alphaX * alphaY * uVec[bpX+1 + (bpY+1)*Nx];
+    }
+
+    static void extrapolation2D (double* uVec, int bpX, int bpY, double alphaX, double alphaY, double val, int Nx)
+    {
+        uVec[bpX + bpY*Nx] = uVec[bpX + bpY*Nx] + val * (1.0 - alphaX) * (1.0 - alphaY);
+        uVec[bpX + (bpY+1)*Nx] = uVec[bpX + (bpY+1)*Nx] + val * (1.0 - alphaX) * alphaY;
+        uVec[bpX+1 + bpY*Nx] = uVec[bpX+1 + bpY*Nx] + val * alphaX * (1.0 - alphaY);
+        uVec[bpX+1 + (bpY+1)*Nx] = uVec[bpX+1 + (bpY+1)*Nx] + val * alphaX * alphaY;
 
     }
 

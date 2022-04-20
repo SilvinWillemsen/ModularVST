@@ -18,13 +18,16 @@
 class ExciterModule : public HighResolutionTimer, public ChangeBroadcaster
 {
 public:
-    ExciterModule (int ID, int N = 0, ExcitationType excitationType = noExcitation);
+    ExciterModule (int ID, bool isModule1D, ExcitationType excitationType = noExcitation);
     virtual ~ExciterModule();
 
     ExcitationType getExcitationType() { return excitationType; };
     void setExcitationType (ExcitationType e) { excitationType = e; };
     
     virtual void drawExciter (Graphics& g) {};
+    virtual void setN (int NtoSet) { N = NtoSet; };
+    virtual void setNxNy (int NxToSet, int NyToSet) { Nx = NxToSet; Ny = NyToSet; };
+    
     virtual void initialise (NamedValueSet& parametersFromResonator) {};
     
     virtual void calculate (std::vector<double*>& u) {};
@@ -44,6 +47,21 @@ public:
         else
             excitationLoc = loc;
     };
+    
+    void setExcitationLocX (double loc) {
+        if (exciteSmooth)
+            excitationLocToGoToX = loc;
+        else
+            excitationLocX = loc;
+    };
+    
+    void setExcitationLocY (double loc) {
+        if (exciteSmooth)
+            excitationLocToGoToY = loc;
+        else
+            excitationLocY = loc;
+    };
+
     void setControlLoc (double loc) {
         if (exciteSmooth)
             controlLocToGoTo = loc;
@@ -59,6 +77,7 @@ public:
     long getCalcCounter() { return calcCounter; };
     
     virtual void mouseEntered (const double x, const double y, int height) {};
+
     virtual void mouseExited () {};
 
     bool isModuleReady() { return moduleIsReady; };
@@ -78,9 +97,13 @@ public:
 protected:
     ExcitationType excitationType;
     double excitationLoc = 0.5;
+    
+    double excitationLocX = 0.5;
+    double excitationLocY = 0.5;
+
     double controlLoc = 0;
 
-    int N = 0;
+    int N, Nx, Ny;
     double f = 1;
     double controlParameter = 6; // parameter to be controlled by the application. Could be bow velocity fx.
     bool trigger = false;
@@ -89,12 +112,17 @@ protected:
     bool moduleIsReady = false;
     bool moduleIsCalculating = false;
         
+    bool isModule1D;
+    
 private:
     int ID = -1;
     Action action = noAction;
     
     bool exciteSmooth = false;
     double excitationLocToGoTo = 0.5;
+    double excitationLocToGoToX = 0.5;
+    double excitationLocToGoToY = 0.5;
+    
     double controlLocToGoTo = 0;
     
     float smoothCoeff = 0.9999;

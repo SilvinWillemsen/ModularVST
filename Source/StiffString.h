@@ -42,34 +42,7 @@ public:
         
 //#ifndef EDITOR_AND_SLIDERS
     // interaction
-    void mouseEnter (const MouseEvent& e) override {
-        if (isPartOfGroup())
-        {
-            setEnteredThisResonator (true);
-            this->findParentComponentOfClass<Component>()->mouseEnter (e);
-        }
-        else
-        {
-            myMouseEnter (e.x, e.y, true);
-        }
-    };
-    void mouseExit (const MouseEvent& e) override {
-        if (isPartOfGroup())
-        {
-            setEnteredThisResonator (false);
-            this->findParentComponentOfClass<Component>()->mouseExit (e);
-        }
-        else
-        {
-            myMouseExit (e.x, e.y, true);
-        }
-    };
-    void mouseMove (const MouseEvent& e) override {
-        if (isPartOfGroup())
-            this->findParentComponentOfClass<Component>()->mouseMove (e);
-        else
-            myMouseMove (e.x, e.y, true);
- };
+    
     // for now uses the mouse event and calls instrument so can't have custom mouse funtions
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;

@@ -330,6 +330,13 @@ void StiffMembrane::paint (juce::Graphics& g)
             g.drawRect (xLoc, yLoc, stateWidth, stateHeight, Global::inOutputWidth);
         }
     }
+    
+    // Draw excitation module
+    if (applicationState == normalState && isExcitationActive())
+    {
+        getCurExciterModule()->drawExciter (g);
+    }
+
 }
 
 void StiffMembrane::resized()
@@ -400,6 +407,61 @@ int StiffMembrane::getNumPoints()
     return (Nx + 1) * (Ny + 1);
 }
 
+void StiffMembrane::myMouseEnter (const double x, const double y, bool triggeredByMouse)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+    
+    getCurExciterModule()->startTimer (1.0 / 150.0);
+
+    //    prevYLoc = e.y;
+    switch (getExcitationType()) {
+        case pluck:
+            getCurExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
+            break;
+        case hammer:
+            getCurExciterModule()->mouseEntered (x, y, triggeredByMouse ? getHeight() : 1);
+            break;
+        case bow:
+        {
+            getCurExciterModule()->setForce (30.0 * h);
+            break;
+        }
+        default:
+            break;
+    }
+    setExcitationActive (true);
+}
+
+void StiffMembrane::myMouseExit (const double x, const double y, bool triggeredByMouse)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+        
+    getCurExciterModule()->stopTimer();
+    getCurExciterModule()->mouseExited();
+
+    switch (getExcitationType()) {
+        case bow:
+            getCurExciterModule()->setForce (0.0);
+            break;
+            
+        default:
+            break;
+    }
+    setExcitationActive (false);
+
+}
+
+void StiffMembrane::myMouseMove (const double x, const double y, bool triggeredByMouse)
+{
+    if (getExcitationType() == noExcitation)
+        return;
+
+    getCurExciterModule()->setExcitationLocX (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));
+    getCurExciterModule()->setExcitationLocY (static_cast<float> (y) / (triggeredByMouse ? getHeight() : 1));
+}
+
 double StiffMembrane::getKinEnergy()
 {
     // kinetic energy
@@ -456,6 +518,39 @@ double StiffMembrane::getInputEnergy()
 {
     return 0;
 }
+
+void StiffMembrane::initialiseExciterModule (std::shared_ptr<ExciterModule> exciterModule)
+{
+    
+    NamedValueSet parametersFromResonator;
+    switch (exciterModule->getExcitationType())
+    {
+        case pluck:
+        case hammer:
+            parametersFromResonator.set ("h", h);
+            parametersFromResonator.set ("k", k);
+            parametersFromResonator.set ("rho", rho);
+            parametersFromResonator.set ("H", H);
+            parametersFromResonator.set ("sig0", sig0);
+            parametersFromResonator.set ("connDivTerm", getConnectionDivisionTerm());
+            parametersFromResonator.set ("resHeight", getHeight());
+            break;
+        case bow:
+            parametersFromResonator.set ("cSq", cSq);
+            parametersFromResonator.set ("kappaSq", kappaSq);
+            parametersFromResonator.set ("h", h);
+            parametersFromResonator.set ("k", k);
+            parametersFromResonator.set ("rho", rho);
+            parametersFromResonator.set ("H", H);
+            parametersFromResonator.set ("sig0", sig0);
+            parametersFromResonator.set ("sig1", sig1);
+            parametersFromResonator.set ("connDivTerm", getConnectionDivisionTerm());
+            break;
+            
+    }
+    exciterModule->initialise (parametersFromResonator);
+}
+
 
 void StiffMembrane::mouseDown (const MouseEvent& e)
 {
@@ -516,8 +611,8 @@ void StiffMembrane::exciteRaisedCos()
 //    u[1][40 + 40 * Nx] += 1;
 //    u[2][40 + 40 * Nx] += 1;
 
-    int excitationWidthX = 3;
-    int excitationWidthY = 3;
+    int excitationWidthX = 10;
+    int excitationWidthY = 10;
     std::vector<std::vector<double>> excitationArea (excitationWidthX, std::vector<double> (excitationWidthY, 0));
 
     for (int i = 1; i < excitationWidthX; ++i)

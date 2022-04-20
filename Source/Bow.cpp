@@ -12,7 +12,7 @@
 #include "Bow.h"
 
 //==============================================================================
-Bow::Bow (int ID, int N) : ExciterModule (ID, N, bow)
+Bow::Bow (int ID, bool isModule1D) : ExciterModule (ID, isModule1D, bow)
 {
     tol = 1e-7;
     a = 100; // Free parameter
@@ -58,7 +58,7 @@ void Bow::initialise (NamedValueSet& parametersFromResonator)
     double kappaSq = *parametersFromResonator.getVarPointer("kappaSq");
     h = *parametersFromResonator.getVarPointer("h");
     rho = *parametersFromResonator.getVarPointer("rho");
-    A = *parametersFromResonator.getVarPointer("A");
+    AorH = parametersFromResonator.contains("A") ? *parametersFromResonator.getVarPointer ("A") : *parametersFromResonator.getVarPointer ("H");
     k = *parametersFromResonator.getVarPointer("k");
     sig0 = *parametersFromResonator.getVarPointer("sig0");
     double sig1 = *parametersFromResonator.getVarPointer("sig1");
@@ -99,7 +99,7 @@ void Bow::calculate (std::vector<double*>& u)
     
     b = 2.0 / k * vB + 2.0 * sig0 * vB - b1 * (uI - uIPrev) - cOhSq * (uI1 - 2.0 * uI + uIM1) + kOhhSq * (uI2 - 4.0 * uI1 + 6.0 * uI - 4.0 * uIM1 + uIM2) - b2 * ((uI1 - 2 * uI + uIM1) - (uIPrev1 - 2.0 * uIPrev + uIPrevM1));
 
-    Fb = f / (rho * A);
+    Fb = f / (rho * AorH);
 
     qPrev = 0;
     // NR loop

@@ -53,6 +53,10 @@ public:
     void mouseUp (const MouseEvent& e) override;
 //    void mouseMove (const MouseEvent& e) override;
     
+    void myMouseEnter (const double x, const double y, bool triggeredByMouse) override;
+    void myMouseExit (const double x, const double y, bool triggeredByMouse) override;
+    void myMouseMove (const double x, const double y, bool triggeredByMouse) override;
+    
     double getKinEnergy() override;
     double getPotEnergy() override;
     double getDampEnergy() override;
@@ -62,6 +66,8 @@ public:
 
     void changeDensity (double rhoToSet) override;
     
+    void initialiseExciterModule (std::shared_ptr<ExciterModule> exciterModule) override;
+
 protected:
     
     int maxPoints;

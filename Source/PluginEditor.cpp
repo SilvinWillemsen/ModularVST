@@ -342,6 +342,11 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
     // If the the broadcaster is the add module window
     else if (changeBroadcaster == addModuleWindow.get())
     {
+        for (int i = 0; i < addModuleWindow->getParameters().size(); ++i)
+        {
+            std::cout << addModuleWindow->getParameters().getName (i).toString() << ": " << (double)*(addModuleWindow->getParameters().getVarPointerAt(i)) << std::endl;
+        }
+        
         if (addModuleWindow->getAction() == addResonatorModuleFromWindowAction)
             if (addModuleWindow->getDlgModal() == 1)
                 audioProcessor.addResonatorModule (addModuleWindow->getResonatorModuleType(), addModuleWindow->getParameters(), InOutInfo(), addModuleWindow->isAdvanced());

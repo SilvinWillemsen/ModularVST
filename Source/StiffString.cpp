@@ -397,18 +397,6 @@ void StiffString::myMouseMove (const double x, const double y, bool triggeredByM
     getCurExciterModule()->setExcitationLoc (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));
     getCurExciterModule()->setControlLoc (static_cast<float> (y) / (triggeredByMouse ? getHeight() : 1));
     
-//    double lpCoeff = 0.99;
-//    double curLoc = static_cast<float> (e.y) / getHeight();
-//    double locUse = (1.0 - lpCoeff) * curLoc + lpCoeff * prevLoc;
-//    Time t;
-//    double curTime = t.currentTimeMillis();
-//    vB = (locUse - prevLoc) / (0.001 * (curTime - prevTime));
-//    std::cout << locUse << std::endl;
-//    prevLoc = locUse;
-//    prevTime = curTime;
-
-    
-//    std::cout << getID() << " " << e.y << std::endl;
 }
 
 //#ifndef EDITOR_AND_SLIDERS

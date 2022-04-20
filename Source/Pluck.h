@@ -19,7 +19,7 @@
 class Pluck  :  public ExciterModule
 {
 public:
-    Pluck (int ID, int N);
+    Pluck (int ID, bool isModule1D);
     ~Pluck() override;
     
     void drawExciter (Graphics& g) override;
@@ -33,6 +33,9 @@ public:
     void hiResTimerCallback() override;
     
     void mouseEntered (const double x, const double y, int height) override;
+    void mouseEntered1D (const double y, int height);
+    void mouseEntered2D();
+
     void mouseExited() override;
     
     void setResHeight (int r) { resHeight = r; };
@@ -40,7 +43,7 @@ public:
     void saveOutput() override;
 private:
     // string variables still needed in the NR solve
-    double rho, A, sig0, k, h;
+    double rho, AorH, sig0, k, h;
     double connectionDivisionTerm;
     double force;
     double B1, B2, C1, Adiv;

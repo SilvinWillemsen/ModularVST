@@ -12,7 +12,7 @@
 #include "ExciterModule.h"
 
 //==============================================================================
-ExciterModule::ExciterModule (int ID, int N, ExcitationType excitationType) : ID (ID), N (N), excitationType (excitationType)
+ExciterModule::ExciterModule (int ID, bool isModule1D, ExcitationType excitationType) : ID (ID), isModule1D(isModule1D), excitationType (excitationType)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -26,6 +26,8 @@ ExciterModule::~ExciterModule()
 void ExciterModule::updateSmoothExcitation()
 {
     excitationLoc = smoothCoeff * excitationLoc + (1.0 - smoothCoeff) * excitationLocToGoTo;
+    excitationLocX = smoothCoeff * excitationLocX + (1.0 - smoothCoeff) * excitationLocToGoToX;
+    excitationLocY = smoothCoeff * excitationLocY + (1.0 - smoothCoeff) * excitationLocToGoToY;
     controlLoc = smoothCoeff * controlLoc + (1.0 - smoothCoeff) * controlLocToGoTo;
 }
 
