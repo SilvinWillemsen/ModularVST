@@ -13,6 +13,8 @@
 #include <fstream>
 #include <iostream>
 #include "DebugCPP.h"
+#include "pugixml.hpp"
+
 
 //#include "MyAudioParameterFloat.h"
 
@@ -114,6 +116,7 @@ public:
     // Presets
     PresetResult savePreset (String& fileName);
     PresetResult loadPreset (String& fileName, bool loadFromBinary);
+    void loadPresetFromPugiDoc (pugi::xml_document* doc);
     String getPresetPath() {return presetPath; }
     void debugLoadPresetResult (PresetResult res);
     
@@ -130,7 +133,9 @@ public:
         hammerVelocityID,
         triggerID,
         presetSelectID,
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
         loadPresetToggleID
+#endif
     };
     
     void myRangedAudioParameterChanged (RangedAudioParameter* myAudioParameter);
@@ -147,6 +152,7 @@ public:
     
     void LoadIncludedPreset (int i);
     
+    void changeActiveInstrument (std::shared_ptr<Instrument> instToChangeTo);
 private:
     //==============================================================================
     int fs;
@@ -183,8 +189,10 @@ private:
     AudioParameterBool* useVelocity;
     AudioParameterFloat* hammerVelocity;
     AudioParameterFloat* presetSelect;
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
     AudioParameterBool* loadPresetToggle;
-
+#endif
+    
     std::vector<RangedAudioParameter*> allParameters;
     std::vector<float> sliderValues;
     std::vector<float> mouseSmoothValues;
@@ -204,6 +212,11 @@ private:
     std::function<void (String)> loadPresetWindowCallback = {};
     
     bool sliderControl = false;
+    
+#ifdef LOAD_ALL_UNITY_INSTRUMENTS
+    std::string totPreset;
+#endif
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)
     
 };

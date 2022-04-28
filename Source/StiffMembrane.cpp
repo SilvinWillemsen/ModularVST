@@ -409,7 +409,8 @@ int StiffMembrane::getNumPoints()
 
 void StiffMembrane::myMouseEnter (const double x, const double y, bool triggeredByMouse)
 {
-    if (getExcitationType() == noExcitation)
+    // only use hammers for 2d objects
+    if (getExcitationType() != hammer)
         return;
     
     getCurExciterModule()->startTimer (1.0 / 150.0);
@@ -438,6 +439,9 @@ void StiffMembrane::myMouseExit (const double x, const double y, bool triggeredB
     if (getExcitationType() == noExcitation)
         return;
         
+    if (getCurExciterModule() == nullptr) // could happen for 2D objects
+        return;
+    
     getCurExciterModule()->stopTimer();
     getCurExciterModule()->mouseExited();
 
@@ -455,7 +459,8 @@ void StiffMembrane::myMouseExit (const double x, const double y, bool triggeredB
 
 void StiffMembrane::myMouseMove (const double x, const double y, bool triggeredByMouse)
 {
-    if (getExcitationType() == noExcitation)
+    // only use hammers for 2d objects
+    if (getExcitationType() != hammer)
         return;
 
     getCurExciterModule()->setExcitationLocX (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));

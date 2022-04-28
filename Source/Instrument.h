@@ -185,6 +185,14 @@ public:
         highlightedInstrument = h;
         for (auto res : resonators)
             res->setChildOfHighlightedInstrument (h);
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
+        setAlpha (1);
+#else
+        if (!highlightedInstrument)
+            setAlpha (0.2);
+        else
+            setAlpha (1);
+#endif
     };
     void setConnectionType (ConnectionType c);
     
@@ -231,8 +239,12 @@ public:
     void setExciterForce (float f) { for (auto res : resonators) res->setExciterForce (f); };
     void setExciterControlParameter (float c) { for (auto res : resonators) res->setExciterControlParameter (c); };
     ExcitationType getExcitationType() { if (resonators.size() != 0) return resonators[0]->getExcitationType(); else return noExcitation; };
-    
-    void setSmoothExcitation (bool s);
+        
+    void set2DresHammerVelocity (double vel) {
+        for (auto res : resonators)
+            if (!res->isModule1D())
+                res->getHammerModule()->setControlLoc (vel);
+    };
     
     // Resonator groups
     class ResonatorGroup
@@ -275,6 +287,9 @@ public:
                 res->getCurExciterModule()->triggerExciterModule();
 
     }
+    
+    std::shared_ptr<ResonatorModule> getCurrentlyHoveredResonator() { return currentlyHoveredResonator; };
+    
 private:
     
     int fs;
@@ -324,6 +339,7 @@ private:
     std::shared_ptr<ResonatorGroup> currentlySelectedResonatorGroup = nullptr;
     std::shared_ptr<ResonatorGroup> groupCurrentlyInteractingWith = nullptr;
     
-    bool shouldExciteSmooth = false;
+    std::shared_ptr<ResonatorModule> currentlyHoveredResonator = nullptr;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

@@ -49,6 +49,9 @@ Pluck::~Pluck()
 
 void Pluck::drawExciter (Graphics& g)
 {
+    if (!isModule1D)
+        return;
+    
     Rectangle<int> bounds = g.getClipBounds();
     g.setColour(Colours::white.withAlpha(0.5f));
     float startLoc = excitationLoc * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / N * getControlParameter() * 0.5;
@@ -68,17 +71,23 @@ void Pluck::drawExciter (Graphics& g)
                            -w * Global::stringVisualScaling * bounds.getHeight() + 0.5 * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
                            Global::excitationVisualWidth,
                            Global::excitationVisualWidth, Global::excitationVisualWidth);
-//    g.setColour(Colours::white);
-//    Path cosine;
-//    cosine.startNewSubPath ((cLoc + alpha - 0.5 * getControlParameter()) / N * bounds.getWidth(), bounds.getHeight() - ItoDraw[0] * 500);
-//    for (int i = 1; i < ItoDraw.size(); ++i)
-//        cosine.lineTo ((cLoc + alpha + i - 0.5 * getControlParameter()) / N * bounds.getWidth(), bounds.getHeight() - ItoDraw[i] * 500);
-//    g.strokePath(cosine, PathStrokeType(2.0f));
-//    g.fillEllipse (excitationLoc * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
-//                   -w * Global::stringVisualScaling + 0.5 * bounds.getHeight()
-//                   - static_cast<float>(bounds.getWidth()) / N * getControlParameter() * 0.5,
-//                   getControlParameter() * static_cast<float>(bounds.getWidth()) / N,
-//                   Global::excitationVisualWidth);
+//    } else {
+//        float startLocX = excitationLocX * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / Nx * getControlParameter() * 0.5;
+//        float startLocY = excitationLocY * bounds.getHeight() - static_cast<float>(bounds.getHeight()) / Ny * getControlParameter() * 0.5;
+//        float pickWidth = getControlParameter() * static_cast<float>(bounds.getWidth()) / Nx;
+//        float pickHeight = getControlParameter() * static_cast<float>(bounds.getHeight()) / Ny;
+//
+//        g.drawEllipse (startLocX - Global::excitationVisualWidth,
+//                       startLocY - Global::excitationVisualWidth,
+//                       pickWidth + 2.0 * Global::excitationVisualWidth,
+//                       pickHeight + 2.0 * Global::excitationVisualWidth, 1);
+//        g.setColour (Colours::yellow);
+//
+//        g.fillEllipse (excitationLocX * bounds.getWidth() - Global::excitationVisualWidth * 0.5,
+//                           excitationLocY * bounds.getHeight() - Global::excitationVisualWidth * 0.5,
+//                           Global::excitationVisualWidth,
+//                           Global::excitationVisualWidth);
+//    }
 }
 
 void Pluck::initialise (NamedValueSet& parametersFromResonator)

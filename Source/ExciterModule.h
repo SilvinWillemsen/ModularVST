@@ -41,34 +41,13 @@ public:
     double getControlParameter() { return controlParameter; };
     void setControlParameter (double c) { controlParameter = c; };
     
-    void setExcitationLoc (double loc) {
-        if (exciteSmooth)
-            excitationLocToGoTo = loc;
-        else
-            excitationLoc = loc;
-    };
+    void setExcitationLoc (double loc) { excitationLoc = loc; };
     
-    void setExcitationLocX (double loc) {
-        if (exciteSmooth)
-            excitationLocToGoToX = loc;
-        else
-            excitationLocX = loc;
-    };
+    void setExcitationLocX (double loc) { excitationLocX = loc; };
     
-    void setExcitationLocY (double loc) {
-        if (exciteSmooth)
-            excitationLocToGoToY = loc;
-        else
-            excitationLocY = loc;
-    };
+    void setExcitationLocY (double loc) { excitationLocY = loc; };
 
-    void setControlLoc (double loc) {
-        if (exciteSmooth)
-            controlLocToGoTo = loc;
-        else
-            controlLoc = loc;
-        
-    }; // ypos
+    void setControlLoc (double loc) { controlLoc = loc; std::cout << loc << std::endl;}; // ypos
 
     void updateSmoothExcitation();
     
@@ -89,8 +68,6 @@ public:
     virtual void saveOutput() {};
     
     void triggerExciterModule() { trigger = true; };
-    void toggleSmoothExcitation();
-    bool shouldExciteSmooth() { return exciteSmooth; };
 
     bool isModuleCalculating() { return moduleIsCalculating; };
     
@@ -117,14 +94,5 @@ protected:
 private:
     int ID = -1;
     Action action = noAction;
-    
-    bool exciteSmooth = false;
-    double excitationLocToGoTo = 0.5;
-    double excitationLocToGoToX = 0.5;
-    double excitationLocToGoToY = 0.5;
-    
-    double controlLocToGoTo = 0;
-    
-    float smoothCoeff = 0.9999;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExciterModule)
 };

@@ -53,7 +53,7 @@ void Hammer::drawExciter (Graphics& g)
     g.setColour(Colours::white.withAlpha(0.5f));
     if (isModule1D)
     {
-        float startLoc = excitationLoc * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / (N * getControlParameter() * 0.5);
+        float startLoc = excitationLoc * bounds.getWidth() - static_cast<float>(bounds.getWidth()) / N * getControlParameter() * 0.5;
         float pickWidth = getControlParameter() * static_cast<float>(bounds.getWidth()) / N;
         
         g.drawEllipse (startLoc - Global::excitationVisualWidth,

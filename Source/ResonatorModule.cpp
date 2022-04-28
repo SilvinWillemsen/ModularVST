@@ -93,8 +93,6 @@ void ResonatorModule::update()
     if (curExciterModule != nullptr)
     {
         curExciterModule->updateStates();
-        if (curExciterModule->shouldExciteSmooth())
-            curExciterModule->updateSmoothExcitation();
     }
 }
 
@@ -113,9 +111,13 @@ void ResonatorModule::setExcitationType (ExcitationType e)
 {
     if (excitationType == e)
         return;
-    excitationType = e;
+    
     switch (e)
     {
+        case noExcitation:
+            myMouseExit (-1, -1, false);
+            curExciterModule = nullptr;
+            break;
         case pluck:
             curExciterModule = pluckModule;
             break;
@@ -127,6 +129,12 @@ void ResonatorModule::setExcitationType (ExcitationType e)
             curExciterModule->setControlParameter (0.2);
             break;
     }
+    if (!is1D && e != hammer)
+    {
+        myMouseExit (-1, -1, false);
+        curExciterModule = nullptr;
+    }
+    excitationType = e;
 
 }
 

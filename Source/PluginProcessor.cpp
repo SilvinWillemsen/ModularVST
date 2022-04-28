@@ -8,7 +8,6 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "pugixml.hpp"
 
 
 // extern "c" function definitions
@@ -55,7 +54,10 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (hammerVelocity = new AudioParameterFloat ("hammerVelocity", "Hammer Velocity", 0, 1, 0.5));
     addParameter (trigger = new AudioParameterBool ("trigger", "Trigger", 0));
     addParameter (presetSelect = new AudioParameterFloat ("presetSelect", "Preset Select", 0, 0.99, 0.01));
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
     addParameter (loadPresetToggle = new AudioParameterBool ("loadPresetToggle", "Load preset", 1));
+#endif
+    
     //#endif
 //#ifdef EDITOR_AND_SLIDERS
     allParameters.reserve (8);
@@ -69,7 +71,9 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (hammerVelocity);
     allParameters.push_back (trigger);
     allParameters.push_back(presetSelect);
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
     allParameters.push_back(loadPresetToggle);
+#endif
 //#endif
     sliderValues.resize (allParameters.size());
         
@@ -169,6 +173,50 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     }
     fs = sampleRate;
 
+#ifdef LOAD_ALL_UNITY_INSTRUMENTS
+    totPreset = "<App>\n \t <Instrument id=\"i0\">\n";
+//    std::cout << totPreset << std::endl;
+    for (int i = 0; i < Global::presetFilesToIncludeInUnity.size(); ++i)
+    {
+        int sizeDummy = 0;
+        const char* name =  Global::presetFilesToIncludeInUnity[i].getCharPointer();
+        std::string st = BinaryData::getNamedResource(name, sizeDummy);
+        
+        // cut off app and instrument
+        size_t pos = st.find("\t \t <Resonator");
+        st.erase(0,pos);
+        pos = st.find("</App>");
+//        size_t stringSize = st.size();
+        st.erase(pos, st.size());
+        
+        totPreset += st;
+        if (i == Global::presetFilesToIncludeInUnity.size() - 1)
+            totPreset += "</App>";
+        else
+        {
+            totPreset += "\t <Instrument id=\"i" + String(i+1).toStdString() + "\">\n";
+        }
+    }
+    std::cout << totPreset << std::endl;
+    
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_string (String(totPreset).getCharPointer());
+    loadPresetFromPugiDoc (&doc);
+    
+    switch (result.status)
+    {
+        case pugi::status_ok:
+            debugLoadPresetResult (success);
+            break;
+        case pugi::status_file_not_found:
+            debugLoadPresetResult (fileNotFound);
+            break;
+        default:
+            debugLoadPresetResult (presetNotLoaded);
+            break;
+    }
+    
+#else
     if (Global::loadPresetAtStartUp)
     {
         File lastSavedPresetFile (File::getCurrentWorkingDirectory().getChildFile(presetPath + "lastPreset.txt"));
@@ -182,24 +230,8 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 
         PresetResult res = loadPreset (fileName, fileName.contains("_"));
         debugLoadPresetResult (res);
-
-//        switch (res) {
-//            case applicationIsNotEmpty:
-//                DBG ("Application is not empty.");
-//                break;
-//            case fileNotFound:
-//                DBG ("Presetfile not found");
-//                break;
-//            case presetNotLoaded:
-//                DBG ("For whatever reason, the preset was not loaded.");
-//            case success:
-//                DBG ("Preset loaded successfully.");
-//                break;
-//
-//            default:
-//                break;
-//        }
     }
+#endif
     
     //---// For unity, temporary solution until we get the presets to work //---//
 //    addInstrument();
@@ -295,6 +327,9 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 
     for (auto inst : instruments)
     {
+        if (inst != currentlyActiveInstrument)
+            continue;
+        
         audioMutex.lock();
 
         // check whether the instrument is ready
@@ -344,8 +379,22 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             {
                 mouseSmoothValues[0] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues[0] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * sliderValues[0];
                 
-                double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[1];
+//#ifndef LOAD_ALL_UNITY_INSTRUMENTS
+//                // If velocity is used, locate the mouse at a ylocation dependent on the velocity
+//                double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[1];
+//#else
+                double yVal = 0;
+                if (currentlyActiveInstrument != nullptr &&
+                    currentlyActiveInstrument->getCurrentlyHoveredResonator() != nullptr &&
+                    currentlyActiveInstrument->getCurrentlyHoveredResonator()->isModule1D())
+                {
+                    // If velocity is used for a 1D object, locate the mouse at a ylocation dependent on the velocity
+                    yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[1];
 
+                } else {
+                    yVal = sliderValues[1];
+                }
+//#endif
                 mouseSmoothValues[1] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues[1] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * yVal;
                 inst->virtualMouseMove (mouseSmoothValues[0], mouseSmoothValues[1]);
                 // MAKE SMOOTH WORK FOR VELOCITY HAMMER
@@ -426,10 +475,12 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 void ModularVSTAudioProcessor::addInstrument()
 {
     std::shared_ptr<Instrument> newInstrument = std::make_shared<Instrument> (fs);
-    instruments.push_back (newInstrument);
+    newInstrument->setName ("Instrument " + String(instruments.size()));
     newInstrument->setExcitationType (curExcitationType);
     currentlyActiveInstrument = newInstrument;
     
+    instruments.push_back (newInstrument);
+
     refreshEditor = true;
 }
 
@@ -672,6 +723,14 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
             return presetNotLoaded;
             break;
     }
+    
+    loadPresetFromPugiDoc (&doc);
+
+    return success;
+}
+
+void ModularVSTAudioProcessor::loadPresetFromPugiDoc (pugi::xml_document* doc)
+{
     loadPresetMutex.lock();
     // make sure that application is loaded from scratch
     if (instruments.size() != 0)
@@ -684,12 +743,12 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
             instruments.erase(instruments.begin() + instruments.size() - 1);
     }
     
-    pugi::xml_node node = doc.child("App");
+    pugi::xml_node node = doc->child("App");
     pugi::xml_node instrum = node.child("Instrument");
     
     juce::Logger::getCurrentLogger()->outputDebugString("hello");
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Resonator").child("PARAM").attribute("id").value());
-    juce::Logger::getCurrentLogger()->outputDebugString(doc.child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
+    juce::Logger::getCurrentLogger()->outputDebugString(doc->child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
     juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
     
     std::vector<std::vector<std::vector<double>>> params;
@@ -1029,18 +1088,16 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
     // save path of last loaded preset
     std::ofstream lastLoadedPreset;
     lastLoadedPreset.open (String (presetPath + "lastPreset.txt").getCharPointer());
-    lastLoadedPreset << String (fileName);
+//    lastLoadedPreset << String (fileName);
     lastLoadedPreset.close();
     loadPresetMutex.unlock();
-
-    return success;
 }
-
 
 //# ifdef NO_EDITOR
 
 void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, float value)
 {
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
     if (name == "loadPresetToggle" && sliderValues[loadPresetToggleID] == 1)
     {
         for (int i = 0; i < Global::presetFilesToIncludeInUnity.size(); ++i)
@@ -1054,14 +1111,22 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
         }
         setShouldLoadPreset (presetToLoad, true);
     }
-
+#else
+    if (name == "presetSelect")
+    {
+        int idx = floor(sliderValues[presetSelectID] * instruments.size());
+        if (instruments[idx] != currentlyActiveInstrument)
+            changeActiveInstrument (instruments[idx]);
+    }
+#endif
     // return if there is no currently active instrument
     if (currentlyActiveInstrument == nullptr)
         return;
     
-    if ((name == "mouseX" || name == "mouseY"
-         || (name == "hammerVelocity" && sliderValues[useVelocityID] && curExcitationType == hammer)) && (sliderValues[exciteID] >= 0.5)
+    if (((name == "mouseX" || name == "mouseY"
+         || (name == "hammerVelocity" && sliderValues[useVelocityID] && curExcitationType == hammer))
         || name == "useVelocity") // refresh
+        && sliderValues[exciteID] >= 0.5)
     {
         if (sliderValues[smoothID] != 1)
         {
@@ -1069,8 +1134,12 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
             currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], yVal);// (sliderValues[useVelocityID] > 0) ? (sliderValues[hammerVelocityID] * 0.5 * Global::stringVisualScaling) : sliderValues[mouseYID]);
         }
         // else, the virtualMouseMove goes at audio rate
-
     }
+    
+    // 2d hammer velocity set
+    if (name == "hammerVelocity")
+        for (auto inst : instruments)
+            inst->set2DresHammerVelocity (sliderValues[hammerVelocityID]);
     
     if (name == "trigger" && sliderValues[triggerID] == 1)
     {
@@ -1088,13 +1157,20 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
             else
                 curExcitationType = bow;
 
-            currentlyActiveInstrument->setExcitationType (curExcitationType);
-            currentlyActiveInstrument->resetPrevMouseMoveResonator();
-            currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
+            for (auto inst : instruments)
+            {
+                inst->setExcitationType (curExcitationType);
+                inst->resetPrevMouseMoveResonator();
+                inst->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
+            }
         } else {
             curExcitationType = noExcitation;
-            currentlyActiveInstrument->setExcitationType (curExcitationType);
+            for (auto inst : instruments)
+            {
+                inst->setExcitationType (curExcitationType);
+            }
         }
+        // only move the mouse for the currently active instrument
         currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], sliderValues[mouseYID]);
 
     }
@@ -1145,12 +1221,30 @@ void ModularVSTAudioProcessor::myRangedAudioParameterChanged (Slider* mySlider)
 #endif
 void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
-    DBG("test");
     if (changeBroadcaster == this)
     {
         if (shouldLoadFromBinary)
         {
+#ifdef LOAD_ALL_UNITY_INSTRUMENTS
+            pugi::xml_document doc;
+            pugi::xml_parse_result result = doc.load_string (String(totPreset).getCharPointer());
+            loadPresetFromPugiDoc (&doc);
+            PresetResult res;
+            switch (result.status)
+            {
+                case pugi::status_ok:
+                    res = success;
+                    break;
+                case pugi::status_file_not_found:
+                    res = fileNotFound;
+                    break;
+                default:
+                    res = presetNotLoaded;
+                    break;
+            }
+#else
             PresetResult res = loadPreset (presetToLoad, shouldLoadFromBinary);
+#endif
             debugLoadPresetResult (res);
             if (res != success)
                 for (auto inst : instruments)
@@ -1185,4 +1279,20 @@ void ModularVSTAudioProcessor::setShouldLoadPreset (String filename, bool loadFr
 void ModularVSTAudioProcessor::LoadIncludedPreset (int i)
 {
     setShouldLoadPreset (Global::presetFilesToIncludeInUnity[i], true);
+}
+
+void ModularVSTAudioProcessor::changeActiveInstrument (std::shared_ptr<Instrument> instToChangeTo)
+{
+#ifdef LOAD_ALL_UNITY_INSTRUMENTS
+//    std::cout << "Setting states of " << getCurrentlyActiveInstrument()->getName() << " to zero." << std::endl;
+    
+    for (int i = 0; i < currentlyActiveInstrument->getNumResonatorModules(); ++i)
+        currentlyActiveInstrument->getResonatorPtr(i)->myMouseExit(-1, -1, false);
+    setToZero = true;
+    highlightInstrument (instToChangeTo);
+#endif
+    currentlyActiveInstrument = instToChangeTo;
+
+//    std::cout << currentlyActiveInstrument->getName() << " is active now." << std::endl;
+
 }

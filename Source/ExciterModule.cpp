@@ -22,27 +22,3 @@ ExciterModule::ExciterModule (int ID, bool isModule1D, ExcitationType excitation
 ExciterModule::~ExciterModule()
 {
 }
-
-void ExciterModule::updateSmoothExcitation()
-{
-    excitationLoc = smoothCoeff * excitationLoc + (1.0 - smoothCoeff) * excitationLocToGoTo;
-    excitationLocX = smoothCoeff * excitationLocX + (1.0 - smoothCoeff) * excitationLocToGoToX;
-    excitationLocY = smoothCoeff * excitationLocY + (1.0 - smoothCoeff) * excitationLocToGoToY;
-    controlLoc = smoothCoeff * controlLoc + (1.0 - smoothCoeff) * controlLocToGoTo;
-}
-
-void ExciterModule::toggleSmoothExcitation()
-{
-   exciteSmooth = !exciteSmooth;
-   if (exciteSmooth)
-   {
-       excitationLocToGoTo = excitationLoc;
-       controlLocToGoTo = controlLoc;
-   }
-   else
-   {
-       excitationLoc = excitationLocToGoTo;
-       controlLoc = controlLocToGoTo;
-   }
-   
-};

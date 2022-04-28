@@ -30,6 +30,9 @@ Bow::~Bow()
 
 void Bow::drawExciter (Graphics& g)
 {
+    if (!isModule1D)
+        return;
+
     if (f == 0)
         return;
     

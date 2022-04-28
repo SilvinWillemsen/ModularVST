@@ -583,9 +583,10 @@ void Instrument::setApplicationState (ApplicationState a)
     applicationState = a;
     switch (a) {
         case normalState:
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
             setHighlightedInstrument (false);
+#endif
             currentlyActiveConnection = nullptr;
-            setAlpha (1);
             break;
         default:
             if (!highlightedInstrument)
@@ -1256,6 +1257,7 @@ void Instrument::virtualMouseMove (const double x, const double y)
         resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
     }
     prevMouseMoveResonator = curMouseMoveResonator;
+    currentlyHoveredResonator = resonators[curMouseMoveResonator];
     resonators[curMouseMoveResonator]->myMouseMove (x, yRes, false);
 }
 
@@ -1306,15 +1308,4 @@ void Instrument::removeResonatorGroup (int idx)
     for (int i = 0; i < resonatorGroups.size(); ++i)
         for (auto res : resonatorGroups[i]->getResonatorsInGroup())
             res->setPartOfGroup (i+1, resonatorGroups[i]->getColour());
-}
-
-void Instrument::setSmoothExcitation (bool s)
-{
-    if (s == shouldExciteSmooth)
-        return;
-    
-    for (auto res : resonators)
-        res->toggleSmoothExcitation();
-    shouldExciteSmooth = s;
-    
 }

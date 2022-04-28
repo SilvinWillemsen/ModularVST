@@ -407,13 +407,20 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
        
         for (auto inst : instruments)
         {
-            if (applicationState == normalState)
-            {
-                audioProcessor.setCurrentlyActiveInstrument (inst);
-                controlPanel->setNumGroups (getCurrentlyActiveInstrument()->getNumResonatorGroups());
-
-            }
             if (changeBroadcaster == inst.get())
+            {
+//                std::cout << inst->getName() << " is the changeBroadcaster." << std::endl;
+                if (inst != getCurrentlyActiveInstrument())
+                {
+                    audioProcessor.changeActiveInstrument (inst);
+                }
+                
+                if (applicationState == normalState)
+                {
+//                    audioProcessor.setCurrentlyActiveInstrument (inst);
+                    controlPanel->setNumGroups (getCurrentlyActiveInstrument()->getNumResonatorGroups());
+
+                }
                 switch (inst->getAction())
                 {
                     case changeActiveConnectionAction:
@@ -437,9 +444,9 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                         DBG ("Action shouldn't come from instrument");
                         break;
                 }
-            inst->setAction (noAction);
+                inst->setAction (noAction);
+            }
         }
-
     }
 }
 

@@ -128,6 +128,7 @@ public:
     void setExcitationActive (bool a) { excitationActive = a; };
     
     std::shared_ptr<ExciterModule> getCurExciterModule() { return curExciterModule; };
+    std::shared_ptr<Hammer> getHammerModule() { return hammerModule; };
     virtual void initialiseExciterModule (std::shared_ptr<ExciterModule>) {};
     
     long getCalcCounter() { return calcCounter; };
@@ -163,8 +164,6 @@ public:
     void setEnteredThisResonator (bool e) { enteredThisResonator = e; };
     bool hasEnteredThisResonator() { return enteredThisResonator; };
     
-    void toggleSmoothExcitation() { for (auto e : allExciterModules) e->toggleSmoothExcitation(); };
-
     virtual void changeDensity (double rhoToSet) = 0;
     
     void mouseEnter (const MouseEvent& e) override {
@@ -195,6 +194,7 @@ public:
         else
             myMouseMove (e.x, e.y, true);
     };
+        
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
     void initialiseModule();
