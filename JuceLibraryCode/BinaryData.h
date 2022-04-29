@@ -9,61 +9,61 @@
 namespace BinaryData
 {
     extern const char*   Timpani_xml;
-    const int            Timpani_xmlSize = 1036;
+    const int            Timpani_xmlSize = 1058;
 
     extern const char*   Cello_xml;
-    const int            Cello_xmlSize = 2160;
+    const int            Cello_xmlSize = 2212;
 
     extern const char*   BanjoLele_xml;
-    const int            BanjoLele_xmlSize = 6636;
+    const int            BanjoLele_xmlSize = 6788;
 
     extern const char*   String1_xml;
-    const int            String1_xmlSize = 567;
+    const int            String1_xmlSize = 583;
 
     extern const char*   String5_xml;
-    const int            String5_xmlSize = 2627;
+    const int            String5_xmlSize = 2691;
 
     extern const char*   String10_xml;
-    const int            String10_xmlSize = 5202;
+    const int            String10_xmlSize = 5326;
 
     extern const char*   String20_xml;
-    const int            String20_xmlSize = 10462;
+    const int            String20_xmlSize = 10706;
 
     extern const char*   Guitar_xml;
-    const int            Guitar_xmlSize = 7715;
+    const int            Guitar_xmlSize = 7903;
 
     extern const char*   WeirdInstrument_xml;
-    const int            WeirdInstrument_xmlSize = 4109;
+    const int            WeirdInstrument_xmlSize = 4214;
 
     extern const char*   Harp_xml;
-    const int            Harp_xmlSize = 7820;
+    const int            Harp_xmlSize = 8004;
 
     extern const char*   TwoStringsOctave_xml;
-    const int            TwoStringsOctave_xmlSize = 1081;
+    const int            TwoStringsOctave_xmlSize = 1109;
 
     extern const char*   TwoStrings_xml;
-    const int            TwoStrings_xmlSize = 1082;
+    const int            TwoStrings_xmlSize = 1110;
 
     extern const char*   TwoStringsConnected_xml;
-    const int            TwoStringsConnected_xmlSize = 27101;
+    const int            TwoStringsConnected_xmlSize = 27831;
 
     extern const char*   TwoStringsConnectedNonlinear_xml;
-    const int            TwoStringsConnectedNonlinear_xmlSize = 27569;
+    const int            TwoStringsConnectedNonlinear_xmlSize = 28299;
 
     extern const char*   Plate100_xml;
-    const int            Plate100_xmlSize = 596;
+    const int            Plate100_xmlSize = 613;
 
     extern const char*   Plate400_xml;
-    const int            Plate400_xmlSize = 598;
+    const int            Plate400_xmlSize = 615;
 
     extern const char*   Plate1600_xml;
-    const int            Plate1600_xmlSize = 599;
+    const int            Plate1600_xmlSize = 616;
 
     extern const char*   Plate2500_xml;
-    const int            Plate2500_xmlSize = 599;
+    const int            Plate2500_xmlSize = 616;
 
     extern const char*   TwoStringsConnectedLinear_xml;
-    const int            TwoStringsConnectedLinear_xmlSize = 27218;
+    const int            TwoStringsConnectedLinear_xmlSize = 27948;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 19;
