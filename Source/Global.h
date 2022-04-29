@@ -155,8 +155,8 @@ namespace Global
     static const int listBoxRowHeight = 40;
 
     static const bool alwaysShowInOuts = false;
-    static const double oneDOutputScaling = 1000.0;
-    static const double twoDOutputScaling = 1000.0;
+    static const double oneDOutputScaling = 0.25;
+    static const double twoDOutputScaling = 1;
     static const double stringVisualScaling = 200.0;
 
     static const double excitationVisualWidth = 6;

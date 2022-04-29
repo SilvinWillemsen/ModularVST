@@ -290,7 +290,7 @@ void StiffString::calculate()
 float StiffString::getOutput (int idx)
 {
 //    return Global::oneDOutputScaling * u[1][static_cast<int>(Global::limit (idx, (bc == clampedBC) ? 2 : 1, (bc == clampedBC) ? N-2 : N-1))];
-    return 1.0 / k * (u[0][static_cast<int>(Global::limit (idx, 1, N-1))] - u[2][static_cast<int>(Global::limit (idx, 1, N-1))]);
+    return Global::oneDOutputScaling / k * (u[0][static_cast<int>(Global::limit (idx, 1, N-1))] - u[2][static_cast<int>(Global::limit (idx, 1, N-1))]);
 }
 
 void StiffString::exciteRaisedCos()
@@ -361,7 +361,7 @@ void StiffString::myMouseEnter (const double x, const double y, bool triggeredBy
             break;
         case bow:
         {
-            getCurExciterModule()->setForce (30.0 * h);
+            getCurExciterModule()->setForce (20.0 * h);
             break;
         }
         default:
