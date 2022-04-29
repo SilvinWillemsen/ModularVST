@@ -47,7 +47,7 @@ public:
     
     void setExcitationLocY (double loc) { excitationLocY = loc; };
 
-    void setControlLoc (double loc) { controlLoc = loc; std::cout << loc << std::endl;}; // ypos
+    void setControlLoc (double loc) { controlLoc = loc; }; // ypos
 
     void updateSmoothExcitation();
     

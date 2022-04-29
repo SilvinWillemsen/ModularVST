@@ -12,9 +12,9 @@
 //#define USE_EIGEN     // use overlapping connections (and therefore the eigen library) or not
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
-//#define NO_EDITOR // build for unity
+#define NO_EDITOR // build for unity
 #define LOAD_ALL_UNITY_INSTRUMENTS
-#define EDITOR_AND_SLIDERS
+//#define EDITOR_AND_SLIDERS
 
 #include <JuceHeader.h>
 
@@ -293,13 +293,11 @@ namespace Global
     {
         if (val < min)
         {
-            val = min;
-            return val;
+            return min;
         }
         else if (val > max)
         {
-            val = max;
-            return val;
+            return max;
         }
         return val;
     }

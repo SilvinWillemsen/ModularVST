@@ -185,13 +185,15 @@ public:
         highlightedInstrument = h;
         for (auto res : resonators)
             res->setChildOfHighlightedInstrument (h);
-#ifndef LOAD_ALL_UNITY_INSTRUMENTS
-        setAlpha (1);
-#else
-        if (!highlightedInstrument)
-            setAlpha (0.2);
-        else
+#ifndef NO_EDITOR
+    #ifndef LOAD_ALL_UNITY_INSTRUMENTS
             setAlpha (1);
+    #else
+            if (!highlightedInstrument)
+                setAlpha (0.2);
+            else
+                setAlpha (1);
+    #endif
 #endif
     };
     void setConnectionType (ConnectionType c);

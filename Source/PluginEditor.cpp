@@ -37,6 +37,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         {
             addAndMakeVisible (inst.get());
             audioProcessor.setCurrentlyActiveInstrument (inst);
+            
         }
         else
             std::cout << "NOT READY" << std::endl;
@@ -58,7 +59,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
             inst->setExcitationType (noExcitation);
         audioProcessor.setExcitationType (noExcitation);
     }
-    
+
     // At what rate to refresh the states of the system
     startTimerHz (15);
     
@@ -86,6 +87,8 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
         
         audioProcessor.setEditorSliders (&parameters);
     }
+    refreshSliderValues();
+
     setSize (1500, 600);
 #else
     // What is the size of the editor
@@ -163,6 +166,11 @@ void ModularVSTAudioProcessorEditor::timerCallback()
         refresh();
         audioProcessor.dontRefreshEditor();
     }
+#ifdef EDITOR_AND_SLIDERS
+    if (audioProcessor.shouldRefreshSlidersFromEditor())
+        refreshSliderValues();
+#endif
+    
     repaint();
 }
 
@@ -391,6 +399,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
         {
             audioProcessor.setShouldLoadPreset (fileName, true);
             loadPresetWindow->setAction (noAction);
+
         }
         else if (action == loadPresetFromWindowAction)
         {
@@ -518,6 +527,9 @@ void ModularVSTAudioProcessorEditor::loadPresetFromWindow()
                 {
                     audioProcessor.setCurrentlyActiveInstrument (instruments[instruments.size()-1]);
                 }
+//#ifdef EDITOR_AND_SLIDERS
+                audioProcessor.refreshSliderValues();
+//#endif
 
             });
 
@@ -565,6 +577,18 @@ void ModularVSTAudioProcessorEditor::sliderValueChanged (Slider* slider)
             audioProcessor.myRangedAudioParameterChanged (slider);
     }
 }
+
+void ModularVSTAudioProcessorEditor::refreshSliderValues()
+{
+    // refresh parameters
+    for (int i = 0; i < parameters.size(); ++i)
+        if (parameters[i]->getName() != "loadPresetToggle")
+            audioProcessor.myRangedAudioParameterChanged (parameters[i].get());
+    
+    audioProcessor.setRefreshSlidersFromEditor (false);
+
+}
+
 #endif
 
 void ModularVSTAudioProcessorEditor::toggleGraphics()

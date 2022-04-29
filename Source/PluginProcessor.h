@@ -145,6 +145,8 @@ public:
     void myRangedAudioParameterChanged (Slider* mySlider);
     std::vector<RangedAudioParameter*>& getMyParameters() { return allParameters; };
     void setEditorSliders (std::vector<std::shared_ptr<Slider>>* s) { editorSliders = s; };
+    bool shouldRefreshSlidersFromEditor() { return refreshSlidersFromEditor; };
+    void setRefreshSlidersFromEditor (bool r) { refreshSlidersFromEditor = r; };
 #endif
     
     void changeListenerCallback (ChangeBroadcaster* changeBroadcaster) override;
@@ -153,6 +155,8 @@ public:
     void LoadIncludedPreset (int i);
     
     void changeActiveInstrument (std::shared_ptr<Instrument> instToChangeTo);
+    
+    void refreshSliderValues();
 private:
     //==============================================================================
     int fs;
@@ -201,6 +205,7 @@ private:
 //#endif
 #ifdef EDITOR_AND_SLIDERS
     std::vector<std::shared_ptr<Slider>>* editorSliders;
+    bool refreshSlidersFromEditor = false;
 #endif
 
     std::mutex audioMutex;

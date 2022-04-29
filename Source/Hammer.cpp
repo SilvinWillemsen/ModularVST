@@ -128,8 +128,10 @@ void Hammer::initialise (NamedValueSet& parametersFromResonator)
 
 void Hammer::calculate (std::vector<double*>& u)
 {
+    // "trigger ? 0 : 1" in the paper :O
     force = (forceIsZero ? 0 : 1) * (trigger ? -1 : 1) * K * (-controlLoc + 0.5) / (Global::stringVisualScaling);
     
+    // Activate the collission stiffness if the excitation is triggered
     Kc = trigger ? KcOrig : 0;
     
     cLoc = 0;
@@ -197,7 +199,6 @@ void Hammer::calculate (std::vector<double*>& u)
             uI += I[i] * u[1][idx];
             uIPrev += I[i] * u[2][idx];
         }
-//        std::cout << std::endl;
     }
     if (isnan(IJ))
         DBG("wait what?");
@@ -269,15 +270,19 @@ void Hammer::calculate (std::vector<double*>& u)
     
     psi = psiPrev + g * 0.5 * (etaNext - etaPrev);
     double force = 0.5 * (psi + psiPrev) * g;
-    
+     
+    //    if (forceIsZero && eta > 0)
     if (forceIsZero && ((!hammerIsAbove && wNext < 0) || (hammerIsAbove && wNext > 0)))
     {
         forceIsZero = false;
         trigger = false;
     }
-    float velocity = abs((wNext - wPrev) / (2.0 * k));
-    if (abs((wNext - wPrev) / (2.0 * k)) < 1.0 / Global::stringVisualScaling && trigger)
+
+    if ((isModule1D && abs((wNext - wPrev) / (2.0 * k)) < 1.0 / Global::stringVisualScaling && trigger)
+        || (!isModule1D && eta > 0 && trigger))
+    {
         forceIsZero = true;
+    }
     
     if (force > 200)
     {
@@ -382,7 +387,7 @@ void Hammer::mouseEntered1D (const double y, int height)
 
 void Hammer::mouseEntered2D()
 {
-    controlLoc = 0.8;
+//    controlLoc = 0.8;
     hammerIsAbove = false;
     hammerSgn = 1;
 }

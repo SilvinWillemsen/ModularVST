@@ -80,7 +80,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     
     mouseSmoothValues = { *mouseX, *mouseY };
     addChangeListener (this);
-
+    
     numOfBinaryPresets = BinaryData::namedResourceListSize;
     
 #if defined(NO_EDITOR) || defined(EDITOR_AND_SLIDERS)
@@ -232,7 +232,7 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
         debugLoadPresetResult (res);
     }
 #endif
-    
+        
     //---// For unity, temporary solution until we get the presets to work //---//
 //    addInstrument();
 //    addResonatorModule (stiffString, Global::defaultStringParametersAdvanced, InOutInfo());
@@ -1131,19 +1131,20 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
         if (sliderValues[smoothID] != 1)
         {
             double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseYID];
-            currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], yVal);// (sliderValues[useVelocityID] > 0) ? (sliderValues[hammerVelocityID] * 0.5 * Global::stringVisualScaling) : sliderValues[mouseYID]);
+            currentlyActiveInstrument->virtualMouseMove (sliderValues[mouseXID], yVal);
         }
         // else, the virtualMouseMove goes at audio rate
     }
     
-    // 2d hammer velocity set
+    // Set hammer velocity for all 2D objects (as this can not be directly controlled by the mouse x/y positions)
     if (name == "hammerVelocity")
         for (auto inst : instruments)
-            inst->set2DresHammerVelocity (sliderValues[hammerVelocityID]);
+            inst->set2DresHammerVelocity (sliderValues[hammerVelocityID] * 0.1 + 0.5);
     
     if (name == "trigger" && sliderValues[triggerID] == 1)
     {
-        currentlyActiveInstrument->triggerHammer();
+        if (sliderValues[exciteID] >= 0.5)
+            currentlyActiveInstrument->triggerHammer();
     }
     
     if (name == "excite" || name == "excitationType")
@@ -1259,6 +1260,12 @@ void ModularVSTAudioProcessor::changeListenerCallback (ChangeBroadcaster* change
         }
         std::string debugString = String("Preset loaded is: " + presetToLoad).toStdString();
         Debug::Log (debugString);
+#ifndef EDITOR_AND_SLIDERS
+        refreshSliderValues();
+#else
+        refreshSlidersFromEditor = true;
+#endif
+
     }
 #if defined(NO_EDITOR) || defined(EDITOR_AND_SLIDERS)
     for (int i = mouseXID; i < presetSelectID; ++i)
@@ -1274,6 +1281,7 @@ void ModularVSTAudioProcessor::setShouldLoadPreset (String filename, bool loadFr
     shouldLoadFromBinary = loadFromBinary;
     if (callback != NULL)
         loadPresetWindowCallback = callback;
+    
 }
 
 void ModularVSTAudioProcessor::LoadIncludedPreset (int i)
@@ -1294,5 +1302,17 @@ void ModularVSTAudioProcessor::changeActiveInstrument (std::shared_ptr<Instrumen
     currentlyActiveInstrument = instToChangeTo;
 
 //    std::cout << currentlyActiveInstrument->getName() << " is active now." << std::endl;
+
+}
+
+
+void ModularVSTAudioProcessor::refreshSliderValues()
+{
+    // refresh parameters
+    for (int i = 0; i < allParameters.size(); ++i)
+#ifndef LOAD_ALL_UNITY_INSTRUMENTS
+        if (i != loadPresetToggleID)
+#endif
+            myRangedAudioParameterChanged (allParameters[i]);
 
 }

@@ -62,6 +62,7 @@ public:
 #endif
     void toggleGraphics();
     
+    void refreshSliderValues();
 private:
     // Reference to the audio processor
     ModularVSTAudioProcessor& audioProcessor;

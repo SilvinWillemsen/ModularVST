@@ -394,6 +394,10 @@ void StiffString::myMouseMove (const double x, const double y, bool triggeredByM
     if (getExcitationType() == noExcitation)
         return;
 
+    // safety net
+    if (getCurExciterModule() == nullptr)
+        return;
+    
     getCurExciterModule()->setExcitationLoc (static_cast<float> (x) / (triggeredByMouse ? getWidth() : 1));
     getCurExciterModule()->setControlLoc (static_cast<float> (y) / (triggeredByMouse ? getHeight() : 1));
 }

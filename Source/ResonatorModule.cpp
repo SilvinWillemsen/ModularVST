@@ -148,3 +148,4 @@ void ResonatorModule::changeListenerCallback (ChangeBroadcaster* changeBroadcast
             curExciterModule->setAction (noAction);
         }
 }
+

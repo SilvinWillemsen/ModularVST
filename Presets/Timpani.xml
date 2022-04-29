@@ -9,20 +9,14 @@
 	 	 	 <PARAM id="i0_r0_sig0" value="0.1"/>
 	 	 	 <PARAM id="i0_r0_sig1" value="0.005"/>
 	 	 	 <PARAM id="i0_r0_maxPoints" value="2000"/>
-	 	 	 <Output id="i0_r0_o0" channel="0" locX="0.25" locY="0.25"/>
-	 	 	 <Output id="i0_r0_o1" channel="1" locX="0.75" locY="0.25"/>
-	 	 	 <Output id="i0_r0_o2" channel="0" locX="0.145833" locY="0.645833"/>
-	 	 	 <Output id="i0_r0_o3" channel="0" locX="0.229167" locY="0.729167"/>
-	 	 	 <Output id="i0_r0_o4" channel="0" locX="0.375" locY="0.645833"/>
-	 	 	 <Output id="i0_r0_o5" channel="0" locX="0.375" locY="0.791667"/>
-	 	 	 <Output id="i0_r0_o6" channel="0" locX="0.270833" locY="0.541667"/>
-	 	 	 <Output id="i0_r0_o7" channel="0" locX="0.291667" locY="0.354167"/>
-	 	 	 <Output id="i0_r0_o8" channel="1" locX="0.770833" locY="0.541667"/>
-	 	 	 <Output id="i0_r0_o9" channel="1" locX="0.75" locY="0.6875"/>
-	 	 	 <Output id="i0_r0_o10" channel="1" locX="0.8125" locY="0.729167"/>
-	 	 	 <Output id="i0_r0_o11" channel="1" locX="0.854167" locY="0.541667"/>
-	 	 	 <Output id="i0_r0_o12" channel="1" locX="0.791667" locY="0.375"/>
-	 	 	 <Output id="i0_r0_o13" channel="1" locX="0.833333" locY="0.333333"/>
+	 	 	 <Output id="i0_r0_o0" channel="0" locX="0.0833333" locY="0.666667"/>
+	 	 	 <Output id="i0_r0_o1" channel="0" locX="0.104167" locY="0.666667"/>
+	 	 	 <Output id="i0_r0_o2" channel="0" locX="0.104167" locY="0.6875"/>
+	 	 	 <Output id="i0_r0_o3" channel="0" locX="0.0833333" locY="0.6875"/>
+	 	 	 <Output id="i0_r0_o4" channel="1" locX="0.854167" locY="0.3125"/>
+	 	 	 <Output id="i0_r0_o5" channel="1" locX="0.833333" locY="0.3125"/>
+	 	 	 <Output id="i0_r0_o6" channel="1" locX="0.854167" locY="0.291667"/>
+	 	 	 <Output id="i0_r0_o7" channel="1" locX="0.833333" locY="0.291667"/>
 	 	 </Resonator>
 	 </Instrument>
 </App>
