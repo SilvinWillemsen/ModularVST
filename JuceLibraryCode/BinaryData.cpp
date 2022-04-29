@@ -20,20 +20,14 @@ static const unsigned char temp_binary_data_0[] =
 "\t \t \t <PARAM id=\"i0_r0_sig0\" value=\"0.1\"/>\n"
 "\t \t \t <PARAM id=\"i0_r0_sig1\" value=\"0.005\"/>\n"
 "\t \t \t <PARAM id=\"i0_r0_maxPoints\" value=\"2000\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o0\" channel=\"0\" locX=\"0.25\" locY=\"0.25\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o1\" channel=\"1\" locX=\"0.75\" locY=\"0.25\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o2\" channel=\"0\" locX=\"0.145833\" locY=\"0.645833\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o3\" channel=\"0\" locX=\"0.229167\" locY=\"0.729167\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o4\" channel=\"0\" locX=\"0.375\" locY=\"0.645833\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o5\" channel=\"0\" locX=\"0.375\" locY=\"0.791667\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o6\" channel=\"0\" locX=\"0.270833\" locY=\"0.541667\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o7\" channel=\"0\" locX=\"0.291667\" locY=\"0.354167\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o8\" channel=\"1\" locX=\"0.770833\" locY=\"0.541667\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o9\" channel=\"1\" locX=\"0.75\" locY=\"0.6875\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o10\" channel=\"1\" locX=\"0.8125\" locY=\"0.729167\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o11\" channel=\"1\" locX=\"0.854167\" locY=\"0.541667\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o12\" channel=\"1\" locX=\"0.791667\" locY=\"0.375\"/>\n"
-"\t \t \t <Output id=\"i0_r0_o13\" channel=\"1\" locX=\"0.833333\" locY=\"0.333333\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o0\" channel=\"0\" locX=\"0.104167\" locY=\"0.729167\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o1\" channel=\"0\" locX=\"0.104167\" locY=\"0.75\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o2\" channel=\"0\" locX=\"0.125\" locY=\"0.729167\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o3\" channel=\"0\" locX=\"0.125\" locY=\"0.75\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o4\" channel=\"1\" locX=\"0.8125\" locY=\"0.333333\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o5\" channel=\"1\" locX=\"0.8125\" locY=\"0.354167\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o6\" channel=\"1\" locX=\"0.833333\" locY=\"0.333333\"/>\n"
+"\t \t \t <Output id=\"i0_r0_o7\" channel=\"1\" locX=\"0.833333\" locY=\"0.354167\"/>\n"
 "\t \t </Resonator>\n"
 "\t </Instrument>\n"
 "</App>\n";
@@ -3585,7 +3579,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
-        case 0x6db71d3c:  numBytes = 1469; return Timpani_xml;
+        case 0x6db71d3c:  numBytes = 1036; return Timpani_xml;
         case 0xd9755405:  numBytes = 2160; return Cello_xml;
         case 0x4627789e:  numBytes = 6636; return BanjoLele_xml;
         case 0x06d22978:  numBytes = 567; return String1_xml;

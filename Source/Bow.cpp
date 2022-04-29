@@ -82,6 +82,8 @@ void Bow::initialise (NamedValueSet& parametersFromResonator)
 
 void Bow::calculate (std::vector<double*>& u)
 {
+//    if (isModule1D)
+//    {
     int bp = Global::limit(floor (excitationLoc * N), 3, N - 4);
     double alpha = excitationLoc * N - bp;
     
@@ -94,7 +96,21 @@ void Bow::calculate (std::vector<double*>& u)
     uIM2 = Global::interpolation (u[1], bp - 2, alpha);
     uIPrev1 = Global::interpolation (u[2], bp + 1, alpha);
     uIPrevM1 = Global::interpolation (u[2], bp - 1, alpha);
-    
+//    } else {
+//        int bpX = Global::limit(floor (excitationLocX * Nx), 3, Nx - 4);
+//        double alphaX = excitationLocX * Nx - bpX;
+//        int bpY = Global::limit(floor (excitationLocY * Ny), 3, Ny - 4);
+//        double alphaY = excitationLocY * Ny - bpY;
+//        uI = Global::interpolation2D (u[1], bpX, bpY, alphaX);
+//        uIPrev = Global::interpolation2D (u[2], bpX, bpy, alphaX);
+//        uI1 = Global::interpolation2D (u[1], bpX + 1, alphaX);
+//        uI2 = Global::interpolation2D (u[1], bpX + 2, alphaX);
+//        uIM1 = Global::interpolation2D (u[1], bpX - 1, alphaX);
+//        uIM2 = Global::interpolation2D (u[1], bpX - 2, alphaX);
+//        uIPrev1 = Global::interpolation2D (u[2], bpX + 1, alphaX);
+//        uIPrevM1 = Global::interpolation2D (u[2], bpX - 1, alphaX);
+//
+//    }
     // error term
     double eps = 1;
     int NRiterator = 0;

@@ -156,7 +156,7 @@ namespace Global
 
     static const bool alwaysShowInOuts = false;
     static const double oneDOutputScaling = 1000.0;
-    static const double twoDOutputScaling = 10000.0;
+    static const double twoDOutputScaling = 1000.0;
     static const double stringVisualScaling = 200.0;
 
     static const double excitationVisualWidth = 6;

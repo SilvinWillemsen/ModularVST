@@ -369,11 +369,13 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
 //                exit(0);
 //            }
 #endif
-            inst->update();
 
             totOutputL[i] += inst->getOutputL();
             totOutputR[i] += inst->getOutputR();
             
+            // Update the states
+            inst->update();
+
             // virtual mouse move at audio rate (smoothing)
             if (sliderValues[smoothID] == 1 && sliderControl)
             {
@@ -404,6 +406,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                 mouseSmoothValues[1] = sliderValues[1];
             }
         }
+    
         audioMutex.unlock();
 //        Logger::getCurrentLogger()->outputDebugString("Unlock mutex" + String(counter));
 

@@ -9,7 +9,7 @@
 namespace BinaryData
 {
     extern const char*   Timpani_xml;
-    const int            Timpani_xmlSize = 1469;
+    const int            Timpani_xmlSize = 1036;
 
     extern const char*   Cello_xml;
     const int            Cello_xmlSize = 2160;
