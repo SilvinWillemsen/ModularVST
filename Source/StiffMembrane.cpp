@@ -386,7 +386,7 @@ void StiffMembrane::calculate()
 float StiffMembrane::getOutput (int idx)
 {
 //     return u[1][idx] * Global::twoDOutputScaling;
-    return 1.0 / k * (u[0][idx] - u[2][idx]);
+    return Global::twoDOutputScaling / k * (u[0][idx] - u[2][idx]);
 }
 
 int StiffMembrane::getNumPoints()
