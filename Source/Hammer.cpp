@@ -131,6 +131,8 @@ void Hammer::calculate (std::vector<double*>& u)
     // "trigger ? 0 : 1" in the paper :O
     force = (forceIsZero ? 0 : 1) * (trigger ? -1 : 1) * K * (-controlLoc + 0.5) / (Global::stringVisualScaling);
     
+    hammerIsAbove = (-controlLoc + 0.5) >= 0;
+    hammerSgn = hammerIsAbove ? -1 : 1;
     // Activate the collission stiffness if the excitation is triggered
     Kc = trigger ? KcOrig : 0;
     
@@ -278,8 +280,9 @@ void Hammer::calculate (std::vector<double*>& u)
         trigger = false;
     }
 
-    if ((isModule1D && abs((wNext - wPrev) / (2.0 * k)) < 1.0 / Global::stringVisualScaling && trigger)
-        || (!isModule1D && eta > 0 && trigger))
+//    if ((isModule1D && abs((wNext - wPrev) / (2.0 * k)) < 1.0 / Global::stringVisualScaling && trigger)
+//        || (!isModule1D && eta > 0 && trigger))
+    if (eta > 0 && trigger)
     {
         forceIsZero = true;
     }
