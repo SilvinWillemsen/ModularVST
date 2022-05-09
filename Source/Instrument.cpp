@@ -19,6 +19,7 @@ Instrument::Instrument (int fs) : fs (fs)
     resonators.reserve (32);
     resonatorGroups.reserve (8);
     CI.reserve (128);
+    currentlyHoveredResonators.resize (2, nullptr);
     setInterceptsMouseClicks (true, false);
 }
 
@@ -1238,28 +1239,52 @@ void Instrument::saveOutput()
     
 }
 
-void Instrument::virtualMouseMove (const double x, const double y)
+void Instrument::virtualMouseMove1 (const double x, const double y)
 {
     if (resonators.size() == 0)
         return;
     
-    int curMouseMoveResonator = floor (y * getNumResonatorModules());
+    int curMouseMoveResonator1 = floor (y * getNumResonatorModules());
 
-    double yRes = y * getNumResonatorModules() - curMouseMoveResonator;
+    double yRes = y * getNumResonatorModules() - curMouseMoveResonator1;
     
-    if (prevMouseMoveResonator == -1)
+    if (prevMouseMoveResonator1 == -1)
     {
-        resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
+        resonators[curMouseMoveResonator1]->myMouseEnter (x, yRes, false);
     }
-    else if (prevMouseMoveResonator != curMouseMoveResonator)
+    else if (prevMouseMoveResonator1 != curMouseMoveResonator1)
     {
-        resonators[prevMouseMoveResonator]->myMouseExit (x, yRes, false);
-        resonators[curMouseMoveResonator]->myMouseEnter (x, yRes, false);
+        resonators[prevMouseMoveResonator1]->myMouseExit (x, yRes, false);
+        resonators[curMouseMoveResonator1]->myMouseEnter (x, yRes, false);
     }
-    prevMouseMoveResonator = curMouseMoveResonator;
-    currentlyHoveredResonator = resonators[curMouseMoveResonator];
-    resonators[curMouseMoveResonator]->myMouseMove (x, yRes, false);
+    prevMouseMoveResonator1 = curMouseMoveResonator1;
+    currentlyHoveredResonators[0] = resonators[curMouseMoveResonator1];
+    resonators[curMouseMoveResonator1]->myMouseMove (x, yRes, false);
 }
+
+void Instrument::virtualMouseMove2 (const double x, const double y)
+{
+    if (resonators.size() == 0)
+        return;
+    
+    int curMouseMoveResonator2 = floor (y * getNumResonatorModules());
+
+    double yRes = y * getNumResonatorModules() - curMouseMoveResonator2;
+    
+    if (prevMouseMoveResonator2 == -1)
+    {
+        resonators[curMouseMoveResonator2]->myMouseEnter (x, yRes, false);
+    }
+    else if (prevMouseMoveResonator2 != curMouseMoveResonator2)
+    {
+        resonators[prevMouseMoveResonator2]->myMouseExit (x, yRes, false);
+        resonators[curMouseMoveResonator2]->myMouseEnter (x, yRes, false);
+    }
+    prevMouseMoveResonator2 = curMouseMoveResonator2;
+    currentlyHoveredResonators[1] = resonators[curMouseMoveResonator2];
+    resonators[curMouseMoveResonator2]->myMouseMove (x, yRes, false);
+}
+
 
 Instrument::ResonatorGroup::ResonatorGroup()
 {

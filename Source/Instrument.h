@@ -232,8 +232,9 @@ public:
     
     bool isDoneRecording() { return resonators[0]->isDoneRecording(); };
     
-    void virtualMouseMove (const double x, const double y);
-    void resetPrevMouseMoveResonator() { prevMouseMoveResonator = -1; };
+    void virtualMouseMove1 (const double x, const double y);
+    void virtualMouseMove2 (const double x, const double y);
+    void resetPrevMouseMoveResonators() { prevMouseMoveResonator1 = -1; prevMouseMoveResonator2 = -1; };
     
     void unReadyAllModules() { for (auto res : resonators) res->unReadyModule(); };
     void reReadyAllModules() { for (auto res : resonators) res->readyModule(); };
@@ -283,14 +284,25 @@ public:
             res->setCurrentlySelectedResonatorGroup (idx);
     }
     
-    void triggerHammer() {
-        for (auto res : resonators)
-            if (res->getCurExciterModule()->isModuleCalculating())
-                res->getCurExciterModule()->triggerExciterModule();
+    void triggerHammer1() {
+        if (currentlyHoveredResonators[0]->getCurExciterModule()->isModuleCalculating())
+            currentlyHoveredResonators[0]->getCurExciterModule()->triggerExciterModule();
+//        for (auto res : resonators)
+//            if (res->getCurExciterModule()->isModuleCalculating())
+//                res->getCurExciterModule()->triggerExciterModule();
 
     }
     
-    std::shared_ptr<ResonatorModule> getCurrentlyHoveredResonator() { return currentlyHoveredResonator; };
+    void triggerHammer2() {
+        if (currentlyHoveredResonators[1]->getCurExciterModule()->isModuleCalculating())
+            currentlyHoveredResonators[1]->getCurExciterModule()->triggerExciterModule();
+//        for (auto res : resonators)
+//            if (res->getCurExciterModule()->isModuleCalculating())
+//                res->getCurExciterModule()->triggerExciterModule();
+
+    }
+    
+    std::vector<std::shared_ptr<ResonatorModule>>& getCurrentlyHoveredResonators() { return currentlyHoveredResonators; };
     
 private:
     
@@ -334,14 +346,15 @@ private:
     Action action = noAction;
     ExcitationType excitationType = noExcitation;
     
-    int prevMouseMoveResonator = -1;
-    
+    int prevMouseMoveResonator1 = -1;
+    int prevMouseMoveResonator2 = -1;
+
     std::vector<std::shared_ptr<ResonatorGroup>> resonatorGroups;
     int currentlySelectedResonatorGroupIdx = 0;
     std::shared_ptr<ResonatorGroup> currentlySelectedResonatorGroup = nullptr;
     std::shared_ptr<ResonatorGroup> groupCurrentlyInteractingWith = nullptr;
     
-    std::shared_ptr<ResonatorModule> currentlyHoveredResonator = nullptr;
+    std::vector<std::shared_ptr<ResonatorModule>> currentlyHoveredResonators;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Instrument)
 };

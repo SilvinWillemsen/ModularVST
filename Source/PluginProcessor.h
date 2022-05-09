@@ -123,15 +123,18 @@ public:
 //# ifdef NO_EDITOR
     enum ParameterNameIdx
     {
-        mouseXID = 0,
-        mouseYID,
+        mouseX1ID = 0,
+        mouseY1ID,
+        mouseX2ID,
+        mouseY2ID,
         smoothID,
         smoothnessID,
         exciteID,
         excitationTypeID,
         useVelocityID,
         hammerVelocityID,
-        triggerID,
+        trigger1ID,
+        trigger2ID,
         presetSelectID,
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
         loadPresetToggleID
@@ -183,13 +186,17 @@ private:
     long counter = 0;
     
 //#ifdef NO_EDITOR
-    AudioParameterFloat* mouseX;
-    AudioParameterFloat* mouseY;
+    AudioParameterFloat* mouseX1;
+    AudioParameterFloat* mouseY1;
+    AudioParameterFloat* mouseX2;
+    AudioParameterFloat* mouseY2;
+
     AudioParameterBool* smooth;
     AudioParameterFloat* smoothness;
     AudioParameterBool* excite;
     AudioParameterFloat* excitationType;
-    AudioParameterBool* trigger;
+    AudioParameterBool* trigger1;
+    AudioParameterBool* trigger2;
     AudioParameterBool* useVelocity;
     AudioParameterFloat* hammerVelocity;
     AudioParameterFloat* presetSelect;
@@ -199,7 +206,8 @@ private:
     
     std::vector<RangedAudioParameter*> allParameters;
     std::vector<float> sliderValues;
-    std::vector<float> mouseSmoothValues;
+    std::vector<float> mouseSmoothValues1;
+    std::vector<float> mouseSmoothValues2;
     std::vector<float> prevSliderValues;
 
 //#endif
