@@ -197,7 +197,6 @@ void ModularVSTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
             totPreset += "\t <Instrument id=\"i" + String(i+1).toStdString() + "\">\n";
         }
     }
-    std::cout << totPreset << std::endl;
     
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_string (String(totPreset).getCharPointer());
@@ -339,7 +338,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             continue;
         }
 
-//        Logger::getCurrentLogger()->outputDebugString("Lock mutex");
+//        DBG("Lock mutex");
 
         inst->checkIfShouldExciteRaisedCos();
         
@@ -408,7 +407,7 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         }
     
         audioMutex.unlock();
-//        Logger::getCurrentLogger()->outputDebugString("Unlock mutex" + String(counter));
+//        DBG("Unlock mutex" + String(counter));
 
     }
     
@@ -704,7 +703,7 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
 {
     std::string st = BinaryData::namedResourceList[1];
     
-    Logger::getCurrentLogger()->outputDebugString(st.substr(0, st.size() - 4));
+    DBG(st.substr(0, st.size() - 4));
 
     //int instrumentListSize = sizeof(BinaryData::namedResourceList[-1]) / sizeof(BinaryData::namedResourceList[0]);
     pugi::xml_document doc;
@@ -749,10 +748,10 @@ void ModularVSTAudioProcessor::loadPresetFromPugiDoc (pugi::xml_document* doc)
     pugi::xml_node node = doc->child("App");
     pugi::xml_node instrum = node.child("Instrument");
     
-    juce::Logger::getCurrentLogger()->outputDebugString("hello");
-    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Resonator").child("PARAM").attribute("id").value());
-    juce::Logger::getCurrentLogger()->outputDebugString(doc->child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
-    juce::Logger::getCurrentLogger()->outputDebugString(instrum.child("Connection").attribute("type").value());
+    DBG("hello");
+    DBG(instrum.child("Resonator").child("PARAM").attribute("id").value());
+    DBG(doc->child("App").child("Instrument").child("Resonator").child("PARAM").attribute("value").value());
+    DBG(instrum.child("Connection").attribute("type").value());
     
     std::vector<std::vector<std::vector<double>>> params;
     std::vector<std::vector<std::vector<std::vector<double>>>> connects;
@@ -795,31 +794,31 @@ void ModularVSTAudioProcessor::loadPresetFromPugiDoc (pugi::xml_document* doc)
             outputLocs[i].push_back(std::vector<std::vector<double>>());
             outputChannels[i].push_back(std::vector<double>());
 //            ++resoNum[i];
-            juce::Logger::getCurrentLogger()->outputDebugString("Resonator:");
+            DBG("Resonator:");
             for (pugi::xml_attribute resoAttr : reso.attributes())
             {
-                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.name());
-                juce::Logger::getCurrentLogger()->outputDebugString(resoAttr.value());
+                DBG(resoAttr.name());
+                DBG(resoAttr.value());
                 auto attrib = String (resoAttr.name());
                 if (attrib == "type") {
                     resoType.push_back(resoAttr.value());
                 }
             }
-            juce::Logger::getCurrentLogger()->outputDebugString("Parameters:");
+            DBG("Parameters:");
             
             for (pugi::xml_node resoChild : reso.children())
             {
                 if (String (resoChild.name()) == "PARAM")
                 {
-                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
-                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("value").value());
+                    DBG(resoChild.attribute("id").value());
+                    DBG(resoChild.attribute("value").value());
                     params[i][r].push_back(std::stod(resoChild.attribute("value").value()));
                 }
                 else if (String (resoChild.name()) == "Output")
                 {
-                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("id").value());
-                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("loc").value());
-                    juce::Logger::getCurrentLogger()->outputDebugString(resoChild.attribute("channel").value());
+                    DBG(resoChild.attribute("id").value());
+                    DBG(resoChild.attribute("loc").value());
+                    DBG(resoChild.attribute("channel").value());
                     if (resoChild.attribute ("loc"))
                         outputLocs[i][r].push_back (std::vector<double> {std::stod(resoChild.attribute("loc").value())});
                     else
@@ -846,22 +845,22 @@ void ModularVSTAudioProcessor::loadPresetFromPugiDoc (pugi::xml_document* doc)
             connects[i].push_back(std::vector<std::vector<double>>());
             connType.push_back(std::vector<String>());
 //            ++connNum[i];
-            juce::Logger::getCurrentLogger()->outputDebugString("Connection:");
+            DBG("Connection:");
             for (pugi::xml_attribute connAttr : conn.attributes())
             {
-                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.name());
-                juce::Logger::getCurrentLogger()->outputDebugString(connAttr.value());
+                DBG(connAttr.name());
+                DBG(connAttr.value());
                 auto attrib = String(connAttr.name());
                 if (attrib == "type") {
                     connType[i].push_back(connAttr.value());
                 }
             }
-            juce::Logger::getCurrentLogger()->outputDebugString("Connection locations:");
+            DBG("Connection locations:");
 
             for (pugi::xml_node connChild : conn.children())
             {
-                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("id").value());
-                juce::Logger::getCurrentLogger()->outputDebugString(connChild.attribute("value").value());
+                DBG(connChild.attribute("id").value());
+                DBG(connChild.attribute("value").value());
                 if (connChild.attribute("value"))
                     connects[i][c].push_back(std::vector<double> {std::stod(connChild.attribute("value").value())});
                 else
@@ -1077,7 +1076,7 @@ void ModularVSTAudioProcessor::loadPresetFromPugiDoc (pugi::xml_document* doc)
                 break;
             case addResonatorToGroupAction:
                 instruments[i]->getCurrentlySelectedResonatorGroup()->addResonator (instruments[i]->getResonatorPtr (resonatorInGroupIds[i][g-1][rIG]), g);
-                juce::Logger::getCurrentLogger()->outputDebugString ("Resonator " + String (resonatorInGroupIds[i][g-1][rIG]) + " is part of group " + String (g));
+                DBG ("Resonator " + String (resonatorInGroupIds[i][g-1][rIG]) + " is part of group " + String (g));
 
                 ++rIG;
                 break;
@@ -1184,19 +1183,19 @@ void ModularVSTAudioProcessor::debugLoadPresetResult (PresetResult res)
 {
     switch (res) {
         case applicationIsNotEmpty:
-            Logger::getCurrentLogger()->outputDebugString ("Application is not empty.");
+            DBG ("Application is not empty.");
             break;
         case fileNotFound:
-            Logger::getCurrentLogger()->outputDebugString ("Presetfile not found");
+            DBG ("Presetfile not found");
             break;
         case presetNotLoaded:
-            Logger::getCurrentLogger()->outputDebugString ("For whatever reason, the preset was not loaded.");
+            DBG ("For whatever reason, the preset was not loaded.");
             break;
         case loadingCancelled:
-            Logger::getCurrentLogger()->outputDebugString ("Loading was cancelled.");
+            DBG ("Loading was cancelled.");
             break;
         case success:
-            Logger::getCurrentLogger()->outputDebugString ("Preset loaded successfully.");
+            DBG ("Preset loaded successfully.");
             break;
 
         default:

@@ -189,7 +189,7 @@ void StiffString::paint (juce::Graphics& g)
     g.strokePath (visualiseState (g), PathStrokeType(2.0f));
     
     // Draw excitation module
-    if (applicationState == normalState && isExcitationActive())
+    if (applicationState == normalState && isExcitationActive() && getCurExciterModule() != nullptr)
     {
         getCurExciterModule()->drawExciter (g);
     }

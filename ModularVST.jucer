@@ -9,13 +9,10 @@
       <FILE id="e9SETK" name="DebugCPP.cpp" compile="1" resource="0" file="Source/DebugCPP.cpp"/>
       <FILE id="KLPmfA" name="DebugCPP.h" compile="0" resource="0" file="Source/DebugCPP.h"/>
       <GROUP id="{EDF98768-FD60-FF15-CE20-76C2402D92E3}" name="Presets">
+        <FILE id="imqQzY" name="Marimba.xml" compile="0" resource="1" file="Presets/Marimba.xml"/>
         <FILE id="OfdwAK" name="Timpani.xml" compile="0" resource="1" file="Presets/Timpani.xml"/>
         <FILE id="LR8xij" name="Cello.xml" compile="0" resource="1" file="Presets/Cello.xml"/>
         <FILE id="ReyFBa" name="BanjoLele.xml" compile="0" resource="1" file="Presets/BanjoLele.xml"/>
-        <FILE id="xrKq0a" name="String1.xml" compile="0" resource="1" file="Presets/String1.xml"/>
-        <FILE id="C8uPQG" name="String5.xml" compile="0" resource="1" file="Presets/String5.xml"/>
-        <FILE id="Yfuert" name="String10.xml" compile="0" resource="1" file="Presets/String10.xml"/>
-        <FILE id="zUrlho" name="String20.xml" compile="0" resource="1" file="Presets/String20.xml"/>
         <FILE id="xqQ5sY" name="Guitar.xml" compile="0" resource="1" file="Presets/Guitar.xml"/>
         <FILE id="d5cGhM" name="WeirdInstrument.xml" compile="0" resource="1"
               file="Presets/WeirdInstrument.xml"/>
