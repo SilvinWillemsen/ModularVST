@@ -171,7 +171,8 @@ void Hammer::calculate (std::vector<double*>& u)
     } else {
         if (!isModule1D)
             DBG("Not made for 2D yet!!");
-        
+        if (width > N-1)
+            width = 2;
         cLoc = Global::limit (floor (excitationLoc * N), ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1);
         alpha = Global::limit (excitationLoc * N, ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1) - cLoc;
 

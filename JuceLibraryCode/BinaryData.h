@@ -9,7 +9,7 @@
 namespace BinaryData
 {
     extern const char*   Marimba_xml;
-    const int            Marimba_xmlSize = 14778;
+    const int            Marimba_xmlSize = 25132;
 
     extern const char*   Timpani_xml;
     const int            Timpani_xmlSize = 1036;

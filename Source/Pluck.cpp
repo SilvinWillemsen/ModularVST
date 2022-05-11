@@ -140,6 +140,9 @@ void Pluck::calculate (std::vector<double*>& u)
         uI = Global::interpolation (u[1], cLoc, alpha);
         uIPrev = Global::interpolation (u[2], cLoc, alpha);
     } else {
+        if (width > N-1)
+            width = 2;
+
         cLoc = Global::limit (floor (excitationLoc * N), ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1);
         alpha = Global::limit (excitationLoc * N, ceil(ceil(width)*0.5) + 1, N-ceil(ceil(width)*0.5) - 1) - cLoc;
 
