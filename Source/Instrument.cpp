@@ -1285,6 +1285,12 @@ void Instrument::virtualMouseMove2 (const double x, const double y)
     resonators[curMouseMoveResonator2]->myMouseMove (x, yRes, false);
 }
 
+void Instrument::exitMouse2()
+{
+    if (prevMouseMoveResonator2 != -1)
+        resonators[prevMouseMoveResonator2]->myMouseExit(-1, -1, false);
+}
+
 
 Instrument::ResonatorGroup::ResonatorGroup()
 {

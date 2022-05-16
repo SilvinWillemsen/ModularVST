@@ -135,6 +135,7 @@ public:
         hammerVelocityID,
         trigger1ID,
         trigger2ID,
+        activateSecondExciterID,
         presetSelectID,
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
         loadPresetToggleID
@@ -199,6 +200,7 @@ private:
     AudioParameterBool* trigger2;
     AudioParameterBool* useVelocity;
     AudioParameterFloat* hammerVelocity;
+    AudioParameterBool* activateSecondExciter;
     AudioParameterFloat* presetSelect;
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
     AudioParameterBool* loadPresetToggle;

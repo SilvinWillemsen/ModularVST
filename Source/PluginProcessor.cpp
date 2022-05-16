@@ -55,7 +55,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (useVelocity = new AudioParameterBool ("useVelocity", "Use Velocity", 1));
     addParameter (hammerVelocity = new AudioParameterFloat ("hammerVelocity", "Hammer Velocity", 0, 1, 0.5));
     addParameter (trigger1 = new AudioParameterBool ("trigger1", "Trigger1", 0));
-    addParameter (trigger2 = new AudioParameterBool ("trigger2", "Trigger2", 0));
+    addParameter(trigger2 = new AudioParameterBool("trigger2", "Trigger2", 0));
+    addParameter(activateSecondExciter = new AudioParameterBool("activateSecondExciter", "ActivateSecondExciter", 0));
     addParameter (presetSelect = new AudioParameterFloat ("presetSelect", "Preset Select", 0, 0.99, 0.01));
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
     addParameter (loadPresetToggle = new AudioParameterBool ("loadPresetToggle", "Load preset", 1));
@@ -75,7 +76,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (useVelocity);
     allParameters.push_back (hammerVelocity);
     allParameters.push_back (trigger1);
-    allParameters.push_back (trigger2);
+    allParameters.push_back(trigger2);
+    allParameters.push_back(activateSecondExciter);
     allParameters.push_back(presetSelect);
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
     allParameters.push_back(loadPresetToggle);
@@ -418,7 +420,8 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                 mouseSmoothValues1[1] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues1[1] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * yVal1;
                 mouseSmoothValues2[1] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues2[1] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * yVal2;
                 inst->virtualMouseMove1 (mouseSmoothValues1[0], mouseSmoothValues1[1]);
-                inst->virtualMouseMove2 (mouseSmoothValues2[0], mouseSmoothValues2[1]);
+                if (sliderValues[activateSecondExciterID] >= 0.5f)
+                    inst->virtualMouseMove2 (mouseSmoothValues2[0], mouseSmoothValues2[1]);
                 // MAKE SMOOTH WORK FOR VELOCITY HAMMER
             } else
             {
@@ -1190,6 +1193,13 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
             currentlyActiveInstrument->triggerHammer2();
     }
 
+    if (name == "activateSecondExciter")
+    {
+        if (sliderValues[activateSecondExciterID] < 0.5f)
+        {
+            currentlyActiveInstrument->exitMouse2();
+        }
+    }
     
     if (name == "excite" || name == "excitationType")
     {
@@ -1220,7 +1230,8 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
         }
         // only move the mouse for the currently active instrument
         currentlyActiveInstrument->virtualMouseMove1 (sliderValues[mouseX1ID], sliderValues[mouseY1ID]);
-        currentlyActiveInstrument->virtualMouseMove2 (sliderValues[mouseX2ID], sliderValues[mouseY2ID]);
+        if (sliderValues[activateSecondExciterID] >= 0.5f)
+            currentlyActiveInstrument->virtualMouseMove2 (sliderValues[mouseX2ID], sliderValues[mouseY2ID]);
 
     }
 }
