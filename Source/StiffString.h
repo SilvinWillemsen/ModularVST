@@ -64,6 +64,7 @@ public:
     void saveOutput() override;
     
     void changeDensity (double rhoToSet) override;
+
 private:
     
     // Model parameters

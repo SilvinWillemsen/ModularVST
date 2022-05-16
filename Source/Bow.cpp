@@ -118,7 +118,7 @@ void Bow::calculate (std::vector<double*>& u)
     
     b = 2.0 / k * vB + 2.0 * sig0 * vB - b1 * (uI - uIPrev) - cOhSq * (uI1 - 2.0 * uI + uIM1) + kOhhSq * (uI2 - 4.0 * uI1 + 6.0 * uI - 4.0 * uIM1 + uIM2) - b2 * ((uI1 - 2 * uI + uIM1) - (uIPrev1 - 2.0 * uIPrev + uIPrevM1));
 
-    Fb = f / (rho * AorH);
+    Fb = f / (rho * AorH * h);
 
     qPrev = 0;
     // NR loop

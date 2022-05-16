@@ -543,18 +543,21 @@ void Instrument::mouseExit (const MouseEvent& e)
 
 void Instrument::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
 {
-//    std::cout << wheel.deltaY << std::endl;
     for (auto res : resonators)
     {
+        if (res->getCurExciterModule() == nullptr)
+            return;
+
         switch (res->getExcitationType()) {
             case pluck:
             case hammer:
                 res->getCurExciterModule()->setControlParameter (Global::limit (res->getCurExciterModule()->getControlParameter() - wheel.deltaY, 1, 10));
                 break;
             case bow:
-                res->getCurExciterModule()->setControlParameter (Global::limit (res->getCurExciterModule()->getControlParameter() + wheel.deltaY, -0.2, 0.2));
+            {
+                res->setBowParams (Global::limit (res->getCurExciterModule()->getControlParameter() + wheel.deltaY * 0.25, -0.2, 0.2));
                 break;
-
+            }
             default:
                 break;
         }

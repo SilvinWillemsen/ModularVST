@@ -10,7 +10,7 @@
 
 #pragma once
 // 0: Build for Unity, 1: Testing for Unity (Editor and sliders + all presets), 2: Make a new preset
-#define BUILD_CONFIG 0
+#define BUILD_CONFIG 1
 
 #include <JuceHeader.h>
 namespace AppConfig

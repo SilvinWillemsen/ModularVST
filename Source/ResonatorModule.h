@@ -194,6 +194,8 @@ public:
         else
             myMouseMove (e.x, e.y, true);
     };
+
+    void setBowParams (double newVel);
         
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule

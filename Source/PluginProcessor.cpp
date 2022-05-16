@@ -53,7 +53,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (excite = new AudioParameterBool ("excite", "Excite", 0));
     addParameter (excitationType = new AudioParameterFloat ("excitationType", "Excitation Type", 0, 0.99, 0.5));
     addParameter (useVelocity = new AudioParameterBool ("useVelocity", "Use Velocity", 1));
-    addParameter (hammerVelocity = new AudioParameterFloat ("hammerVelocity", "Hammer Velocity", 0, 1, 0.5));
+    addParameter (velocity = new AudioParameterFloat ("velocity", "velocity", 0, 1, 0.5));
     addParameter (trigger1 = new AudioParameterBool ("trigger1", "Trigger1", 0));
     addParameter(trigger2 = new AudioParameterBool("trigger2", "Trigger2", 0));
     addParameter(activateSecondExciter = new AudioParameterBool("activateSecondExciter", "ActivateSecondExciter", 0));
@@ -74,11 +74,11 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     allParameters.push_back (excite);
     allParameters.push_back (excitationType);
     allParameters.push_back (useVelocity);
-    allParameters.push_back (hammerVelocity);
+    allParameters.push_back (velocity);
     allParameters.push_back (trigger1);
-    allParameters.push_back(trigger2);
-    allParameters.push_back(activateSecondExciter);
-    allParameters.push_back(presetSelect);
+    allParameters.push_back (trigger2);
+    allParameters.push_back (activateSecondExciter);
+    allParameters.push_back (presetSelect);
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
     allParameters.push_back(loadPresetToggle);
 #endif
@@ -88,6 +88,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     
     mouseSmoothValues1 = { *mouseX1, *mouseY1 };
     mouseSmoothValues2 = { *mouseX2, *mouseY2 };
+    velocitySmoothValue = *velocity;
+
     addChangeListener (this);
     
     numOfBinaryPresets = BinaryData::namedResourceListSize;
@@ -387,11 +389,12 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             // virtual mouse move at audio rate (smoothing)
             if (sliderValues[smoothID] == 1 && sliderControl)
             {
+
                 mouseSmoothValues1[0] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues1[0] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * sliderValues[mouseX1ID];
                 mouseSmoothValues2[0] = (0.99 + 0.0001 * sliderValues[smoothnessID]) * mouseSmoothValues2[0] + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * sliderValues[mouseX2ID];
 //#ifndef LOAD_ALL_UNITY_INSTRUMENTS
 //                // If velocity is used, locate the mouse at a ylocation dependent on the velocity
-//                double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[1];
+//                double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseYID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[velocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[1];
 //#else
                 double yVal1 = 0;
                 double yVal2 = 0;
@@ -401,14 +404,14 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                        currentlyActiveInstrument->getCurrentlyHoveredResonators()[0]->isModule1D())
                     {
                         // If velocity is used for a 1D object, locate the mouse at a ylocation dependent on the velocity
-                        yVal1 = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY1ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY1ID];
+                        yVal1 = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY1ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[velocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY1ID];
                     } else {
                         yVal1 = sliderValues[mouseY1ID];
                     }
                     if (currentlyActiveInstrument->getCurrentlyHoveredResonators()[1] != nullptr &&
                        currentlyActiveInstrument->getCurrentlyHoveredResonators()[1]->isModule1D())
                     {
-                        yVal2 = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY2ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY2ID];
+                        yVal2 = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY2ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[velocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY2ID];
 
                     } else {
                         yVal2 = sliderValues[mouseY2ID];
@@ -422,6 +425,10 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                 inst->virtualMouseMove1 (mouseSmoothValues1[0], mouseSmoothValues1[1]);
                 if (sliderValues[activateSecondExciterID] >= 0.5f)
                     inst->virtualMouseMove2 (mouseSmoothValues2[0], mouseSmoothValues2[1]);
+
+                velocitySmoothValue = (0.99 + 0.0001 * sliderValues[smoothnessID]) * velocitySmoothValue + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * (sliderValues[velocityID] * 0.4 - 0.2);
+                if (sliderValues[excitationTypeID] >= 0.67f)
+                    inst->setBowParams (velocitySmoothValue);
                 // MAKE SMOOTH WORK FOR VELOCITY HAMMER
             } else
             {
@@ -1152,35 +1159,43 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
         return;
     
     if (((name == "mouseX1" || name == "mouseY1"
-         || (name == "hammerVelocity" && sliderValues[useVelocityID] && curExcitationType == hammer))
+         || (name == "velocity" && sliderValues[useVelocityID] && curExcitationType == hammer))
         || name == "useVelocity") // refresh
         && sliderValues[exciteID] >= 0.5)
     {
         if (sliderValues[smoothID] != 1)
         {
-            double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY1ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY1ID];
+            double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY1ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[velocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY1ID];
             currentlyActiveInstrument->virtualMouseMove1 (sliderValues[mouseX1ID], yVal);
         }
         // else, the virtualMouseMove goes at audio rate
     }
     
     if (((name == "mouseX2" || name == "mouseY2"
-         || (name == "hammerVelocity" && sliderValues[useVelocityID] && curExcitationType == hammer))
+         || (name == "velocity" && sliderValues[useVelocityID] && curExcitationType == hammer))
         || name == "useVelocity") // refresh
         && sliderValues[exciteID] >= 0.5)
     {
         if (sliderValues[smoothID] != 1)
         {
-            double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY2ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[hammerVelocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY2ID];
+            double yVal = (sliderValues[useVelocityID] && curExcitationType == hammer) ? (floor(sliderValues[mouseY2ID] * currentlyActiveInstrument->getNumResonatorModules()) + 0.5 - 0.5 * sliderValues[velocityID]) / currentlyActiveInstrument->getNumResonatorModules() : sliderValues[mouseY2ID];
             currentlyActiveInstrument->virtualMouseMove2 (sliderValues[mouseX2ID], yVal);
         }
         // else, the virtualMouseMove goes at audio rate
     }
     
     // Set hammer velocity for all 2D objects (as this can not be directly controlled by the mouse x/y positions)
-    if (name == "hammerVelocity")
-        for (auto inst : instruments)
-            inst->set2DresHammerVelocity (sliderValues[hammerVelocityID] * 0.1 + 0.5);
+    if (name == "velocity")
+        if (curExcitationType == hammer)
+        {
+            for (auto inst : instruments)
+                inst->set2DresHammerVelocity(sliderValues[velocityID] * 0.1 + 0.5);
+        }
+        else if (curExcitationType == bow && sliderValues[smoothID] != 1)
+        {
+            for (auto inst : instruments)
+                currentlyActiveInstrument->setBowParams (sliderValues[velocityID] * 0.4 - 0.2);
+        }
     
     if (name == "trigger1" && sliderValues[trigger1ID] == 1)
     {

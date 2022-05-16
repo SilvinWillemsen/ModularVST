@@ -149,3 +149,11 @@ void ResonatorModule::changeListenerCallback (ChangeBroadcaster* changeBroadcast
         }
 }
 
+void ResonatorModule::setBowParams(double newVel)
+{
+    if (getCurExciterModule() != nullptr)
+    {
+        getCurExciterModule()->setControlParameter(newVel);
+        getCurExciterModule()->setForce(abs(newVel * 0.5));
+    }
+}

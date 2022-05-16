@@ -305,6 +305,8 @@ public:
     
     std::vector<std::shared_ptr<ResonatorModule>>& getCurrentlyHoveredResonators() { return currentlyHoveredResonators; };
     
+    void setBowParams(double newVel) { for (auto res : resonators) res->setBowParams(newVel); };
+
 private:
     
     int fs;

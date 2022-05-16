@@ -361,7 +361,7 @@ void StiffString::myMouseEnter (const double x, const double y, bool triggeredBy
             break;
         case bow:
         {
-            getCurExciterModule()->setForce (20.0 * h);
+            getCurExciterModule()->setForce (0.1);
             break;
         }
         default:

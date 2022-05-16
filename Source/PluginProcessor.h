@@ -132,7 +132,7 @@ public:
         exciteID,
         excitationTypeID,
         useVelocityID,
-        hammerVelocityID,
+        velocityID,
         trigger1ID,
         trigger2ID,
         activateSecondExciterID,
@@ -199,7 +199,7 @@ private:
     AudioParameterBool* trigger1;
     AudioParameterBool* trigger2;
     AudioParameterBool* useVelocity;
-    AudioParameterFloat* hammerVelocity;
+    AudioParameterFloat* velocity;
     AudioParameterBool* activateSecondExciter;
     AudioParameterFloat* presetSelect;
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
@@ -210,6 +210,7 @@ private:
     std::vector<float> sliderValues;
     std::vector<float> mouseSmoothValues1;
     std::vector<float> mouseSmoothValues2;
+    float velocitySmoothValue;
     std::vector<float> prevSliderValues;
 
 //#endif
