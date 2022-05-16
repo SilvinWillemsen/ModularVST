@@ -53,7 +53,7 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (excite = new AudioParameterBool ("excite", "Excite", 0));
     addParameter (excitationType = new AudioParameterFloat ("excitationType", "Excitation Type", 0, 0.99, 0.5));
     addParameter (useVelocity = new AudioParameterBool ("useVelocity", "Use Velocity", 1));
-    addParameter (velocity = new AudioParameterFloat ("velocity", "velocity", 0, 1, 0.5));
+    addParameter (velocity = new AudioParameterFloat ("velocity", "Velocity", 0, 1, 0.5));
     addParameter (trigger1 = new AudioParameterBool ("trigger1", "Trigger1", 0));
     addParameter(trigger2 = new AudioParameterBool("trigger2", "Trigger2", 0));
     addParameter(activateSecondExciter = new AudioParameterBool("activateSecondExciter", "ActivateSecondExciter", 0));
@@ -429,7 +429,6 @@ void ModularVSTAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                 velocitySmoothValue = (0.99 + 0.0001 * sliderValues[smoothnessID]) * velocitySmoothValue + (1.0 - (0.99 + 0.0001 * sliderValues[smoothnessID])) * (sliderValues[velocityID] * 0.4 - 0.2);
                 if (sliderValues[excitationTypeID] >= 0.67f)
                     inst->setBowParams (velocitySmoothValue);
-                // MAKE SMOOTH WORK FOR VELOCITY HAMMER
             } else
             {
                 mouseSmoothValues1[0] = sliderValues[mouseX1ID];
