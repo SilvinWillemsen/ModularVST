@@ -9,12 +9,18 @@
 */
 
 #pragma once
+#include "AppConfig.h"
 //#define USE_EIGEN     // use overlapping connections (and therefore the eigen library) or not
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
-#define NO_EDITOR // build for unity
-#define LOAD_ALL_UNITY_INSTRUMENTS // build for unity
-//#define EDITOR_AND_SLIDERS
+
+#if (BUILD_CONFIG == 0) // Build for Unity
+    #define NO_EDITOR 
+    #define LOAD_ALL_UNITY_INSTRUMENTS
+#elif (BUILD_CONFIG == 1) // Testing for Unity
+    #define EDITOR_AND_SLIDERS
+    #define LOAD_ALL_UNITY_INSTRUMENTS
+#endif
 
 #include <JuceHeader.h>
 
@@ -155,7 +161,7 @@ namespace Global
     static const int listBoxRowHeight = 40;
 
     static const bool alwaysShowInOuts = false;
-    static const double oneDOutputScaling = 0.25;
+    static const double oneDOutputScaling = 0.05;
     static const double twoDOutputScaling = 1;
     static const double stringVisualScaling = 200.0;
 
@@ -167,14 +173,7 @@ namespace Global
     static const double defaultConnDampCoeff = 0.01;
     static const double eps = 1e-15;
 
-    static StringArray presetFilesToIncludeInUnity = {
-        "Guitar_xml",
-        "Harp_xml",
-        "BanjoLele_xml",
-        "Timpani_xml",
-        "Cello_xml",
-        "Marimba_xml"
-    };
+    static StringArray presetFilesToIncludeInUnity = AppConfig::presetFilesToIncludeInUnity;
 
     static StringArray inOutInstructions = {
         "Left-Click: add a stereo output.",
