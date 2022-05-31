@@ -30,7 +30,7 @@ AddModuleWindow::AddModuleWindow (ChangeListener* audioProcessorEditor)
     
     resonatorTypeBox->addItem ("Stiff String", stiffString);
     resonatorTypeBox->addItem ("Bar", bar);
-    resonatorTypeBox->addItem ("Acoustic Tube", acousticTube);
+//    resonatorTypeBox->addItem ("Acoustic Tube", acousticTube);
     resonatorTypeBox->addItem ("Membrane", membrane);
     resonatorTypeBox->addItem ("Thin Plate", thinPlate);
     resonatorTypeBox->addItem ("Stiff Membrane", stiffMembrane);

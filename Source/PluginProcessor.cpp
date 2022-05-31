@@ -581,9 +581,9 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 case bar:
                     file << "Bar\">";
                     break;
-                case acousticTube:
-                    file << "Acoustic_Tube\">";
-                    break;
+//                case acousticTube:
+//                    file << "Acoustic_Tube\">";
+//                    break;
                 case membrane:
                     file << "Membrane\">";
                     break;

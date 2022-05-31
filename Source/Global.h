@@ -102,7 +102,6 @@ enum ResonatorModuleType
     noResonatorModule = 0, // set to 1 for the combo box options
     stiffString,
     bar,
-    acousticTube,
     membrane,
     thinPlate,
     stiffMembrane,
