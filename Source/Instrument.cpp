@@ -608,21 +608,16 @@ void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
     for (auto res : resonators)
     {
-//        if (res.get() == changeBroadcaster)
-//        {
-//            if (res->getAction() == interactWithGroupAction)
-//            {
-//                groupCurrentlyInteractingWith = &resonatorGroups[res->getGroupNumber()-1];
-//                res->setAction (noAction);
-//                return;
-//            }
-//            else if (res->getAction() == noInteractionWithGroupAction)
-//            {
-//                groupCurrentlyInteractingWith = nullptr;
-//                res->setAction (noAction);
-//                return;
-//            }
-//        }
+        if (res.get() == changeBroadcaster)
+        {
+            if (!res.get()->ableToInitialise())
+            {
+                resonatorToRemove = res;
+                NativeMessageBox::showMessageBoxAsync (AlertWindow::AlertIconType::WarningIcon, res->getErrorMsg(), "Please change your parameters", this, ModalCallbackFunction::create ([&] (int test){ test = 1; }));
+
+                removeResonatorModule();
+            }
+        }
 
     }
     for (auto res : resonators)

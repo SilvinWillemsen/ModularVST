@@ -106,7 +106,7 @@ void ModularVSTAudioProcessorEditor::paint (juce::Graphics& g)
     if (instruments.size() == 0)
     {
         g.setColour (Colours::white);
-        g.drawText ("Click on \"Add Instrument\" to add an instrument to the application!", getLocalBounds(), Justification::centred);
+        g.drawText ("Click on \"Reset\" to start building your instrument!", getLocalBounds(), Justification::centred);
         Rectangle<int> area = getLocalBounds()
             .withHeight (getHeight() - (2.0 * Global::margin + Global::buttonHeight))
             .withWidth (getWidth() - (2.0 * Global::margin + Global::buttonWidth))
@@ -197,6 +197,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 case addInstrumentAction:
                 {
                     // Add an instrument and make it visible
+#ifndef USE_RESET_BUTTON
                     audioProcessor.addInstrument();
                     std::shared_ptr<Instrument> newInstrument = instruments[instruments.size()-1];
                     currentlyActiveInstrument = newInstrument;
@@ -204,6 +205,20 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     addAndMakeVisible (newInstrument.get());
                     newInstrument->addChangeListener (this);
                     newInstrument->resized();
+#else
+                    stopTimer();
+                    for (auto inst : instruments)
+                        inst->unReadyAllModules();
+                    String emptyInst = "EmptyInstrument.xml";
+                    PresetResult res = audioProcessor.loadPreset (emptyInst, false);
+                    if (res != success)
+                        for (auto inst : instruments)
+                            inst->reReadyAllModules();
+                    else
+                        currentlyActiveInstrument = instruments[instruments.size()-1];
+                    refresh();
+
+#endif
                     break;
                 }
                 case addResonatorModuleAction:

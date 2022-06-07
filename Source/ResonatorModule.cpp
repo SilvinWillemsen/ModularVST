@@ -16,7 +16,7 @@ ResonatorModule::ResonatorModule (ResonatorModuleType rmt, NamedValueSet& parame
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    if (rmt == bar || rmt == stiffString || rmt == acousticTube)
+    if (rmt == bar || rmt == stiffString)
         is1D = true;
     else
         is1D = false;
@@ -27,10 +27,36 @@ ResonatorModule::~ResonatorModule()
 {
 }
 
-void ResonatorModule::initialiseModule()
+bool ResonatorModule::initialiseModule()
 {
-    // Check whether the number of grid points has been set
-    jassert (N > 0);
+//    // Check whether the number of grid points has been set
+//    jassert (N > 0);
+    
+    // Limit on number of points
+    if (is1D)
+    {
+        if (N > 1000)
+        {
+            errorMsg = "Too many points!";
+            return false;
+        } else if (N < 10)
+        {
+            errorMsg = "Too few points!";
+            return false;
+        }
+    } else {
+        if (N > 10000)
+        {
+            errorMsg = "Too many points!";
+            return false;
+        }
+        if (Nx < 5 || Ny < 5)
+        {
+            errorMsg = "Too few points!";
+            return false;
+        }
+    }
+    canInitialise = true;
     
     /*  Make u pointers point to the first index of the state vectors.
         To use u (and obtain a vector from the state vectors) use indices like u[n][l] where,
@@ -71,6 +97,7 @@ void ResonatorModule::initialiseModule()
 
     moduleIsReady = true;
     justReady = true;
+    return true;
 }
 
 void ResonatorModule::setStatesToZero()

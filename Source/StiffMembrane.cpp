@@ -50,6 +50,7 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
     sig0 = *parameters.getVarPointer ("sig0");
     sig1 = *parameters.getVarPointer ("sig1");
     
+    nonAdvancedParameters = parameters;
     // Calculate wave speed (squared)
     cSq = T / (rho * H);
     
@@ -59,11 +60,13 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
 
     visualScaling = 10000;
         
-    // Initialise paramters
+    // Initialise parameters
     initialise (fs);
     
     // Initialise states and connection division term of the system
-    initialiseModule();
+    if (!initialiseModule())
+        sendChangeMessage();
+    
     std::cout << Nx << " " << Ny << std::endl;
 //    excite(); // start by exciting
     

@@ -96,7 +96,8 @@ StiffString::StiffString (ResonatorModuleType rmt, NamedValueSet& parameters, bo
     initialise (fs);
     
     // Initialise states and connection division term of the system
-    initialiseModule();
+    if (!initialiseModule())
+        sendChangeMessage();
     
     if (Global::bowAtStartup)
     {

@@ -30,7 +30,6 @@ AddModuleWindow::AddModuleWindow (ChangeListener* audioProcessorEditor)
     
     resonatorTypeBox->addItem ("Stiff String", stiffString);
     resonatorTypeBox->addItem ("Bar", bar);
-    resonatorTypeBox->addItem ("Acoustic Tube", acousticTube);
     resonatorTypeBox->addItem ("Membrane", membrane);
     resonatorTypeBox->addItem ("Thin Plate", thinPlate);
     resonatorTypeBox->addItem ("Stiff Membrane", stiffMembrane);
@@ -144,7 +143,6 @@ void AddModuleWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         case stiffMembrane:
             coefficientList->setParameters (Global::defaultStiffMembraneParametersAdvanced);
             break;
-        // add other cases as well
         default:
             break;
     }
@@ -166,7 +164,18 @@ void AddModuleWindow::changeListenerCallback (ChangeBroadcaster* changeBroadcast
     valueEditor->setVisible (true);
     if (changeBroadcaster == coefficientList.get())
     {
-        valueLabel->setText ("Value of: " + coefficientList->getSelectedParameter(), dontSendNotification);
-        valueEditor->setText (coefficientList->getSelectedParameterValue());
+        if (Global::fullNames.contains(coefficientList->getSelectedParameter()))
+        {
+            var text = (*Global::fullNames.getVarPointer(coefficientList->getSelectedParameter()));
+            
+            valueLabel->setText(text.toString(), dontSendNotification);
+        } else {
+            if (coefficientList->getSelectedParameter() == "?")
+                valueLabel->setText("", dontSendNotification);
+            else
+                valueLabel->setText ("Value of: " + coefficientList->getSelectedParameter(), dontSendNotification);
+        }
+        valueEditor->setText (coefficientList->getSelectedParameterValue(), dontSendNotification);
+
     }
 }

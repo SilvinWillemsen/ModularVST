@@ -15,6 +15,8 @@
 //#define NO_EDITOR // build for unity
 //#define EDITOR_AND_SLIDERS
 
+#define USE_RESET_BUTTON
+
 #include <JuceHeader.h>
 
 #ifdef USE_EIGEN
@@ -84,7 +86,6 @@ enum ResonatorModuleType
 {
     stiffString = 1, // set to 1 for the combo box options
     bar,
-    acousticTube,
     membrane,
     thinPlate,
     stiffMembrane,
@@ -125,7 +126,7 @@ namespace Global
 {
     static const bool showGraphicsToggle = true;
 
-    static const bool loadPresetAtStartUp = true;
+    static const bool loadPresetAtStartUp = false;
 #ifdef NO_EDITOR
     static const bool loadFromBinary = true;
 #else
@@ -248,6 +249,24 @@ namespace Global
         {"sig0", 1},
         {"sig1", 0.005},
         {"maxPoints", 2000}
+    };
+
+    static NamedValueSet fullNames {
+        {"L", "Length"},
+        {"T", "Tension"},
+        {"rho", "Density"},
+        {"A", "Cross-sec. Area"},
+        {"E", "Youngs Mod."},
+        {"I", "Mom. of Inert."},
+        {"sig0", "Freq. Indep. Damping"},
+        {"sig1", "Freq. Dep. Damping"},
+        {"Lx", "Length (hor)"},
+        {"Ly", "Length (vert)"},
+        {"H", "Thickness"},
+        {"nu", "Poissons Ratio"},
+        {"b", "Width"},
+        {"f0", "Fundamental Freq."},
+        {"r", "Radius"}
     };
 
 

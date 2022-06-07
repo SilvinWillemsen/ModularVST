@@ -9,6 +9,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "pugixml.hpp"
+#include <unistd.h>
 
 //==============================================================================
 ModularVSTAudioProcessor::ModularVSTAudioProcessor()
@@ -416,9 +417,6 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 case bar:
                     file << "Bar\">";
                     break;
-                case acousticTube:
-                    file << "Acoustic_Tube\">";
-                    break;
                 case membrane:
                     file << "Membrane\">";
                     break;
@@ -573,7 +571,8 @@ PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFr
     std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
     const char* pathToUse = test.c_str();
     int sizeTest = 0;
-    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource ("Harp_xml", sizeTest)) : doc.load_file (pathToUse);
+    
+    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource ("guitar_xml", sizeTest)) : doc.load_file (pathToUse);
     switch (result.status)
     {
         case pugi::status_ok:

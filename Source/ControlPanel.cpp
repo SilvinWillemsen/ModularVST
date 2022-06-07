@@ -21,7 +21,11 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     allComboBoxes.reserve (8);
     allSliders.reserve (8);
 
+#ifndef USE_RESET_BUTTON
     addInstrumentButton = std::make_shared<TextButton> ("Add Instrument");
+#else
+    addInstrumentButton = std::make_shared<TextButton> ("Reset");
+#endif
     allButtons.push_back (addInstrumentButton);
 
     addResonatorModuleButton = std::make_shared<TextButton> ("Add Resonator Module");

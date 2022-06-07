@@ -36,7 +36,7 @@ public:
     bool isJustReady() { return justReady; };
     void setNotJustReady() { justReady = false; };
     void unReadyModule() { moduleIsReady = false; }; // for module removal
-    void readyModule() { moduleIsReady = true; }; // for module removal
+    void readyModule() { moduleIsReady = true; };
 
     // Scheme functions
     virtual void calculate() = 0;   // Calculate the FD scheme
@@ -160,9 +160,13 @@ public:
     
     void setEnteredThisResonator (bool e) { enteredThisResonator = e; };
     bool hasEnteredThisResonator() { return enteredThisResonator; };
+    
+    String getErrorMsg() { return errorMsg; };
+    bool ableToInitialise() { return canInitialise; };
+    
 protected:
     // Initialises the module. Must be called at the end of the constructor of the module inheriting from ResonatorModule
-    void initialiseModule();
+    bool initialiseModule();
 
     virtual double getKinEnergy() = 0;
     virtual double getPotEnergy() = 0;
@@ -238,5 +242,8 @@ private:
     Colour groupColour;
     
     bool enteredThisResonator = false;
+    
+    String errorMsg;
+    bool canInitialise = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonatorModule)
 };
