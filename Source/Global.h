@@ -14,11 +14,11 @@
 //#define CALC_ENERGY // calculate (and print) energy or not
 //#define SAVE_OUTPUT
 
-#if (BUILD_CONFIG == 0) // Build for Unity
-    #define NO_EDITOR 
-    #define LOAD_ALL_UNITY_INSTRUMENTS
-#elif (BUILD_CONFIG == 1) // Testing for Unity
+#if (BUILD_CONFIG == 1) // Testing for Unity
     #define EDITOR_AND_SLIDERS
+    #define LOAD_ALL_UNITY_INSTRUMENTS
+#elif (BUILD_CONFIG == 2) // Build for Unity
+    #define NO_EDITOR
     #define LOAD_ALL_UNITY_INSTRUMENTS
 #endif
 

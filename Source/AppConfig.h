@@ -9,8 +9,8 @@
 */
 
 #pragma once
-// 0: Build for Unity, 1: Testing for Unity (Editor and sliders + all presets), 2: Make a new preset
-#define BUILD_CONFIG 2
+// 0: Standalone (testing and creating presets), 1: Testing for Unity (Editor and sliders + all presets), 2: Build for Unity
+#define BUILD_CONFIG 0
 
 #include <JuceHeader.h>
 namespace AppConfig
