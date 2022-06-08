@@ -9,7 +9,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "pugixml.hpp"
-#include <unistd.h>
+//#include <unistd.h>
 
 //==============================================================================
 ModularVSTAudioProcessor::ModularVSTAudioProcessor()
