@@ -18,7 +18,7 @@ namespace BinaryData
     const int            TwoStringsOctave_xmlSize = 1081;
 
     extern const char*   guitar_xml;
-    const int            guitar_xmlSize = 7272;
+    const int            guitar_xmlSize = 7737;
 
     extern const char*   EmptyInstrument_xml;
     const int            EmptyInstrument_xmlSize = 52;
