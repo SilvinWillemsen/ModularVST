@@ -7,29 +7,14 @@
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
       <GROUP id="{EDF98768-FD60-FF15-CE20-76C2402D92E3}" name="Presets">
-        <FILE id="xrKq0a" name="String1.xml" compile="0" resource="1" file="Presets/String1.xml"/>
-        <FILE id="C8uPQG" name="String5.xml" compile="0" resource="1" file="Presets/String5.xml"/>
-        <FILE id="Yfuert" name="String10.xml" compile="0" resource="1" file="Presets/String10.xml"/>
-        <FILE id="zUrlho" name="String20.xml" compile="0" resource="1" file="Presets/String20.xml"/>
         <FILE id="d5cGhM" name="WeirdInstrument.xml" compile="0" resource="1"
               file="Presets/WeirdInstrument.xml"/>
         <FILE id="HdQueO" name="Harp.xml" compile="0" resource="1" file="Presets/Harp.xml"/>
         <FILE id="qVcaZj" name="TwoStringsOctave.xml" compile="0" resource="1"
               file="Presets/TwoStringsOctave.xml"/>
-        <FILE id="RY7fBJ" name="TwoStrings.xml" compile="0" resource="1" file="Presets/TwoStrings.xml"/>
-        <FILE id="MepOT1" name="TwoStringsConnected.xml" compile="0" resource="1"
-              file="Presets/TwoStringsConnected.xml"/>
-        <FILE id="iJlkOu" name="TwoStringsConnectedNonlinear.xml" compile="0"
-              resource="1" file="Presets/TwoStringsConnectedNonlinear.xml"/>
         <FILE id="DSBWku" name="guitar.xml" compile="0" resource="1" file="Presets/guitar.xml"/>
-        <FILE id="NpHdYZ" name="Plate100.xml" compile="0" resource="1" file="Presets/Plate100.xml"/>
-        <FILE id="mVduE7" name="Plate400.xml" compile="0" resource="1" file="Presets/Plate400.xml"/>
-        <FILE id="RHD9PB" name="Plate1600.xml" compile="0" resource="1" file="Presets/Plate1600.xml"/>
-        <FILE id="Dlyb3U" name="Plate2500.xml" compile="0" resource="1" file="Presets/Plate2500.xml"/>
         <FILE id="qtaXV0" name="EmptyInstrument.xml" compile="0" resource="1"
               file="Presets/EmptyInstrument.xml"/>
-        <FILE id="tUn1pb" name="TwoStringsConnectedLinear.xml" compile="0"
-              resource="1" file="Presets/TwoStringsConnectedLinear.xml"/>
       </GROUP>
       <GROUP id="{671C00D5-9279-8FA7-65F1-1A317725E8BF}" name="Pugi">
         <FILE id="tyhv6E" name="pugiconfig.hpp" compile="0" resource="0" file="Source/pugiconfig.hpp"/>
