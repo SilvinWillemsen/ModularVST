@@ -209,8 +209,8 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     stopTimer();
                     for (auto inst : instruments)
                         inst->unReadyAllModules();
-                    String emptyInst = "EmptyInstrument.xml";
-                    PresetResult res = audioProcessor.loadPreset (emptyInst, false);
+                    String emptyInst = "EmptyInstrument_xml";
+                    PresetResult res = audioProcessor.loadPreset (emptyInst, true);
                     if (res != success)
                         for (auto inst : instruments)
                             inst->reReadyAllModules();
@@ -471,8 +471,9 @@ void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
         PresetResult res;
         if (fileChooser.getResult().exists())
         {
-            String fileName = fileChooser.getResult().getFileName();
-            res = audioProcessor.loadPreset (fileName, false); // check what button in the load preset window has been pressed
+//            String fileName = fileChooser.getResult().getFileName();
+            String filePath = fileChooser.getResult().getFullPathName();
+            res = audioProcessor.loadPreset (filePath, false, true); // check what button in the load preset window has been pressed
             switch (res) {
                 case applicationIsNotEmpty:
                     Logger::getCurrentLogger()->outputDebugString ("Application is not empty.");

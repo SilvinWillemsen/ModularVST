@@ -53,11 +53,14 @@ namespace BinaryData
     extern const char*   Plate2500_xml;
     const int            Plate2500_xmlSize = 599;
 
+    extern const char*   EmptyInstrument_xml;
+    const int            EmptyInstrument_xmlSize = 52;
+
     extern const char*   TwoStringsConnectedLinear_xml;
     const int            TwoStringsConnectedLinear_xmlSize = 27218;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 16;
+    const int namedResourceListSize = 17;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

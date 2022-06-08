@@ -103,7 +103,7 @@ public:
 
     // Presets
     PresetResult savePreset (String& fileName);
-    PresetResult loadPreset (String& fileName, bool loadFromBinary);
+    PresetResult loadPreset (String& fileName, bool loadFromBinary, bool useFullPath = false);
     String getPresetPath()
     {
         return presetPath;

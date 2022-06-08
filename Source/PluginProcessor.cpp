@@ -564,15 +564,16 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
     return success;
 }
 
-PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary)
+PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary, bool useFullPath)
 {
     
     pugi::xml_document doc;
-    std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
+    std::string test = useFullPath ? fileName.toStdString() : String(presetPath + fileName).toStdString();// .getCharPointer()
+    
     const char* pathToUse = test.c_str();
     int sizeTest = 0;
-    
-    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource ("guitar_xml", sizeTest)) : doc.load_file (pathToUse);
+    const char* fileCharIfNeeded = fileName.getCharPointer();
+    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource (fileCharIfNeeded, sizeTest)) : doc.load_file (pathToUse);
     switch (result.status)
     {
         case pugi::status_ok:
