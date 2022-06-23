@@ -37,15 +37,19 @@ public:
     
     Component* refreshComponentForRow (int rowNumber, bool isRowSelected, Component* existingComponentToUpdate) override;
            
-    void listBoxItemClicked (int row, const MouseEvent&) override;
+//    void listBoxItemClicked (int row, const MouseEvent&) override;
     void printParameterNames();
-    
+    void selectedRowsChanged (int lastRowSelected) override;
+
     NamedValueSet& getParameters() { return parameters; };
     void setParameters (const NamedValueSet& p) { parameters = p; };
     void setParameter (double p) { parameters.set (parameters.getName (getSelectedRow()), p); };
     int getSelectedRow() { return list.getSelectedRow(); };
     
-    String getSelectedParameter() { return parameters.getName (getSelectedRow()).toString(); };
+    String getSelectedParameter() {
+        return (getSelectedRow() == -1) ? "?" : parameters.getName (getSelectedRow()).toString();
+        
+    };
     String getSelectedParameterValue();
     void deselect() { list.deselectAllRows(); };
     

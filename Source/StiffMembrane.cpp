@@ -178,13 +178,17 @@ StiffMembrane::StiffMembrane (ResonatorModuleType rmt, NamedValueSet& parameters
 
     setParameters (parameters);
     
+    nonAdvancedParameters = parameters;
+
     visualScaling = 10000;
         
     // Initialise paramters
     initialise (fs);
     
     // Initialise states and connection division term of the system
-    initialiseModule();
+    if (!initialiseModule())
+        sendChangeMessage();
+    
     std::cout << Nx << " " << Ny << std::endl;
 //    excite(); // start by exciting
     

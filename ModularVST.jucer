@@ -31,6 +31,8 @@
         <FILE id="mVduE7" name="Plate400.xml" compile="0" resource="1" file="Presets/Plate400.xml"/>
         <FILE id="RHD9PB" name="Plate1600.xml" compile="0" resource="1" file="Presets/Plate1600.xml"/>
         <FILE id="Dlyb3U" name="Plate2500.xml" compile="0" resource="1" file="Presets/Plate2500.xml"/>
+        <FILE id="gI58pD" name="EmptyInstrument.xml" compile="0" resource="1"
+              file="Presets/EmptyInstrument.xml"/>
         <FILE id="tUn1pb" name="TwoStringsConnectedLinear.xml" compile="0"
               resource="1" file="Presets/TwoStringsConnectedLinear.xml"/>
       </GROUP>

@@ -40,6 +40,8 @@
     #define DLLExport __attribute__((visibility("default"))) // Mac does too, although google disagrees (possibly JUCE changes the visibility somehow)
 #endif
 
+#define USE_RESET_BUTTON
+
 enum Action
 {
     noAction,
@@ -287,6 +289,23 @@ namespace Global
         {"maxPoints", 2000}
     };
 
+    static NamedValueSet fullNames {
+        {"L", "Length"},
+        {"T", "Tension"},
+        {"rho", "Density"},
+        {"A", "Cross-sec. Area"},
+        {"E", "Youngs Mod."},
+        {"I", "Mom. of Inert."},
+        {"sig0", "Freq. Indep. Damping"},
+        {"sig1", "Freq. Dep. Damping"},
+        {"Lx", "Length (hor)"},
+        {"Ly", "Length (vert)"},
+        {"H", "Thickness"},
+        {"nu", "Poissons Ratio"},
+        {"b", "Width"},
+        {"f0", "Fundamental Freq."},
+        {"r", "Radius"}
+    };
 
     static double limit (double val, double min, double max)
     {

@@ -205,6 +205,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     break;
                 case addInstrumentAction:
                 {
+#ifndef USE_RESET_BUTTON
                     // Add an instrument and make it visible
                     audioProcessor.addInstrument();
                     std::shared_ptr<Instrument> newInstrument = instruments[instruments.size()-1];
@@ -213,7 +214,22 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                     addAndMakeVisible (newInstrument.get());
                     newInstrument->addChangeListener (this);
                     newInstrument->resized();
+#else
+                    stopTimer();
+                    for (auto inst : instruments)
+                        inst->unReadyAllModules();
+                    String emptyInst = "EmptyInstrument_xml";
+                    PresetResult res = audioProcessor.loadPreset (emptyInst, true);
+                    if (res != success)
+                        for (auto inst : instruments)
+                            inst->reReadyAllModules();
+                    else
+                        audioProcessor.setCurrentlyActiveInstrument(instruments[instruments.size()-1]);
+                    refresh();
+
+#endif
                     break;
+
                 }
                 case addResonatorModuleAction:
                 {

@@ -76,17 +76,30 @@ void CoefficientList::paintListBoxItem (int rowNumber, Graphics& g, int width, i
     g.setFont (Font (16.0f));
     g.setColour (Colours::white);
     std::ostringstream decimalValue;
-    double value = parameters.getValueAt (rowNumber);
-    if (value < 1)
-        decimalValue << std::setprecision (3) << value;
+    if (rowNumber < 0)
+    {
+        g.drawText ("",
+                    Global::margin,
+                    0,
+                    width * 0.5,
+                    height, Justification::centredLeft);
+    }
     else
-        decimalValue << value;
-    
-    g.drawText (parameters.getName (rowNumber).toString() + " = " + decimalValue.str(),
-                Global::margin,
-                0,
-                width * 0.5,
-                height, Justification::centredLeft);
+    {
+        if (parameters.size() <= 0)
+            return;
+        double value = parameters.getValueAt (rowNumber);
+        if (value < 1)
+            decimalValue << std::setprecision (3) << value;
+        else
+            decimalValue << value;
+        
+        g.drawText (parameters.getName (rowNumber).toString() + " = " + decimalValue.str(),
+                    Global::margin,
+                    0,
+                    width * 0.5,
+                    height, Justification::centredLeft);
+    }
 }
 
 Component* CoefficientList::refreshComponentForRow (int rowNumber, bool isRowSelected, Component* existingComponentToUpdate)
@@ -100,7 +113,7 @@ void CoefficientList::printParameterNames()
         std::cout << parameters.getName(i).toString() << std::endl;
 }
 
-void CoefficientList::listBoxItemClicked (int row, const MouseEvent& e)
+void CoefficientList::selectedRowsChanged (int lastRowSelected)
 {
     sendChangeMessage();
 }
@@ -108,8 +121,11 @@ void CoefficientList::listBoxItemClicked (int row, const MouseEvent& e)
 String CoefficientList::getSelectedParameterValue()
 {
     std::ostringstream decimalValue;
+    if (getSelectedRow() < 0)
+        return "";
+    
     double value = parameters.getValueAt (getSelectedRow());
     decimalValue << std::setprecision (3) << value;
-        
+
     return decimalValue.str();
 }

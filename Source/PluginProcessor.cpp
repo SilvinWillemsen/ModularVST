@@ -581,9 +581,6 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
                 case bar:
                     file << "Bar\">";
                     break;
-//                case acousticTube:
-//                    file << "Acoustic_Tube\">";
-//                    break;
                 case membrane:
                     file << "Membrane\">";
                     break;
@@ -731,21 +728,17 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
     return success;
 }
 
-PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary)
+PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary, bool useFullPath)
 {
-    std::string st = BinaryData::namedResourceList[1];
     
-    DBG(st.substr(0, st.size() - 4));
-
-    //int instrumentListSize = sizeof(BinaryData::namedResourceList[-1]) / sizeof(BinaryData::namedResourceList[0]);
     pugi::xml_document doc;
-    std::string test = String(presetPath + fileName).toStdString();// .getCharPointer()
+    std::string test = useFullPath ? fileName.toStdString() : String(presetPath + fileName).toStdString();// .getCharPointer()
+    
     const char* pathToUse = test.c_str();
     int sizeTest = 0;
-    pugi::xml_parse_result result = loadFromBinary ?
-        doc.load_string(BinaryData::getNamedResource(
-            (fileName == "" ? "Harp_xml" : std::string(fileName.toStdString()).c_str())
-            , sizeTest)) : doc.load_file(pathToUse);
+    const char* fileCharIfNeeded = fileName.getCharPointer();
+    pugi::xml_parse_result result = loadFromBinary ? doc.load_string(BinaryData::getNamedResource (fileCharIfNeeded, sizeTest)) : doc.load_file (pathToUse);
+
     switch (result.status)
     {
         case pugi::status_ok:

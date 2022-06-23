@@ -3303,8 +3303,17 @@ static const unsigned char temp_binary_data_15[] =
 
 const char* Plate2500_xml = (const char*) temp_binary_data_15;
 
-//================== TwoStringsConnectedLinear.xml ==================
+//================== EmptyInstrument.xml ==================
 static const unsigned char temp_binary_data_16[] =
+"<App>\n"
+"\t <Instrument id=\"i0\">\n"
+"\t </Instrument>\n"
+"</App>\n";
+
+const char* EmptyInstrument_xml = (const char*) temp_binary_data_16;
+
+//================== TwoStringsConnectedLinear.xml ==================
+static const unsigned char temp_binary_data_17[] =
 "<App>\n"
 "\t <Instrument id=\"i0\">\n"
 "\t \t <Resonator id=\"i0_r0\" type=\"Stiff_String\">\n"
@@ -4036,7 +4045,7 @@ static const unsigned char temp_binary_data_16[] =
 "\t </Instrument>\n"
 "</App>\n";
 
-const char* TwoStringsConnectedLinear_xml = (const char*) temp_binary_data_16;
+const char* TwoStringsConnectedLinear_xml = (const char*) temp_binary_data_17;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -4066,6 +4075,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x062a02d6:  numBytes = 598; return Plate400_xml;
         case 0xc236b0b3:  numBytes = 599; return Plate1600_xml;
         case 0xf531a251:  numBytes = 599; return Plate2500_xml;
+        case 0x5317664c:  numBytes = 52; return EmptyInstrument_xml;
         case 0xa6b1d550:  numBytes = 27218; return TwoStringsConnectedLinear_xml;
         default: break;
     }
@@ -4092,6 +4102,7 @@ const char* namedResourceList[] =
     "Plate400_xml",
     "Plate1600_xml",
     "Plate2500_xml",
+    "EmptyInstrument_xml",
     "TwoStringsConnectedLinear_xml"
 };
 
@@ -4113,6 +4124,7 @@ const char* originalFilenames[] =
     "Plate400.xml",
     "Plate1600.xml",
     "Plate2500.xml",
+    "EmptyInstrument.xml",
     "TwoStringsConnectedLinear.xml"
 };
 

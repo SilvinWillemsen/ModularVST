@@ -619,17 +619,28 @@ void Instrument::setApplicationState (ApplicationState a)
 void Instrument::changeListenerCallback (ChangeBroadcaster* changeBroadcaster)
 {
     for (auto res : resonators)
+    {
+
         if (res.get() == changeBroadcaster)
         {
-            currentlySelectedResonator = res;
-            if (res->getAction() == setStatesToZeroAction)
+            if (!res.get()->ableToInitialise())
             {
-                action = setStatesToZeroAction;
-                sendChangeMessage();
-                res->setAction (noAction);
+                resonatorToRemove = res;
+                NativeMessageBox::showMessageBoxAsync (AlertWindow::AlertIconType::WarningIcon, res->getErrorMsg(), "Please change your parameters", this, ModalCallbackFunction::create ([&] (int test){ test = 1; }));
+
+                removeResonatorModule();
+            } else {
+                currentlySelectedResonator = res;
+                if (res->getAction() == setStatesToZeroAction)
+                {
+                    action = setStatesToZeroAction;
+                    sendChangeMessage();
+                    res->setAction (noAction);
+                }
+                break;
             }
-            break;
         }
+    }
     // do not edit if this is not the currently highlighted instrument
     if (!highlightedInstrument)
         return;
