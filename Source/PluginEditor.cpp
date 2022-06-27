@@ -27,7 +27,6 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     
     // Window for adding modules
     addModuleWindow = std::make_unique<AddModuleWindow> (this);
-    savePresetWindow = std::make_unique<SavePresetWindow>(this);
     loadPresetWindow = std::make_unique<LoadPresetWindow>(this);
 //    addAndMakeVisible (addModuleWindow.get());
     
@@ -164,6 +163,11 @@ void ModularVSTAudioProcessorEditor::timerCallback()
     if (audioProcessor.shouldRefreshEditor())
     {
         refresh();
+#if (BUILD_CONFIG != 2)
+        if (excitationPanel->getExciteMode())
+            for (auto inst : instruments)
+                inst->setExcitationType (excitationPanel->getExcitationType());
+#endif
         audioProcessor.dontRefreshEditor();
     }
 #ifdef EDITOR_AND_SLIDERS
@@ -217,7 +221,10 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
 #else
                     stopTimer();
                     for (auto inst : instruments)
+                    {
                         inst->unReadyAllModules();
+                        audioProcessor.setStatesToZero (true);
+                    }
                     String emptyInst = "EmptyInstrument_xml";
                     PresetResult res = audioProcessor.loadPreset (emptyInst, true);
                     if (res != success)
@@ -307,7 +314,7 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
                 }
                 case savePresetAction:
                 {
-                    openSavePresetWindow();
+                    savePresetFromWindow();
                     break;
                 }
                 case loadPresetAction:
@@ -377,34 +384,6 @@ void ModularVSTAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* 
 
         addModuleWindow->setDlgModal (-1);
         addModuleWindow->setAction (noAction);
-    }
-    else if (changeBroadcaster == savePresetWindow.get())
-    {
-        PresetResult result;
-        if (savePresetWindow->getDlgPreset() == 1)
-        {
-            result = audioProcessor.savePreset (savePresetWindow->getFileName());
-        }
-        switch (result) {
-            case success:
-            {
-                String message = "Preset \"" + savePresetWindow->getFileName() + "\" has been saved";
-                //AlertWindow("File with this name exists", message, "QuestionIcon");
-                NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Saved", message, nullptr);
-                break;
-            }
-            default:
-            {
-                String message = "Preset \"" + savePresetWindow->getFileName() + "\" could not be saved";
-                //AlertWindow("File with this name exists", message, "QuestionIcon");
-                NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Error", message, nullptr);
-                break;
-            }
-        }
-
-
-        savePresetWindow->setDlgPreset(-1);
-        savePresetWindow->setAction(noAction);
     }
     else if (changeBroadcaster == loadPresetWindow.get())
     {
@@ -510,12 +489,6 @@ void ModularVSTAudioProcessorEditor::openAddModuleWindow()
     dlgWindow->showDialog ("Add Resonator Module", addModuleWindow.get(), this, getLookAndFeel().findColour (ResizableWindow::backgroundColourId), true);
 }
 
-void ModularVSTAudioProcessorEditor::openSavePresetWindow()
-{
-    addAndMakeVisible(savePresetWindow.get());
-    dlgWindow->showDialog("Save Preset", savePresetWindow.get(), this, getLookAndFeel().findColour(ResizableWindow::backgroundColourId), true);
-}
-
 void ModularVSTAudioProcessorEditor::openLoadPresetWindow()
 {
 
@@ -526,15 +499,18 @@ void ModularVSTAudioProcessorEditor::loadPresetFromWindow()
 {
     stopTimer();
     for (auto inst : instruments)
+    {
         inst->unReadyAllModules();
+        audioProcessor.setStatesToZero (true);
+    }
 
     openloadPresetFromWindow = std::make_unique<FileChooser> ("Load Preset", File::getCurrentWorkingDirectory().getChildFile(audioProcessor.getPresetPath()), "*.xml", true, true);
     openloadPresetFromWindow->launchAsync (FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles, [this] (const FileChooser& fileChooser) {
         if (fileChooser.getResult().exists())
         {
-            String fileName = fileChooser.getResult().getFileName();
-            audioProcessor.setShouldLoadPreset (fileName, false, [this](String fileName) {
-                PresetResult res = audioProcessor.loadPreset (fileName, false);
+            String filePath = fileChooser.getResult().getFullPathName();
+            audioProcessor.setShouldLoadPreset (filePath, false, [this](String filePath) {
+                PresetResult res = audioProcessor.loadPreset (filePath, false);
                 audioProcessor.debugLoadPresetResult (res);
                 if (res != success)
                     for (auto inst : instruments)
@@ -556,6 +532,49 @@ void ModularVSTAudioProcessorEditor::loadPresetFromWindow()
         }
         refresh();
     });
+}
+
+void ModularVSTAudioProcessorEditor::savePresetFromWindow()
+{
+    stopTimer();
+    for (auto inst : instruments)
+    {
+        inst->unReadyAllModules();
+        audioProcessor.setStatesToZero (true);
+    }
+
+    savePresetFileChooser = std::make_unique<FileChooser> ("Save Preset", File::getCurrentWorkingDirectory().getChildFile("myPreset.xml"), "*.xml", true, true);
+    savePresetFileChooser->launchAsync (FileBrowserComponent::saveMode, [this] (const FileChooser& fileChooser) {
+            String filePath = fileChooser.getResult().getFullPathName();
+            String fileName = fileChooser.getResult().getFileName();
+            PresetResult res = fileName != "" ? audioProcessor.savePreset (filePath) : PresetResult::loadingCancelled;
+            
+            switch (res) {
+                case success:
+                {
+                    String message = "Preset \"" + fileName + "\" has been saved";
+                    NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Saved", message, nullptr);
+                    break;
+                }
+                case loadingCancelled:
+                {
+                    String message = "Saving was cancelled";
+                    NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Cancelled", message, nullptr);
+                    break;
+                }
+                default:
+                {
+                    String message = "Preset could not be saved";
+                    //AlertWindow("File with this name exists", message, "QuestionIcon");
+                    NativeMessageBox::showMessageBoxAsync(AlertWindow::AlertIconType::QuestionIcon, "Error", message, nullptr);
+                    break;
+                }
+            }
+            refresh();
+        });
+    for (auto inst : instruments)
+        inst->reReadyAllModules();
+
 }
 
 void ModularVSTAudioProcessorEditor::setApplicationState (ApplicationState a)

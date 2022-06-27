@@ -39,7 +39,7 @@ bool ResonatorModule::initialiseModule()
         {
             errorMsg = "Too many points!";
             return false;
-        } else if (N < 10)
+        } else if (N < 5)
         {
             errorMsg = "Too few points!";
             return false;

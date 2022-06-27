@@ -310,7 +310,7 @@ void StiffString::exciteRaisedCos()
             for (int l = 0; l <= width; ++l)
             {
                 // make sure we're not going out of bounds at the right boundary (this does 'cut off' the raised cosine)
-                if (l+start >= (clampedBC ? N - 2 : N - 1))
+                if (l+start >= N - 1)
                     break;
                 
                 u[1][l+start] += 0.0005 * (1 - cos(2.0 * double_Pi * l / width));
@@ -374,7 +374,10 @@ void StiffString::myMouseExit (const double x, const double y, bool triggeredByM
 {
     if (getExcitationType() == noExcitation)
         return;
-        
+    
+    if (getCurExciterModule() == nullptr)
+        return;
+    
     getCurExciterModule()->stopTimer();
     getCurExciterModule()->mouseExited();
 

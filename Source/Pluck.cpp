@@ -205,7 +205,10 @@ void Pluck::calculate (std::vector<double*>& u)
             g = -2 * psiPrev / (etaStar - etaPrev);
     } else {
         g = kappaG * sqrt (Kc * (alphaC + 1.0) / 2.0) * pow(eta, (alphaC - 1.0) / 2.0);
+        DBG(g);
     }
+    // make sure g is not insanely big
+    g = Global::limit (g, 0, 500);
 
     v1 = uStar + pluckSgn * Jterm * IJ * (-g * g * 0.25 * etaPrev + psiPrev * g);
     v2 = wStar - pluckSgn * k * k / (M * (1 + R * k / (2 * M))) * (-g * g * 0.25 * etaPrev + psiPrev * g);
@@ -284,7 +287,15 @@ void Pluck::calculate (std::vector<double*>& u)
     }
 
     if (isnan(wNext))
+    {
+        wNext = 0;
+        w = 0;
+        wPrev = 0;
+        psi = 0;
+        psiPrev = 0;
+        setStatesToZero();
         DBG("wait");
+    }
     ++calcCounter;
     
 
@@ -343,7 +354,7 @@ void Pluck::mouseEntered (const double x, const double y, int height)
     wNext = (-controlLoc + 0.5) / (Global::stringVisualScaling);
 //    wNext = -(yLoc - 0.5) / (0.5 * K / (M * maxForce));
     w = wNext;
-    wPrev = w - k * static_cast<float> (pluckSgn) / (Global::stringVisualScaling); // to prevent etaStar and etaPrev from being too close to each other
+    wPrev = w - k * static_cast<float> (pluckSgn) / (Global::stringVisualScaling * 0.1); // to prevent etaStar and etaPrev from being too close to each other
     prevDampEnergy = 0;
     prevPowEnergy = 0;
     totDampEnergy = 0;

@@ -115,7 +115,7 @@ public:
 
     // Presets
     PresetResult savePreset (String& fileName);
-    PresetResult loadPreset (String& fileName, bool loadFromBinary, bool useFullPath = false);
+    PresetResult loadPreset (String& fileName, bool loadFromBinary);
     void loadPresetFromPugiDoc (pugi::xml_document* doc);
     String getPresetPath() {return presetPath; }
     void debugLoadPresetResult (PresetResult res);

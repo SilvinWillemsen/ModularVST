@@ -55,8 +55,8 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
     addParameter (useVelocity = new AudioParameterBool (ParameterID ("useVelocity", 1), "Use Velocity", 1));
     addParameter (velocity = new AudioParameterFloat (ParameterID ("velocity", 1), "Velocity", 0, 1, 0.5));
     addParameter (trigger1 = new AudioParameterBool (ParameterID ("trigger1", 1), "Trigger1", 0));
-    addParameter(trigger2 = new AudioParameterBool(ParameterID ("trigger2", 1), "Trigger2", 0));
-    addParameter(activateSecondExciter = new AudioParameterBool(ParameterID ("activateSecondExciter", 1), "ActivateSecondExciter", 0));
+    addParameter (trigger2 = new AudioParameterBool (ParameterID ("trigger2", 1), "Trigger2", 0));
+    addParameter (activateSecondExciter = new AudioParameterBool (ParameterID ("activateSecondExciter", 1), "ActivateSecondExciter", 0));
     addParameter (presetSelect = new AudioParameterFloat (ParameterID ("presetSelect", 1), "Preset Select", 0, 0.99, 0.01));
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
     addParameter (loadPresetToggle = new AudioParameterBool (ParameterID ("loadPresetToggle", 1), "Load preset", 1));
@@ -557,10 +557,10 @@ void ModularVSTAudioProcessor::highlightInstrument (std::shared_ptr<Instrument> 
 
 }
 
-PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
+PresetResult ModularVSTAudioProcessor::savePreset (String& filePath)
 {
     std::ofstream file;
-    const char* pathToUse = String (presetPath + fileName + ".xml").getCharPointer();
+    const char* pathToUse = String (filePath).getCharPointer();
     file.open (pathToUse);
     file << "<App" << ">" << "\n";
     for (int i = 0; i < instruments.size(); ++i)
@@ -719,20 +719,14 @@ PresetResult ModularVSTAudioProcessor::savePreset (String& fileName)
     file << "</App" << ">" << "\n";
     file.close();
     
-    // save path of last saved preset
-    std::ofstream lastSavedPreset;
-    lastSavedPreset.open (String (presetPath + "lastPreset.txt").getCharPointer());
-    lastSavedPreset << String (fileName + ".xml");
-    lastSavedPreset.close();
-    
     return success;
 }
 
-PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary, bool useFullPath)
+PresetResult ModularVSTAudioProcessor::loadPreset (String& fileName, bool loadFromBinary)
 {
     
     pugi::xml_document doc;
-    std::string test = useFullPath ? fileName.toStdString() : String(presetPath + fileName).toStdString();// .getCharPointer()
+    std::string test = fileName.toStdString();// .getCharPointer()
     
     const char* pathToUse = test.c_str();
     int sizeTest = 0;
@@ -1111,12 +1105,6 @@ void ModularVSTAudioProcessor::loadPresetFromPugiDoc (pugi::xml_document* doc)
         }
     }
     currentlyActiveInstrument->setCurrentlySelectedResonatorToNullptr();
-    
-    // save path of last loaded preset
-    std::ofstream lastLoadedPreset;
-    lastLoadedPreset.open (String (presetPath + "lastPreset.txt").getCharPointer());
-//    lastLoadedPreset << String (fileName);
-    lastLoadedPreset.close();
     loadPresetMutex.unlock();
 }
 
