@@ -2,8 +2,8 @@
 
 <JUCERPROJECT id="mNMeLw" name="ModularVST" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="1" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginFormats="buildAU,buildStandalone,buildUnity" pluginCharacteristicsValue="pluginIsSynth"
-              compilerFlagSchemes="NewScheme">
+              pluginFormats="buildAU,buildStandalone,buildUnity,buildVST3"
+              pluginCharacteristicsValue="pluginIsSynth" compilerFlagSchemes="NewScheme">
   <MAINGROUP id="Y5tJFI" name="ModularVST">
     <GROUP id="{E3A9FC85-B250-29C1-8015-4736D873D1CD}" name="Source">
       <FILE id="kfIlD6" name="AppConfig.h" compile="0" resource="0" file="Source/AppConfig.h"/>

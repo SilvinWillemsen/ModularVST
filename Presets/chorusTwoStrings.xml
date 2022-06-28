@@ -1,0 +1,34 @@
+<App>
+	 <Instrument id="i0">
+	 	 <Resonator id="i0_r0" type="Stiff_String">
+	 	 	 <PARAM id="i0_r0_L" value="1"/>
+	 	 	 <PARAM id="i0_r0_T" value="300"/>
+	 	 	 <PARAM id="i0_r0_rho" value="7850"/>
+	 	 	 <PARAM id="i0_r0_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="i0_r0_E" value="2e+11"/>
+	 	 	 <PARAM id="i0_r0_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r0_sig0" value="1"/>
+	 	 	 <PARAM id="i0_r0_sig1" value="0.005"/>
+	 	 	 <Output id="i0_r0_o0" channel="0" loc="0.109244"/>
+	 	 	 <Output id="i0_r0_o1" channel="1" loc="0.831933"/>
+	 	 </Resonator>
+	 	 <Resonator id="i0_r1" type="Stiff_String">
+	 	 	 <PARAM id="i0_r1_L" value="1"/>
+	 	 	 <PARAM id="i0_r1_T" value="0.382166"/>
+	 	 	 <PARAM id="i0_r1_rho" value="10"/>
+	 	 	 <PARAM id="i0_r1_A" value="7.85398e-07"/>
+	 	 	 <PARAM id="i0_r1_E" value="2.54777e+08"/>
+	 	 	 <PARAM id="i0_r1_I" value="4.90874e-14"/>
+	 	 	 <PARAM id="i0_r1_sig0" value="1"/>
+	 	 	 <PARAM id="i0_r1_sig1" value="0.005"/>
+	 	 	 <Output id="i0_r1_o0" channel="0" loc="0.109244"/>
+	 	 	 <Output id="i0_r1_o1" channel="1" loc="0.831933"/>
+	 	 </Resonator>
+	 	 <Connection id="i0_c0" type="rigid">
+	 	 	 <PARAM id="i0_c0_fR" value="0"/>
+	 	 	 <PARAM id="i0_c0_fL" value="0.546218"/>
+	 	 	 <PARAM id="i0_c0_fR" value="1"/>
+	 	 	 <PARAM id="i0_c0_fL" value="0.495798"/>
+	 	 </Connection>
+	 </Instrument>
+</App>
