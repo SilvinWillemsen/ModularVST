@@ -21,7 +21,6 @@ namespace AppConfig
         "BanjoLele_xml",
         "Timpani_xml",
         "Cello_xml",
-        "Marimba_xml",
-        "Shamisen_xml"
+        "Marimba_xml"
     };
 };

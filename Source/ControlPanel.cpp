@@ -37,7 +37,7 @@ ControlPanel::ControlPanel (ChangeListener* audioProcessorEditor)
     removeResonatorModuleButton = std::make_unique<TextButton> ("Remove");
     allButtons.push_back (removeResonatorModuleButton);
     
-    editInOutputsButton = std::make_shared<TextButton> ("Edit In- Outputs");
+    editInOutputsButton = std::make_shared<TextButton> ("Edit Outputs");
     allButtons.push_back (editInOutputsButton);
     
     editConnectionButton = std::make_shared<TextButton> ("Edit Connections");
@@ -238,7 +238,7 @@ void ControlPanel::buttonClicked (Button* button)
         if (applicationState == normalState)
             editInOutputsButton->setButtonText ("Done");
         else if (applicationState == editInOutputsState)
-            editInOutputsButton->setButtonText ("Edit In- Outputs");
+            editInOutputsButton->setButtonText ("Edit Outputs");
 
     }
     else if (button == editConnectionButton.get())
