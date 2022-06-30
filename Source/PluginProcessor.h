@@ -236,14 +236,14 @@ private:
 
 	// Prevent errors regarding ParameterID (and versionHints) in JUCE versions 7.0.0 and above
 #if (JUCE_VERSION < 0x070000)
-	String customParameterID(String param)
+	String customParameterID (String param)
 	{
 		return param;
 	}
 #else
-	ParameterID customParameterID(String param)
+	ParameterID customParameterID (String param)
 	{
-		return ParameterID(param, 1);
+		return ParameterID (param, 1);
 	}
 #endif
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModularVSTAudioProcessor)

@@ -203,7 +203,7 @@ void Hammer::calculate (std::vector<double*>& u)
             uIPrev += I[i] * u[2][idx];
         }
     }
-    if (isnan(IJ))
+    if (std::isnan(IJ))
         DBG("wait what?");
     eta = w - uI;
     etaPrev = wPrev - uIPrev;
@@ -301,7 +301,7 @@ void Hammer::calculate (std::vector<double*>& u)
     }
     
 
-    if (isnan(wNext))
+    if (std::isnan(wNext))
         DBG("wait");
     ++calcCounter;
     

@@ -8,32 +8,35 @@
 
 namespace BinaryData
 {
+    extern const char*   myPreset_xml;
+    const int            myPreset_xmlSize = 575;
+
     extern const char*   Shamisen_xml;
-    const int            Shamisen_xmlSize = 6028;
+    const int            Shamisen_xmlSize = 5894;
 
     extern const char*   Marimba_xml;
-    const int            Marimba_xmlSize = 25674;
+    const int            Marimba_xmlSize = 25132;
 
     extern const char*   Timpani_xml;
-    const int            Timpani_xmlSize = 1058;
+    const int            Timpani_xmlSize = 1036;
 
     extern const char*   Cello_xml;
-    const int            Cello_xmlSize = 2212;
+    const int            Cello_xmlSize = 2160;
 
     extern const char*   BanjoLele_xml;
-    const int            BanjoLele_xmlSize = 6788;
+    const int            BanjoLele_xmlSize = 6636;
 
     extern const char*   Guitar_xml;
-    const int            Guitar_xmlSize = 7903;
+    const int            Guitar_xmlSize = 7715;
 
     extern const char*   Harp_xml;
-    const int            Harp_xmlSize = 20426;
+    const int            Harp_xmlSize = 19991;
 
     extern const char*   EmptyInstrument_xml;
-    const int            EmptyInstrument_xmlSize = 56;
+    const int            EmptyInstrument_xmlSize = 52;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 8;
+    const int namedResourceListSize = 9;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

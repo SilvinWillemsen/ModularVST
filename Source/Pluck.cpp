@@ -174,7 +174,7 @@ void Pluck::calculate (std::vector<double*>& u)
         }
 //        std::cout << std::endl;
     }
-    if (isnan(IJ))
+    if (std::isnan(IJ))
         DBG("wait what?");
     eta = w - uI;
     etaPrev = wPrev - uIPrev;
@@ -286,7 +286,7 @@ void Pluck::calculate (std::vector<double*>& u)
         }
     }
 
-    if (isnan(wNext))
+    if (std::isnan(wNext))
     {
         wNext = 0;
         w = 0;

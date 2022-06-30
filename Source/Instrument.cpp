@@ -393,7 +393,7 @@ void Instrument::solveInteractions()
                        + CI[i].res2->getConnectionDivisionTerm());
                 break;
         }
-        if (isnan(force))
+        if (std::isnan(force))
             std::cout << "wait" << std::endl;
         CI[i].res1->addForce (-force, CI[i].loc1, 1.0);
         CI[i].res2->addForce (force, CI[i].loc2, 1.0);

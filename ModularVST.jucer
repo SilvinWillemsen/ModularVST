@@ -11,6 +11,7 @@
       <FILE id="e9SETK" name="DebugCPP.cpp" compile="1" resource="0" file="Source/DebugCPP.cpp"/>
       <FILE id="KLPmfA" name="DebugCPP.h" compile="0" resource="0" file="Source/DebugCPP.h"/>
       <GROUP id="{EDF98768-FD60-FF15-CE20-76C2402D92E3}" name="Presets">
+        <FILE id="HUOwZs" name="myPreset.xml" compile="0" resource="1" file="Presets/myPreset.xml"/>
         <FILE id="Fcp6u1" name="Shamisen.xml" compile="0" resource="1" file="Presets/Shamisen.xml"/>
         <FILE id="imqQzY" name="Marimba.xml" compile="0" resource="1" file="Presets/Marimba.xml"/>
         <FILE id="OfdwAK" name="Timpani.xml" compile="0" resource="1" file="Presets/Timpani.xml"/>
@@ -170,6 +171,26 @@
         <MODULEPATH id="juce_gui_extra" path="C:\Users\tlasi\OneDrive\Documents\JUCE\modules"/>
       </MODULEPATHS>
     </VS2022>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="/Users/SilvinW/repositories/newJUCE/JUCE/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
