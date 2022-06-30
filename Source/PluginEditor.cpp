@@ -91,7 +91,7 @@ ModularVSTAudioProcessorEditor::ModularVSTAudioProcessorEditor (ModularVSTAudioP
     setSize (1500, 600);
 #else
     // What is the size of the editor
-    setSize (1200, 600);
+    setSize (1200, 600); // , 300) for manual figures
 #endif
     
 }
@@ -109,7 +109,11 @@ void ModularVSTAudioProcessorEditor::paint (juce::Graphics& g)
     if (instruments.size() == 0)
     {
         g.setColour (Colours::white);
+#ifdef USE_RESET_BUTTON
+        g.drawText ("Click on \"Reset\" to start building your instrument!", getLocalBounds(), Justification::centred);
+#else
         g.drawText ("Click on \"Add Instrument\" to add an instrument to the application!", getLocalBounds(), Justification::centred);
+#endif
         Rectangle<int> area = getLocalBounds()
             .withHeight (getHeight() - (2.0 * Global::margin + Global::buttonHeight))
             .withWidth (getWidth() - (2.0 * Global::margin + Global::buttonWidth))
