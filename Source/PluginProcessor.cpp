@@ -30,7 +30,6 @@ int getNumPresets()
 }
 
 
-
 //==============================================================================
 ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -45,22 +44,22 @@ ModularVSTAudioProcessor::ModularVSTAudioProcessor()
 #endif
 {
 //#ifdef NO_EDITOR
-    addParameter (mouseX1 = new AudioParameterFloat (juce::ParameterID ("mouseX1", 1), "Mouse X1", 0, 0.99, 0.5));
-    addParameter (mouseY1 = new AudioParameterFloat (juce::ParameterID ("mouseY1", 1), "Mouse Y1", 0, 0.99, 0.5) );
-    addParameter (mouseX2 = new AudioParameterFloat (juce::ParameterID ("mouseX2", 1), "Mouse X2", 0, 0.99, 0.5) );
-    addParameter (mouseY2 = new AudioParameterFloat (juce::ParameterID ("mouseY2", 1), "Mouse Y2", 0, 0.99, 0.5) );
-    addParameter (smooth = new AudioParameterBool (juce::ParameterID ("smooth", 1), "Smooth", 1));
-    addParameter (smoothness = new AudioParameterFloat (juce::ParameterID ("smoothness", 1), "Smoothness", 0, 99, 95));
-    addParameter (excite = new AudioParameterBool (juce::ParameterID ("excite", 1), "Excite", 0));
-    addParameter (excitationType = new AudioParameterFloat (juce::ParameterID ("excitationType", 1), "Excitation Type", 0, 0.99, 0.5));
-    addParameter (useVelocity = new AudioParameterBool (juce::ParameterID ("useVelocity", 1), "Use Velocity", 1));
-    addParameter (velocity = new AudioParameterFloat (juce::ParameterID ("velocity", 1), "Velocity", 0, 1, 0.5));
-    addParameter (trigger1 = new AudioParameterBool (juce::ParameterID ("trigger1", 1), "Trigger1", 0));
-    addParameter (trigger2 = new AudioParameterBool (juce::ParameterID ("trigger2", 1), "Trigger2", 0));
-    addParameter (activateSecondExciter = new AudioParameterBool (juce::ParameterID ("activateSecondExciter", 1), "ActivateSecondExciter", 0));
-    addParameter (presetSelect = new AudioParameterFloat (juce::ParameterID ("presetSelect", 1), "Preset Select", 0, 0.99, 0.01));
+    addParameter (mouseX1 = new AudioParameterFloat (customParameterID ("mouseX1"), "Mouse X1", 0, 0.99, 0.5));
+    addParameter (mouseY1 = new AudioParameterFloat (customParameterID ("mouseY1"), "Mouse Y1", 0, 0.99, 0.5) );
+    addParameter (mouseX2 = new AudioParameterFloat (customParameterID ("mouseX2"), "Mouse X2", 0, 0.99, 0.5) );
+    addParameter (mouseY2 = new AudioParameterFloat (customParameterID ("mouseY2"), "Mouse Y2", 0, 0.99, 0.5) );
+    addParameter (smooth = new AudioParameterBool (customParameterID ("smooth"), "Smooth", 1));
+    addParameter (smoothness = new AudioParameterFloat (customParameterID ("smoothness"), "Smoothness", 0, 99, 95));
+    addParameter (excite = new AudioParameterBool (customParameterID ("excite"), "Excite", 0));
+    addParameter (excitationType = new AudioParameterFloat (customParameterID ("excitationType"), "Excitation Type", 0, 0.99, 0.5));
+    addParameter (useVelocity = new AudioParameterBool (customParameterID ("useVelocity"), "Use Velocity", 1));
+    addParameter (velocity = new AudioParameterFloat (customParameterID ("velocity"), "Velocity", 0, 1, 0.5));
+    addParameter (trigger1 = new AudioParameterBool (customParameterID ("trigger1"), "Trigger1", 0));
+    addParameter (trigger2 = new AudioParameterBool (customParameterID ("trigger2"), "Trigger2", 0));
+    addParameter (activateSecondExciter = new AudioParameterBool (customParameterID ("activateSecondExciter"), "ActivateSecondExciter", 0));
+    addParameter (presetSelect = new AudioParameterFloat (customParameterID ("presetSelect"), "Preset Select", 0, 0.99, 0.01));
 #ifndef LOAD_ALL_UNITY_INSTRUMENTS
-    addParameter (loadPresetToggle = new AudioParameterBool (juce::ParameterID ("loadPresetToggle", 1), "Load preset", 1));
+    addParameter (loadPresetToggle = new AudioParameterBool (customParameterID ("loadPresetToggle"), "Load preset", 1));
 #endif
     
     //#endif
