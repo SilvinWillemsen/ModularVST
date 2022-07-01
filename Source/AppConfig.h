@@ -20,6 +20,10 @@ namespace AppConfig
 {
     static StringArray presetFilesToIncludeInUnity = {
         "Guitar_xml",
-        "Harp_xml"
+        "Harp_xml",
+//        "BanjoLele_xml",
+//        "Timpani_xml",
+//        "Cello_xml",
+//        "Marimba_xml"
     };
 };
