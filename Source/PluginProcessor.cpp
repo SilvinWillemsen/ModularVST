@@ -1213,8 +1213,8 @@ void ModularVSTAudioProcessor::genericAudioParameterValueChanged (String name, f
                 inst->resetPrevMouseMoveResonators();
                 
                 // MIGHT NOT BE NECESSARY ->
-                inst->virtualMouseMove1 (sliderValues[mouseX1ID], sliderValues[mouseY1ID]);
-                inst->virtualMouseMove2 (sliderValues[mouseX2ID], sliderValues[mouseY2ID]);
+//                inst->virtualMouseMove1 (sliderValues[mouseX1ID], sliderValues[mouseY1ID]);
+//                inst->virtualMouseMove2 (sliderValues[mouseX2ID], sliderValues[mouseY2ID]);
             }
         } else {
             curExcitationType = noExcitation;
