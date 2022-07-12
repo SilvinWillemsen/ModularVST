@@ -11,8 +11,6 @@
       <FILE id="e9SETK" name="DebugCPP.cpp" compile="1" resource="0" file="Source/DebugCPP.cpp"/>
       <FILE id="KLPmfA" name="DebugCPP.h" compile="0" resource="0" file="Source/DebugCPP.h"/>
       <GROUP id="{EDF98768-FD60-FF15-CE20-76C2402D92E3}" name="Presets">
-        <FILE id="HUOwZs" name="myPreset.xml" compile="0" resource="1" file="Presets/myPreset.xml"/>
-        <FILE id="Fcp6u1" name="Shamisen.xml" compile="0" resource="1" file="Presets/Shamisen.xml"/>
         <FILE id="imqQzY" name="Marimba.xml" compile="0" resource="1" file="Presets/Marimba.xml"/>
         <FILE id="OfdwAK" name="Timpani.xml" compile="0" resource="1" file="Presets/Timpani.xml"/>
         <FILE id="LR8xij" name="Cello.xml" compile="0" resource="1" file="Presets/Cello.xml"/>

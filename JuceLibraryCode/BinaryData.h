@@ -8,12 +8,6 @@
 
 namespace BinaryData
 {
-    extern const char*   myPreset_xml;
-    const int            myPreset_xmlSize = 575;
-
-    extern const char*   Shamisen_xml;
-    const int            Shamisen_xmlSize = 5894;
-
     extern const char*   Marimba_xml;
     const int            Marimba_xmlSize = 25132;
 
@@ -36,7 +30,7 @@ namespace BinaryData
     const int            EmptyInstrument_xmlSize = 52;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 9;
+    const int namedResourceListSize = 7;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
